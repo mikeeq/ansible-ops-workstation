@@ -1,0 +1,7 @@
+---
+- name: "[FLATPAK] Update all packages"
+  shell: flatpak update -y
+  register: flatpak_upd_output
+  changed_when: flatpak_upd_output.stdout_lines[2] is defined
+  tags:
+    - update

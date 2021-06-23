@@ -1,0 +1,45 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"Alignment",
+		"Ansible",
+		"ApplySyntax",
+		"BracketHighlighter",
+		"DiffTabs",
+		"DiffView",
+		"Diffy",
+		"DocBlockr",
+		"Emmet",
+		"Git",
+		"GitGutter",
+		"Jinja2",
+		"Kotlin",
+		"LPrint",
+		"MarkdownEditing",
+		"MarkdownLivePreview",
+		"MarkdownPreview",
+		"Matlab Completions",
+		"Package Control",
+		"PowerShell",
+		"Pretty YAML",
+		"Puppet",
+		"Sass",
+		"SideBarEnhancements",
+		"SublimeCodeIntel",
+		"SublimeLinter",
+		"SublimeLinter-contrib-ansible-lint",
+		"SublimeLinter-contrib-puppet",
+		"SublimeLinter-contrib-yamllint",
+		"Terraform",
+		"Theme - SoDaReloaded",
+		"Theme - Sodarized",
+		"TrailingSpaces",
+		"Vagrant",
+		"YAML Nav",
+		"YAMLMacros"
+	]
+}

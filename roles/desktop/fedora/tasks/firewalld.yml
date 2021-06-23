@@ -1,0 +1,15 @@
+---
+- name: disable firewalld
+  systemd:
+    name: firewalld
+    enabled: no
+  when: docker_tests_flag is not defined
+
+- name: install iptables
+  dnf:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - iptables
+      - iptables-services

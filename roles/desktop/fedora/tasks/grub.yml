@@ -1,0 +1,14 @@
+---
+- name: Add saving last choice to grub config
+  lineinfile:
+    path: /etc/default/grub
+    line: GRUB_DEFAULT=saved
+  notify: save_grub_config
+  when: docker_tests_flag is not defined
+
+- name: Add saving default choice to grub config
+  lineinfile:
+    path: /etc/default/grub
+    line: GRUB_SAVEDEFAULT=true
+  notify: save_grub_config
+  when: docker_tests_flag is not defined

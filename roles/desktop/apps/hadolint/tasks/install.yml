@@ -1,0 +1,19 @@
+---
+- name: Directory for hadolint
+  file:
+    path: /tmp/hadolint
+    state: directory
+
+- name: Download hadolint binary
+  get_url:
+    url: "https://github.com/hadolint/hadolint/releases/download/v{{ hadolint_version }}/hadolint-Linux-x86_64"
+    dest: /tmp/hadolint/hadolint
+
+- name: Copy hadolint
+  copy:
+    src: "/tmp/hadolint/hadolint"
+    dest: "/usr/local/bin/hadolint"
+    remote_src: true
+    mode: 0755
+    owner: root
+    group: root

@@ -1,0 +1,6 @@
+---
+image_path: "/tmp/CentOS-7-x86_64-GenericCloud.qcow2"
+kdump_mem: "0M"
+centos_qcow2_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
+image_root_password: "pass123"
+base_image_path: "/var/lib/libvirt/images"

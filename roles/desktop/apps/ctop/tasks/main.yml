@@ -1,0 +1,25 @@
+---
+- name: Directory for ctop
+  file:
+    path: "{{ rpms_dwnl_path }}"
+    state: directory
+
+- name: Get latest version
+  shell: curl -s https://github.com/bcicen/ctop/releases/latest | cut -f2 -d'v' | cut -f1 -d'"'
+  register: version_tag
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: Download ctop
+  get_url:
+    url: "https://github.com/bcicen/ctop/releases/download/v{{ version_tag.stdout }}/ctop-{{ version_tag.stdout }}-linux-amd64"
+    dest: "{{ rpms_dwnl_path }}/ctop"
+    force: true
+
+- name: Copy ctop
+  copy:
+    src: "{{ rpms_dwnl_path }}/ctop"
+    dest: /usr/local/bin/ctop
+    mode: 0755

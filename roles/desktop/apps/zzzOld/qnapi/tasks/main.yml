@@ -1,0 +1,59 @@
+---
+# TODO
+- name: Get installed version
+  shell: cat /opt/qnapi/version.tag
+  register: installed_version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: 'Installed version of keeweb:'
+  debug:
+    var: installed_version.stdout
+
+- name: Directory for qnapi
+  file:
+    path: /opt/qnapi
+    state: directory
+
+- name: Get latest version
+  shell: curl https://github.com/QNapi/qnapi/releases/latest | cut -d'"' -f2 | cut -d'/' -f8
+  register: version_tag
+  changed_when: version_tag.stdout != installed_version.stdout
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Latest version of qnapi"
+  debug:
+    var: version_tag.stdout
+
+# https://github.com/QNapi/qnapi/releases/download/0.2.3/qnapi-0.2.3.tar.gz
+- name: Download .zip
+  get_url:
+    url: "https://github.com/QNapi/qnapi/releases/download/{{ version_tag.stdout }}/qnapi-{{ version_tag.stdout }}.tar.gz"
+    dest: /tmp/qnapi.zip
+  when: installed_version.stdout != version_tag.stdout
+
+- name: Remove old KeeWeb
+  file:
+    path: /opt/qnapi/*
+    state: absent
+  when: installed_version.stdout != version_tag.stdout
+
+- name: Unarchive a file that is already on the remote machine
+  unarchive:
+    src: /tmp/qnapi.zip
+    dest: /opt/qnapi/
+    remote_src: yes
+  when: installed_version.stdout != version_tag.stdout
+
+# - name: Add gnome icon
+#   copy:
+#     src: keeweb.desktop
+#     dest: /usr/share/applications/keeweb.desktop
+
+- name: Add version file
+  shell: echo '{{ version_tag.stdout }}' > /opt/qnapi/version.tag
+  when: installed_version.stdout != version_tag.stdout

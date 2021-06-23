@@ -1,0 +1,15 @@
+---
+- name: Directory for rpm
+  file:
+    path: "{{ rpms_dwnl_path }}"
+    state: directory
+
+- name: Download rpm
+  get_url:
+    url: "https://updates.getmailspring.com/download?platform=linuxRpm"
+    dest: "{{ rpms_dwnl_path }}/mailspring.rpm"
+
+- name: Install mailspring
+  dnf:
+    name: "{{ rpms_dwnl_path }}/mailspring.rpm"
+    state: present

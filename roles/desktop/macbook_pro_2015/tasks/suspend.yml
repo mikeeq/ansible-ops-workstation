@@ -1,0 +1,32 @@
+---
+# - name: Get acpi wakeup devices
+#   shell: cat /proc/acpi/wakeup | grep enabled | grep S3 | awk '{print $1,$4}'
+#   register: acpi_wakeup
+
+# - set_fact:
+#     acpi_wakeup_device: "{{ acpi_wakeup.stdout.split(' ') }}"
+
+# - name: Disable ACPI S3 wakeup on XHC1
+#   blockinfile:
+#     path: /etc/udev/rules.d/90-xhc_sleep.rules
+#     mode: 0644
+#     create: true
+#     block: |
+#       # disable wake from S3 on XHC1
+#       SUBSYSTEM=="pci", KERNEL=="0000:00:14.0", ATTR{device}=="0x9c31" RUN+="/bin/sh -c '/bin/echo disabled > /sys$env{DEVPATH}/power/wakeup'"
+
+- name: Copy suspend-fix systemd unit
+  copy:
+    src: "suspend-fix.service"
+    dest: "/etc/systemd/system/suspend-fix.service"
+    mode: 0755
+
+- name: just force systemd to reread configs (2.4 and above)
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start suspend-fix
+  service:
+    name: suspend-fix.service
+    enabled: true
+    # state: started

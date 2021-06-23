@@ -1,0 +1,11 @@
+---
+- name: Install vscode user config
+  become: true
+  become_user: "{{ user_name }}"
+  copy:
+    src: settings.json
+    dest: ~/.config/Code/User/settings.json
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: 0664
+    backup: true

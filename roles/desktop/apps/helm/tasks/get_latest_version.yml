@@ -1,0 +1,16 @@
+---
+- name: Get latest version
+  shell: curl -s https://github.com/helm/helm/releases/latest | cut -d'v' -f2 | cut -f1 -d'"'
+  register: version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Latest version of helm:"
+  debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of helm"
+  set_fact:
+    helm_version: "{{ version.stdout }}"

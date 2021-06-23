@@ -1,0 +1,62 @@
+---
+- name: Download camera module
+  become: true
+  become_user: "{{ user_name }}"
+  git:
+    repo: 'https://github.com/patjak/bcwc_pcie'
+    dest: "{{ git_modules_path }}/bcwc_pcie"
+
+# - name: copy dkms config
+#   copy:
+#     src: dkms_camera.conf
+#     dest: /tmp/bcwc_pcie/dkms.conf
+
+- name: Extract firmware
+  shell: make
+  args:
+    chdir: "{{ git_modules_path }}/bcwc_pcie/firmware"
+    creates: /usr/lib/firmware/facetimehd/firmware.bin
+
+- name: Install facetimehd firmware
+  shell: make install
+  args:
+    chdir: "{{ git_modules_path }}/bcwc_pcie/firmware"
+    creates: /usr/lib/firmware/facetimehd/firmware.bin
+
+- name: DKMS add
+  shell: dkms add .
+  args:
+    chdir: "{{ git_modules_path }}/bcwc_pcie"
+    creates: /usr/src/facetimehd-0.1
+  register: keyboard_add
+
+- name: DKMS build
+  shell: dkms build facetimehd/0.1
+  args:
+    chdir: "{{ git_modules_path }}/bcwc_pcie"
+  when: keyboard_add.changed
+
+- name: DKMS install
+  shell: dkms install facetimehd/0.1
+  args:
+    chdir: "{{ git_modules_path }}/bcwc_pcie"
+  when: keyboard_add.changed
+
+# - name: Remove repo
+#   file:
+#     path: /tmp/bcwc_pcie
+#     state: absent
+
+- name: copy dkms config
+  copy:
+    src: facetimehd.conf
+    dest: /etc/modules-load.d/facetimehd.conf
+
+# modprobe -r facetimehd; sudo modprobe facetimehd
+
+# lsmod | grep facetimehd
+# facetimehd            106496  0
+# videobuf2_dma_sg       16384  1 facetimehd
+# videobuf2_v4l2         28672  1 facetimehd
+# videobuf2_common       53248  2 videobuf2_v4l2,facetimehd
+# videodev              208896  3 videobuf2_v4l2,facetimehd,videobuf2_common

@@ -1,0 +1,16 @@
+---
+- name: Get latest version of kail
+  shell: curl -s https://github.com/boz/kail/releases/latest | cut -f2 -d'v' | cut -f1 -d'"'
+  register: version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Latest version of kail:"
+  debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of kail"
+  set_fact:
+    kail_version: "{{ version.stdout }}"

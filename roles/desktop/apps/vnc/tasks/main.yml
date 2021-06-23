@@ -1,0 +1,17 @@
+---
+- name: Get latest version
+  shell: curl -s https://www.realvnc.com/en/connect/download/viewer/linux/ | grep VNC-Viewer | cut -d'-' -f3 | head -n1
+  register: version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Latest version of VNC-Viewer:"
+  debug:
+    var: version.stdout
+
+- name: Install VNC-Viewer
+  dnf:
+    name: "https://www.realvnc.com/download/file/viewer.files/VNC-Viewer-{{ version.stdout }}-Linux-x64.rpm"
+    state: present

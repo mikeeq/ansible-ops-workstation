@@ -1,0 +1,15 @@
+---
+- name: "[SNAP] Update all packages"
+  shell: snap refresh
+  register: snap_upd_output
+  changed_when: snap_upd_output.stderr != 'All snaps up to date.'
+
+- name: "[SNAP] List all installed packages"
+  shell: "snap list --all | grep disabled | awk '{print $1,$3}'"
+  register: snap_list
+  changed_when: false
+
+- name: "[SNAP] Remove older vesions of packages"
+  shell: "snap remove {{ item.split(' ')[0] }} --revision {{ item.split(' ')[1] }}"
+  with_items:
+    - "{{ snap_list.stdout_lines }}"

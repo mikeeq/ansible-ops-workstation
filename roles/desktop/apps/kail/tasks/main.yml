@@ -1,0 +1,20 @@
+---
+- name: Get installed version
+  become: true
+  become_user: "{{ user_name }}"
+  shell: kail version | awk '{print $1}'
+  register: installed_kail_version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Installed version of kail:"
+  debug:
+    var: installed_kail_version.stdout
+
+- include_tasks: get_latest_version.yml
+  when: kail_version is not defined
+
+- include_tasks: install.yml
+  when: installed_kail_version.stdout != kail_version

@@ -1,0 +1,3 @@
+[    0.046576] ACPI Error: Needed type [Reference], found [Integer] 0000000082567edb (20180313/exresop-69)
+[    0.046582] ACPI Error: AE_AML_OPERAND_TYPE, While resolving operands for [OpcodeName unavailable] (20180313/dswexec-427)
+[    0.046587] ACPI Error: Method parse/execution failed \_PR.CPU0._PDC, AE_AML_OPERAND_TYPE (20180313/psparse-516)

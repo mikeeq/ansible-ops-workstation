@@ -1,0 +1,8 @@
+---
+- name: Add flatpak remotes to the system installation
+  flatpak_remote:
+    name: "{{ item.name }}"
+    state: present
+    flatpakrepo_url: "{{ item.url }}"
+  with_items:
+    - "{{ flatpak_repos }}"

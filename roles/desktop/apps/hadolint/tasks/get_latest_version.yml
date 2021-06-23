@@ -1,0 +1,16 @@
+---
+- name: Get latest version hadolint
+  shell: curl -s https://github.com/hadolint/hadolint/releases/latest | grep 'releases/' | head -n1 | cut -f2 -d'v' | cut -d'"' -f1
+  register: version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Latest version of hadolint:"
+  debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of hadolint"
+  set_fact:
+    hadolint_version: "{{ version.stdout }}"

@@ -1,0 +1,10 @@
+---
+- name: Update krew
+  become: true
+  become_user: "{{ user_name }}"
+  shell: |
+    ~/.krew/bin/kubectl-krew upgrade
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off

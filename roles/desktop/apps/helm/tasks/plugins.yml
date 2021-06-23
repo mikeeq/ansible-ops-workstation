@@ -1,0 +1,6 @@
+---
+# helm plugin list
+# NAME	VERSION	DESCRIPTION
+# edit	0.2.0  	Edit a release.
+#
+# helm plugin install https://github.com/mstrzele/helm-edit

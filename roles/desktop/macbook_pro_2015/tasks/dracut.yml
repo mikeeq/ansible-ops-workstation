@@ -1,0 +1,12 @@
+---
+- name: Adding modules to initramfs
+  lineinfile:
+    path: /etc/dracut.conf
+    line: 'add_drivers+="hid_apple"'
+  register: dracut_conf
+
+    # line: 'add_drivers+="hid_apple facetimehd"'
+
+- name: Rebuild initramfs
+  shell: dracut -fv
+  when: dracut_conf.changed

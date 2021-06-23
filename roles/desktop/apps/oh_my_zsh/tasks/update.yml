@@ -1,0 +1,14 @@
+---
+- name: "Update oh-my-zsh user - {{ item }}"
+  shell: git pull --rebase --stat origin master
+  become: true
+  become_user: "{{ item }}"
+  register: omz_upd_output
+  changed_when: omz_upd_output.stdout != 'Already up to date.\nCurrent branch master is up to date.'
+  args:
+    chdir: ~/.oh-my-zsh
+  tags:
+    - update
+  with_items:
+    - "{{ user_name }}"
+    - root

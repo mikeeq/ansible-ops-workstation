@@ -1,0 +1,9 @@
+[Unit]
+Description=Fix for the suspend issue
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "for i in $(cat /proc/acpi/wakeup | grep 'XHC1\|LID0' | grep enabled | awk '{print $1}'); do echo $i > /proc/acpi/wakeup; done"
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=keeweb
+GenericName=Text Editor
+Comment=Keybase encrypting, decrypting, everything connected to crypting
+Exec=/opt/keeweb/keeweb %F
+Terminal=false
+MimeType=text/plain;
+Icon=/opt/keeweb/128x128.png
+Categories=TextEditor;Development;
+StartupNotify=true
+Actions=Window;Document;

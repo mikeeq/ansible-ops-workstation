@@ -1,0 +1,8 @@
+---
+# flatpak remote-add flathub https://flathub.org/repo/flathub.flatpakrepo
+# flatpak install flathub com.spotify.Client
+- import_tasks: repos.yml
+- import_tasks: apps.yml
+- include_tasks: update.yml
+  tags:
+    - update

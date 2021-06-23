@@ -1,0 +1,57 @@
+---
+- name: Install PIP virtualenv
+  pip:
+    name: "virtualenv"
+    state: present
+
+- name: Install PIP Apps globally
+  pip:
+    name: "{{ item.name }}"
+    state: present
+  with_items:
+    - "{{ pip_apps }}"
+  when: not item.virtualenv_enabled
+
+- name: Uninstall PIP Apps in virtualenv
+  pip:
+    name: "{{ item.name }}"
+    state: absent
+    virtualenv: "/opt/virtualenv/{{ item.name }}"
+  with_items:
+    - "{{ pip_apps }}"
+  when: item.virtualenv_enabled
+
+- name: Install PIP Apps in virtualenv
+  pip:
+    name: "{{ item.name }}"
+    state: present
+    virtualenv: "/opt/virtualenv/{{ item.name }}"
+  with_items:
+    - "{{ pip_apps }}"
+  when: item.virtualenv_enabled
+
+- name: Create a symbolic link
+  file:
+    src: "/opt/virtualenv/{{ item.name }}/bin/{{ item.name }}"
+    dest: "/usr/local/bin/{{ item.name }}"
+    owner: root
+    group: root
+    state: link
+  with_items:
+    - "{{ pip_apps }}"
+  when: item.virtualenv_enabled and not item.name == "azure-cli"
+
+- name: Create a symbolic link for azure-cli
+  file:
+    src: "/opt/virtualenv/{{ item.name }}/bin/az"
+    dest: "/usr/local/bin/az"
+    owner: root
+    group: root
+    state: link
+  with_items:
+    - "{{ pip_apps }}"
+  when: item.virtualenv_enabled and item.name == "azure-cli"
+
+- import_tasks: update.yml
+  tags:
+    - update

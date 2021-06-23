@@ -1,0 +1,25 @@
+---
+- name: Directory for kail
+  file:
+    path: /tmp/kail
+    state: directory
+
+- name: Download kail binary
+  get_url:
+    url: "https://github.com/boz/kail/releases/download/v{{ kail_version }}/kail_{{ kail_version }}_linux_amd64.tar.gz"
+    dest: /tmp/kail/kail.tar.gz
+
+- name: Unarchive a file that is already on the remote machine
+  unarchive:
+    src: /tmp/kail/kail.tar.gz
+    dest: /tmp/kail
+    remote_src: yes
+
+- name: Copy kail
+  copy:
+    src: "/tmp/kail/kail"
+    dest: "/usr/local/bin/kail"
+    remote_src: true
+    mode: 0755
+    owner: root
+    group: root

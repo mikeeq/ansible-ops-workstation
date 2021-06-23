@@ -1,0 +1,8 @@
+---
+- name: Install flatpak apps
+  flatpak:
+    name: "{{ item.name }}"
+    state: present
+    remote: "{{ item.remote }}"
+  with_items:
+    - "{{ flatpak_apps }}"

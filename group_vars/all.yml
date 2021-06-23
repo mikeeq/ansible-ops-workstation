@@ -1,0 +1,155 @@
+---
+user_name: 'mikee'
+hostname: "mikeeMac19"
+
+git_modules_path: '/opt/git_modules'
+rpms_dwnl_path: '/opt/rpms'
+
+dnf_apps:
+  - sudo
+  - ack
+  - gcc
+  - python3-pip
+  - screen
+  - tmux
+  - powertop
+  - lm_sensors
+  - htop
+  - git
+  - vim
+  - wget
+  - fuse-exfat
+  - gnupg
+  - gnupg2
+  - openvpn
+  - git-crypt
+  - python3-devel
+  - jq
+  - pass
+  - java-11-openjdk
+  # - policycoreutils-python
+  - redhat-rpm-config
+  # - python3-molecule
+  - clamav
+  - smartmontools
+  - aspell-pl
+  - hunspell-pl
+  - edk2-ovmf
+  - setroubleshoot-server
+  - ShellCheck
+  - p7zip
+
+dnf_gui_apps:
+  - fedora-workstation-repositories
+  - gnome-tweaks
+  - filezilla
+  - vlc
+  - putty
+  - kgpg            # GUI for GnuPG
+  - gnome-shell-extension-gpaste
+  - gpaste          # Clipboard saver
+  - gpaste-ui
+  - pinta
+  - gimp
+  - remmina
+  - 'remmina-plugins-*'
+  - dconf-editor
+  - seahorse
+  - gparted
+  - kodi
+  - deluge
+  - clamtk
+  - wireshark
+  - clusterssh
+
+snap_apps: []
+
+snap_classic_apps: []
+  # - kubectl
+  # - helm
+  # Slack and Skype are failing on Wayland Desktop mode
+  # - slack
+  # - skype
+  #### they are not working on fedora
+  # - hollywood
+  # - wallstreet
+
+# Flatpak is better for GUI applications
+flatpak_apps:
+  # - name: com.valvesoftware.Steam
+  #   remote: flathub
+  # - name: com.skype.Client
+  #   remote: flathub
+  - name: com.spotify.Client
+    remote: flathub
+  - name: com.slack.Slack
+    remote: flathub
+  # - name: com.github.debauchee.barrier
+  #   remote: flathub
+  - name: com.discordapp.Discord
+    remote: flathub
+
+flatpak_repos:
+  - name: flathub
+    url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+pip_apps:
+  - name: ansible
+    virtualenv_enabled: false
+  - name: azure-cli
+    virtualenv_enabled: true
+  - name: docker-compose
+    virtualenv_enabled: false
+  - name: ansible-lint
+    virtualenv_enabled: false
+  - name: yamllint
+    virtualenv_enabled: false
+  - name: psutil
+    virtualenv_enabled: false
+  - name: niet
+    virtualenv_enabled: true
+
+openvpn_passphrase: "Pass_1234"
+
+gnome_extension_owner: "{{ user_name }}"
+gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shell/extensions/"
+gnome_shell_extensions:
+  - 517         # caffeine
+  - 615         # appindicator
+  - 945         # cpu-power-manager
+  # - 307         # dash-to-dock
+  # - 1319        # GSConnect
+  # - 120         # system-monitor
+
+gnome_extension_ids: "{{ gnome_shell_extensions }}"
+
+# https://github.com/hashicorp/terraform/releases/latest
+# terraform_version: 0.14.9
+# https://github.com/helm/helm/releases/latest
+# helm_version: 3.5.3
+# https://github.com/kubernetes/kubernetes/releases/latest
+# kubectl_version: 1.20.4
+
+vscode_extensions:
+  - bbenoist.vagrant
+  - DavidAnson.vscode-markdownlint
+  - eamodio.gitlens
+  - haaaad.ansible
+  - HashiCorp.terraform
+  - ms-azure-devops.azure-pipelines
+  - ms-azuretools.vscode-docker
+  - ms-dotnettools.csharp
+  - ms-kubernetes-tools.vscode-kubernetes-tools
+  - ms-mssql.mssql
+  - ms-python.python
+  - ms-vscode.azure-account
+  - redhat.vscode-yaml
+  - samuelcolvin.jinjahtml
+  - streetsidesoftware.code-spell-checker
+  - vscode-icons-team.vscode-icons
+  - vscoss.vscode-ansible
+  - yzhang.markdown-all-in-one
+
+# https://github.com/ishantanu/awesome-kubectl-plugins
+krew_plugins:
+  - sniff

@@ -1,0 +1,15 @@
+---
+- name: List installed extensions
+  become: true
+  become_user: "{{ user_name }}"
+  shell: code --list-extensions
+  register: installed_extensions
+  changed_when: false
+
+- name: Install extensions
+  become: true
+  become_user: "{{ user_name }}"
+  shell: code --install-extension {{ item }}
+  when: item not in installed_extensions.stdout_lines
+  with_items:
+    - "{{ vscode_extensions }}"

@@ -1,0 +1,53 @@
+---
+- name: oh-my-zsh deps
+  dnf:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - zsh
+      - curl
+      - git
+      - zsh-syntax-highlighting
+
+- name: "Change user - {{ item }} - shell to zsh"
+  user:
+    name: "{{ item }}"
+    shell: /bin/zsh
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "oh-my-zsh install for user - {{ item }}"
+  become: true
+  become_user: "{{ item }}"
+  shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+  args:
+    creates: ~/.oh-my-zsh
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "FZSH autocomplete for user - {{ item }}"
+  become: true
+  become_user: "{{ item }}"
+  git:
+    repo: 'https://github.com/zsh-users/zsh-autosuggestions'
+    dest: ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "oh-my-zsh config for user - {{ item }}"
+  template:
+    src: oh_my_zsh_zshrc.j2
+    dest: "~{{ item }}/.zshrc"
+    owner: "{{ item }}"
+    backup: true
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- import_tasks: update.yml
+  tags:
+    - update

@@ -1,0 +1,28 @@
+---
+# - name: Import repo key
+#   rpm_key:
+#     state: present
+#     key: https://packages.microsoft.com/keys/microsoft.asc
+
+# - name: dotnet repo
+#   copy:
+#     content: |
+#       [packages-microsoft-com-prod]
+#       baseurl=https://packages.microsoft.com/fedora/31/prod/
+#       name=packages-microsoft-com-prod
+#       enabled=1
+#       gpgcheck=1
+#       gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+#     dest: /etc/yum.repos.d/dotnet.repo
+#     mode: 0644
+
+- name: netcore sdk
+  dnf:
+    name: "dotnet-sdk-3.1"
+    state: present
+    update_cache: true
+
+- name: Enable nested virtualization for Intel based PCs
+  lineinfile:
+    path: /etc/sysctl.conf
+    line: 'fs.inotify.max_user_watches=524288'

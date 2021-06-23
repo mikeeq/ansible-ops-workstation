@@ -1,0 +1,43 @@
+---
+- name: Directory for git_modules
+  file:
+    path: "{{ git_modules_path }}"
+    state: directory
+    mode: 0755
+    owner: "{{ user_name }}"
+
+- name: Terminator install
+  dnf:
+    name: "terminator"
+    state: present
+
+- name: Fonts
+  become: true
+  become_user: "{{ user_name }}"
+  git:
+    repo: 'https://github.com/powerline/fonts'
+    dest: "{{ git_modules_path }}/fonts"
+
+- name: Install Fonts
+  become: true
+  become_user: "{{ user_name }}"
+  shell: "{{ git_modules_path }}/fonts/install.sh"
+  args:
+    creates: ~/.local/share/fonts/ter-powerline-x12b.pcf.gz
+
+- name: Directory for terminator config
+  become: true
+  become_user: "{{ user_name }}"
+  file:
+    path: ~/.config/terminator
+    state: directory
+    mode: 0775
+    owner: "{{ user_name }}"
+
+- name: Terminator config
+  become: true
+  become_user: "{{ user_name }}"
+  copy:
+    src: terminator_config
+    dest: ~/.config/terminator/config
+    mode: 0664

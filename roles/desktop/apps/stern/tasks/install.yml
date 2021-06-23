@@ -1,0 +1,13 @@
+---
+- name: Directory for stern
+  file:
+    path: /tmp/stern
+    state: directory
+
+- name: Download stern binary
+  get_url:
+    url: "https://github.com/wercker/stern/releases/download/{{ stern_version }}/stern_linux_amd64"
+    dest: /usr/local/bin/stern
+    mode: 0755
+    owner: root
+    group: root

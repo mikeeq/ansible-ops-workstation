@@ -1,0 +1,12 @@
+[Unit]
+Description=Start facetimehd kernel module
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/modprobe -r facetimehd; /sbin/modprobe facetimehd
+RemainAfterExit=yes
+ExecStop=/sbin/modprobe -r facetimehd
+
+[Install]
+WantedBy=basic.target

@@ -1,0 +1,7 @@
+---
+- import_tasks: dnf.yml
+
+- name: Install VCS
+  package:
+    name: code
+    state: present
