@@ -1,0 +1,44 @@
+---
+image: docker:stable
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - build
+  # - test
+  # - cleanup
+
+# before_script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+build:
+  stage: build
+  script:
+    # - docker pull $CI_REGISTRY_IMAGE:latest || true
+    # - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    # - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    # - docker push $CI_REGISTRY_IMAGE:latest
+    - docker build -t fedora-systemd:32 .
+    - docker run --name fedora_systemd -d -v $(pwd):/repo -ti --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro fedora-systemd:32
+    - docker exec -t fedora_systemd /bin/bash -c "useradd mikee && usermod -aG wheel mikee"
+    - docker exec -t fedora_systemd /bin/bash -c "cd /repo && ansible-playbook -e docker_tests_flag=true -e ansible_python_interpreter=/usr/bin/python3 -i inventory/hosts.yml fedora.yml"
+    - docker exec -t fedora_systemd /bin/bash -c "cd /repo && ansible-playbook -e docker_tests_flag=true -e ansible_python_interpreter=/usr/bin/python3 -i inventory/hosts.yml fedora.yml"
+  after_script:
+    - docker stop fedora_systemd
+    - docker rm fedora_systemd
+    - docker rmi fedora-systemd:32
+    - docker rmi fedora:32
+
+# cleanup_job:
+#   stage: cleanup
+#   script:
+#     - docker stop fedora_systemd
+#     - docker rm fedora_systemd
+#     - docker rmi fedora_systemd:32
+#     - docker rmi fedora:32
+#   when: always
