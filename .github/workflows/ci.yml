@@ -26,8 +26,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: "Print Agent info"
-        run: echo "test"
+      - name: "Build fedora-systemd image..."
+        run: docker build -t fedora-systemd:latest .
+
+      - name: "Run Ansible in Docker..."
+        run: scripts/run_ansible_in_docker.sh
 
       # - name: "YamlLint"
       #   run: |

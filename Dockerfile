@@ -1,6 +1,7 @@
 FROM fedora:34
 
-ENV container docker
+# ENV container docker
+ENV FEDORA_USERNAME=mikee
 
 # https://github.com/wagoodman/dive/releases
 ARG DIVE_VERSION=0.10.0
@@ -50,6 +51,8 @@ RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION
 RUN curl -L "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-x86_64" \
       -o /usr/local/bin/hadolint \
     && chmod +x /usr/local/bin/hadolint
+
+RUN useradd ${FEDORA_USERNAME} && usermod -aG wheel ${FEDORA_USERNAME}
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]
