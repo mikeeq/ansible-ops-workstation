@@ -211,15 +211,15 @@ Project Link: [https://github.com/mikeeq/ansible-ops-workstation](https://github
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/mikeeq/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/mikeeq/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/mikeeq/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/mikeeq/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/mikeeq/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/mikeeq/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/mikeeq/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/mikeeq/repo/issues
-[license-shield]: https://img.shields.io/github/license/mikeeq/repo.svg?style=for-the-badge
-[license-url]: https://github.com/mikeeq/repo/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/mikeeq/ansible-ops-workstation.svg?style=for-the-badge
+[contributors-url]: https://github.com/mikeeq/ansible-ops-workstation/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/mikeeq/ansible-ops-workstation.svg?style=for-the-badge
+[forks-url]: https://github.com/mikeeq/ansible-ops-workstation/network/members
+[stars-shield]: https://img.shields.io/github/stars/mikeeq/ansible-ops-workstation.svg?style=for-the-badge
+[stars-url]: https://github.com/mikeeq/ansible-ops-workstation/stargazers
+[issues-shield]: https://img.shields.io/github/issues/mikeeq/ansible-ops-workstation.svg?style=for-the-badge
+[issues-url]: https://github.com/mikeeq/ansible-ops-workstation/issues
+[license-shield]: https://img.shields.io/github/license/mikeeq/ansible-ops-workstation.svg?style=for-the-badge
+[license-url]: https://github.com/mikeeq/ansible-ops-workstation/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/miotkmikolaj/
