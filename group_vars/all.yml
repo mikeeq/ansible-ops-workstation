@@ -136,8 +136,8 @@ vscode_extensions:
   - bbenoist.vagrant
   - DavidAnson.vscode-markdownlint
   - eamodio.gitlens
-    # - haaaad.ansible
-  - HashiCorp.terraform
+    zbr.vscode-ansible
+  - hashicorp.terraform
   - ms-azure-devops.azure-pipelines
   - ms-azuretools.vscode-docker
   - ms-dotnettools.csharp
@@ -149,7 +149,6 @@ vscode_extensions:
   - samuelcolvin.jinjahtml
   - streetsidesoftware.code-spell-checker
   - vscode-icons-team.vscode-icons
-  # - vscoss.vscode-ansible
   - yzhang.markdown-all-in-one
 
 # https://github.com/ishantanu/awesome-kubectl-plugins
