@@ -6,15 +6,27 @@
 
 - name: Get latest version
   shell: curl -s https://api.github.com/repos/bcicen/ctop/releases/latest | jq .name -r | cut -f2 -d'v'
-  register: version_tag
+  register: version
   changed_when: false
   ignore_errors: true
   args:
     warn: off
+  when: ctop_version is not defined
 
+- name: "Latest version of ctop:"
+  debug:
+    var: version.stdout
+  when: ctop_version is not defined
+
+- name: "Set fact with latest version of ctop"
+  set_fact:
+    ctop_version: "{{ version.stdout }}"
+  when: ctop_version is not defined
+
+# https://github.com/bcicen/ctop/releases/download/v{{ version_tag.stdout }}/ctop-{{ version_tag.stdout }}-linux-amd64
 - name: Download ctop
   get_url:
-    url: "https://github.com/bcicen/ctop/releases/download/v{{ version_tag.stdout }}/ctop-{{ version_tag.stdout }}-linux-amd64"
+    url: "https://github.com/bcicen/ctop/releases/download/{{ version_tag.stdout }}/ctop-{{ version_tag.stdout }}-linux-amd64"
     dest: "{{ rpms_dwnl_path }}/ctop"
     force: true
 

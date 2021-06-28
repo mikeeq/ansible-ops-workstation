@@ -129,6 +129,8 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # helm_version: 3.5.3
 # https://github.com/kubernetes/kubernetes/releases/latest
 # kubectl_version: 1.20.4
+# https://github.com/bcicen/ctop/releases/
+ctop_version: 0.7.6
 
 vscode_extensions:
   - bbenoist.vagrant
