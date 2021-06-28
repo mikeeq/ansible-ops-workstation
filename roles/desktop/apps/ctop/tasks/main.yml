@@ -23,10 +23,10 @@
     ctop_version: "{{ version.stdout }}"
   when: ctop_version is not defined
 
-# https://github.com/bcicen/ctop/releases/download/v{{ version_tag.stdout }}/ctop-{{ version_tag.stdout }}-linux-amd64
+# https://github.com/bcicen/ctop/releases/download/v{{ ctop_version }}/ctop-{{ ctop_version }}-linux-amd64
 - name: Download ctop
   get_url:
-    url: "https://github.com/bcicen/ctop/releases/download/{{ version_tag.stdout }}/ctop-{{ version_tag.stdout }}-linux-amd64"
+    url: "https://github.com/bcicen/ctop/releases/download/{{ ctop_version }}/ctop-{{ ctop_version }}-linux-amd64"
     dest: "{{ rpms_dwnl_path }}/ctop"
     force: true
 
