@@ -12,5 +12,14 @@
   "window.zoomLevel": 0,
   "workbench.colorTheme": "Visual Studio Dark",
   "workbench.iconTheme": "vscode-icons",
-  "terminal.integrated.fontFamily": "Roboto Mono for Powerline"
+  "terminal.integrated.fontFamily": "Roboto Mono for Powerline",
+  "workbench.startupEditor": "none",
+  "security.workspace.trust.startupPrompt": "never",
+  "security.workspace.trust.enabled": false,
+  "security.workspace.trust.emptyWindow": false,
+  "security.workspace.trust.untrustedFiles": "open",
+  "yaml.customTags": [
+    "!encrypted/pkcs1-oaep scalar",
+    "!vault scalar"
+  ]
 }

@@ -11,6 +11,7 @@
   dnf:
     name: 'https://prerelease.keybase.io/keybase_amd64.rpm'
     state: present
+    disable_gpg_check: true
   when: keybase_installed.rc != 0
 
 - name: Run keybase
@@ -20,4 +21,3 @@
 
 # yum install https://prerelease.keybase.io/keybase_amd64.rpm
 # run_keybase
-

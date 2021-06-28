@@ -9,16 +9,16 @@
   tags:
     - update
 
-# - name: Update virtualenv PIP apps
-#   pip:
-#     name: "{{ item.name }}"
-#     state: latest
-#     virtualenv: "/opt/{{ item.name }}"
-#   when: item.virtualenv_enabled
-#   with_items:
-#     - "{{ pip_apps }}"
-#   tags:
-#     - update
+- name: Update virtualenv PIP apps
+  pip:
+    name: "{{ item.name }}"
+    state: latest
+    virtualenv: "/opt/{{ item.name }}"
+  when: item.virtualenv_enabled
+  with_items:
+    - "{{ pip_apps }}"
+  tags:
+    - update
 
 
 # TASK [pkg_mgmt/pip : Update virtualenv PIP apps] ******************************************************************

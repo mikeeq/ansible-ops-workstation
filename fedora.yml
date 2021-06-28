@@ -10,7 +10,6 @@
     - pkg_mgmt/dnf
     - pkg_mgmt/flatpak
     - pkg_mgmt/pip
-
     - desktop/apps/ctop
     - desktop/apps/google_chrome
     - desktop/apps/keeweb
