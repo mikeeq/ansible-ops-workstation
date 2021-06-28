@@ -12,14 +12,14 @@
     - "{{ pip_apps }}"
   when: not item.virtualenv_enabled
 
-- name: Uninstall PIP Apps in virtualenv
-  pip:
-    name: "{{ item.name }}"
-    state: absent
-    virtualenv: "/opt/virtualenv/{{ item.name }}"
-  with_items:
-    - "{{ pip_apps }}"
-  when: item.virtualenv_enabled
+# - name: Uninstall PIP Apps in virtualenv
+#   pip:
+#     name: "{{ item.name }}"
+#     state: absent
+#     virtualenv: "/opt/virtualenv/{{ item.name }}"
+#   with_items:
+#     - "{{ pip_apps }}"
+#   when: item.virtualenv_enabled
 
 - name: Install PIP Apps in virtualenv
   pip:

@@ -82,8 +82,8 @@ flatpak_apps:
   #   remote: flathub
   - name: com.spotify.Client
     remote: flathub
-  - name: com.slack.Slack
-    remote: flathub
+  # - name: com.slack.Slack
+  #   remote: flathub
   # - name: com.github.debauchee.barrier
   #   remote: flathub
   - name: com.discordapp.Discord
@@ -117,6 +117,7 @@ gnome_shell_extensions:
   - 517         # caffeine
   - 615         # appindicator
   - 945         # cpu-power-manager
+  - 4144        # vertical-overview
   # - 307         # dash-to-dock
   # - 1319        # GSConnect
   # - 120         # system-monitor
@@ -129,13 +130,15 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # helm_version: 3.5.3
 # https://github.com/kubernetes/kubernetes/releases/latest
 # kubectl_version: 1.20.4
+# https://github.com/bcicen/ctop/releases/
+ctop_version: 0.7.6
 
 vscode_extensions:
   - bbenoist.vagrant
   - DavidAnson.vscode-markdownlint
   - eamodio.gitlens
-  - haaaad.ansible
-  - HashiCorp.terraform
+  - zbr.vscode-ansible
+  - hashicorp.terraform
   - ms-azure-devops.azure-pipelines
   - ms-azuretools.vscode-docker
   - ms-dotnettools.csharp
@@ -147,7 +150,6 @@ vscode_extensions:
   - samuelcolvin.jinjahtml
   - streetsidesoftware.code-spell-checker
   - vscode-icons-team.vscode-icons
-  - vscoss.vscode-ansible
   - yzhang.markdown-all-in-one
 
 # https://github.com/ishantanu/awesome-kubectl-plugins
