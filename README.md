@@ -146,9 +146,14 @@ Contributions are what make the open source community such an amazing place to b
    cd /sys/module/hid_apple/parameters
    echo 1 > swap_fn_leftctrl
    echo 1 > swap_opt_cmd
-   vi /etc/modprobe.d/hid_apple.conf
-   update_kernel_mbp
    ```
+
+  ```bash
+  # vi /etc/modprobe.d/hid_apple.conf
+   options hid_apple swap_fn_leftctrl=1
+   options hid_apple swap_opt_cmd=1
+  #  update_kernel_mbp
+  ```
 
 7. Add SSH keys, config and private gpg keys from keybase
 
@@ -158,20 +163,26 @@ Contributions are what make the open source community such an amazing place to b
 
 ## Tips and Tricks
 
-1. MacOS disk utility doesn't see free space on a disk
+1. MacOS disk utility doesn't show free space on a harddisk
 
-   - create ntfs partition on any free disk space on internal nvme disk, then shrink/resize your partitions/containers APFS.
+   - create ntfs partition on any free disk space on that disk, then shrink/resize your APFS partitions/containers.
 
-2. `systemd.unified_cgroup_hierarchy=0` add to `/etc/default/grub` and `grub2-mkconfig -o /boot/grub2/grub.cfg`
+2. To fix Docker on newer Fedora's installations:
 
-3. fix openvpn selinux cert path
+  ```bash
+  vi /etc/default/grub
+     systemd.unified_cgroup_hierarchy=0
+  grub2-mkconfig -o /boot/grub2/grub.cfg
+  ```
+
+3. Fix selinux policies for OpenVPN certs custom path
 
    ```bash
    sudo semanage fcontext -a -t home_cert_t /home/mikee/Documents/vpns/certs_vpn/ca.crt
    sudo restorecon -R -v /home/mikee/Documents/vpns/certs_vpn/
    ```
 
-4. bitlocker on macbook
+4. How to enable bitlocker on macbook
 
    - Configure BitLocker to work without a TPM:
 
@@ -208,6 +219,10 @@ Distributed under the GNU GPLv3 License. See `COPYING` for more information.
 Twitter - [@mikeeqp](https://twitter.com/mikeeqp)
 
 Project Link: [https://github.com/mikeeq/ansible-ops-workstation](https://github.com/mikeeq/ansible-ops-workstation)
+
+<!-- ACKNOWLEDGEMENTS -->
+## Acknowledgements
+* [Best-README-Template](https://raw.githubusercontent.com/othneildrew/Best-README-Template)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
