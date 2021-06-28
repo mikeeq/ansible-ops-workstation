@@ -82,8 +82,8 @@ flatpak_apps:
   #   remote: flathub
   - name: com.spotify.Client
     remote: flathub
-  - name: com.slack.Slack
-    remote: flathub
+  # - name: com.slack.Slack
+  #   remote: flathub
   # - name: com.github.debauchee.barrier
   #   remote: flathub
   - name: com.discordapp.Discord
