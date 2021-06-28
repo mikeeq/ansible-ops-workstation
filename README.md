@@ -148,12 +148,12 @@ Contributions are what make the open source community such an amazing place to b
    echo 1 > swap_opt_cmd
    ```
 
-  ```bash
-  # vi /etc/modprobe.d/hid_apple.conf
+   ```bash
+   # vi /etc/modprobe.d/hid_apple.conf
    options hid_apple swap_fn_leftctrl=1
    options hid_apple swap_opt_cmd=1
-  #  update_kernel_mbp
-  ```
+   #  update_kernel_mbp
+   ```
 
 7. Add SSH keys, config and private gpg keys from keybase
 
@@ -169,11 +169,11 @@ Contributions are what make the open source community such an amazing place to b
 
 2. To fix Docker on newer Fedora's installations:
 
-  ```bash
-  vi /etc/default/grub
+   ```bash
+   vi /etc/default/grub
      systemd.unified_cgroup_hierarchy=0
-  grub2-mkconfig -o /boot/grub2/grub.cfg
-  ```
+   grub2-mkconfig -o /boot/grub2/grub.cfg
+   ```
 
 3. Fix selinux policies for OpenVPN certs custom path
 
