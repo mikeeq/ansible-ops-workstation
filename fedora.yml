@@ -7,25 +7,25 @@
     #     var: hostvars[inventory_hostname]
     # - import_tasks: roles/desktop/fedora/tasks/rpmfusion.yml
   roles:
-    # - pkg_mgmt/dnf
-    # - pkg_mgmt/flatpak
-    # - pkg_mgmt/pip
-    # - desktop/apps/ctop
-    # - desktop/apps/google_chrome
-    # - desktop/apps/keeweb
-    # - desktop/apps/keybase
+    - pkg_mgmt/dnf
+    - pkg_mgmt/flatpak
+    - pkg_mgmt/pip
+    - desktop/apps/ctop
+    - desktop/apps/google_chrome
+    - desktop/apps/keeweb
+    - desktop/apps/keybase
     - desktop/apps/oh_my_zsh
-    # - desktop/apps/qemu
-    # - desktop/apps/terminator
-    # - desktop/apps/terraform
-    # - desktop/apps/vagrant
-    # - desktop/apps/vscode
-    # - desktop/apps/kubectl
-    # - desktop/apps/helm
-    # - desktop/apps/stern
-    # - desktop/apps/kail
-    # - desktop/apps/dive
-    # - desktop/apps/hadolint
-    # - desktop/apps/kubescore
-    # - desktop/apps/netcore_sdk
-    # - desktop/gnome
+    - desktop/apps/qemu
+    - desktop/apps/terminator
+    - desktop/apps/terraform
+    - desktop/apps/vagrant
+    - desktop/apps/vscode
+    - desktop/apps/kubectl
+    - desktop/apps/helm
+    - desktop/apps/stern
+    - desktop/apps/kail
+    - desktop/apps/dive
+    - desktop/apps/hadolint
+    - desktop/apps/kubescore
+    - desktop/apps/netcore_sdk
+    - desktop/gnome
