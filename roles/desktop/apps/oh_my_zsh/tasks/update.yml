@@ -4,8 +4,9 @@
   become: true
   become_user: "{{ item }}"
   register: omz_upd_output
-  changed_when: omz_upd_output.stdout != 'Already up to date.\nCurrent branch master is up to date.'
+  changed_when: omz_upd_output.stdout != 'Already up to date.'
   args:
+    executable: /bin/zsh
     chdir: ~/.oh-my-zsh
   tags:
     - update

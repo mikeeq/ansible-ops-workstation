@@ -117,6 +117,7 @@ gnome_shell_extensions:
   - 517         # caffeine
   - 615         # appindicator
   - 945         # cpu-power-manager
+  - 4144        # vertical-overview
   # - 307         # dash-to-dock
   # - 1319        # GSConnect
   # - 120         # system-monitor
@@ -136,7 +137,7 @@ vscode_extensions:
   - bbenoist.vagrant
   - DavidAnson.vscode-markdownlint
   - eamodio.gitlens
-    zbr.vscode-ansible
+  - zbr.vscode-ansible
   - hashicorp.terraform
   - ms-azure-devops.azure-pipelines
   - ms-azuretools.vscode-docker
