@@ -135,7 +135,7 @@ Contributions are what make the open source community such an amazing place to b
 4. Clone repository and run ansible
 
    ```bash
-   ansible-playbook -K -i inventory/hosts fedora.yml
+   ansible-playbook -i inventory/hosts.yml fedora.yml -K
    ```
 
 5. Reboot your machine
