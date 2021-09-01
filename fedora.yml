@@ -18,6 +18,7 @@
     - desktop/apps/qemu
     - desktop/apps/terminator
     - desktop/apps/terraform
+    - desktop/apps/terragrunt
     - desktop/apps/vagrant
     - desktop/apps/vscode
     - desktop/apps/kubectl
