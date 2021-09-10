@@ -47,5 +47,3 @@ jobs:
       #       apk add --no-cache shellcheck bash
       #       shellcheck ./*.sh
       #     '
-      # - name: "Build Fedora and Deploy to GitHub Releases"
-      #   run: ./build_in_docker.sh
