@@ -5,6 +5,7 @@
 ---
 - name: Upgrade krew
   include_tasks: krew/update.yml
+  when: krew_version is not defined
 
 - name: Get installed version
   become: true
