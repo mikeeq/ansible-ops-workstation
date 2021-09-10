@@ -109,8 +109,6 @@ pip_apps:
   - name: niet
     virtualenv_enabled: true
 
-openvpn_passphrase: "Pass_1234"
-
 gnome_extension_owner: "{{ user_name }}"
 gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shell/extensions/"
 gnome_shell_extensions:
@@ -130,8 +128,12 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # helm_version: 3.5.3
 # https://github.com/kubernetes/kubernetes/releases/latest
 # kubectl_version: 1.20.4
+# https://github.com/kubernetes-sigs/krew/releases/latest
+# krew_version: 0.4.0
 # https://github.com/bcicen/ctop/releases/
 ctop_version: 0.7.6
+# https://github.com/gruntwork-io/terragrunt/releases/latest
+# terragrunt_version: 0.31.8
 
 vscode_extensions:
   - bbenoist.vagrant

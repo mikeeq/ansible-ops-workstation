@@ -31,7 +31,6 @@
   become: true
   become_user: "{{ user_name }}"
   shell: |
-    ./krew-"$(uname | tr '[:upper:]' '[:lower:]')_amd64" install \
-        --manifest=krew.yaml --archive=krew.tar.gz
+    ./krew-"$(uname | tr '[:upper:]' '[:lower:]')_amd64" install krew
   args:
     chdir: /tmp/krew

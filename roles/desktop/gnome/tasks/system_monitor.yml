@@ -1,9 +1,9 @@
-/org/gnome/shell/extensions/system-monitor/cpu-style 'digit'
-/org/gnome/shell/extensions/system-monitor/freq-style 'digit'
-/org/gnome/shell/extensions/system-monitor/memory-style 'digit'
-/org/gnome/shell/extensions/system-monitor/net-style 'digit'
-/org/gnome/shell/extensions/system-monitor/swap-display true
-/org/gnome/shell/extensions/system-monitor/swap-style 'digit'
-/org/gnome/shell/extensions/system-monitor/thermal-display true
-/org/gnome/shell/extensions/system-monitor/thermal-sensor-file '/sys/class/hwmon/hwmon1/temp1_input'
-/org/gnome/shell/extensions/system-monitor/thermal-style 'digit'
+# /org/gnome/shell/extensions/system-monitor/cpu-style 'digit'
+# /org/gnome/shell/extensions/system-monitor/freq-style 'digit'
+# /org/gnome/shell/extensions/system-monitor/memory-style 'digit'
+# /org/gnome/shell/extensions/system-monitor/net-style 'digit'
+# /org/gnome/shell/extensions/system-monitor/swap-display true
+# /org/gnome/shell/extensions/system-monitor/swap-style 'digit'
+# /org/gnome/shell/extensions/system-monitor/thermal-display true
+# /org/gnome/shell/extensions/system-monitor/thermal-sensor-file '/sys/class/hwmon/hwmon1/temp1_input'
+# /org/gnome/shell/extensions/system-monitor/thermal-style 'digit'

@@ -33,7 +33,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/mikeeq/ansible-ops-workstation">
-    <img src="https://docs.ansible.com/ansible/latest/_static/images/logo_invert.png" alt="Logo" width="80" height="80">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Ansible_logo.svg/1664px-Ansible_logo.svg.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">ansible-ops-workstation</h3>
@@ -52,7 +52,7 @@
   </p>
 </p>
 
-
+[![CI](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yml/badge.svg)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yml)
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
@@ -64,15 +64,15 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li>
+    <!-- <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
-    </li>
+    </li> -->
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <!-- <li><a href="#roadmap">Roadmap</a></li> -->
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -80,12 +80,10 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
--
+Ansible playbooks for provisioning Fedora Workstations with tools which are commonly used in DevOps environments.
 
 ### Built With
 
@@ -93,7 +91,7 @@
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+<!-- ## Getting Started -->
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -135,7 +133,7 @@ Contributions are what make the open source community such an amazing place to b
 4. Clone repository and run ansible
 
    ```bash
-   ansible-playbook -K -i inventory/hosts fedora.yml
+   ansible-playbook -i inventory/hosts.yml fedora.yml -K
    ```
 
 5. Reboot your machine
