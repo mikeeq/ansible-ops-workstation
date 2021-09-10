@@ -1,0 +1,16 @@
+---
+- name: Get latest version
+  shell: curl -s https://github.com/gruntwork-io/terragrunt/releases/latest | cut -f2 -d'v' | cut -f1 -d'"'
+  register: version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Latest version of terragrunt:"
+  debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of terragrunt"
+  set_fact:
+    terragrunt_version: "{{ version.stdout }}"

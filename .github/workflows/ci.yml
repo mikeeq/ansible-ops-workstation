@@ -8,11 +8,11 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
       # - feature/*
   pull_request:
     branches:
-      - master
+      - main
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -47,5 +47,3 @@ jobs:
       #       apk add --no-cache shellcheck bash
       #       shellcheck ./*.sh
       #     '
-      # - name: "Build Fedora and Deploy to GitHub Releases"
-      #   run: ./build_in_docker.sh
