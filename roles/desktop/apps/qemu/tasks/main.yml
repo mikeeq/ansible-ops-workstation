@@ -29,10 +29,9 @@
   user:
     name: "{{ user_name }}"
     groups: libvirt
-    append: yes
+    append: true
 
 - name: Enable service libvirtd
   systemd:
     name: libvirtd
-    enabled: yes
-    state: started
+    enabled: true
