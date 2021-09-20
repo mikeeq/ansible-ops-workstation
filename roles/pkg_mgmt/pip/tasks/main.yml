@@ -16,7 +16,7 @@
 #   pip:
 #     name: "{{ item.name }}"
 #     state: absent
-#     virtualenv: "/opt/virtualenv/{{ item.name }}"
+#     virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
 #   with_items:
 #     - "{{ pip_apps }}"
 #   when: item.virtualenv_enabled
@@ -25,14 +25,14 @@
   pip:
     name: "{{ item.name }}"
     state: present
-    virtualenv: "/opt/virtualenv/{{ item.name }}"
+    virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
   with_items:
     - "{{ pip_apps }}"
   when: item.virtualenv_enabled
 
 - name: Create a symbolic link
   file:
-    src: "/opt/virtualenv/{{ item.name }}/bin/{{ item.name }}"
+    src: "{{ virtualenv_install_path }}/{{ item.name }}/bin/{{ item.name }}"
     dest: "/usr/local/bin/{{ item.name }}"
     owner: root
     group: root
@@ -43,7 +43,7 @@
 
 - name: Create a symbolic link for azure-cli
   file:
-    src: "/opt/virtualenv/{{ item.name }}/bin/az"
+    src: "{{ virtualenv_install_path }}/{{ item.name }}/bin/az"
     dest: "/usr/local/bin/az"
     owner: root
     group: root

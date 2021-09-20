@@ -13,7 +13,7 @@
   pip:
     name: "{{ item.name }}"
     state: latest
-    virtualenv: "/opt/{{ item.name }}"
+    virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
   when: item.virtualenv_enabled
   with_items:
     - "{{ pip_apps }}"
