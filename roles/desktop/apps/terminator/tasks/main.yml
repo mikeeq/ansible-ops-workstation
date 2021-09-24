@@ -5,6 +5,7 @@
     state: directory
     mode: 0755
     owner: "{{ user_name }}"
+    group: "{{ user_name }}"
 
 - name: Terminator install
   dnf:
@@ -25,13 +26,21 @@
 #   args:
 #     creates: ~/.local/share/fonts/ter-powerline-x12b.pcf.gz
 
+- name: Directory for P10K font
+  file:
+    path: "~{{ user_name }}/.local/share/fonts/"
+    state: directory
+    mode: 0775
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
 - name: "Download Font - MesloLGS_NF_Regular"
-  become: true
-  become_user: "{{ user_name }}"
   get_url:
     url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf'
-    dest: "~/.local/share/fonts/MesloLGS_NF_Regular.ttf"
+    dest: "~{{ user_name }}/.local/share/fonts/MesloLGS_NF_Regular.ttf"
     mode: '0664'
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
   register: font_download
 
 - name: Refresh Fonts
@@ -41,18 +50,17 @@
   when: font_download.changed
 
 - name: Directory for terminator config
-  become: true
-  become_user: "{{ user_name }}"
   file:
     path: ~/.config/terminator
     state: directory
     mode: 0775
     owner: "{{ user_name }}"
+    group: "{{ user_name }}"
 
 - name: Terminator config
-  become: true
-  become_user: "{{ user_name }}"
   copy:
     src: terminator_config
     dest: ~/.config/terminator/config
     mode: 0664
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"

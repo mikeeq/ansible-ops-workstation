@@ -82,6 +82,7 @@
     - "{{ user_name }}"
     - root
 
+
 - name: "Create directory for work profiles"
   file:
     path: "~{{ user_name }}/.work_profiles"
