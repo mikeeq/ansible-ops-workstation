@@ -11,19 +11,34 @@
     name: "terminator"
     state: present
 
-- name: Fonts
-  become: true
-  become_user: "{{ user_name }}"
-  git:
-    repo: 'https://github.com/powerline/fonts'
-    dest: "{{ git_modules_path }}/fonts"
+# - name: Fonts
+#   become: true
+#   become_user: "{{ user_name }}"
+#   git:
+#     repo: 'https://github.com/powerline/fonts'
+#     dest: "{{ git_modules_path }}/fonts"
 
-- name: Install Fonts
+# - name: Install Fonts
+#   become: true
+#   become_user: "{{ user_name }}"
+#   shell: "{{ git_modules_path }}/fonts/install.sh"
+#   args:
+#     creates: ~/.local/share/fonts/ter-powerline-x12b.pcf.gz
+
+- name: "Download Font - MesloLGS_NF_Regular"
   become: true
   become_user: "{{ user_name }}"
-  shell: "{{ git_modules_path }}/fonts/install.sh"
-  args:
-    creates: ~/.local/share/fonts/ter-powerline-x12b.pcf.gz
+  get_url:
+    url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf'
+    dest: "~/.local/share/fonts/MesloLGS_NF_Regular.ttf"
+    mode: '0664'
+  register: font_download
+
+- name: Refresh Fonts
+  become: true
+  become_user: "{{ user_name }}"
+  shell: "fc-cache -f -v"
+  when: font_download.changed
 
 - name: Directory for terminator config
   become: true

@@ -206,6 +206,12 @@ Contributions are what make the open source community such an amazing place to b
    hp-setup        # to configure HP printer
    ```
 
+7. To disable KDE wallet when using pip3
+
+   ```bash
+   python3 -m keyring --disable
+   ```
+
 <!-- LICENSE -->
 ## License
 
@@ -220,7 +226,8 @@ Project Link: [https://github.com/mikeeq/ansible-ops-workstation](https://github
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
-* [Best-README-Template](https://raw.githubusercontent.com/othneildrew/Best-README-Template)
+
+   - [Best-README-Template](https://raw.githubusercontent.com/othneildrew/Best-README-Template)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

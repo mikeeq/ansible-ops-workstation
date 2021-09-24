@@ -1,0 +1,20 @@
+{
+  "terminal.integrated.defaultProfile.linux": "zshWORK",
+  "terminal.integrated.profiles.linux" :{
+    "bash": {
+      "path": "bash",
+      "icon": "terminal-bash"
+    },
+    "zshWORK": {
+      "path": "zsh",
+      "icon": "github",
+      "env": {
+        "WORK_PROFILE": "WORK"
+      }
+    },
+    "zsh": {
+      "path": "zsh",
+      "icon": "terminal"
+    }
+  }
+}

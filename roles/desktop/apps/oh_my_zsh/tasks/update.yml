@@ -1,15 +1,21 @@
 ---
-- name: "Update oh-my-zsh user - {{ item }}"
+- name: "Update oh-my-zsh"
   shell: git pull --rebase --stat origin master
   become: true
-  become_user: "{{ item }}"
+  become_user: "{{ item[0] }}"
   register: omz_upd_output
   changed_when: omz_upd_output.stdout != 'Already up to date.'
   args:
     executable: /bin/zsh
-    chdir: ~/.oh-my-zsh
+    chdir: "{{ item[1] }}"
   tags:
     - update
-  with_items:
-    - "{{ user_name }}"
-    - root
+  loop: >
+    {{
+      [
+        "{{ user_name }}",
+        "root"
+      ] | product([
+        "~/.oh-my-zsh"
+      ])
+    }}
