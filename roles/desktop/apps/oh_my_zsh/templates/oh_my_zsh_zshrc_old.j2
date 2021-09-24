@@ -1,0 +1,182 @@
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load. Optionally, if you set this to "random"
+# it'll load a random theme each time that oh-my-zsh is loaded.
+# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+ZSH_THEME="agnoster"
+
+# Powerlevel9k
+# https://github.com/bhilburn/powerlevel9k
+
+# Set list of themes to load
+# Setting this variable when ZSH_THEME=random
+# cause zsh load theme from this variable instead of
+# looking in ~/.oh-my-zsh/themes/
+# An empty array have no effect
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+  git
+  zsh-autosuggestions
+  docker
+  ansible
+{% if item != 'root' %}
+  vscode
+  # terraform
+  vagrant
+  kubectl
+  kube-ps1
+  helm
+{% endif %}
+)
+
+# To debug oh-my-zsh loading time, type:
+# zsh -xv
+
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/usr/share/zsh-syntax-highlighting/highlighters
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+{% if item != 'root' %}
+
+# alias helmgetcerts="helm init --client-only; rm -f $(helm home)/ca.pem $(helm home)/cert.pem $(helm home)/key.pem;kubectl --namespace=kube-system get secret internal-ca-key-pair -o jsonpath --template '{.data.tls\.crt}' | base64 -d > $(helm home)/ca.pem; kubectl --namespace=kube-system get secret helm-tls-key-pair -o jsonpath --template '{.data.tls\.crt}' | base64 -d > $(helm home)/cert.pem; kubectl --namespace=kube-system get secret helm-tls-key-pair -o jsonpath --template '{.data.tls\.key}' | base64 -d > $(helm home)/key.pem; helm init --upgrade --force-upgrade --client-only"
+
+KUBE_PS1_SYMBOL_USE_IMG=true
+KUBE_PS1_SYMBOL_ENABLE=true
+KUBE_PS1_NS_ENABLE=false
+KUBE_PS1_SEPARATOR=''
+KUBE_PS1_DIVIDER=''
+KUBE_PS1_PREFIX=''
+KUBE_PS1_SUFFIX=' '
+PROMPT='$(kube_ps1)'$PROMPT
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+{% endif %}
+
+# Virtualenv prompt
+# export WORKON_HOME=~/.virtualenv
+# source /usr/bin/virtualenvwrapper.sh
+#
+
+{% raw %}
+prompt_end() {
+  if [[ -n $CURRENT_BG ]]; then
+      print -n "%{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
+  else
+      print -n "%{%k%}"
+  fi
+
+  print -n "%{%f%}"
+  CURRENT_BG=''
+
+  #Adds the new line and ➜ as the start character.
+  printf "\n➜";
+}
+{% endraw %}
+
+# Extracting Dockerfile from image
+dfimageext() {
+	docker history --no-trunc $1  | tac | tr -s ' ' | cut -d " " -f 5- | sed 's,^/bin/sh -c #(nop) ,,g' | sed 's,^/bin/sh -c,RUN,g' | sed 's, && ,\n  & ,g' | sed 's,\s*[0-9]*[\.]*[0-9]*[kMG]*B\s*$,,g' | head -n -1
+}
+
+# Shutting down keybase
+kbdown () {
+  if killall Keybase &> /dev/null
+  then
+    echo Shutting down Keybase GUI...
+  fi
+  if fusermount -uz /keybase &> /dev/null
+  then
+    echo Unmounting /keybase...
+  fi
+  if killall kbfsfuse &> /dev/null
+  then
+    echo Shutting down kbfsfuse...
+  fi
+  if killall keybase &> /dev/null
+  then
+    echo Shutting down keybase service...
+  fi
+}
+
+export EDITOR=/usr/bin/vim
+
+autoload -U +X bashcompinit && bashcompinit
+source /opt/virtualenv/azure-cli/bin/az.completion.sh
+
+alias git_root='cd $(git rev-parse --show-toplevel)'

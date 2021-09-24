@@ -8,7 +8,6 @@
       - zsh
       - curl
       - git
-      - zsh-syntax-highlighting
 
 - name: "Change user - {{ item }} - shell to zsh"
   user:
@@ -18,7 +17,7 @@
     - "{{ user_name }}"
     - root
 
-- name: "oh-my-zsh install for user - {{ item }}"
+- name: "oh-my-zsh install"
   become: true
   become_user: "{{ item }}"
   shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
@@ -28,25 +27,76 @@
     - "{{ user_name }}"
     - root
 
-- name: "FZSH autocomplete for user - {{ item }}"
+- name: "ZSH autocomplete"
   become: true
   become_user: "{{ item }}"
   git:
     repo: 'https://github.com/zsh-users/zsh-autosuggestions'
-    dest: ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+    dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    update: true
   with_items:
     - "{{ user_name }}"
     - root
 
-- name: "oh-my-zsh config for user - {{ item }}"
+- name: "ZSH Syntax Highlighting"
+  become: true
+  become_user: "{{ item }}"
+  git:
+    repo: 'https://github.com/zsh-users/zsh-syntax-highlighting'
+    dest: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    update: true
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "Powerlevel10K theme"
+  become: true
+  become_user: "{{ item }}"
+  git:
+    repo: 'https://github.com/romkatv/powerlevel10k'
+    dest: "~/.oh-my-zsh/custom/themes/powerlevel10k"
+    update: true
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "p10k config"
+  copy:
+    src: templates/p10k.zsh.j2
+    dest: "~{{ item }}/.p10k.zsh"
+    owner: "{{ item }}"
+    backup: true
+    mode: 0644
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "oh-my-zsh config"
   template:
     src: oh_my_zsh_zshrc.j2
     dest: "~{{ item }}/.zshrc"
     owner: "{{ item }}"
     backup: true
+    mode: 0644
   with_items:
     - "{{ user_name }}"
     - root
+
+- name: "Create directory for work profiles"
+  file:
+    path: "~{{ user_name }}/.work_profiles"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: "Add zshrc for work profiles"
+  copy:
+    src: templates/work.zshrc.j2
+    dest: "~{{ user_name }}/.work_profiles/.zshrc"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    backup: true
+    mode: 0644
 
 - import_tasks: update.yml
   tags:
