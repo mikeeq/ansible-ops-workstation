@@ -17,10 +17,9 @@ plugins=(
   ansible
 {% if item != 'root' %}
   vscode
-  # terraform
+  terraform
   vagrant
   kubectl
-  kube-ps1
   helm
 {% endif %}
 )
@@ -70,7 +69,9 @@ POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+WORK_PROFILES_PATH="$HOME/.work_profiles"
+
 if [[ -n $WORK_PROFILE ]]; then
-  [[ ! -d ~/.work_profiles/$WORK_PROFILE ]] && mkdir ~/.work_profiles/$WORK_PROFILE
-  source ~/.work_profiles/.zshrc
+  [[ ! -d $WORK_PROFILES_PATH/$WORK_PROFILE ]] && mkdir $WORK_PROFILES_PATH/$WORK_PROFILE
+  source $WORK_PROFILES_PATH/.zshrc
 fi
