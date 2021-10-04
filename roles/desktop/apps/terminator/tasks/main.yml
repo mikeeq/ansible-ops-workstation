@@ -51,7 +51,7 @@
 
 - name: Directory for terminator config
   file:
-    path: ~/.config/terminator
+    path: "~{{ user_name }}/.config/terminator"
     state: directory
     mode: 0775
     owner: "{{ user_name }}"
@@ -60,7 +60,7 @@
 - name: Terminator config
   copy:
     src: terminator_config
-    dest: ~/.config/terminator/config
+    dest: "~{{ user_name }}/.config/terminator/config"
     mode: 0664
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
