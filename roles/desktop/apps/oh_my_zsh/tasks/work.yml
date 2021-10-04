@@ -1,0 +1,16 @@
+---
+- name: "Create directory for work profiles"
+  file:
+    path: "~{{ user_name }}/.work_profiles"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: "Add zshrc for work profiles"
+  copy:
+    src: templates/work.zshrc.j2
+    dest: "~{{ user_name }}/.work_profiles/.zshrc"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    backup: true
+    mode: 0644
