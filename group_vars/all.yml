@@ -88,6 +88,8 @@ flatpak_apps:
   #   remote: flathub
   - name: com.discordapp.Discord
     remote: flathub
+  - name: org.signal.Signal
+    remote: flathub
 
 flatpak_repos:
   - name: flathub
