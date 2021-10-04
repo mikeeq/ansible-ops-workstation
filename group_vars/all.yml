@@ -116,8 +116,9 @@ gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shel
 gnome_shell_extensions:
   - 517         # caffeine
   - 615         # appindicator
-  - 945         # cpu-power-manager
+  - 1082        # cpufreq
   - 4144        # vertical-overview
+  # - 945         # cpu-power-manager
   # - 307         # dash-to-dock
   # - 1319        # GSConnect
   # - 120         # system-monitor
