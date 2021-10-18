@@ -3,6 +3,8 @@
   hosts: localhost
   become: true
   pre_tasks:
+    # - debug:
+    #     var: hostvars[inventory_hostname]
     - name: Update all packages to the latest version
       apt:
         upgrade: dist

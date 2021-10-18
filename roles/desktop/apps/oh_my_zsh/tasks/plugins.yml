@@ -53,3 +53,10 @@
   with_items:
     - "{{ user_name }}"
     - root
+
+# Fixing apt-get fzf package
+- name: Download fzf key-bindings
+  get_url:
+    url: "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
+    dest: /usr/share/doc/fzf/examples/key-bindings.zsh
+  when: ansible_distribution == "Ubuntu"
