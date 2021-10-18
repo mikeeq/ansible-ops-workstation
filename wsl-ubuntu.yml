@@ -11,7 +11,6 @@
         update_cache: yes
   roles:
     - desktop/wsl
-    # - desktop/apps/vscode
 
 - name: Include a playbook for generic provision
   import_playbook: generic.yml

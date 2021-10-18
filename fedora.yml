@@ -14,8 +14,6 @@
     - desktop/apps/qemu
     - desktop/apps/terminator
     - desktop/apps/vagrant
-    - desktop/apps/vscode
-    - desktop/apps/netcore_sdk
     - desktop/gnome
 
 - name: Include a playbook for generic provision
