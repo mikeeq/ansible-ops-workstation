@@ -1,9 +1,8 @@
 ---
 - name: oh-my-zsh deps
-  dnf:
+  package:
     name: "{{ pkgs }}"
     state: present
-  # when: ubunut
   vars:
     pkgs:
       - zsh
