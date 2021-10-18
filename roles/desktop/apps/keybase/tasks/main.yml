@@ -1,8 +1,8 @@
 ---
-- name: Check installed
+- name: Check if installed on Fedora
   shell: |
     dnf list --installed | grep keybase
-  register: keybase_installed
+  register: keybase_dnf_installed
   changed_when: false
   ignore_errors: true
   args:
@@ -10,10 +10,10 @@
   when:
     - ansible_distribution == "Fedora"
 
-- name: Check installed
+- name: Check if installed on Ubuntu
   shell: |
     apt list --installed | grep keybase
-  register: keybase_installed
+  register: keybase_apt_installed
   changed_when: false
   ignore_errors: true
   args:
@@ -21,21 +21,21 @@
   when:
     - ansible_distribution == "Ubuntu"
 
-- name: Install keybase
+- name: Install keybase on Fedora
   dnf:
     name: "https://prerelease.keybase.io/keybase_amd64.rpm"
     state: present
     disable_gpg_check: true
   when:
-    - keybase_installed.rc != 0
+    - keybase_dnf_installed.rc != 0
     - ansible_distribution == "Fedora"
 
-- name: Install keybase
+- name: Install keybase on Ubuntu
   apt:
     deb: "https://prerelease.keybase.io/keybase_amd64.deb"
     state: present
   when:
-    - keybase_installed.rc != 0
+    - keybase_apt_installed.rc != 0
     - ansible_distribution == "Ubuntu"
 
 - name: Run keybase
