@@ -1,5 +1,4 @@
 ---
 - import_tasks: install.yml
 - import_tasks: plugins.yml
-  # when: ubuntu
 - import_tasks: config.yml

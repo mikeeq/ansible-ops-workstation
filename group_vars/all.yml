@@ -98,6 +98,8 @@ flatpak_repos:
 pip_apps:
   - name: ansible
     virtualenv_enabled: false
+  - name: argcomplete
+    virtualenv_enabled: false
   - name: azure-cli
     virtualenv_enabled: true
   - name: docker-compose

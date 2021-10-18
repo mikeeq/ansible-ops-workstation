@@ -34,3 +34,9 @@
 - import_tasks: update.yml
   tags:
     - update
+
+# Fixing apt-get fzf package
+- name: Download fzf key-bindings
+  get_url:
+    url: "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
+    dest: /usr/share/doc/fzf/examples/key-bindings.zsh

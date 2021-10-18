@@ -1,0 +1,16 @@
+---
+- name: Get latest version istioctl
+  shell: curl -s https://github.com/istio/istio/releases/latest  | grep 'releases/' | head -n1 | cut -f8 -d'/' | cut -d'"' -f1
+  register: version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Latest version of istioctl:"
+  debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of istioctl"
+  set_fact:
+    istioctl_version: "{{ version.stdout }}"

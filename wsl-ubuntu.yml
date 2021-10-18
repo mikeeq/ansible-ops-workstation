@@ -10,10 +10,11 @@
   roles:
     - desktop/wsl
     - pkg_mgmt/pip
-    # - desktop/apps/keybase
+    - desktop/apps/ctop
+    - desktop/apps/keybase
     - desktop/apps/oh_my_zsh
     - desktop/apps/terraform
-    # - desktop/apps/vscode
+    - desktop/apps/terragrunt
     - desktop/apps/kubectl
     - desktop/apps/helm
     - desktop/apps/stern
@@ -21,6 +22,6 @@
     - desktop/apps/dive
     - desktop/apps/hadolint
     - desktop/apps/kubescore
-    # - desktop/apps/netcore_sdk
-    # - desktop/gnome
-    # - desktop/fedora
+    - desktop/apps/istioctl
+    - desktop/apps/netcore_sdk
+    # - desktop/apps/vscode

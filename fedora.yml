@@ -23,6 +23,7 @@
     - desktop/apps/vscode
     - desktop/apps/kubectl
     - desktop/apps/helm
+    - desktop/apps/istioctl
     - desktop/apps/stern
     - desktop/apps/kail
     - desktop/apps/dive

@@ -25,6 +25,6 @@ docker exec \
 
 livecd_exitcode=$?
 
-docker stop ${DOCKER_IMAGE}
+# docker stop ${DOCKER_IMAGE}
 
 exit $livecd_exitcode
