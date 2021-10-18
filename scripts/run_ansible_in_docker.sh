@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+DOCKER_IMAGE=${DOCKER_IMAGE-fedora_systemd}
+
 docker run \
-  --name fedora_systemd \
+  --name ${DOCKER_IMAGE} \
   -d \
   -t \
   --privileged \
@@ -13,16 +15,16 @@ docker run \
 
 docker exec \
   -t \
-  fedora_systemd /bin/bash -c " \
+  ${DOCKER_IMAGE} /bin/bash -c " \
     ansible-playbook -e docker_tests_flag=true -e ansible_python_interpreter=/usr/bin/python3 -i inventory/hosts.yml fedora.yml"
 
 docker exec \
   -t \
-  fedora_systemd /bin/bash -c " \
+  ${DOCKER_IMAGE} /bin/bash -c " \
     ansible-playbook -e docker_tests_flag=true -e ansible_python_interpreter=/usr/bin/python3 -i inventory/hosts.yml fedora.yml"
 
 livecd_exitcode=$?
 
-docker stop fedora_systemd
+docker stop ${DOCKER_IMAGE}
 
 exit $livecd_exitcode

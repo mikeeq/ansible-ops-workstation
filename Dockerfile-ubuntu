@@ -1,0 +1,24 @@
+FROM ubuntu:20.04
+
+# ENV container docker
+ENV UBUNTU_USERNAME=mikee
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y \
+      python3-pip \
+    && apt-get clean all
+
+# https://pypi.org/project/pip/
+RUN pip3 install --no-cache-dir --upgrade pip==21.3 && \
+    pip3 install --no-cache-dir \
+      # https://pypi.org/project/ansible/
+      ansible==4.7.0 \
+      # https://pypi.org/project/packaging/
+      packaging==21.0 \
+      # https://pypi.org/project/pyOpenSSL/
+      pyOpenSSL==21.0.0
+
+RUN useradd ${UBUNTU_USERNAME} && usermod -aG wheel ${UBUNTU_USERNAME}
+
+CMD ["/bin/bash"]
