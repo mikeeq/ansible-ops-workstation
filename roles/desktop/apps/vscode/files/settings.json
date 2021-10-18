@@ -1,3 +1,4 @@
+/// C:/Users/mikee/AppData/Roaming/Code/User/settings.json
 {
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
@@ -21,6 +22,7 @@
   "security.workspace.trust.enabled": false,
   "security.workspace.trust.emptyWindow": false,
   "security.workspace.trust.untrustedFiles": "open",
+  "redhat.telemetry.enabled": false,
   "yaml.customTags": [
     "!encrypted/pkcs1-oaep scalar",
     "!vault scalar"

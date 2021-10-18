@@ -1,0 +1,16 @@
+---
+- name: Ubuntu WSL bootstrap
+  hosts: localhost
+  become: true
+  pre_tasks:
+    # - debug:
+    #     var: hostvars[inventory_hostname]
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+        update_cache: yes
+  roles:
+    - desktop/wsl
+
+- name: Include a playbook for generic provision
+  import_playbook: generic.yml

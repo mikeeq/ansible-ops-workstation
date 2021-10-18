@@ -6,7 +6,7 @@ ENV FEDORA_USERNAME=mikee
 # https://github.com/wagoodman/dive/releases
 ARG DIVE_VERSION=0.10.0
 # https://github.com/hadolint/hadolint/releases
-ARG HADOLINT_VERSION=2.5.0
+ARG HADOLINT_VERSION=2.7.0
 
 RUN dnf clean all \
     && dnf update -y \
@@ -28,18 +28,18 @@ rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # https://pypi.org/project/pip/
-RUN pip3 install --no-cache-dir --upgrade pip==21.1.3 && \
+RUN pip3 install --no-cache-dir --upgrade pip==21.3 && \
     pip3 install --no-cache-dir \
       # https://pypi.org/project/ansible/
-      ansible==4.1.0 \
+      ansible==4.7.0 \
       # https://pypi.org/project/ansible-lint/
-      ansible-lint==5.0.12 \
+      ansible-lint==5.2.0 \
       # https://pypi.org/project/yamllint/
-      yamllint==1.26.1 \
+      yamllint==1.26.3 \
       # https://pypi.org/project/packaging/
-      packaging==20.9 \
+      packaging==21.0 \
       # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL==20.0.1
+      pyOpenSSL==21.0.0
 
 # Dive
 RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.tar.gz && \
