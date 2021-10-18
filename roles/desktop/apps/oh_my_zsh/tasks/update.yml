@@ -1,6 +1,6 @@
 ---
 - name: "Update oh-my-zsh"
-  shell: git pull --rebase --stat origin master
+  shell: git pull --rebase --stat origin master | head -n1
   become: true
   become_user: "{{ item[0] }}"
   register: omz_upd_output

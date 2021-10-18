@@ -1,5 +1,5 @@
 ---
-- name: Fedora provision
+- name: Fedora bootstrap
   hosts: localhost
   become: true
   pre_tasks:
@@ -9,24 +9,12 @@
   roles:
     - pkg_mgmt/dnf
     - pkg_mgmt/flatpak
-    - pkg_mgmt/pip
-    - desktop/apps/ctop
     - desktop/apps/google_chrome
     - desktop/apps/keeweb
-    - desktop/apps/keybase
-    - desktop/apps/oh_my_zsh
     - desktop/apps/qemu
     - desktop/apps/terminator
-    - desktop/apps/terraform
-    - desktop/apps/terragrunt
     - desktop/apps/vagrant
-    - desktop/apps/vscode
-    - desktop/apps/kubectl
-    - desktop/apps/helm
-    - desktop/apps/stern
-    - desktop/apps/kail
-    - desktop/apps/dive
-    - desktop/apps/hadolint
-    - desktop/apps/kubescore
-    - desktop/apps/netcore_sdk
     - desktop/gnome
+
+- name: Include a playbook for generic provision
+  import_playbook: generic.yml

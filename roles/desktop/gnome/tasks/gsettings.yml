@@ -144,6 +144,30 @@
     value: "false"
     state: present
 
+- name: "Disable gnome software allow updates"
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/software/allow-updates"
+    value: "false"
+    state: present
+
+- name: "Disable gnome software download-updates"
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/software/download-updates"
+    value: "false"
+    state: present
+
+- name: "Disable gnome software download-updates-notify"
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/software/download-updates-notify"
+    value: "false"
+    state: present
+
 # - name: "dash-to-dock position"
 #   become: true
 #   become_user: "{{ user_name }}"

@@ -1,0 +1,20 @@
+---
+- name: "Get installed version of istioctl"
+  become: true
+  become_user: "{{ user_name }}"
+  shell: istioctl version --remote=false
+  register: installed_istioctl_version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
+
+- name: "Installed version of istioctl:"
+  debug:
+    var: installed_istioctl_version.stdout
+
+- include_tasks: get_latest_version.yml
+  when: istioctl_version is not defined
+
+- include_tasks: install.yml
+  when: installed_istioctl_version.stdout != istioctl_version

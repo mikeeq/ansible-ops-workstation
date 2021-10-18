@@ -1,5 +1,9 @@
 ---
-- import_tasks: dnf.yml
+- include_tasks: dnf.yml
+  when: ansible_distribution == "Fedora"
+
+- include_tasks: apt.yml
+  when: ansible_distribution == "Ubuntu"
 
 - name: Install VCS
   package:
