@@ -1,5 +1,5 @@
 ---
-- name: WSL bootstrap
+- name: Ubuntu WSL bootstrap
   hosts: localhost
   become: true
   pre_tasks:
@@ -11,19 +11,7 @@
         update_cache: yes
   roles:
     - desktop/wsl
-    - pkg_mgmt/pip
-    - desktop/apps/ctop
-    - desktop/apps/keybase
-    - desktop/apps/oh_my_zsh
-    - desktop/apps/terraform
-    - desktop/apps/terragrunt
-    - desktop/apps/kubectl
-    - desktop/apps/helm
-    - desktop/apps/stern
-    - desktop/apps/kail
-    - desktop/apps/dive
-    - desktop/apps/hadolint
-    - desktop/apps/kubescore
-    - desktop/apps/istioctl
-    - desktop/apps/netcore_sdk
     # - desktop/apps/vscode
+
+- name: Include a playbook for generic provision
+  import_playbook: generic.yml
