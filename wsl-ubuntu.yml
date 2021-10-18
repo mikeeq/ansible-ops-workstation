@@ -1,0 +1,26 @@
+---
+- name: WSL bootstrap
+  hosts: localhost
+  become: true
+  pre_tasks:
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+        update_cache: yes
+  roles:
+    - desktop/wsl
+    - pkg_mgmt/pip
+    # - desktop/apps/keybase
+    - desktop/apps/oh_my_zsh
+    - desktop/apps/terraform
+    # - desktop/apps/vscode
+    - desktop/apps/kubectl
+    - desktop/apps/helm
+    - desktop/apps/stern
+    - desktop/apps/kail
+    - desktop/apps/dive
+    - desktop/apps/hadolint
+    - desktop/apps/kubescore
+    # - desktop/apps/netcore_sdk
+    # - desktop/gnome
+    # - desktop/fedora

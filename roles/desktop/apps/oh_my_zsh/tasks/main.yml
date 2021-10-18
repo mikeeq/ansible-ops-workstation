@@ -3,6 +3,7 @@
   dnf:
     name: "{{ pkgs }}"
     state: present
+  # when: ubunut
   vars:
     pkgs:
       - zsh
