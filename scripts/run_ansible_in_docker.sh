@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-DOCKER_IMAGE=${DOCKER_IMAGE-fedora_systemd}
-
+DOCKER_IMAGE=${DOCKER_IMAGE:-fedora_systemd}
+ANSIBLE_PLAYBOOK=${ANSIBLE_PLAYBOOK:-fedora.yml}
 docker run \
   --name ${DOCKER_IMAGE} \
   -d \
@@ -11,17 +11,17 @@ docker run \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
   -w /repo \
   --rm \
-  fedora-systemd:latest
+  ${DOCKER_IMAGE}
 
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook -e docker_tests_flag=true -e ansible_python_interpreter=/usr/bin/python3 -i inventory/hosts.yml fedora.yml"
+    ansible-playbook -e docker_tests_flag=true -e ansible_python_interpreter=/usr/bin/python3 -i inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
 
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook -e docker_tests_flag=true -e ansible_python_interpreter=/usr/bin/python3 -i inventory/hosts.yml fedora.yml"
+    ansible-playbook -e docker_tests_flag=true -e ansible_python_interpreter=/usr/bin/python3 -i inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
 
 livecd_exitcode=$?
 

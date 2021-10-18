@@ -19,6 +19,6 @@ RUN pip3 install --no-cache-dir --upgrade pip==21.3 && \
       # https://pypi.org/project/pyOpenSSL/
       pyOpenSSL==21.0.0
 
-RUN useradd ${UBUNTU_USERNAME} && usermod -aG wheel ${UBUNTU_USERNAME}
+RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME}
 
-CMD ["/bin/bash"]
+CMD ["/usr/bin/sleep", "infinity"]
