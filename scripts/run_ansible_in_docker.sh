@@ -6,7 +6,6 @@ docker run \
   --name ${DOCKER_IMAGE} \
   -d \
   -t \
-  --security-opt seccomp=unconfined \
   --privileged \
   -v $(pwd):/repo \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
