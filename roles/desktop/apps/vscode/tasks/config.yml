@@ -1,4 +1,11 @@
 ---
+- name: Directory for VScode config
+  file:
+    path: "~{{ user_name }}/.config/Code/User"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
 - name: Install vscode user config
   become: true
   become_user: "{{ user_name }}"
