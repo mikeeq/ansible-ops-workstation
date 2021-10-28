@@ -108,6 +108,34 @@ Contributions are what make the open source community such an amazing place to b
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+### Fedora
+
+1. Install git, python, ansible
+
+   ```
+   sudo -i
+   dnf install -y git python3
+   pip3 install ansible
+   ```
+
+2. Clone repository and run ansible
+
+   ```bash
+   # Create directory for github repository
+   mkdir -p ~/git/github
+   cd ~/git/github
+
+   # Clone (pull) git repository
+   git clone https://github.com/mikeeq/ansible-ops-workstation.git
+
+   # Go to repository directory and run ansible
+   ansible-playbook -i inventory/hosts.yml fedora.yml -K
+   ```
+
+3. Reboot your machine to apply all changes
+
+#### Optional
+
 1. Open terminal, login as root, upgrade your OS:
 
    ```bash
@@ -122,42 +150,51 @@ Contributions are what make the open source community such an amazing place to b
    reboot
    ```
 
+### Ubuntu WSL
+
+1. Install Docker for Desktop Windows, Ubuntu WSL and VScode
+
+2. Open WSL terminal, login as root, upgrade your OS:
+
+   ```bash
+   sudo -i
+   apt-get update
+   apt-get upgrade
+   ```
+
 3. Install git, python, ansible
 
    ```
    sudo -i
-   dnf install -y git python3
+   apt-get install -y git python3-pip
    pip3 install ansible
    ```
 
 4. Clone repository and run ansible
 
    ```bash
+   # Create directory for github repository
+   mkdir -p ~/git/github
+   cd ~/git/github
+
+   # Clone (pull) git repository
+   git clone https://github.com/mikeeq/ansible-ops-workstation.git
+
+   # Go to repository directory and run ansible
    ansible-playbook -i inventory/hosts.yml fedora.yml -K
    ```
 
-5. Reboot your machine
+5. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
 
-6. hid_apple mods
+6. Copy Windows Terminal config from - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/roles/desktop/wsl/templates/settings.json>
 
-   ```bash
-   cd /sys/module/hid_apple/parameters
-   echo 1 > swap_fn_leftctrl
-   echo 1 > swap_opt_cmd
-   ```
+   - and paste it here - `C:\Users\${WINDOWS_USER_NAME}\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState`
 
-   ```bash
-   # vi /etc/modprobe.d/hid_apple.conf
-   options hid_apple swap_fn_leftctrl=1
-   options hid_apple swap_opt_cmd=1
-   #  update_kernel_mbp
-   ```
+7. Copy VScode config file from - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/roles/desktop/apps/vscode/files/settings.json>
 
-7. Add SSH keys, config and private gpg keys from keybase
+   - and paste it here - `C:/Users/${WINDOWS_USER_NAME}/AppData/Roaming/Code/User/settings.json`
 
-   ```bash
-   keybase pgp export --query $KEY_ID -s > private.gpg; gpg --import private.gpg; rm -v private.gpg
-   ```
+8. Restart your VScode/Windows Terminal to see your new oh-my-zsh :)
 
 ## Tips and Tricks
 
@@ -210,6 +247,27 @@ Contributions are what make the open source community such an amazing place to b
 
    ```bash
    python3 -m keyring --disable
+   ```
+
+8. hid_apple mods - <https://github.com/free5lot/hid-apple-patched>
+
+   ```bash
+   cd /sys/module/hid_apple/parameters
+   echo 1 > swap_fn_leftctrl
+   echo 1 > swap_opt_cmd
+   ```
+
+   ```bash
+   # vi /etc/modprobe.d/hid_apple.conf
+   options hid_apple swap_fn_leftctrl=1
+   options hid_apple swap_opt_cmd=1
+   #  update_kernel_mbp
+   ```
+
+9. Add SSH keys, config and private gpg keys from keybase
+
+   ```bash
+   keybase pgp export --query $KEY_ID -s > private.gpg; gpg --import private.gpg; rm -v private.gpg
    ```
 
 <!-- LICENSE -->

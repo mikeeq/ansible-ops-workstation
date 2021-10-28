@@ -1,4 +1,4 @@
-FROM fedora:34
+FROM fedora:35
 
 # ENV container docker
 ENV FEDORA_USERNAME=mikee
@@ -7,6 +7,10 @@ ENV FEDORA_USERNAME=mikee
 ARG DIVE_VERSION=0.10.0
 # https://github.com/hadolint/hadolint/releases
 ARG HADOLINT_VERSION=2.7.0
+
+ADD https://github.com/AkihiroSuda/clone3-workaround/releases/download/v1.0.0/clone3-workaround.x86_64 /clone3-workaround
+RUN chmod 755 /clone3-workaround
+SHELL ["/clone3-workaround", "/bin/sh", "-c"]
 
 RUN dnf clean all \
     && dnf update -y \
@@ -28,12 +32,12 @@ rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # https://pypi.org/project/pip/
-RUN pip3 install --no-cache-dir --upgrade pip==21.3 && \
+RUN pip3 install --no-cache-dir --upgrade pip==21.3.1 && \
     pip3 install --no-cache-dir \
       # https://pypi.org/project/ansible/
       ansible==4.7.0 \
       # https://pypi.org/project/ansible-lint/
-      ansible-lint==5.2.0 \
+      ansible-lint==5.2.1 \
       # https://pypi.org/project/yamllint/
       yamllint==1.26.3 \
       # https://pypi.org/project/packaging/
