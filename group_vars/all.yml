@@ -1,6 +1,6 @@
 ---
 user_name: 'mikee'
-hostname: "mikeeMac19"
+# hostname: "mikeeMac19"
 
 git_modules_path: '/opt/git_modules'
 rpms_dwnl_path: '/opt/rpms'
@@ -144,15 +144,25 @@ vscode_extensions:
   - bbenoist.vagrant
   - DavidAnson.vscode-markdownlint
   - eamodio.gitlens
-  - zbr.vscode-ansible
   - hashicorp.terraform
+  - hediet.vscode-drawio
   - ms-azure-devops.azure-pipelines
   - ms-azuretools.vscode-docker
   - ms-dotnettools.csharp
   - ms-kubernetes-tools.vscode-kubernetes-tools
+  - ms-mssql.data-workspace-vscode
   - ms-mssql.mssql
+  - ms-mssql.sql-database-projects-vscode
   - ms-python.python
+  - ms-python.vscode-pylance
+  - ms-toolsai.jupyter
+  - ms-toolsai.jupyter-keymap
+  - ms-toolsai.jupyter-renderers
+  - ms-vscode-remote.remote-ssh
+  - ms-vscode-remote.remote-ssh-edit
   - ms-vscode.azure-account
+  - redhat.ansible
+  - redhat.vscode-commons
   - redhat.vscode-yaml
   - samuelcolvin.jinjahtml
   - streetsidesoftware.code-spell-checker

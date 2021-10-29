@@ -6,6 +6,13 @@
   register: installed_extensions
   changed_when: false
 
+# - name: Remove extensions
+#   become: true
+#   become_user: "{{ user_name }}"
+#   shell: code --uninstall-extension {{ item }}
+#   with_items:
+#     - "{{ installed_extensions.stdout_lines }}"
+
 - name: Install extensions
   become: true
   become_user: "{{ user_name }}"

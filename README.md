@@ -213,7 +213,13 @@ Contributions are what make the open source community such an amazing place to b
 
    - and paste it here - `C:/Users/${WINDOWS_USER_NAME}/AppData/Roaming/Code/User/settings.json`
 
-9. Restart your VScode/Windows Terminal to see your new oh-my-zsh :)
+9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/group_vars/all.yml#L143-L170>, by finding them in the VScode UI and clicking install or via CLI by executing:
+
+   ```bash
+   code --install-extension ${EXTENSION_NAME}
+   ```
+
+10. Restart your VScode/Windows Terminal to see your new oh-my-zsh :)
 
 ## Tips and Tricks
 
