@@ -15,6 +15,7 @@
     - desktop/apps/terminator
     - desktop/apps/vagrant
     - desktop/gnome
+    - desktop/apps/vscode
 
 - name: Include a playbook for generic provision
   import_playbook: generic.yml
