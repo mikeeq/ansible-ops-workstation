@@ -60,9 +60,9 @@
               "commandline": "wsl.exe ~",
               "colorScheme": "wsl",
               "closeOnExit": "always",
-              "fontSize": 11,
+              "fontSize": 10,
               // "startingDirectory": "\\\\wsl$\\Ubuntu-18.04\\home",
-              "fontFace" : "Roboto Mono for Powerline"
+              "fontFace" : "MesloLGS NF"
           }
       ]
   },

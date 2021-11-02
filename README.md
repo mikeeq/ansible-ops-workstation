@@ -161,9 +161,18 @@ Contributions are what make the open source community such an amazing place to b
 
 ### Ubuntu WSL
 
-1. Install Docker for Desktop Windows, Ubuntu WSL and VScode
+1. Install
 
-2. Open WSL terminal, login as root, upgrade your OS:
+   - VSCode - <https://code.visualstudio.com/download>
+   - Ubuntu WSL2
+     - <https://docs.microsoft.com/en-us/windows/wsl/install>
+     - <https://www.microsoft.com/en-us/p/ubuntu/9nblggh4msv6?activetab=pivot:overviewtab>
+   - Docker Desktop for Windows - <https://docs.docker.com/desktop/windows/install/>
+   - Windows Terminal
+     - <https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab>
+     - <https://github.com/microsoft/terminal>
+
+2. Open WSL2 terminal, login as root, upgrade your OS:
 
    ```bash
    sudo -i
@@ -220,6 +229,11 @@ Contributions are what make the open source community such an amazing place to b
    ```
 
 10. Restart your VScode/Windows Terminal to see your new oh-my-zsh :)
+
+> Remember to use VScode with Remote WSL extension and store all your unix/git files/repositories under WSL2 to not encounter any issues with file permissions, etc.
+>> I also recommend to use builtin terminal in VSCode as it also really configurable and works like a charm with oh-my-zsh and P10K
+
+- ms-vscode-remote.remote-wsl - <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl>
 
 ## Tips and Tricks
 
