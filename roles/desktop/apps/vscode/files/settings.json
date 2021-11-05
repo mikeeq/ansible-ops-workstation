@@ -16,6 +16,7 @@
   "terminal.integrated.fontFamily": "MesloLGS NF",
   "terminal.integrated.fontWeight": "normal",
   "terminal.integrated.fontWeightBold": "bold",
+  "terminal.integrated.scrollback": 50000,
   "terminal.integrated.showExitAlert": false,
   "workbench.startupEditor": "none",
   "security.workspace.trust.startupPrompt": "never",

@@ -93,7 +93,7 @@ flatpak_apps:
 
 flatpak_repos:
   - name: flathub
-    url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    url: https://flathub.org/repo/flathub.flatpakrepo
 
 pip_apps:
   - name: ansible
