@@ -38,6 +38,7 @@ dnf_apps:
   - setroubleshoot-server
   - ShellCheck
   - p7zip
+  - git-lfs
 
 dnf_gui_apps:
   - fedora-workstation-repositories
@@ -102,8 +103,6 @@ pip_apps:
     virtualenv_enabled: false
   - name: azure-cli
     virtualenv_enabled: true
-  - name: docker-compose
-    virtualenv_enabled: false
   - name: ansible-lint
     virtualenv_enabled: false
   - name: yamllint

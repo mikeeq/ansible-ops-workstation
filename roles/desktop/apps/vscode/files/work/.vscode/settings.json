@@ -1,15 +1,16 @@
+// path .vscode/settings.json
 {
-  "terminal.integrated.defaultProfile.linux": "zshWORK",
+  "terminal.integrated.defaultProfile.linux": "zshWORK_VAR",
   "terminal.integrated.profiles.linux" :{
     "bash": {
       "path": "bash",
       "icon": "terminal-bash"
     },
-    "zshWORK": {
+    "zshWORK_VAR": {
       "path": "zsh",
       "icon": "github",
       "env": {
-        "WORK_PROFILE": "WORK"
+        "WORK_PROFILE": "WORK_VAR"
       }
     },
     "zsh": {

@@ -1,0 +1,6 @@
+[google-chrome-unstable]
+name=google-chrome-unstable
+baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
+enabled=0
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub

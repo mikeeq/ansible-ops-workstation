@@ -309,6 +309,13 @@ Contributions are what make the open source community such an amazing place to b
    keybase pgp export --query $KEY_ID -s > private.gpg; gpg --import private.gpg; rm -v private.gpg
    ```
 
+10. To save HTTPS git credentials
+
+```bash
+git config --global credential.helper store
+git config lfs.cachecredentials true
+```
+
 <!-- LICENSE -->
 ## License
 
