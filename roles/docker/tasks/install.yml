@@ -1,0 +1,43 @@
+---
+- name: Check if docker is installed
+  shell: |
+    dnf list --installed | grep docker-ce
+  register: docker_check
+  ignore_errors: true
+
+- name: Remove old deps before installing docker
+  package:
+    name: "{{ pkgs }}"
+    state: absent
+  when: docker_check.rc != 0
+  vars:
+    pkgs:
+      - docker
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - docker-selinux
+      - docker-engine-selinux
+      - docker-engine
+
+- name: Check if docker-repo is installed
+  shell: |
+    dnf repolist | grep docker-ce
+  register: docker_repo_check
+  ignore_errors: true
+
+- include_tasks: repo.yml
+  when: docker_repo_check.rc != 0
+
+- name: Install Docker
+  package:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io

@@ -89,7 +89,6 @@ Ansible playbooks for provisioning Fedora Workstations with tools which are comm
 
 - [Ansible](https://github.com/ansible/ansible)
 
-
 <!-- GETTING STARTED -->
 <!-- ## Getting Started -->
 
@@ -311,10 +310,113 @@ Contributions are what make the open source community such an amazing place to b
 
 10. To save HTTPS git credentials
 
-```bash
-git config --global credential.helper store
-git config lfs.cachecredentials true
-```
+    ```bash
+    git config --global credential.helper store
+    git config lfs.cachecredentials true
+    ```
+
+11. How to install latest NVIDIA driver on Linux:
+
+    ```bash
+    # Install DKMS to automatically install Nvidia driver when updating kernel
+    dnf install dkms kernel-devel kernel-headers gcc make acpid libglvnd-glx libglvnd-opengl libglvnd-devel pkgconfig vdpauinfo libva-vdpau-driver libva-utils
+
+    # Add opensource nvidia driver - nouveau to blacklist
+    vi /etc/modprobe.d/nvidia-installer-disable-nouveau.conf
+
+    blacklist nouveau
+    options nouveau modeset=0
+
+    vi /etc/default/grub
+
+    GRUB_CMDLINE_LINUX="rhgb quiet rd.driver.blacklist=nouveau"
+
+    grub2-mkconfig -o /boot/grub2/grub.cfg
+
+    # Rebuild initramfs
+    dracut -f
+
+    systemctl set-default multi-user.target
+
+    reboot
+
+    # Download latest cuda driver and nvidia driver and go to download path
+    # CUDA - https://developer.nvidia.com/cuda-downloads
+    bash cuda_11.5.1_495.29.05_linux.run
+    # cuda will also install nvidia driver, but in older version
+    # Nvidia driver - https://www.nvidia.com/en-us/drivers/unix/
+    bash NVIDIA-Linux-x86_64-495.46.run
+
+    systemctl set-default graphical.target
+
+    dnf remove xorg-x11-drv-nouveau
+
+    reboot
+
+    # to dynamically change current session to non-graphical user interface
+    systemctl isolate multi-user.target
+    # to revert back to graphical
+    systemctl isolate graphical.target
+    ```
+
+12. To fix purple'ish screen, enable OC and Fan control (I recommend to use GreenWithEnvy - gwe (installed using flatpak)) apply those changes to `/etc/X11/xorg.conf`:
+
+    ```bash
+    Section "Device"
+        # To fix ddcutil
+        Option         "RegistryDwords" "RMUseSwI2c=0x01; RMI2cSpeed=100"
+        # To enable fan control and OC
+        Option         "Coolbits" "12"
+    EndSection
+
+    Section "Screen"
+        # To fix purple'ish screen
+        ## These settings can be controled using nvidia-settings --> X Server Display Configuration --> Advanced... --> Force Composition Pipeline --> Save to X Configuration File
+        Option         "metamodes" "nvidia-auto-select +0+0 {ForceCompositionPipeline=On, AllowGSYNCCompatible=On}"
+    EndSection
+
+    ### Example /etc/X11/xorg.conf
+    Section "Device"
+        Identifier     "Device0"
+        Driver         "nvidia"
+        VendorName     "NVIDIA Corporation"
+        BoardName      "NVIDIA GeForce RTX 3070"
+        Option         "RegistryDwords" "RMUseSwI2c=0x01; RMI2cSpeed=100"
+        Option         "Coolbits" "12"
+    EndSection
+
+    Section "Screen"
+        Identifier     "Screen0"
+        Device         "Device0"
+        Monitor        "Monitor0"
+        DefaultDepth    24
+        Option         "Stereo" "0"
+        Option         "nvidiaXineramaInfoOrder" "DFP-1"
+        Option         "metamodes" "nvidia-auto-select +0+0 {ForceCompositionPipeline=On, AllowGSYNCCompatible=On}"
+        Option         "SLI" "Off"
+        Option         "MultiGPU" "Off"
+        Option         "BaseMosaic" "off"
+        SubSection     "Display"
+            Depth       24
+        EndSubSection
+    EndSection
+    ```
+
+13. To enable "outdated" gnome extension add used gnome-shell version to `shell-version` table in `metadata.json` extension's file
+
+    ```bash
+    gnome-shell --version
+    GNOME Shell 41.2
+
+    EXTENSION_NAME=cpufreq@konkor
+    vi ~/.local/share/gnome-shell/extensions/${EXTENSION_NAME}/metadata.json
+
+    {
+      "shell-version": [
+        "41.2
+      ]
+    }
+    ```
 
 <!-- LICENSE -->
 ## License
@@ -331,7 +433,7 @@ Project Link: [https://github.com/mikeeq/ansible-ops-workstation](https://github
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-   - [Best-README-Template](https://raw.githubusercontent.com/othneildrew/Best-README-Template)
+- [Best-README-Template](https://raw.githubusercontent.com/othneildrew/Best-README-Template)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
