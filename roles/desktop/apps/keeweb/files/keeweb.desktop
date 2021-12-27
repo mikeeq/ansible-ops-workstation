@@ -1,10 +1,10 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=keeweb
+Name=KeeWeb
 GenericName=Text Editor
-Comment=Keybase encrypting, decrypting, everything connected to crypting
-Exec=/opt/keeweb/keeweb %F
+Comment=KeeWeb - keypass electron client
+Exec=/opt/keeweb/keeweb --disable-gpu-sandbox %F
 Terminal=false
 MimeType=text/plain;
 Icon=/opt/keeweb/128x128.png

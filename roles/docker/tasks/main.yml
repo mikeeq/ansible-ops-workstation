@@ -1,5 +1,14 @@
 ---
-- import_tasks: docker.yml
-# - import_tasks: moby.yml
+- import_tasks: install.yml
 
-- import_tasks: service.yml
+- name: Start docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add the user to docker group
+  user:
+    name: "{{ user_name }}"
+    groups: docker
+    append: yes

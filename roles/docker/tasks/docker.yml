@@ -1,3 +1,0 @@
-# Stable is not available for Fedora 30 - only nightly
----
-- import_tasks: dnf.yml

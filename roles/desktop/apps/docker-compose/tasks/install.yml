@@ -1,0 +1,19 @@
+---
+- name: Directory for docker_compose
+  file:
+    path: /tmp/docker_compose
+    state: directory
+
+- name: Download docker_compose binary
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-linux-x86_64"
+    dest: /tmp/docker_compose/docker_compose
+
+- name: Copy docker_compose
+  copy:
+    src: "/tmp/docker_compose/docker_compose"
+    dest: "/usr/local/bin/docker-compose"
+    remote_src: true
+    mode: 0755
+    owner: root
+    group: root

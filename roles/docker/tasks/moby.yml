@@ -1,5 +1,0 @@
----
-- name: Moby-engine install
-  dnf:
-    name: "moby-engine"
-    state: latest

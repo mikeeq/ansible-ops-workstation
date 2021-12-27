@@ -35,5 +35,8 @@
       "user": "{{put-username-here}}",
       "password": ""
     }
-  ]
+  ],
+  "files.associations": {
+    "*.hcl": "terraform"
+  }
 }
