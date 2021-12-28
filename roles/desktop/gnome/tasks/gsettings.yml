@@ -107,7 +107,7 @@
   become_user: "{{ user_name }}"
   dconf:
     key: "/org/gnome/shell/enabled-extensions"
-    value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'cpufreq@konkor', 'vertical-overview@RensAlthuis.github.com']"
+    value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'cpufreq@konkor']"
     state: present
 
 # value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'cpupower@mko-sl.de', 'gTile@vibou']"
@@ -165,6 +165,14 @@
   become_user: "{{ user_name }}"
   dconf:
     key: "/org/gnome/software/download-updates-notify"
+    value: "false"
+    state: present
+
+- name: "Disable gnome main workspace switch only"
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/shell/window-switcher/current-workspace-only"
     value: "false"
     state: present
 

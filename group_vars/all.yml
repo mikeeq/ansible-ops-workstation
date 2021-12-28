@@ -62,6 +62,7 @@ dnf_gui_apps:
   - clamtk
   - wireshark
   - clusterssh
+  - ddcutil
 
 snap_apps: []
 
@@ -83,10 +84,10 @@ flatpak_apps:
   #   remote: flathub
   - name: com.spotify.Client
     remote: flathub
-  # - name: com.slack.Slack
-  #   remote: flathub
-  # - name: com.github.debauchee.barrier
-  #   remote: flathub
+  - name: com.slack.Slack
+    remote: flathub
+  - name: com.github.debauchee.barrier
+    remote: flathub
   - name: com.discordapp.Discord
     remote: flathub
   - name: org.signal.Signal
