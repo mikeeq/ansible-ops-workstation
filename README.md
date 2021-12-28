@@ -418,6 +418,12 @@ Contributions are what make the open source community such an amazing place to b
     }
     ```
 
+14. To turn off hdd
+
+    ```bash
+    echo 1 > /sys/block/sdb/device/delete
+    ```
+
 <!-- LICENSE -->
 ## License
 
