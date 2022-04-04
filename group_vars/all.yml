@@ -138,7 +138,7 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # https://github.com/kubernetes-sigs/krew/releases/latest
 # krew_version: 0.4.0
 # https://github.com/bcicen/ctop/releases/
-ctop_version: 0.7.7
+# ctop_version: 0.7.7
 # https://github.com/gruntwork-io/terragrunt/releases/latest
 # terragrunt_version: 0.31.8
 
