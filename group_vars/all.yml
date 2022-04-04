@@ -39,6 +39,8 @@ dnf_apps:
   - ShellCheck
   - p7zip
   - git-lfs
+  - nnn
+  - file-roller
 
 dnf_gui_apps:
   - fedora-workstation-repositories
@@ -82,6 +84,8 @@ flatpak_apps:
   #   remote: flathub
   # - name: com.skype.Client
   #   remote: flathub
+  # - name: org.signal.Signal
+  #   remote: flathub
   - name: com.spotify.Client
     remote: flathub
   - name: com.slack.Slack
@@ -89,8 +93,6 @@ flatpak_apps:
   - name: com.github.debauchee.barrier
     remote: flathub
   - name: com.discordapp.Discord
-    remote: flathub
-  - name: org.signal.Signal
     remote: flathub
 
 flatpak_repos:
@@ -136,7 +138,7 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # https://github.com/kubernetes-sigs/krew/releases/latest
 # krew_version: 0.4.0
 # https://github.com/bcicen/ctop/releases/
-ctop_version: 0.7.6
+ctop_version: 0.7.7
 # https://github.com/gruntwork-io/terragrunt/releases/latest
 # terragrunt_version: 0.31.8
 
