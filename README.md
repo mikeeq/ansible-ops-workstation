@@ -424,6 +424,12 @@ Contributions are what make the open source community such an amazing place to b
     echo 1 > /sys/block/sdb/device/delete
     ```
 
+15. To open remote VScode session:
+
+    ```bash
+    code --folder-uri vscode-remote://ssh-remote+192.168.4.10/home/mikee/git
+    ```
+
 <!-- LICENSE -->
 ## License
 
