@@ -33,6 +33,13 @@
   args:
     creates: /keybase
 
+# https://github.com/keybase/client/issues/24688
+- name: Fix keybase on newer Fedoras
+  ansible.builtin.lineinfile:
+    path: /usr/lib/systemd/user/keybase.gui.service
+    regexp: '^ExecStart=/opt/keybase/Keybase'
+    line: "ExecStart=/opt/keybase/Keybase --disable-seccomp-filter-sandbox"
+
 # curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
 # sudo apt install ./keybase_amd64.deb
 
