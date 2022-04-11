@@ -1,6 +1,6 @@
 ---
 - name: Generic bootstrap
-  hosts: localhost
+  hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
   roles:
     - pkg_mgmt/pip
