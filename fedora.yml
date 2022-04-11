@@ -1,6 +1,6 @@
 ---
 - name: Fedora bootstrap
-  hosts: localhost
+  hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
   pre_tasks:
     # - debug:
