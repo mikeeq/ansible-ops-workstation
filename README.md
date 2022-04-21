@@ -358,6 +358,14 @@ Contributions are what make the open source community such an amazing place to b
     systemctl isolate multi-user.target
     # to revert back to graphical
     systemctl isolate graphical.target
+
+    # If there are some issues with booting to graphical environment, i.e.: with API mismatch error, execute `dracut -f` to rebuild initramfs with newer version of driver
+    # dmesg|grep -i nvrm -A3
+    # [  113.647054] NVRM: API mismatch: the client has the version 460.91.03, but
+    #                NVRM: this kernel module has the version 390.144.  Please
+    #                NVRM: make sure that this kernel module and all NVIDIA driver
+    #                NVRM: components have the same version.
+    dracut -f
     ```
 
 12. To fix purple'ish screen, enable OC and Fan control (I recommend to use GreenWithEnvy - gwe (installed using flatpak)) apply those changes to `/etc/X11/xorg.conf`:
@@ -425,10 +433,13 @@ Contributions are what make the open source community such an amazing place to b
     echo 1 > /sys/block/sdb/device/delete
     ```
 
-15. To open remote VScode session:
+15. To open remote VScode session from CLI:
 
     ```bash
-    code --folder-uri vscode-remote://ssh-remote+192.168.4.10/home/mikee/git
+    code --folder-uri vscode-remote://ssh-remote+${SSH_USER}@${HOST}${PATH}
+
+    # Example
+    code --folder-uri vscode-remote://ssh-remote+user@192.168.1.10/home/user/git
     ```
 
 <!-- LICENSE -->
