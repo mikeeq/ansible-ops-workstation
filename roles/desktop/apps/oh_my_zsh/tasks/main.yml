@@ -23,7 +23,7 @@
   become_user: "{{ item }}"
   shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
   args:
-    creates: ~/.oh-my-zsh
+    creates: "~{{ item }}/.oh-my-zsh"
   with_items:
     - "{{ user_name }}"
     - root

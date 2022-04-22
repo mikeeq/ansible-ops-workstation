@@ -1,0 +1,12 @@
+---
+hosts:
+  - name: "fedora35"
+    # os: "generic/fedora35"
+    os: "alvistack/fedora-35"
+    hostname: "fedora35.srv"
+    ip:
+      - "10.0.0.10"
+    cpu: "2"
+    mem: "4096"
+    port_forward: []
+    hostname_alias: []
