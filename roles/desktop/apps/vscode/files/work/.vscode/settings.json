@@ -17,5 +17,11 @@
       "path": "zsh",
       "icon": "terminal"
     }
+  },
+  "vs-kubernetes": {
+    "vs-kubernetes.knownKubeconfigs": [
+      "/home/mikee/.work_profiles/WORK_VAR/.kube/config"
+    ],
+    "vs-kubernetes.kubeconfig": "/home/mikee/.work_profiles/WORK_VAR/.kube/config"
   }
 }

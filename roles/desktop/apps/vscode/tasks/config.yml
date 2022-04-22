@@ -10,9 +10,12 @@
   become: true
   become_user: "{{ user_name }}"
   copy:
-    src: settings.json
-    dest: ~/.config/Code/User/settings.json
+    src: "{{ item }}"
+    dest: "~/.config/Code/User/{{ item }}"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
     mode: 0664
     backup: true
+  loop:
+    - settings.json
+    - keybindings.json
