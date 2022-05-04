@@ -18,7 +18,7 @@
     state: directory
 
 - name: Get latest version
-  shell: curl https://github.com/QNapi/qnapi/releases/latest | cut -d'"' -f2 | cut -d'/' -f8
+  shell: curl -Is https://github.com/QNapi/qnapi/releases/latest | grep -i 'location:' | cut -d'"' -f2 | cut -d'/' -f8
   register: version_tag
   changed_when: version_tag.stdout != installed_version.stdout
   ignore_errors: true

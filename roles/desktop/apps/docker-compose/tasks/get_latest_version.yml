@@ -1,6 +1,6 @@
 ---
 - name: Get latest version docker_compose
-  shell: curl -s https://github.com/docker/compose/releases/latest | grep 'releases/' | head -n1 | cut -f2 -d'v' | cut -d'"' -f1
+  shell: curl -Is https://github.com/docker/compose/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -d'"' -f1
   register: version
   changed_when: false
   ignore_errors: true
