@@ -4,8 +4,9 @@
     path: "{{ rpms_dwnl_path }}"
     state: directory
 
+# curl -s https://api.github.com/repos/bcicen/ctop/releases/latest | jq .name -r | cut -f2 -d'v'
 - name: Get latest version
-  shell: curl -s https://api.github.com/repos/bcicen/ctop/releases/latest | jq .name -r | cut -f2 -d'v'
+  shell: curl -Is https://github.com/bcicen/ctop/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
   register: version
   changed_when: false
   ignore_errors: true
