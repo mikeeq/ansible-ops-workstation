@@ -4,7 +4,7 @@
 
 - name: netcore sdk
   package:
-    name: "dotnet-sdk-5.0"
+    name: "dotnet-sdk-6.0"
     state: present
 
 - name: Enable better file watch in VScode by changing amount of concurrent open files in kernel params
