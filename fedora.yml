@@ -16,6 +16,7 @@
     - desktop/apps/vagrant
     - desktop/gnome
     - desktop/apps/vscode
+    - desktop/apps/x11docker
 
 - name: Include a playbook for generic provision
   import_playbook: generic.yml
