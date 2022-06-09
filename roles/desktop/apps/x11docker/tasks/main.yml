@@ -7,7 +7,7 @@
 - name: Get installed version
   become: true
   become_user: "{{ user_name }}"
-  shell: x11docker -v | awk '{print $3}'
+  shell: x11docker --version
   register: installed_x11docker_version
   changed_when: false
   ignore_errors: true
