@@ -321,6 +321,10 @@ Contributions are what make the open source community such an amazing place to b
 
 11. How to install latest NVIDIA driver on Linux:
 
+    - Fedora 36 issues with NVIDIA driver
+      - <https://github.com/NVIDIA/open-gpu-kernel-modules/issues/228>
+      - <https://www.if-not-true-then-false.com/2015/fedora-nvidia-guide/>
+
     ```bash
     # Install DKMS to automatically install Nvidia driver when updating kernel
     dnf install dkms kernel-devel kernel-headers gcc make acpid libglvnd-glx libglvnd-opengl libglvnd-devel pkgconfig vdpauinfo libva-vdpau-driver libva-utils
