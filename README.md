@@ -112,7 +112,7 @@ Contributions are what make the open source community such an amazing place to b
 
    ```bash
    sudo -i
-   dnf install -y git python3
+   dnf install -y git python3-pip
    pip3 install ansible
    ```
 
@@ -300,7 +300,10 @@ Contributions are what make the open source community such an amazing place to b
    options hid_apple swap_fn_leftctrl=1
    options hid_apple swap_opt_cmd=1
    options hid_apple iso_layout=1
-   #  update_kernel_mbp
+
+   # after adding this options to the file, you need to rebuild your initramfs
+   ## in Fedora
+   dracut -f
    ```
 
 9. Add SSH keys, config and private gpg keys from keybase
@@ -317,6 +320,10 @@ Contributions are what make the open source community such an amazing place to b
     ```
 
 11. How to install latest NVIDIA driver on Linux:
+
+    - Fedora 36 issues with NVIDIA driver
+      - <https://github.com/NVIDIA/open-gpu-kernel-modules/issues/228>
+      - <https://www.if-not-true-then-false.com/2015/fedora-nvidia-guide/>
 
     ```bash
     # Install DKMS to automatically install Nvidia driver when updating kernel
