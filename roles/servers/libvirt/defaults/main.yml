@@ -1,0 +1,46 @@
+---
+cloud_init_src_dir: "/var/lib/libvirt/cloud_init_config"
+cloud_init_iso_dir: "/var/lib/libvirt/cloud_init_iso"
+cloud_init_config_files:
+  - src: user-data.yml.j2
+    dest: user-data
+  - src: network-config.yml.j2
+    dest: network-config
+  - src: meta-data.yml.j2
+    dest: meta-data
+
+# https://cloudinit.readthedocs.io/en/latest/topics/modules.html
+# https://cloudinit.readthedocs.io/en/latest/topics/network-config-format-v2.html
+# https://cloudinit.readthedocs.io/en/latest/topics/instancedata.html
+# https://cloudinit.readthedocs.io/en/latest/topics/datasources/nocloud.html
+
+# cloud_image_url: "https://dl.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/aarch64/images/Fedora-Cloud-Base-35-1.2.aarch64.qcow2"
+# cloud_image_name: "Fedora-Cloud-Base-35-1.2.aarch64.qcow2"
+# cloud_image_checksum: "sha256:c71f2e6ce75b516d565e2c297ea9994c69b946cb3eaa0a4bbea400dbd6f59ae6."
+# https://download.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/x86_64/images/
+cloud_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/36/Cloud/x86_64/images/Fedora-Cloud-Base-36-1.5.x86_64.qcow2"
+cloud_image_name: "Fedora-Cloud-Base-36-1.5.x86_64.qcow2"
+cloud_image_checksum: "sha256:ca9e514cc2f4a7a0188e7c68af60eb4e573d2e6850cc65b464697223f46b4605"
+
+libvirt_images_dir: "/var/lib/libvirt/images"
+
+vms:
+  - name: "dns3"
+    hostname: dns3
+    cpu: 1
+    memory: 512
+    src_image: "{{ cloud_image_name }}"
+    ipv4_addresses:
+      - 192.168.4.33/24
+    gateway4: 192.168.4.1
+    dns_servers:
+      - 1.1.1.1
+      - 8.8.8.8
+
+baremetal_bridge_interface: "br-vm-enp42s0"
+qemu_emulator: "/usr/bin/qemu-kvm"
+# qemu_emulator: "/usr/bin/qemu-system-x86_64"
+# qemu_emulator: "/usr/bin/qemu-system-aarch64"
+
+default_admin_username: mikee
+default_admin_password: test_pass

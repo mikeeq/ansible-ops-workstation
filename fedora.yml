@@ -5,19 +5,19 @@
   # pre_tasks:
   #   - debug:
   #       var: hostvars[inventory_hostname]
-    # - import_tasks: roles/desktop/fedora/tasks/rpmfusion.yml
+  #   - import_tasks: roles/desktop/fedora/tasks/rpmfusion.yml
   roles:
-#     - pkg_mgmt/dnf
-#     - pkg_mgmt/flatpak
-#     - desktop/apps/google_chrome
-#     - desktop/apps/keeweb
-#     - apps/qemu
-#     - desktop/apps/terminator
-#     - apps/vagrant
-#     - desktop/gnome
-#     - desktop/apps/vscode
-#     - desktop/apps/x11docker
-  - desktop/fedora
+    - pkg_mgmt/dnf
+    - pkg_mgmt/flatpak
+    - desktop/apps/google_chrome
+    - desktop/apps/keeweb
+    - apps/qemu
+    - desktop/apps/terminator
+    - apps/vagrant
+    - desktop/gnome
+    - desktop/apps/vscode
+    - desktop/apps/x11docker
+    - desktop/fedora
 
-# - name: Include a playbook for generic provision
-#   import_playbook: generic.yml
+- name: Include a playbook for generic provision
+  import_playbook: generic.yml
