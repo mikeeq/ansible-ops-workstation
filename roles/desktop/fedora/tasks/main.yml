@@ -1,13 +1,13 @@
 ---
 ### Add user to nopasswd sudoers
-- import_tasks: sudo.yml
+# - import_tasks: sudo.yml
 # - import_tasks: hostname.yml
 
 ### Basic fedora setup
-- import_tasks: firewalld.yml
+# - import_tasks: firewalld.yml
 # - import_tasks: selinux.yml
-
-# - import_tasks: grub.yml
+- import_tasks: grub.yml
+- import_tasks: nested_kvm.yml
 
 ### TODO:
 # qnapi

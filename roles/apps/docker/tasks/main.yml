@@ -1,0 +1,28 @@
+---
+- import_tasks: install.yml
+
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+# - name: Print service facts
+#   ansible.builtin.debug:
+#     var: ansible_facts.services
+
+- name: Disable and stop firewalld
+  ansible.builtin.service:
+    name: firewalld
+    state: stopped
+    enabled: false
+  when: services['firewalld.service'].status != "not-found"
+
+- name: Start docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add the user to docker group
+  user:
+    name: "{{ user_name }}"
+    groups: docker
+    append: yes
