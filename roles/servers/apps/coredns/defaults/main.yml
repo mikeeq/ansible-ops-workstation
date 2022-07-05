@@ -1,5 +1,0 @@
----
-install_path: "/opt/coredns"
-
-coredns_domain_name: "example.com"
-coredns_zone_filename: "db.{{ coredns_domain_name }}"
