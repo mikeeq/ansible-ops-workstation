@@ -1,8 +1,19 @@
 ---
-# - name: Remove linked kubectl
-#   file:
-#     path: /usr/local/bin/kubectl
-#     state: absent
+- name: Check if kubectl is a symlink
+  stat:
+    path: /usr/local/bin/kubectl
+  register: kubectl_symlink
+
+- name: Remove linked kubectl, from docker-desktop
+  file:
+    path: /usr/local/bin/kubectl
+    state: absent
+  when: kubectl_symlink.stat.islnk is not defined
+
+- name: Update all packages to the latest version
+  apt:
+    upgrade: dist
+    update_cache: yes
 
 - name: Install packages
   package:
