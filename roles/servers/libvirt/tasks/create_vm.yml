@@ -21,42 +21,21 @@
     mode: 0600
   register: vm_config
 
-- name: Create cloud-init config
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ cloud_init_src_dir }}/{{ vm.name }}/{{ item.dest }}"
-  loop: "{{ cloud_init_config_files }}"
-  when:
-    - vm_config.changed
-
-- name: Create CD-ROM ISO with cloud-init config
-  shell: |
-    genisoimage -output {{ vm_cloud_init_path }} \
-      -volid cidata \
-      -joliet \
-      -r {% for item in cloud_init_config_files %} {{ cloud_init_src_dir }}/{{ vm.name }}/{{ item.dest }} {% endfor %} &>> "{{ cloud_init_src_dir }}/{{ vm.name }}/logs"
-  when:
-    - vm_config.changed
+- include_tasks: cloud-init.yml
+  when: vm_config.changed or vm_force_recreation == true or vm_force_cloud_init_recreation == true
 
 - name: Destroy the domain with XML specification
   virt:
     name: "{{ vm.name }}"
     command: destroy
   ignore_errors: true
-  when: vm_recreation == true
+  when: vm_force_recreation == true
 
 - name: Remove storage
   file:
     path: "{{ vm_disk_path }}"
     state: absent
-  when: vm_recreation == true
-
-- name: Undefine the domain with XML specification
-  virt:
-    name: "{{ vm.name }}"
-    command: undefine
-  ignore_errors: true
-  when: vm_recreation == true
+  when: vm_force_recreation == true
 
 - name: Check if storage exists
   stat:
@@ -71,7 +50,7 @@
     owner: qemu
     group: qemu
     mode: 0600
-  when: vm_recreation == true or qcow_check.stat.exists == false
+  when: vm_force_recreation == true or qcow_check.stat.exists == false
 
 # - name: Extend disk image
 #   shell: |
@@ -82,30 +61,25 @@
   virt:
     name: "{{ vm.name }}"
     state: shutdown
-  when:
-    - vm_config.changed
-    - vm_recreation == false
+  when: (vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true
 
 - name: Wait for shutdown of the VM
   shell: virsh list | grep -w "{{ vm.name }}"
   register: shutdown_res
-  ignore_errors: true
+  failed_when: shutdown_res.rc == 0 or shutdown_res.rc >= 2
   retries: 10
   until: shutdown_res.rc == 1
-  when:
-    - vm_config.changed
-    - vm_recreation == false
+  when: (vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true
 
-- name: Define the domain with XML specification
+- name: Undefine the domain with XML specification
   virt:
     name: "{{ vm.name }}"
     command: undefine
-  when:
-    - vm_config.changed
+  when: vm_config.changed or vm_force_recreation == true
 
-- name: Wait for removal of the VM
+- name: Wait for undefine of the VM
   shell: virsh list --all | grep -w "{{ vm.name }}"
-  ignore_errors: true
+  failed_when: undefine_res.rc == 0 or undefine_res.rc >= 2
   register: undefine_res
   retries: 10
   until: undefine_res.rc == 1

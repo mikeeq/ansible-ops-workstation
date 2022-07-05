@@ -41,7 +41,7 @@
 
 - name: Check coredns db file if any changes
   template:
-    src: "config/{{ coredns_zone_filename }}"
+    src: "{{ coredns_zone_file_path }}/{{ coredns_zone_filename }}"
     dest: "{{ install_path }}/config/{{ coredns_zone_filename }}"
     mode: 0664
     backup: true
@@ -51,7 +51,7 @@
 
 - name: Configure coredns db file
   template:
-    src: "config/{{ coredns_zone_filename }}"
+    src: "{{ coredns_zone_file_path }}/{{ coredns_zone_filename }}"
     dest: "{{ install_path }}/config/{{ coredns_zone_filename }}"
     mode: 0664
   vars:

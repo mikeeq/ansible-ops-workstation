@@ -41,7 +41,8 @@ vms:
 vm_network: "nat"
 # set if bridge
 # baremetal_bridge_interface: "br-vm-enp42s0"
-vm_recreation: false
+vm_force_recreation: false
+vm_force_cloud_init_recreation: false
 
 qemu_emulator: "/usr/bin/qemu-kvm"
 # qemu_emulator: "/usr/bin/qemu-system-x86_64"

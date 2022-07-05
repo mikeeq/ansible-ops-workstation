@@ -17,7 +17,7 @@
     common_name: "{{ cert.cn }}"
     subject_alt_name: "{{ item.value | map('regex_replace', '^', 'DNS:') | list }}"
   with_dict:
-    cert_sans: "{{ cert.sans }}"
+    cert_sans: "{{ cert.sans | default([]) }}"
 
 - name: Create a challenge using the LE account key file
   community.crypto.acme_certificate:
@@ -31,6 +31,9 @@
     acme_directory: "{{ letsencrypt_api }}"
     remaining_days: "{{ letsencrypt_days }}"
   register: le_challenge
+
+- debug:
+    var: le_challenge
 
 - debug:
     msg: "Certificate is still valid for: {{ le_challenge.cert_days }} days"
@@ -106,3 +109,5 @@
   args:
     chdir: /opt/coredns
   when: le_challenge.changed
+
+# to validate cert: openssl x509 -text -noout -in cert.crt

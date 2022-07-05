@@ -3,6 +3,9 @@
   hosts:
     - dns1
   become: true
+  # pre_tasks:
+  #   - debug:
+  #       var: hostvars[inventory_hostname]
   roles:
     # - servers/network-vms
     # - apps/docker
