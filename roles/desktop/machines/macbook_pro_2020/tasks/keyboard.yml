@@ -1,0 +1,13 @@
+---
+- name: copy hid_apple config
+  copy:
+    src: hid_apple.conf
+    dest: /etc/modprobe.d/hid_apple.conf
+    mode: 0644
+  register: hid_apple
+
+# sudo modprobe -r hid_apple; sudo modprobe hid_apple
+
+- name: Rebuild initramfs
+  shell: dracut -fv
+  when: hid_apple.changed

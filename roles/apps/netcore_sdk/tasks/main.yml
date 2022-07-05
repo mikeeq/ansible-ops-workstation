@@ -1,0 +1,8 @@
+---
+- include_tasks: apt.yml
+  when: ansible_distribution == "Ubuntu"
+
+- name: netcore sdk
+  package:
+    name: "dotnet-sdk-6.0"
+    state: present
