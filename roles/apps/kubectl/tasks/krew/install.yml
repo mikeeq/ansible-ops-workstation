@@ -27,6 +27,16 @@
     recurse: true
     owner: "{{ user_name }}"
 
+- name: Create directories for krew
+  file:
+    path: "~{{ user_name }}/{{ item }}"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    state: directory
+  loop:
+    - ".kube"
+    - ".krew"
+
 - name: Install krew
   become: true
   become_user: "{{ user_name }}"
