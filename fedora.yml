@@ -19,5 +19,5 @@
     - desktop/apps/x11docker
     - desktop/fedora
 
-- name: Include a playbook for generic provision
+- name: Include a playbook for generic provisioning
   import_playbook: generic.yml

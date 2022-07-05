@@ -1,4 +1,7 @@
 ---
+- name: Include a playbook for generic-cort provisioning
+  import_playbook: generic.yml
+
 - name: Generic bootstrap
   hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
