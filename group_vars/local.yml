@@ -1,0 +1,11 @@
+vms:
+  - name: "dns4"
+    hostname: dns4
+    cpu: 1
+    memory: 1024
+    ipv4_addresses:
+      - 192.168.122.22/24
+    gateway4: 192.168.122.1
+    dns_servers:
+      - 1.1.1.1
+      - 8.8.8.8

@@ -10,7 +10,7 @@
         upgrade: dist
         update_cache: yes
   roles:
-    - desktop/wsl
+    - desktop/machines/wsl
 
 - name: Include a playbook for generic provision
   import_playbook: generic.yml
