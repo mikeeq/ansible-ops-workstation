@@ -29,8 +29,8 @@
     conn_name: "{{ bridge_name }}"
     ifname: "{{ bridge_name }}"
     type: bridge
-    ip4: 192.168.4.11/24
-    gw4: 192.168.4.1
+    ip4: 192.168.1.11/24
+    gw4: 192.168.1.1
     state: present
     autoconnect: true
 
@@ -67,3 +67,8 @@
 #   community.general.nmcli:
 #     conn_name: "{{ nmcli_active.stdout }}"
 #     ifname: "{{ nic_name }}"
+
+# https://wiki.debian.org/BridgeNetworkConnections#Bridging_with_a_wireless_NIC
+
+# net.ipv4.conf.all.proxy_arp = 1
+# Jul 03 01:21:01 mikeeMac20-F36 NetworkManager[1089]: <warn>  [1656804061.1860] platform-linux: do-change-link[3]: failure changing link: failure 95 (Operation not supported - Device does not allow >

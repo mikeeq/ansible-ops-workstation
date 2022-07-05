@@ -7,5 +7,5 @@
     #     var: hostvars[inventory_hostname]
   roles:
     # - desktop/machines/macbook_pro_2020
-    - servers/network-baremetal
-  #   - servers/libvirt
+    # - servers/network-baremetal
+    - servers/libvirt

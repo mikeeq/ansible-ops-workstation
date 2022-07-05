@@ -31,16 +31,21 @@ vms:
     memory: 512
     src_image: "{{ cloud_image_name }}"
     ipv4_addresses:
-      - 192.168.4.33/24
-    gateway4: 192.168.4.1
+      - 192.168.1.33/24
+    gateway4: 192.168.1.1
     dns_servers:
       - 1.1.1.1
       - 8.8.8.8
 
-baremetal_bridge_interface: "br-vm-enp42s0"
+# bridge or nat
+vm_network: "nat"
+# set if bridge
+# baremetal_bridge_interface: "br-vm-enp42s0"
+vm_recreation: false
+
 qemu_emulator: "/usr/bin/qemu-kvm"
 # qemu_emulator: "/usr/bin/qemu-system-x86_64"
 # qemu_emulator: "/usr/bin/qemu-system-aarch64"
 
-default_admin_username: mikee
+default_admin_username: testuser
 default_admin_password: test_pass

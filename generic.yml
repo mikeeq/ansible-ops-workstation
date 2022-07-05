@@ -4,19 +4,13 @@
   become: true
   roles:
     - pkg_mgmt/pip
-    - apps/ctop
     - apps/keybase
-    - apps/oh_my_zsh
-    - apps/terraform
     - apps/terragrunt
     - apps/kubectl
     - apps/helm
     - apps/stern
     - apps/kail
-    - apps/dive
     - apps/hadolint
     - apps/kubescore
     - apps/istioctl
     - apps/netcore_sdk
-    - apps/docker
-    - apps/docker-compose

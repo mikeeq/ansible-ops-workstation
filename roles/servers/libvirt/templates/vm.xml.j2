@@ -56,11 +56,19 @@
       <alias name='virtio-serial0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
     </controller>
+{% if vm_network == "nat" %}
+    <interface type='network'>
+      <source network='default'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+    </interface>
+{% elif vm_network == "bridge" %}
     <interface type='bridge'>
       <source bridge='{{ baremetal_bridge_interface }}'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </interface>
+{% endif %}
     <serial type='pty'>
       <target port='0'/>
     </serial>

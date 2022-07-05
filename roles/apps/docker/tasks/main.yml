@@ -13,7 +13,9 @@
     name: firewalld
     state: stopped
     enabled: false
-  when: services['firewalld.service'].status != "not-found"
+  when:
+    - services['firewalld.service'] is defined
+    - services['firewalld.service'].status != "not-found"
 
 - name: Start docker service
   ansible.builtin.service:
