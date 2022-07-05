@@ -7,5 +7,4 @@
     - apps/oh_my_zsh
     - apps/terraform
     - apps/dive
-    - apps/docker
     - apps/docker-compose

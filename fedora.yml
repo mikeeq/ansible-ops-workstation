@@ -11,6 +11,7 @@
     - pkg_mgmt/flatpak
     - desktop/apps/google_chrome
     - desktop/apps/keeweb
+    - apps/docker
     - apps/qemu
     - desktop/apps/terminator
     - apps/vagrant
@@ -18,6 +19,9 @@
     - desktop/apps/vscode
     - desktop/apps/x11docker
     - desktop/fedora
+
+- name: Include a playbook for generic-core provisioning
+  import_playbook: generic-core.yml
 
 - name: Include a playbook for generic provisioning
   import_playbook: generic.yml
