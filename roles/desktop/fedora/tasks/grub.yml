@@ -3,6 +3,7 @@
   lineinfile:
     path: /etc/default/grub
     line: GRUB_DEFAULT=saved
+    regexp: '^GRUB_DEFAULT='
   notify: save_grub_config
   when: docker_tests_flag is not defined
 
@@ -10,5 +11,6 @@
   lineinfile:
     path: /etc/default/grub
     line: GRUB_SAVEDEFAULT=true
+    regexp: '^GRUB_SAVEDEFAULT='
   notify: save_grub_config
   when: docker_tests_flag is not defined

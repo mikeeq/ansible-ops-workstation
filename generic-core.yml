@@ -1,0 +1,10 @@
+---
+- name: Generic Core bootstrap
+  hosts: "{{ hosts_to_deploy | default('local') }}"
+  become: true
+  roles:
+    - apps/ctop
+    - apps/oh_my_zsh
+    - apps/terraform
+    - apps/dive
+    - apps/docker-compose

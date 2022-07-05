@@ -198,7 +198,7 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-5. Change `user_name` in `group_vars/all.yml` to your WSL username and run ansible
+5. Change `user_name` in `group_vars/all.yml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/group_vars/all.yml#L2)) and run Ansible
 
    ```bash
    # Go to repository directory
@@ -213,7 +213,7 @@ Contributions are what make the open source community such an amazing place to b
 
 6. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
 
-7. Copy Windows Terminal config from - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/roles/desktop/wsl/templates/settings.json>
+7. Copy Windows Terminal config from - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/roles/desktop/machines/wsl/templates/settings.json>
 
    - and paste it here - `C:\Users\${WINDOWS_USER_NAME}\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState`
 
@@ -221,7 +221,7 @@ Contributions are what make the open source community such an amazing place to b
 
    - and paste it here - `C:/Users/${WINDOWS_USER_NAME}/AppData/Roaming/Code/User/settings.json`
 
-9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/group_vars/all.yml#L143-L170>, by finding them in the VScode UI and clicking install or via CLI by executing:
+9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/group_vars/all.yml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
 
    ```bash
    code --install-extension ${EXTENSION_NAME}

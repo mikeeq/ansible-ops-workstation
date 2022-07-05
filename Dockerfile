@@ -8,10 +8,6 @@ ARG DIVE_VERSION=0.10.0
 # https://github.com/hadolint/hadolint/releases
 ARG HADOLINT_VERSION=2.7.0
 
-ADD https://github.com/AkihiroSuda/clone3-workaround/releases/download/v1.0.0/clone3-workaround.x86_64 /clone3-workaround
-RUN chmod 755 /clone3-workaround
-SHELL ["/clone3-workaround", "/bin/sh", "-c"]
-
 RUN dnf clean all \
     && dnf update -y \
     && dnf upgrade -y \
