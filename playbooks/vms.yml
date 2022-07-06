@@ -1,14 +1,21 @@
 ---
+# - name: Install CoreDNS
+#   hosts:
+#     - dns1
+#   become: true
+#   # pre_tasks:
+#   #   - debug:
+#   #       var: hostvars[inventory_hostname]
+#   roles:
+#     # - servers/network-vms
+#     # - apps/docker
+#     # - apps/docker-compose
+#     # - servers/apps/coredns
+#     - servers/apps/letsencrypt-coredns
+
 - name: Install CoreDNS
   hosts:
-    - dns1
+    - localhost
   become: true
-  # pre_tasks:
-  #   - debug:
-  #       var: hostvars[inventory_hostname]
   roles:
-    # - servers/network-vms
-    # - apps/docker
-    # - apps/docker-compose
-    # - servers/apps/coredns
-    - servers/apps/letsencrypt-coredns
+    - servers/apps/nginx

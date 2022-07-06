@@ -14,7 +14,7 @@
     mode: 0664
   loop:
     - docker-compose.yml
-    - config/Corefile
+    - config/nginx.conf
 
 - import_tasks: config.yml
 

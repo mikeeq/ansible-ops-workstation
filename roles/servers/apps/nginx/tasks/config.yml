@@ -1,0 +1,14 @@
+---
+- file:
+    path: "{{ install_path }}/ssl"
+    state: directory
+
+- name: Grab cert from dns1
+  ansible.builtin.fetch:
+    src: "/etc/ssl/le/certs/*.mikeeq.eu/{{ item }}"
+    dest: "{{ install_path }}/ssl/{{ item }}"
+    flat: true
+  delegate_to: dns1
+  loop:
+    - "cert.key"
+    - "cert.crt"
