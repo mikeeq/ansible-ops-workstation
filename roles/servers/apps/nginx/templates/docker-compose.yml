@@ -15,9 +15,9 @@ services:
       - '443:443'
     volumes:
       - './config/nginx.conf:/etc/nginx/nginx.conf'
+      - './config/backend-not-found.html:/var/www/error_page/backend-not-found.html'
       - '/etc/ssl/le:/etc/ssl/le'
       - './config/dhparam.pem:/etc/nginx/dhparam.pem'
-    network_mode: host
     # command: ["-conf", "/etc/coredns/Corefile"]
   app:
     # https://hub.docker.com/_/nginx
@@ -28,3 +28,12 @@ services:
       - '80'
     ports:
       - '8080:80'
+  app2:
+    # https://hub.docker.com/_/nginx
+    image: nginx:1.23
+    container_name: app2
+    restart: always # other option: always - if you want persistent through host reboots
+    expose:
+      - '80'
+    ports:
+      - '8090:80'

@@ -15,6 +15,7 @@
   loop:
     - docker-compose.yml
     - config/nginx.conf
+    - config/backend-not-found.html
 
 - import_tasks: config.yml
 
@@ -29,5 +30,10 @@
   command: docker-compose up -d
   changed_when: up_result.stderr_lines | length > 2
   register: up_result
+  args:
+    chdir: "{{ install_path }}"
+
+- name: Restart using docker-compose
+  command: docker-compose restart
   args:
     chdir: "{{ install_path }}"
