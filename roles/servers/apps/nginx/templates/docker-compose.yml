@@ -15,10 +15,13 @@ services:
       - '443:443'
     volumes:
       - './config/nginx.conf:/etc/nginx/nginx.conf'
+      - '/etc/ssl/le:/etc/ssl/le'
+      - './config/dhparam.pem:/etc/nginx/dhparam.pem'
+    network_mode: host
     # command: ["-conf", "/etc/coredns/Corefile"]
   app:
     # https://hub.docker.com/_/nginx
-    image: nginx:1.23
+    image: httpd:2
     container_name: app
     restart: always # other option: always - if you want persistent through host reboots
     expose:
