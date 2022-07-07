@@ -18,16 +18,15 @@ services:
       - './config/backend-not-found.html:/var/www/error_page/backend-not-found.html'
       - '/etc/ssl/le:/etc/ssl/le'
       - './config/dhparam.pem:/etc/nginx/dhparam.pem'
-    # command: ["-conf", "/etc/coredns/Corefile"]
-  app:
-    # https://hub.docker.com/_/nginx
-    image: httpd:2
-    container_name: app
-    restart: always # other option: always - if you want persistent through host reboots
-    expose:
-      - '80'
-    ports:
-      - '8080:80'
+  # app:
+  #   # https://hub.docker.com/_/nginx
+  #   image: httpd:2
+  #   container_name: app
+  #   restart: always # other option: always - if you want persistent through host reboots
+  #   expose:
+  #     - '80'
+  #   ports:
+  #     - '18080:80'
   app2:
     # https://hub.docker.com/_/nginx
     image: nginx:1.23
@@ -36,4 +35,4 @@ services:
     expose:
       - '80'
     ports:
-      - '8090:80'
+      - '18090:80'

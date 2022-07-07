@@ -1,0 +1,20 @@
+---
+- name: Grab cert from dns1 - slurp
+  ansible.builtin.slurp:
+    src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
+  with_nested:
+    - "{{ certs | map(attribute='cn')}}"
+    - ['cert.key','cert.crt','cert.fullchain']
+  register: slurp_res
+
+- name: Create certs on localhost
+  ansible.builtin.copy:
+    content: "{{ item.content | b64decode }}"
+    dest: "{{ item.source }}"
+    owner: root
+    group: root
+    mode: '0644'
+  delegate_to: 127.0.0.1
+  loop: "{{ slurp_res.results }}"
+  loop_control:
+    label: "{{ item.item[0] }} - {{ item.item[1] }}"

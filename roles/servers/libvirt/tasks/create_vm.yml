@@ -24,17 +24,7 @@
 - include_tasks: cloud-init.yml
   when: vm_config.changed or vm_force_recreation == true or vm_force_cloud_init_recreation == true
 
-- name: Destroy the domain with XML specification
-  virt:
-    name: "{{ vm.name }}"
-    command: destroy
-  ignore_errors: true
-  when: vm_force_recreation == true
-
-- name: Remove storage
-  file:
-    path: "{{ vm_disk_path }}"
-    state: absent
+- include_tasks: destroy_vm.yml
   when: vm_force_recreation == true
 
 - name: Check if storage exists

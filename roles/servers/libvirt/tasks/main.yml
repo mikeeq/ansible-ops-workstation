@@ -6,3 +6,8 @@
   loop: "{{ vms }}"
   loop_control:
     loop_var: vm
+
+- include_tasks: destroy_vm.yml
+  loop: "{{ vms_to_remove }}"
+  loop_control:
+    loop_var: vm

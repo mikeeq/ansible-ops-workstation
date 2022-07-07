@@ -1,0 +1,25 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+---
+version: '3.8'
+services:
+  jenkins:
+    build: .
+    # https://hub.docker.com/r/jenkins/jenkins
+    image: jenkins
+    # image: jenkins/jenkins:slim-jdk11
+    container_name: jenkins
+    restart: on-failure     # other option: always - if you want persistent through host reboots
+    expose:
+      - '8080'
+      # - '50000:50000'     #  Uncomment if multiagent Jenkins
+    ports:
+      - '8080:{{ jenkins_host_port }}'
+      # - '50000:50000'
+    # user: "jenkins:jenkins"
+    user: "root:root"
+    volumes:
+      # - 'jenkins_home:/var/jenkins_home'
+      - '{{ jenkins_home }}:/var/jenkins_home'
+      - /var/run/docker.sock:/var/run/docker.sock
+
+# mkdir -p ./jenkins_home; chown -R 1000:1000 ./jenkins_home

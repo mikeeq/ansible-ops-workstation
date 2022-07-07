@@ -1,0 +1,36 @@
+---
+- name: Wait for Jenkins to be up
+  wait_for:
+    path: "{{ jenkins_home }}/secrets/initialAdminPassword"
+
+- name: JENKINS-PASSTOKEN | Get initial authentication token
+  shell: 'cat {{ jenkins_home }}/secrets/initialAdminPassword'
+  register: admin_auth_token
+
+- name: Ensure jjb dir exists
+  file:
+    path: "{{ jenkins_home }}/jjb/jobs/"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_uid }}"
+    state: directory
+
+- name: Configure jjb
+  template:
+    src: "jjb/config.ini"
+    dest: "{{ jenkins_home }}/jjb/config.ini"
+    mode: 0664
+
+- name: Add JJB jobs
+  template:
+    src: "{{ item }}"
+    dest: "{{ jenkins_home }}/jjb/jobs/"
+  with_fileglob:
+    - ../templates/jjb/jobs/*
+
+- name: Build Jenkins Docker image
+  shell: |
+    docker-compose exec jenkins /bin/bash -c "cd /var/jenkins_home/jjb && jenkins-jobs --conf ./config.ini update -r ./jobs/"
+  changed_when: build_result.stderr_lines | length > 2
+  register: build_result
+  args:
+    chdir: "{{ jenkins_install_path }}"

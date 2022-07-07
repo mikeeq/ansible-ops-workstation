@@ -1,0 +1,17 @@
+---
+ssl_path: "/etc/openvpn/ssl"
+easyrsa_path: "/usr/share/easy-rsa/3"
+pki_path: "/etc/openvpn/pki"
+certs_path: "{{ pki_path }}/issued"
+keys_path: "{{ pki_path }}/private"
+
+common_name: "vpn.example.com"
+
+ca_path: "{{ pki_path }}/ca.crt"
+dh_path: "{{ pki_path }}/dh.pem"
+
+server_crt_name: server
+server_crt_path: "{{ certs_path }}/{{ server_crt_name }}.crt"
+
+client_crts:
+  - client

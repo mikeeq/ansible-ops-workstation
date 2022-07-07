@@ -1,0 +1,19 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+---
+version: '3.8'
+services:
+  adguard:
+    container_name: adguard
+    image: adguard/adguardhome:latest
+    # environment:
+      # WEBPASSWORD: 'set a secure password here or it will be random'
+    # Volumes store your data between container upgrades
+    volumes:
+      - './workdir:/opt/adguardhome/work'
+      - './confdir:/opt/adguardhome/conf'
+    # Recommended but not required (DHCP needs NET_ADMIN)
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    # cap_add:
+    #   - NET_ADMIN
+    network_mode: "host"
+    restart: always

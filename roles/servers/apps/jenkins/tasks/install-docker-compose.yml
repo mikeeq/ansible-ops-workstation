@@ -1,0 +1,43 @@
+---
+- name: Ensure jenkins install dir exists
+  file:
+    path: "{{ jenkins_install_path }}"
+    state: directory
+
+- name: Ensure jenkins_home dir exists
+  file:
+    path: "{{ jenkins_home }}"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_uid }}"
+    state: directory
+
+- name: Configure docker-compose for Jenkins
+  template:
+    src: "{{ item }}"
+    dest: "{{ jenkins_install_path }}/{{ item }}"
+    mode: 0664
+  loop:
+    - docker-compose.yml
+    - Dockerfile
+
+# - name: Pull Jenkins Docker image
+#   command: docker-compose pull
+#   changed_when: pull_result.stderr_lines | length > 2
+#   register: pull_result
+#   args:
+#     chdir: "{{ jenkins_install_path }}"
+
+- name: Build Jenkins Docker image
+  shell: |
+    docker-compose build --pull --build-arg DOCKER_GID=$(cat /etc/group | grep docker | awk -F\: '{print $3}')
+  changed_when: build_result.stderr_lines | length > 2
+  register: build_result
+  args:
+    chdir: "{{ jenkins_install_path }}"
+
+- name: Run Jenkins using docker-compose
+  command: docker-compose up -d
+  changed_when: up_result.stderr_lines | length > 1
+  register: up_result
+  args:
+    chdir: "{{ jenkins_install_path }}"

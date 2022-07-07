@@ -14,62 +14,14 @@
 #   loop_control:
 #     loop_var: cert
 #   vars:
-#     dns_task_path: dns-coredns.yml
+#     dns_task_path: dns_coredns.yml
 #     domain_name: "{{ cert.domain_name }}"
 
-- file:
-    path: "{{ certs_path }}/{{ item }}"
-    state: directory
-  delegate_to: 127.0.0.1
-  loop: "{{ certs | map(attribute='cn')}}"
+# - name: Create directories for certs
+#   file:
+#     path: "{{ certs_path }}/{{ item }}"
+#     state: directory
+#   delegate_to: 127.0.0.1
+#   loop: "{{ certs | map(attribute='cn')}}"
 
-# - name: Get stats of a file
-#   ansible.builtin.stat:
-#     path: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
-#   with_nested:
-#     - "{{ certs | map(attribute='cn')}}"
-#     - ['cert.key','cert.crt']
-
-- name: Grab cert from dns1 - slurp
-  ansible.builtin.slurp:
-    src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
-  with_nested:
-    - "{{ certs | map(attribute='cn')}}"
-    - ['cert.key','cert.crt']
-  register: slurp_res
-
-- debug:
-    var: slurp_res
-
-- name: Copy file with owner and permissions
-  ansible.builtin.copy:
-    content: "{{ item.content | b64decode }}"
-    dest: "{{ item.source }}"
-    owner: root
-    group: root
-    mode: '0644'
-  delegate_to: 127.0.0.1
-  loop: "{{ slurp_res.results }}"
-  loop_control:
-    label: "{{ item.item[0] }} - {{ item.item[1] }}"
-
-
-# - name: Grab cert from dns1 - synchronize
-#   ansible.posix.synchronize:
-#     mode: pull
-#     src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
-#     dest: "{{ certs_path }}/{{ item.0 }}/"
-#   with_nested:
-#     - "{{ certs | map(attribute='cn')}}"
-#     - ['cert.key','cert.crt']
-
-
-# - name: Grab cert from dns1 - fetch
-#   become: false
-#   ansible.builtin.fetch:
-#     src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
-#     dest: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
-#     flat: true
-#   with_nested:
-#     - "{{ certs | map(attribute='cn')}}"
-#     - ['cert.key','cert.crt']
+- import_tasks: copy_certs.yml

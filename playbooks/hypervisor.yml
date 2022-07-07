@@ -1,11 +1,10 @@
 ---
 - name: Fedora host
-  hosts: "{{ hosts_to_deploy | default('local') }}"
+  hosts: clevoF35
   become: true
   pre_tasks:
     # - debug:
     #     var: hostvars[inventory_hostname]
   roles:
-    # - desktop/machines/macbook_pro_2020
     # - servers/network-baremetal
     - servers/libvirt
