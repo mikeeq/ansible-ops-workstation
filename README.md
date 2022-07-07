@@ -309,7 +309,10 @@ Contributions are what make the open source community such an amazing place to b
 9. Add SSH keys, config and private gpg keys from keybase
 
    ```bash
+   keybase pgp list
    keybase pgp export --query $KEY_ID -s > private.gpg; gpg --import private.gpg; rm -v private.gpg
+   keybase pgp export --query $KEY_ID > public.gpg; gpg --import public.gpg; rm -v public.gpg
+   git-crypt add-gpg-user -n --trusted $USER_ID[could be email]
    ```
 
 10. To save HTTPS git credentials
