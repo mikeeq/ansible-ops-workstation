@@ -13,18 +13,18 @@
 #     - servers/apps/coredns
 #     - servers/apps/letsencrypt-coredns
 
-- name: Install DNS2
-  hosts:
-    - dns2
-  become: true
-  roles:
-    - servers/network-vms
-    - apps/docker
-    - apps/docker-compose
-
-# - name: Install CoreDNS
+# - name: Install DNS2
 #   hosts:
-#     - clevoF35
+#     - dns2
 #   become: true
 #   roles:
-#     - servers/apps/nginx
+#     - servers/network-vms
+#     - apps/docker
+#     - apps/docker-compose
+
+- name: Install CoreDNS
+  hosts:
+    - clevoF35
+  become: true
+  roles:
+    - servers/apps/nginx
