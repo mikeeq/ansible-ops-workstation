@@ -1,0 +1,32 @@
+---
+- name: Check if NordVPN repo is installed
+  shell: dnf repolist | grep -iq nordvpn
+  register: repo_exists
+  changed_when: repo_exists.rc != 0
+  ignore_errors: true
+
+- name: Install NordVPN repo
+  dnf:
+    name: "https://repo.nordvpn.com/yum/nordvpn/centos/noarch/Packages/n/nordvpn-release-1.0.0-1.noarch.rpm"
+    state: present
+    disable_gpg_check: true
+  when: repo_exists.rc != 0
+
+- name: Update cache if repo added
+  dnf:
+    update_cache: true
+  when: repo_exists.rc != 0
+
+- name: Install NordVPN
+  dnf:
+    name: "nordvpn"
+    state: present
+
+# NordVPN install
+
+# curl -L https://repo.nordvpn.com/yum/nordvpn/centos/noarch/Packages/n/nordvpn-release-1.0.0-1.noarch.rpm -O
+# dnf install -y ./nordvpn-release-1.0.0-1.noarch.rpm
+# dnf makecache
+# dnf install -y nordvpn
+# nordvpn login
+# nordvpn whitelist add subnet 192.168.0.0/16
