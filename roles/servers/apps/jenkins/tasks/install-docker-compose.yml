@@ -27,6 +27,8 @@
 #   args:
 #     chdir: "{{ jenkins_install_path }}"
 
+# TODO: Add jenkins user to local machine
+
 - name: Build Jenkins Docker image
   shell: |
     docker-compose build --pull --build-arg DOCKER_GID=$(cat /etc/group | grep docker | awk -F\: '{print $3}')

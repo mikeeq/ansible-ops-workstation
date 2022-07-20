@@ -1,11 +1,19 @@
 # https://docs.docker.com/compose/compose-file/compose-file-v3/
 ---
-version: '3.8'
+version: '3.9'
 services:
   jenkins:
     build: .
     # https://hub.docker.com/r/jenkins/jenkins
     image: jenkins
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
     # image: jenkins/jenkins:slim-jdk11
     container_name: jenkins
     restart: on-failure     # other option: always - if you want persistent through host reboots
@@ -17,6 +25,9 @@ services:
       # - '50000:50000'
     # user: "jenkins:jenkins"
     user: "root:root"
+    environment:
+      JAVA_OPTS: "-Xmx256m"
+      JAVA_ARGS: "-Xmx256m"
     volumes:
       # - 'jenkins_home:/var/jenkins_home'
       - '{{ jenkins_home }}:/var/jenkins_home'

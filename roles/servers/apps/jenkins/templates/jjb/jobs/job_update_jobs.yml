@@ -1,4 +1,5 @@
 ---
+# https://jenkins-job-builder.readthedocs.io/en/latest/definition.html#job-1
 - job:
     name: update_jobs
     display-name: Update Jobs JJB
