@@ -112,6 +112,8 @@ pip_apps:
     virtualenv_enabled: false
   - name: psutil
     virtualenv_enabled: false
+  - name: pywinrm
+    virtualenv_enabled: false
   - name: niet
     virtualenv_enabled: true
 
