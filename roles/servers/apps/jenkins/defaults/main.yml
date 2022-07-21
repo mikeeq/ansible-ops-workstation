@@ -1,0 +1,13 @@
+---
+jenkins_install_path: "/opt/jenkins"
+jenkins_home: "{{ jenkins_install_path }}/jenkins_home"
+# UID and GID from Jenkins official docker image
+jenkins_uid: "1000"
+jenkins_gid: "1000"
+
+jenkins_host_port: "8080"
+
+jenkins_users:
+  - name: jjb
+    password: test_pass
+    email: jjb@local.jenkins

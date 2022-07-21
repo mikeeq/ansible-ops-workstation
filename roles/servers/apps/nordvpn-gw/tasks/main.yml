@@ -1,0 +1,15 @@
+---
+# make sure nordvpn is installed
+# dnf install -y iptables-services
+
+# sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+# sudo iptables -A FORWARD -i tun0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+# sudo iptables -A FORWARD -i eth0 -o tun0 -j ACCEPT
+
+# sudo iptables -t nat -A POSTROUTING -o nordlynx -j MASQUERADE
+# sudo iptables -A FORWARD -i nordlynx -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+# sudo iptables -A FORWARD -i eth0 -o nordlynx -j ACCEPT
+
+# echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+# iptables-save > /etc/sysconfig/iptables
+# systemctl enable iptables

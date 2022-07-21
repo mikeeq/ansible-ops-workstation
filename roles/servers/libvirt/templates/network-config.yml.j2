@@ -1,0 +1,16 @@
+---
+version: 2
+ethernets:
+  eth0:
+    dhcp4: false
+    addresses:
+{% for ip in vm.ipv4_addresses %}
+      - {{ ip }}
+{% endfor %}
+    gateway4: {{ vm.gateway4 }}
+    nameservers:
+      addresses:
+{% for dns_ip in vm.dns_servers %}
+        - {{ dns_ip }}
+{% endfor %}
+    dhcp6: false

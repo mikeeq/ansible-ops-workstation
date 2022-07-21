@@ -10,19 +10,19 @@ docker run \
   -v $(pwd):/repo \
   -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
   --cgroupns host \
-  -w /repo \
+  -w /repo/playbooks \
   --rm \
   ${DOCKER_IMAGE}
 
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook -e docker_tests_flag=true -i inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
+    ansible-playbook -e docker_tests_flag=true -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
 
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook -e docker_tests_flag=true -i inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
+    ansible-playbook -e docker_tests_flag=true -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
 
 livecd_exitcode=$?
 

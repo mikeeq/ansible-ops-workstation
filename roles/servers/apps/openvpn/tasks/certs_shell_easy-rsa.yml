@@ -1,0 +1,58 @@
+---
+# /usr/share/easy-rsa/3/easyrsa
+# General options:
+
+# --batch         : set automatic (no-prompts when possible) mode
+# --pki-dir=DIR   : declares the PKI directory
+# --vars=FILE     : define a specific 'vars' file to use for Easy-RSA config
+
+# - name: Symlink easyrsa binary
+#   file:
+#     src: "{{ easyrsa_path }}"
+#     dest: "/usr/bin/easyrsa"
+#     state: link
+
+
+- name: "Init pki"
+  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} init-pki"
+  # register: google_chrome_repo
+  # changed_when: google_chrome_repo.rc != 0
+  ignore_errors: true
+  args:
+    creates: "{{ pki_path }}"
+
+# - name: "Build-ca"
+#   expect:
+#     command: /usr/share/easy-rsa/3/easyrsa build-ca
+#     responses:
+#       (?i)PEM pass phrase: "MySekretPa$$word"
+
+
+- name: "Build-ca"
+  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-ca nopass"
+  args:
+    creates: "{{ ca_path }}"
+
+# ./build-key-server server
+# build-server-full server nopass
+
+- name: "Build Server key and cert"
+  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-server-full {{ server_crt_name }} nopass"
+  args:
+    creates: "{{ server_crt_path }}"
+
+# ./build-dh
+
+- name: "Build a Diffie-Hellman key exchange"
+  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} gen-dh"
+  args:
+    creates: "{{ dh_path }}"
+
+# ./build-key client
+
+- name: "Build client cert"
+  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-client-full {{ item }} nopass"
+  args:
+    creates: "{{ pki_path }}/issued/{{ item }}.crt"
+  with_items:
+    - "{{ client_crts }}"

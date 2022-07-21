@@ -1,0 +1,16 @@
+#cloud-config
+# vim: syntax=yaml
+---
+chpasswd:
+  expire: false
+ssh_pwauth: true
+output:
+  all: '| tee -a /var/log/cloud-init-output.log'
+users:
+  - name: root
+    lock-passwd: true
+  - name: {{ default_admin_username }}
+    passwd: {{ default_admin_password | password_hash('sha512') }}
+    lock-passwd: false
+    groups:
+      - wheel

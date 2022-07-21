@@ -112,6 +112,8 @@ pip_apps:
     virtualenv_enabled: false
   - name: psutil
     virtualenv_enabled: false
+  - name: pywinrm
+    virtualenv_enabled: false
   - name: niet
     virtualenv_enabled: true
 
@@ -142,6 +144,8 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # ctop_version: 0.7.7
 # https://github.com/gruntwork-io/terragrunt/releases/latest
 # terragrunt_version: 0.31.8
+# https://releases.hashicorp.com/vagrant
+# vagrant_version: 2.2.19
 
 vscode_extensions:
   - bbenoist.vagrant

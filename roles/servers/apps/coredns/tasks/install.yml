@@ -1,0 +1,33 @@
+---
+- name: Ensure install dir exists
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}"
+    - "{{ install_path }}/config"
+
+- name: Configure docker-compose file
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/{{ item }}"
+    mode: 0664
+  loop:
+    - docker-compose.yml
+    - config/Corefile
+
+- import_tasks: config.yml
+
+- name: Pull Docker image using docker-compose
+  command: docker-compose pull
+  changed_when: pull_result.stderr_lines | length > 2
+  register: pull_result
+  args:
+    chdir: "{{ install_path }}"
+
+- name: Run using docker-compose
+  command: docker-compose up -d
+  changed_when: up_result.stderr_lines | length > 2
+  register: up_result
+  args:
+    chdir: "{{ install_path }}"

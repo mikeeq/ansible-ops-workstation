@@ -1,3 +1,4 @@
+# This file is used by Vagrantfile
 ---
 hosts:
   - name: "fedora35"
