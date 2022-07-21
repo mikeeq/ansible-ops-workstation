@@ -22,5 +22,5 @@
 #     chdir: "{{ jenkins_install_path }}"
 
 - import_tasks: install-docker-compose.yml
-# - import_tasks: users.yml
+- import_tasks: users.yml
 - import_tasks: jjb.yml

@@ -27,7 +27,7 @@
   with_fileglob:
     - ../templates/jjb/jobs/*
 
-- name: Build Jenkins Docker image
+- name: Run jjb in Docker image
   shell: |
     docker-compose exec jenkins /bin/bash -c "cd /var/jenkins_home/jjb && jenkins-jobs --conf ./config.ini update -r ./jobs/"
   changed_when: build_result.stderr_lines | length > 2
