@@ -46,6 +46,16 @@
   register: vagrant_libvirt_output
   changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
 
+- name: Install vagrant plugins
+  become: true
+  become_user: "{{ user_name }}"
+  shell: vagrant plugin install {{ item }}
+  register: vagrant_libvirt_output
+  changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
+  loop:
+    - winrm
+    - winrm-elevated
+
 # - name: Install vagrant from fedora repo
 #   dnf:
 #     name: "{{ pkgs }}"
