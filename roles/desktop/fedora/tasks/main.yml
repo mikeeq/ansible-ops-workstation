@@ -8,6 +8,7 @@
 # - import_tasks: selinux.yml
 - import_tasks: grub.yml
 - import_tasks: nested_kvm.yml
+- import_tasks: udev.yml
 
 ### TODO:
 # qnapi

@@ -119,10 +119,14 @@ pip_apps:
 
 gnome_extension_owner: "{{ user_name }}"
 gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shell/extensions/"
+
+# https://extensions.gnome.org/extension/906/sound-output-device-chooser/
 gnome_shell_extensions:
   - 517         # caffeine
   - 615         # appindicator
-  - 4792        # frequency-boost-switch/
+  - 4792        # frequency-boost-switch
+  - 906         # Sound Input & Output Device Chooser
+  - 4652        # adjust-display-brightness
   # - 1082        # cpufreq
   # - 4144        # vertical-overview
   # - 945         # cpu-power-manager
