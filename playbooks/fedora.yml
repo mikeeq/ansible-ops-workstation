@@ -25,12 +25,3 @@
 
 - name: Include a playbook for generic provisioning
   import_playbook: generic.yml
-
-# - name: jenkins
-#   hosts: "{{ hosts_to_deploy | default('local') }}"
-#   become: true
-#   pre_tasks:
-#     # - debug:
-#     #     var: hostvars[inventory_hostname]
-#   roles:
-#     - servers/apps/jenkins
