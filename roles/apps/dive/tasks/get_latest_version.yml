@@ -1,6 +1,6 @@
 ---
 - name: Get latest version dive
-  shell: curl -Is https://github.com/hashicorp/terraform/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
+  shell: curl -Is https://github.com/wagoodman/dive/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
   register: version
   changed_when: false
   ignore_errors: true
