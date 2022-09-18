@@ -1,0 +1,27 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/community/crypto/acme_certificate_module.html
+
+# - import_tasks: account_key.yml
+
+# - name: "Create dir for certs - {{ certs_path }}"
+#   file:
+#     path: "{{ certs_path }}"
+#     state: directory
+
+# - name: Generate cert
+#   include_tasks: cert.yml
+#   loop: "{{ certs }}"
+#   loop_control:
+#     loop_var: cert
+#   vars:
+#     dns_task_path: dns_coredns.yml
+#     domain_name: "{{ cert.domain_name }}"
+
+# - name: Create directories for certs
+#   file:
+#     path: "{{ certs_path }}/{{ item }}"
+#     state: directory
+#   delegate_to: 127.0.0.1
+#   loop: "{{ certs | map(attribute='cn')}}"
+
+- import_tasks: copy_certs.yml

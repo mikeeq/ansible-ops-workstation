@@ -127,17 +127,17 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-3. Change `user_name` in `group_vars/all.yml` to your Fedora username and run Ansible
+3. Change `user_name` in `playbooks/group_vars/all.yml` to your Fedora username and run Ansible
 
    ```bash
    # Go to repository directory
-   cd ansible-ops-workstation
+   cd ansible-ops-workstation/playbooks
 
-   # Edit group_vars/all.yml, change user_name
+   # Edit playbooks/group_vars/all.yml, change user_name
    vi group_vars/all.yml
 
    # Run Ansible
-   ansible-playbook -i inventory/hosts.yml fedora.yml -K
+   ansible-playbook -i ../inventory/hosts.yml fedora.yml -K
    ```
 
 4. Reboot your machine to apply all changes
@@ -198,17 +198,17 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-5. Change `user_name` in `group_vars/all.yml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/group_vars/all.yml#L2)) and run Ansible
+5. Change `user_name` in `playbooks/group_vars/all.yml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yml#L2)) and run Ansible
 
    ```bash
    # Go to repository directory
-   cd ansible-ops-workstation
+   cd ansible-ops-workstation/playbooks
 
-   # Edit group_vars/all.yml, change user_name
+   # Edit playbooks/group_vars/all.yml, change user_name
    vi group_vars/all.yml
 
    # Run Ansible
-   ansible-playbook -i inventory/hosts.yml wsl-ubuntu.yml -K
+   ansible-playbook -i ../inventory/hosts.yml wsl-ubuntu.yml -K
    ```
 
 6. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
@@ -221,7 +221,7 @@ Contributions are what make the open source community such an amazing place to b
 
    - and paste it here - `C:/Users/${WINDOWS_USER_NAME}/AppData/Roaming/Code/User/settings.json`
 
-9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/group_vars/all.yml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
+9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
 
    ```bash
    code --install-extension ${EXTENSION_NAME}
@@ -309,7 +309,10 @@ Contributions are what make the open source community such an amazing place to b
 9. Add SSH keys, config and private gpg keys from keybase
 
    ```bash
+   keybase pgp list
    keybase pgp export --query $KEY_ID -s > private.gpg; gpg --import private.gpg; rm -v private.gpg
+   keybase pgp export --query $KEY_ID > public.gpg; gpg --import public.gpg; rm -v public.gpg
+   git-crypt add-gpg-user -n --trusted $USER_ID[could be email]
    ```
 
 10. To save HTTPS git credentials

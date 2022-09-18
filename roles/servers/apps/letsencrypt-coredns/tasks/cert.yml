@@ -1,0 +1,113 @@
+---
+- name: "Create dir for LE cert - {{ cert_path }}"
+  file:
+    path: "{{ cert_path }}"
+    state: directory
+
+- name: Create certificate key
+  community.crypto.openssl_privatekey:
+    path: "{{ cert_key_path }}"
+    type: RSA
+    size: "{{ key_size }}"
+
+- name: Generate an OpenSSL Certificate Signing Request
+  community.crypto.openssl_csr:
+    path: "{{ cert_csr_path }}"
+    privatekey_path: "{{ cert_key_path }}"
+    common_name: "{{ cert.cn }}"
+    subject_alt_name: "{{ item.value | map('regex_replace', '^', 'DNS:') | list }}"
+  with_dict:
+    cert_sans: "{{ cert.sans | default([]) }}"
+
+- name: Create a challenge using the LE account key file
+  community.crypto.acme_certificate:
+    account_key_src: "{{ account_key_path }}"
+    account_email: "{{ letsencrypt_email }}"
+    src: "{{ cert_csr_path }}"
+    cert: "{{ cert_crt_path }}"
+    challenge: dns-01
+    force: "{{ force_cert_creation }}"
+    acme_version: "{{ letsencrypt_api_version }}"
+    acme_directory: "{{ letsencrypt_api }}"
+    remaining_days: "{{ letsencrypt_days }}"
+  register: le_challenge
+
+- debug:
+    var: le_challenge
+
+- debug:
+    msg: "Certificate is still valid for: {{ le_challenge.cert_days }} days"
+  when: le_challenge.changed == false
+
+- name: Create DNS records
+  include_tasks: "{{ dns_task_path }}"
+  loop: "{{ le_challenge.challenge_data | dict2items }}"
+  when: le_challenge is changed
+  vars:
+    record_state: present
+
+- name: Reload CoreDNS
+  shell: docker-compose restart
+  args:
+    chdir: /opt/coredns
+  when: le_challenge.changed
+
+- name: Check if DNS records propagated
+  shell: dig @127.0.0.1 -i txt {{ item.value['dns-01'].record }} | grep -w "{{ item.value['dns-01'].resource_value }}"
+  loop: "{{ le_challenge.challenge_data | dict2items }}"
+  retries: 5
+  changed_when: false
+  until: record_check.rc == 0
+  register: record_check
+  when: le_challenge.changed
+
+- name: Let the challenge be validated and retrieve the cert and intermediate certificate
+  community.crypto.acme_certificate:
+    account_key_src: "{{ account_key_path }}"
+    account_email: "{{ letsencrypt_email }}"
+    acme_directory: "{{ letsencrypt_api }}"
+    acme_version: "{{ letsencrypt_api_version }}"
+    remaining_days: "{{ letsencrypt_days }}"
+    challenge: dns-01
+    src: "{{ cert_csr_path }}"
+    cert: "{{ cert_crt_path }}"
+    fullchain: "{{ cert_fullchain_path }}"
+    chain: "{{ cert_chain_path }}"
+    data: "{{ le_challenge }}"
+    force: "{{ force_cert_creation }}"
+    # The following makes sure that if a chain with /CN=DST Root CA X3 in its issuer is provided
+    # as an alternative, it will be selected. These are the roots cross-signed by IdenTrust.
+    # As long as Let's Encrypt provides alternate chains with the cross-signed root(s) when
+    # switching to their own ISRG Root X1 root, this will use the chain ending with a cross-signed
+    # root. This chain is more compatible with older TLS clients.
+    select_chain:
+      - test_certificates: last
+        issuer:
+          CN: DST Root CA X3
+          O: Digital Signature Trust Co.
+  when: le_challenge.changed
+
+- name: Generate cert pfx pkcs12
+  community.crypto.openssl_pkcs12:
+    action: export
+    friendly_name: cert
+    path: "{{ cert_pfx_path }}"
+    privatekey_path: "{{ cert_key_path }}"
+    certificate_path: "{{ cert_crt_path }}"
+    state: present
+  when: le_challenge.changed
+
+- name: Delete DNS records
+  include_tasks: "{{ dns_task_path }}"
+  loop: "{{ le_challenge.challenge_data | dict2items }}"
+  when: le_challenge.changed
+  vars:
+    record_state: absent
+
+- name: Reload CoreDNS
+  shell: docker-compose restart
+  args:
+    chdir: /opt/coredns
+  when: le_challenge.changed
+
+# to validate cert: openssl x509 -text -noout -in cert.crt

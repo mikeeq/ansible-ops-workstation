@@ -1,0 +1,10 @@
+---
+- scm:
+    name: ansible_custom
+    scm:
+      - git:
+          url: git@github.com:mikeeq/ansible-ops-workstation.git
+          branches:
+            - '*/$BRANCH'
+          skip-tag: true
+          wipe-workspace: false

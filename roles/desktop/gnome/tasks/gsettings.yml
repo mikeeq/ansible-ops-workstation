@@ -110,9 +110,10 @@
   become_user: "{{ user_name }}"
   dconf:
     key: "/org/gnome/shell/enabled-extensions"
-    value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326']"
+    value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326', 'gnome-extension-brightness@bruno.englert.gitlab.com', 'sound-output-device-chooser@kgshank.net']"
     state: present
 
+# "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326']"
 # value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'cpupower@mko-sl.de', 'gTile@vibou']"
 
 - name: show date

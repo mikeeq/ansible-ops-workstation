@@ -1,0 +1,28 @@
+---
+account_path: "/etc/ssl/le/account"
+account_key_path: "{{ account_path }}/account.key"
+
+certs_path: "/etc/ssl/le/certs"
+cert_path: "{{ certs_path }}/{{ cert.cn }}"
+cert_key_path: "{{ cert_path }}/cert.key"
+cert_csr_path: "{{ cert_path }}/cert.csr"
+cert_crt_path: "{{ cert_path }}/cert.crt"
+cert_pfx_path: "{{ cert_path }}/cert.pfx"
+cert_fullchain_path: "{{ cert_path }}/cert.fullchain"
+cert_chain_path: "{{ cert_path }}/cert.chain"
+
+# letsencrypt_api: "https://acme-v02.api.letsencrypt.org/directory"
+letsencrypt_api: "https://acme-staging-v02.api.letsencrypt.org/directory"
+letsencrypt_api_version: 2
+letsencrypt_email: "test@mail.com"
+letsencrypt_days: 30
+
+key_size: "4096"
+force_cert_creation: "false"
+
+certs:
+  - cn: "example.com"
+    domain_name: "example.com"
+    sans:
+      - "www.example.com"
+      - "dns.example.com"

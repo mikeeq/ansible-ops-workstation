@@ -1,0 +1,26 @@
+---
+- job:
+    name: ansible_custom_run
+    display-name: Ansible Custom
+    concurrent: true
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: "git-crypt unlock ~/.ssh/ci_key"
+      - shell: "ANSIBLE_FORCE_COLOR=true ansible-playbook -i inventory/$INVENTORY $PLAYBOOK $EXTRA_PARAMETERS"
+    scm:
+      - ansible_custom
+    parameters:
+      - string:
+          name: BRANCH
+          default: 'master'
+      - string:
+          name: INVENTORY
+          default: 'prod.yml'
+      - string:
+          name: PLAYBOOK
+          default: 'playbook_main.yml'
+      - string:
+          name: EXTRA_PARAMETERS
+          default: ''

@@ -2,10 +2,9 @@
 - name: Fedora bootstrap
   hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
-  # pre_tasks:
-  #   - debug:
-  #       var: hostvars[inventory_hostname]
-  #   - import_tasks: roles/desktop/fedora/tasks/rpmfusion.yml
+  pre_tasks:
+    # - debug:
+    #     var: hostvars[inventory_hostname]
   roles:
     - pkg_mgmt/dnf
     - pkg_mgmt/flatpak
@@ -19,6 +18,7 @@
     - desktop/apps/vscode
     - desktop/apps/x11docker
     - desktop/fedora
+    - apps/nordvpn
 
 - name: Include a playbook for generic-core provisioning
   import_playbook: generic-core.yml

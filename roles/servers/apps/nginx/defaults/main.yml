@@ -1,0 +1,9 @@
+---
+install_path: "/opt/nginx"
+
+sites:
+  - source_url: "http://localhost:8080"
+    destination_url: "web.example.com"
+    cert:
+      crt_path: "/etc/ssl/cert.crt"
+      key_path: "/etc/ssl/cert.key"
