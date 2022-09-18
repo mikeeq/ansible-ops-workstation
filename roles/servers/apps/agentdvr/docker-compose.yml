@@ -1,0 +1,36 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+# https://www.ispyconnect.com/download.aspx/
+---
+version: "3.9"
+services:
+  agentdvr:
+    container_name: agentdvr
+    privileged: true # this may not be necessary for all setups
+    restart: unless-stopped
+    # https://hub.docker.com/r/doitandbedone/ispyagentdvr/tags
+    # https://hub.docker.com/layers/pv-nvidia-agentdvr/lostkiwi/pv-nvidia-agentdvr/latest/images/sha256-21d7af5942ce7406e1f6317b0e5314c166305a64e33975e5021ea9c6806ba459?context=explore
+    image: doitandbedone/ispyagentdvr:4.1.0.0
+    # shm_size: "64mb" # update for your cameras based on calculation above
+    devices:
+      - /dev/dri/renderD128 # for intel hwaccel, needs to be updated for your hardware
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/:/agent/Media/XML/
+      - ./media/:/agent/Media/WebServerRoot/Media/
+      - ./commands:/agent/Commands/
+      # - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+      #   target: /tmp/cache
+      #   tmpfs:
+      #     size: 1000000000
+    ports:
+      - "8090:8090"
+      - "3478:3478/udp"
+      - "50000-50010:50000-50010/udp"
+    environment:
+      TZ: "Europe/Warsaw"
+      # iHD, i965
+      LIBVA_DRIVER_NAME: "iHD"
+
+# docker run -it -p 8090:8090 -p 3478:3478/udp -p 50000-50010:50000-50010/udp \
+# -v /appdata/ispyagentdvr/config/:/agent/Media/XML/ \ -v /appdata/ispyagentdvr/media/:/agent/Media/WebServerRoot/Media/ \ -v /appdata/ispyagentdvr/commands:/agent/Commands/ \
+# -e TZ=America/Los_Angeles \ --name agentdvr doitandbedone/ispyagentdv

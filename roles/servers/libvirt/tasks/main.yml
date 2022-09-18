@@ -1,0 +1,13 @@
+# Based on: https://github.com/DBarthe/ansible-libvirt-cloudinit
+---
+- import_tasks: setup.yml
+
+- include_tasks: create_vm.yml
+  loop: "{{ vms }}"
+  loop_control:
+    loop_var: vm
+
+- include_tasks: destroy_vm.yml
+  loop: "{{ vms_to_remove }}"
+  loop_control:
+    loop_var: vm

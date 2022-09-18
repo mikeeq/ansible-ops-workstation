@@ -1,5 +1,10 @@
 // C:/Users/mikee/AppData/Roaming/Code/User/settings.json
 {
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "files.associations": {
+    "*.hcl": "terraform"
+  },
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -8,22 +13,22 @@
     "**/.git/subtree-cache/**": true,
     "**/node_modules/*/**": true
   },
-  "editor.tabSize": 2,
-  "editor.detectIndentation": false,
-  "workbench.colorTheme": "Visual Studio Dark",
-  "workbench.iconTheme": "vscode-icons",
+  "git.mergeEditor": false,
+  "redhat.telemetry.enabled": false,
+  "security.workspace.trust.startupPrompt": "never",
+  "security.workspace.trust.enabled": false,
+  "security.workspace.trust.emptyWindow": false,
+  "security.workspace.trust.untrustedFiles": "open",
   "terminal.integrated.fontSize": 14,
   "terminal.integrated.fontFamily": "MesloLGS NF",
   "terminal.integrated.fontWeight": "normal",
   "terminal.integrated.fontWeightBold": "bold",
   "terminal.integrated.scrollback": 50000,
+  "terminal.integrated.shellIntegration.enabled": false,
   "terminal.integrated.showExitAlert": false,
+  "workbench.colorTheme": "Visual Studio Dark",
+  "workbench.iconTheme": "vscode-icons",
   "workbench.startupEditor": "none",
-  "security.workspace.trust.startupPrompt": "never",
-  "security.workspace.trust.enabled": false,
-  "security.workspace.trust.emptyWindow": false,
-  "security.workspace.trust.untrustedFiles": "open",
-  "redhat.telemetry.enabled": false,
   "yaml.customTags": [
     "!encrypted/pkcs1-oaep scalar",
     "!vault scalar"
@@ -36,9 +41,6 @@
       "password": ""
     }
   ],
-  "files.associations": {
-    "*.hcl": "terraform"
-  },
   "[markdown]": {
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   }

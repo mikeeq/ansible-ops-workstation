@@ -17,35 +17,51 @@
     name: libxcrypt-compat
     state: present
 
-# - name: Get latest version
-#   shell: curl -s https://releases.hashicorp.com/vagrant/ | grep vagrant | cut -d'_' -f2 | cut -d'<' -f1 | head -n1
-#   register: version
-#   changed_when: false
-#   ignore_errors: true
-#   args:
-#     warn: off
+- name: Get installed version
+  shell: vagrant --version | awk '{print $2}'
+  register: installed_vagrant_version
+  changed_when: false
+  ignore_errors: true
+  args:
+    warn: off
 
-# - name: "Latest version of vagrant:"
-#   debug:
-#     var: version.stdout
+- name: "Installed version of vagrant:"
+  debug:
+    var: installed_vagrant_version.stdout
 
-# - name: Install vagrant from hashcorp repo
-#   dnf:
-#     name: "https://releases.hashicorp.com/vagrant/{{ version.stdout }}/vagrant_{{ version.stdout }}_x86_64.rpm"
-#     state: latest
+- include_tasks: get_latest_version.yml
+  when: vagrant_version is not defined
 
-# - name: Install vagrant-libvirt plugin
-#   become: true
-#   become_user: "{{ user_name }}"
-#   shell: CONFIGURE_ARGS='with-ldflags=-L/opt/vagrant/embedded/lib with-libvirt-include=/usr/include/libvirt with-libvirt-lib=/usr/lib' GEM_HOME=~/.vagrant.d/gems GEM_PATH=$GEM_HOME:/opt/vagrant/embedded/gems PATH=/opt/vagrant/embedded/bin:$PATH vagrant plugin install vagrant-libvirt
-#   register: vagrant_libvirt_output
-#   changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
-
-- name: Install vagrant from fedora repo
+# name: "https://releases.hashicorp.com/vagrant/{{ version.stdout }}/vagrant_{{ version.stdout }}_x86_64.rpm"
+- name: Install vagrant from hashcorp repo
   dnf:
-    name: "{{ pkgs }}"
+    name: "https://releases.hashicorp.com/vagrant/{{ version.stdout }}/vagrant-{{ version.stdout }}-1.x86_64.rpm"
     state: latest
-  vars:
-    pkgs:
-      - vagrant
-      - vagrant-libvirt
+    disable_gpg_check: true
+  when: installed_vagrant_version.stdout != vagrant_version
+
+- name: Install vagrant-libvirt plugin
+  become: true
+  become_user: "{{ user_name }}"
+  shell: CONFIGURE_ARGS='with-ldflags=-L/opt/vagrant/embedded/lib with-libvirt-include=/usr/include/libvirt with-libvirt-lib=/usr/lib' GEM_HOME=~/.vagrant.d/gems GEM_PATH=$GEM_HOME:/opt/vagrant/embedded/gems PATH=/opt/vagrant/embedded/bin:$PATH vagrant plugin install vagrant-libvirt
+  register: vagrant_libvirt_output
+  changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
+
+- name: Install vagrant plugins
+  become: true
+  become_user: "{{ user_name }}"
+  shell: vagrant plugin install {{ item }}
+  register: vagrant_libvirt_output
+  changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
+  loop:
+    - winrm
+    - winrm-elevated
+
+# - name: Install vagrant from fedora repo
+#   dnf:
+#     name: "{{ pkgs }}"
+#     state: latest
+#   vars:
+#     pkgs:
+#       - vagrant
+#       - vagrant-libvirt
