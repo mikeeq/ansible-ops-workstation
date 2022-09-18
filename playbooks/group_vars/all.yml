@@ -183,3 +183,4 @@ vscode_extensions:
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins:
   - sniff
+  - hns
