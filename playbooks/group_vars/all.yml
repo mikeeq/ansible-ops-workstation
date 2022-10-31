@@ -59,7 +59,8 @@ dnf_gui_apps:
   - dconf-editor
   - seahorse
   - gparted
-  - kodi
+  # "msg": "Depsolve Error occurred: \n Problem: conflicting requests\n  - nothing provides libwayland-client++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64\n  - nothing provides libwayland-cursor++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64\n  - nothing provides libwayland-egl++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64",
+  # - kodi
   - deluge
   - clamtk
   - wireshark
