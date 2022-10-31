@@ -9,6 +9,7 @@ dnf_apps:
   - sudo
   - ack
   - gcc
+  - flatpak
   - python3-pip
   - screen
   - tmux
