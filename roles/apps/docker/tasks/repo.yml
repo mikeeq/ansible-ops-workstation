@@ -9,3 +9,16 @@
     dnf config-manager \
     --add-repo \
     https://download.docker.com/linux/fedora/docker-ce.repo
+
+- name: Check releasever
+  shell: |
+    dnf config-manager --dump-variables | grep releasever | awk '{print $NF}'
+  register: releasever_check
+  ignore_errors: true
+
+- name: Overwrite Fedora release version in yum repo URL (37 doesn't exist yet)
+  ansible.builtin.replace:
+    path: /etc/yum.repos.d/docker-ce.repo
+    regexp: '\$releasever'
+    replace: '36'
+  when: releasever_check.stdout == "rawhide"
