@@ -7,7 +7,14 @@
     - ['cert.key','cert.crt','cert.fullchain']
   register: slurp_res
 
-- name: Create certs on localhost
+- name: Make sure that path for certs exists on localhost
+  file:
+    path: "{{ certs_path }}/{{ item }}"
+    state: directory
+  loop: "{{ certs | map(attribute='cn')}}"
+  delegate_to: 127.0.0.1
+
+- name: Copy certs to localhost
   ansible.builtin.copy:
     content: "{{ item.content | b64decode }}"
     dest: "{{ item.source }}"

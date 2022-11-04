@@ -10,16 +10,18 @@ RUN apt-get update \
     && apt-get clean all
 
 # https://pypi.org/project/pip/
-RUN pip3 install --no-cache-dir --upgrade pip==22.0.4 && \
+RUN pip3 install --no-cache-dir --upgrade pip==22.3 && \
     pip3 install --no-cache-dir \
       # https://pypi.org/project/ansible/
-      ansible==5.5.0 \
+      ansible==6.5.0 \
+      # https://pypi.org/project/ansible-lint/
+      ansible-lint==6.8.4 \
       # https://pypi.org/project/yamllint/
-      yamllint==1.26.3 \
+      yamllint==1.28.0 \
       # https://pypi.org/project/packaging/
       packaging==21.3 \
       # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL==22.0.0
+      pyOpenSSL==22.1.0
 
 RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME}
 

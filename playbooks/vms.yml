@@ -10,7 +10,7 @@
 #     # - servers/network-vms
 #     # - apps/docker
 #     # - apps/docker-compose
-#     - servers/apps/coredns
+#     # - servers/apps/coredns
 #     - servers/apps/letsencrypt-coredns
 
 # - name: Install DNS2
@@ -22,7 +22,7 @@
 #     - apps/docker
 #     - apps/docker-compose
 
-- name: Install CoreDNS
+- name: Install NGINX reverse proxy
   hosts:
     - clevoF35
   become: true

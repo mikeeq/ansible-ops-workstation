@@ -73,6 +73,7 @@
       unarchive:
         src: "{{ item.dest }}"
         dest: ~/.local/share/gnome-shell/extensions/{{ item.item.item.json.uuid }}
+        remote_src: true
       loop: "{{ download_gnome_shell_extensions.results }}"
       loop_control:
         label: "{{ item.item.item.json.name }}"
