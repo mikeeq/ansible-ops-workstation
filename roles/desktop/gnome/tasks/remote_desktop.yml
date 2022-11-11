@@ -7,20 +7,12 @@
     value: "true"
     state: present
 
-# - name: Choose screen-share-mode
-#   become: true
-#   become_user: "{{ user_name }}"
-#   dconf:
-#     key: "/org/gnome/desktop/remote-desktop/rdp/screen-share-mode"
-#     value: "'mirror-primary'"
-#     state: present
-
 - name: Choose screen-share-mode
   become: true
   become_user: "{{ user_name }}"
   dconf:
     key: "/org/gnome/desktop/remote-desktop/rdp/screen-share-mode"
-    value: "'extend'"
+    value: "'{{ gnome_rd_type }}'"
     state: present
 
 - name: Choose view-only
@@ -87,9 +79,6 @@
   shell: ./grd_rdp_credentials {{ rdp_username }} {{ rdp_passowrd }}
   args:
     chdir: ~/.config/remote-desktop
-  vars:
-    rdp_username: "test"
-    rdp_passowrd: "pass"
 
 - name: RDP TLS cert path
   become: true
@@ -112,7 +101,8 @@
   become_user: "{{ user_name }}"
   ansible.builtin.systemd:
     name: gnome-remote-desktop
-    state: restarted
+    state: started
     scope: user
+    enabled: true
 
 # killall -3 gnome-shell

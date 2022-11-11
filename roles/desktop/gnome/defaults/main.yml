@@ -1,0 +1,5 @@
+---
+rdp_username: "test"
+rdp_passowrd: "pass"
+# extend or mirror-primary
+gnome_rd_type: "extend"
