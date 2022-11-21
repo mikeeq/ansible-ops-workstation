@@ -1,6 +1,6 @@
 ---
 - name: Get installed version
-  shell: kubectl version --short --client | cut -d'v' -f2
+  shell: kubectl version --short --client=true | grep -i client | cut -d'v' -f2
   register: installed_kubectl_version
   changed_when: false
   ignore_errors: true
