@@ -10,8 +10,6 @@
   register: version
   changed_when: false
   ignore_errors: true
-  args:
-    warn: off
   when: ctop_version is not defined
 
 - name: "Latest version of ctop:"

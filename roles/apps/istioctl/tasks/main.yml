@@ -6,8 +6,6 @@
   register: installed_istioctl_version
   changed_when: false
   ignore_errors: true
-  args:
-    warn: off
 
 - name: "Installed version of istioctl:"
   debug:

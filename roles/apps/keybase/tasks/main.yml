@@ -3,13 +3,11 @@
   include_vars: "{{ ansible_distribution | lower }}.yml"
 
 - name: Check if installed
-  shell: |
+  ansible.builtin.shell: |
     {{ package_manager }} list --installed | grep keybase
   register: keybase_installed
   changed_when: false
   ignore_errors: true
-  args:
-    warn: off
 
 - name: Install keybase on Fedora
   dnf:

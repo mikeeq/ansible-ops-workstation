@@ -6,7 +6,6 @@
   ignore_errors: true
   args:
     creates: "~{{ user_name }}/snap/helm/common/kube"
-    warn: off
 
 - name: Helm config
   file:

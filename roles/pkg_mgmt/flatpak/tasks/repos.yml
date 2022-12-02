@@ -4,8 +4,6 @@
   register: flathub_recreate
   changed_when: false
   ignore_errors: true
-  args:
-    warn: off
 
 - name: Add flatpak remotes to the system installation
   flatpak_remote:
