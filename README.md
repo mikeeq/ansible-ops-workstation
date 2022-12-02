@@ -376,6 +376,8 @@ Contributions are what make the open source community such an amazing place to b
     #                NVRM: make sure that this kernel module and all NVIDIA driver
     #                NVRM: components have the same version.
     dracut -f
+    
+    # If you fail to boot to Fedora, you can edit boot entry in grub by clicking "e" in grub bootmenu and in line starting with "linux ..." add at the end "init 3" to boot in multi-user.target (without graphical interface)
     ```
 
 12. To fix purple'ish screen, enable OC and Fan control (I recommend to use GreenWithEnvy - gwe (installed using flatpak)) apply those changes to `/etc/X11/xorg.conf`:
