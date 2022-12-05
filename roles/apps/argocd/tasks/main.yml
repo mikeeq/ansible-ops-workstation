@@ -1,0 +1,18 @@
+---
+- name: Get installed version of argocd
+  become: true
+  become_user: "{{ user_name }}"
+  shell: argocd version --client --short | awk '{print $2}' | cut -d'+' -f1 | cut -d'v' -f2
+  register: installed_argocd_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of argocd:"
+  debug:
+    var: installed_argocd_version.stdout
+
+- include_tasks: get_latest_version.yml
+  when: argocd_version is not defined
+
+- include_tasks: install.yml
+  when: installed_argocd_version.stdout != argocd_version

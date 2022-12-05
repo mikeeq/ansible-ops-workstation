@@ -163,9 +163,10 @@ Contributions are what make the open source community such an amazing place to b
 1. Install
 
    - VSCode - <https://code.visualstudio.com/download>
-   - Ubuntu WSL2
+   - Ubuntu 22.04 WSL2
+     - <https://apps.microsoft.com/store/detail/windows-subsystem-for-linux/9P9TQF7MRM4R>
+     - <https://apps.microsoft.com/store/detail/ubuntu-22041-lts/9PN20MSR04DW?hl=pl-pl&gl=pl>
      - <https://docs.microsoft.com/en-us/windows/wsl/install>
-     - <https://www.microsoft.com/en-us/p/ubuntu/9nblggh4msv6?activetab=pivot:overviewtab>
    - Docker Desktop for Windows - <https://docs.docker.com/desktop/windows/install/>
    - Windows Terminal
      - <https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab>
@@ -376,7 +377,7 @@ Contributions are what make the open source community such an amazing place to b
     #                NVRM: make sure that this kernel module and all NVIDIA driver
     #                NVRM: components have the same version.
     dracut -f
-    
+
     # If you fail to boot to Fedora, you can edit boot entry in grub by clicking "e" in grub bootmenu and in line starting with "linux ..." add at the end "init 3" to boot in multi-user.target (without graphical interface)
     ```
 

@@ -14,3 +14,4 @@
     - apps/kubescore
     - apps/istioctl
     - apps/netcore_sdk
+    - apps/argocd
