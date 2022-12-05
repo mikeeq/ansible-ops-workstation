@@ -22,8 +22,6 @@
   register: installed_vagrant_version
   changed_when: false
   ignore_errors: true
-  args:
-    warn: off
 
 - name: "Installed version of vagrant:"
   debug:

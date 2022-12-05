@@ -5,8 +5,6 @@
   register: installed_version
   changed_when: false
   ignore_errors: true
-  args:
-    warn: off
 
 - name: 'Installed version of keeweb:'
   debug:
@@ -22,8 +20,6 @@
   register: version_tag
   changed_when: version_tag.stdout != installed_version.stdout
   ignore_errors: true
-  args:
-    warn: off
 
 - name: "Latest version of qnapi"
   debug:

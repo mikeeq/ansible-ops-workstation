@@ -102,6 +102,10 @@ flatpak_repos:
     url: https://flathub.org/repo/flathub.flatpakrepo
 
 pip_apps:
+  - name: pip
+    virtualenv_enabled: false
+  - name: pyOpenSSL
+    virtualenv_enabled: false
   - name: ansible
     virtualenv_enabled: false
   - name: argcomplete

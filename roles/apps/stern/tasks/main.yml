@@ -2,12 +2,10 @@
 - name: Get installed version
   become: true
   become_user: "{{ user_name }}"
-  shell: stern -v | awk '{print $3}'
+  shell: stern -v | grep -i version | awk '{print $2}'
   register: installed_stern_version
   changed_when: false
   ignore_errors: true
-  args:
-    warn: off
 
 - name: "Installed version of stern:"
   debug:
