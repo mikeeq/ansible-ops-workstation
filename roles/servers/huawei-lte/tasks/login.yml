@@ -1,0 +1,46 @@
+---
+- name: Grab Session Cookie and Token - /api/webserver/SesTokInfo API call
+  ansible.builtin.uri:
+    url: "{{ huawei_url }}/api/webserver/SesTokInfo"
+    return_content: true
+  register: info_request
+
+- name: Transform info_request from XML to YAML
+  ansible.builtin.set_fact:
+    info_yaml: "{{ info_request.content | ansible.utils.from_xml }}"
+
+- name: Extract cookie and token from YAML and transform password to the form acceptable by Huawei router
+  ansible.builtin.set_fact:
+    session_cookie: "{{ info_yaml.response.SesInfo }}"
+    session_token: "{{ info_yaml.response.TokInfo }}"
+    huawei_password_b64: "{{ huawei_password | hash('sha256') | b64encode }}"
+
+- name: Prepare a payload with a password acceptable by login API call
+  ansible.builtin.set_fact:
+    huawei_login_payload: "{{ huawei_username }}{{ huawei_password_b64 }}{{ session_token }}"
+
+- name: Transform password to the password_type - 4
+  ansible.builtin.set_fact:
+    huawei_login_payload_b64: "{{ huawei_login_payload | hash('sha256') | b64encode }}"
+
+- name: Grab Session ID cookie, perform login - /api/user/login API call
+  ansible.builtin.uri:
+    url: "{{ huawei_url }}/api/user/login"
+    return_content: true
+    method: POST
+    body: >-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <request>
+        <Username>{{ huawei_username }}</Username>
+        <Password>{{ huawei_login_payload_b64 }}</Password>
+        <password_type>4</password_type>
+      </request>
+    headers:
+      __RequestVerificationToken: "{{ session_token }}"
+      Cookie: "{{ session_cookie }}"
+      X-Requested-With: "XMLHttpRequest"
+      Content-Type: "application/x-www-form-urlencoded; charset=UTF-8"
+  register: login_request
+  failed_when: '"<error>" in login_request.content'
+
+# + response='<?xml version="1.0" encoding="UTF-8"?><response>OK</response>'

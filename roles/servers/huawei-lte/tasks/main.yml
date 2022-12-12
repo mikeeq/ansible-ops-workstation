@@ -1,0 +1,11 @@
+---
+- import_tasks: login.yml
+
+# - import_tasks: get-net-mode.yml
+# - import_tasks: device-status.yml
+# - import_tasks: traffic-status.yml
+
+# - import_tasks: restart.yml
+
+# - import_tasks: set-net-mode.yml
+- import_tasks: get-net-mode.yml
