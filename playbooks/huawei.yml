@@ -1,0 +1,98 @@
+---
+# https://kierkowski.com/huawei-e8278-e3372-zabawa-z-api-i-zmiana-czestotliwosci-oraz-trybu-pracy/
+# https://eko.one.pl/forum/viewtopic.php?id=14653
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/uri_module.html
+# https://github.com/HSPDev/Huawei-E5180-API
+# http://forum.jdtech.pl/Watek-hilink-api-dla-urzadzen-huawei
+- name: Huawei
+  hosts: "{{ hosts_to_deploy | default('local') }}"
+  become: false
+  gather_facts: false
+  tasks:
+    - ansible.builtin.set_fact:
+        huawei_url: "192.168.8.1"
+        huawei_username: "admin"
+        huawei_password: "admin"
+
+    - name: info
+      ansible.builtin.uri:
+        url: "http://{{ huawei_url }}/api/webserver/SesTokInfo"
+        return_content: true
+      register: info_request
+
+    - ansible.builtin.set_fact:
+        info_yaml: "{{ info_request.content | ansible.utils.from_xml }}"
+
+    - ansible.builtin.set_fact:
+        session_cookie: "{{ info_yaml.response.SesInfo }}"
+        session_token: "{{ info_yaml.response.TokInfo }}"
+        huawei_password_b64: "{{ huawei_password | hash('sha256') | b64encode }}"
+
+    - ansible.builtin.set_fact:
+        huawei_login_payload: "{{ huawei_username }}{{ huawei_password_b64 }}{{ session_token }}"
+
+    - ansible.builtin.set_fact:
+        huawei_login_payload_b64: "{{ huawei_login_payload | hash('sha256') | b64encode }}"
+
+    # + response='<?xml version="1.0" encoding="UTF-8"?><response>OK</response>'
+
+    - name: login
+      ansible.builtin.uri:
+        url: "http://{{ huawei_url }}/api/user/login"
+        # user: "admin"
+        # password: "{{ huawei_password }}"
+        return_content: true
+        method: POST
+        headers:
+          __RequestVerificationToken: "{{ session_token }}"
+          Cookie: "{{ session_cookie }}"
+          X-Requested-With: "XMLHttpRequest"
+          Content-Type: "application/x-www-form-urlencoded; charset=UTF-8"
+        body: >-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <request>
+          <Username>{{ huawei_username }}</Username>
+          <Password>{{ huawei_login_payload_b64 }}</Password>
+          <password_type>4</password_type></request>
+      register: login_request
+
+    - name: net-mode
+      ansible.builtin.uri:
+        url: 'http://192.168.8.1/api/net/net-mode'
+        return_content: true
+        headers:
+          Content-Type: text/xml
+          Cookie: "{{ login_request.cookies_string }}"
+
+# ++ curl -s http://192.168.8.1/api/net/net-mode -H 'Cookie:  SessionID=JdMTBDsgOlY6sSc6GHVN2WubXH5OAQxWV52TlYvjHjnO7dJioce67lROfhQVET0NAoSOqkGgj13MKoimnXc1MTaKDKb6RRSJ0gfUt4iFifBhZ7YuYPMEiSHeszAAwyUm'
+
+# bandsList = [
+#     ('b1', 'FDD', '2100', '1'),
+#     ('b2', 'FDD', '1900', '2'),
+#     ('b3', 'FDD', '1800', '4'),
+#     ('b4', 'FDD', '1700', '8'),
+#     ('b5', 'FDD', '850', '10'),
+#     ('b6', 'FDD', '800', '20'),
+#     ('b7', 'FDD', '2600', '40'),
+#     ('b8', 'FDD', '900', '80'),
+#     ('b19', 'FDD', '850', '40000'),
+#     ('b20', 'FDD', '800', '80000'),
+#     ('b26', 'FDD', '850', '2000000'),
+#     ('b28', 'FDD', '700', '8000000'),
+#     ('b32', 'FDD', '1500', '80000000'),
+#     ('b38', 'TDD', '2600', '2000000000'),
+#     ('b40', 'TDD', '2300', '8000000000'),
+#     ('b41', 'TDD', '2500', '10000000000'),
+#     ('b42', 'TDD', '3500', '20000000000'),
+# ]
+
+    - name: set net-mode
+      ansible.builtin.uri:
+        url: 'http://192.168.8.1/api/net/net-mode'
+        return_content: true
+        method: POST
+        body:
+
+        headers:
+          Content-Type: text/xml
+          Cookie: "{{ login_request.cookies_string }}"
