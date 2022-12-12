@@ -1,5 +1,5 @@
 ---
-- name: set net-mode
+- name: "Set LTE band to - {{ huawei_lteband }}, /api/net/net-mode API call"
   ansible.builtin.uri:
     url: "{{ huawei_url }}/api/net/net-mode"
     return_content: true
@@ -9,7 +9,7 @@
       <request>
         <NetworkMode>03</NetworkMode>
         <NetworkBand>2000004400000</NetworkBand>
-        <LTEBand>80005</LTEBand>
+        <LTEBand>{{ huawei_lteband }}</LTEBand>
       </request>
     headers:
       Content-Type: text/xml
