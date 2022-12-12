@@ -1,0 +1,49 @@
+---
+- name: Check if admin account is removed
+  stat:
+    path: "{{ jenkins_home }}/secrets/adminAccountRemoved"
+  register: jenkins_admin_account_removed_flag
+
+- name: Wait until the file initialAdminPassword is present before continuing
+  ansible.builtin.wait_for:
+    path: "{{ jenkins_home }}/secrets/initialAdminPassword"
+  when: jenkins_admin_account_removed_flag.stat.exists == false
+
+- name: JENKINS-PASSTOKEN | Get initial authentication token
+  shell: 'cat {{ jenkins_home }}/secrets/initialAdminPassword'
+  register: admin_auth_token
+  when: jenkins_admin_account_removed_flag.stat.exists == false
+
+- name: Set admin vars - if initial user exists
+  set_fact:
+    jenkins_used_admin_username: "admin"
+    jenkins_used_admin_password: "{{ admin_auth_token.stdout }}"
+  when: jenkins_admin_account_removed_flag.stat.exists == false
+
+- name: Set admin vars - if initial user is removed
+  set_fact:
+    jenkins_used_admin_username: "{{ jenkins_admin_username }}"
+    jenkins_used_admin_password: "{{ jenkins_admin_password }}"
+  when: jenkins_admin_account_removed_flag.stat.exists
+
+- include_tasks: api-token.yml
+  vars:
+    jenkins_crumb_admin_username: "{{ jenkins_used_admin_username }}"
+    jenkins_crumb_admin_password: "{{ jenkins_used_admin_password }}"
+
+- name: JENKINS-CREDENTIALS | Add Jenkins administration account
+  uri:
+    method: POST
+    url: '{{ jenkins_url }}/securityRealm/createAccountByAdmin'
+    user: "{{ jenkins_used_admin_username }}"
+    password: "{{ jenkins_used_admin_password }}"
+    force_basic_auth: yes
+    follow_redirects: all
+    headers:
+      Jenkins-Crumb: '{{ crumb.content.split(":")[1] }}'
+      Cookie: '{{ crumb.set_cookie }}'
+    body: 'username={{ item.name }}&password1={{ item.password }}&password2={{ item.password }}&fullname={{ item.name }}&email={{ item.email }}'
+  loop: "{{ jenkins_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  # no_log: true

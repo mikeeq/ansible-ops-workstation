@@ -41,6 +41,6 @@ USER jenkins
 # https://plugins.jenkins.io/linenumbers/#releases
 
 # blueocean:1.25.5
-RUN jenkins-plugin-cli --plugins "workflow-aggregator:590.v6a_d052e5a_a_b_5 rebuild:1.34 ansicolor:1.0.1 git:4.11.3 linenumbers:1.3"
+RUN jenkins-plugin-cli --plugins "workflow-aggregator:590.v6a_d052e5a_a_b_5 rebuild:1.34 ansicolor:1.0.2 git:4.14.3 linenumbers:1.3"
 
 # ❯ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword

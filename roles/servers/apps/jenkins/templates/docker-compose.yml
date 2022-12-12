@@ -5,7 +5,7 @@ services:
   jenkins:
     build: .
     # https://hub.docker.com/r/jenkins/jenkins
-    image: jenkins
+    image: {{ jenkins_image_name }}
     deploy:
       resources:
         limits:
@@ -15,7 +15,7 @@ services:
           cpus: '0.25'
           memory: 512M
     # image: jenkins/jenkins:slim-jdk11
-    container_name: jenkins
+    container_name: {{ jenkins_container_name }}
     restart: on-failure     # other option: always - if you want persistent through host reboots
     expose:
       - '8080'
