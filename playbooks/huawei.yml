@@ -86,6 +86,15 @@
 #     ('b42', 'TDD', '3500', '20000000000'),
 # ]
 
+# networkband = "3FFFFFFF"
+# if lteband == "20000000000" :
+#   networkmode = "08"
+# else :
+#   networkmode = "03"
+# if band != -1 :
+# 	client.net.set_net_mode(lteband, networkband, networkmode)
+
+
     - name: set net-mode
       ansible.builtin.uri:
         url: 'http://192.168.8.1/api/net/net-mode'
