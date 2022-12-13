@@ -4,7 +4,10 @@
     scm:
       - git:
           url: git@github.com:mikeeq/ansible-ops-private.git
+          basedir: ansible_ops_private
           branches:
             - '*/$BRANCH_ANSIBLE_OPS_PRIVATE'
           skip-tag: true
-          wipe-workspace: false
+          wipe-workspace: true
+          browser: githubweb
+          browser-url: https://github.com/mikeeq/ansible-ops-private

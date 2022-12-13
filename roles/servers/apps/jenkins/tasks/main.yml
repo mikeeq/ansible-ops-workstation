@@ -9,11 +9,11 @@
     msg: "docker-compose is not found! You need to install it first."
   when: docker_compose_result.rc != 0
 
-- include_tasks: cleanup.yml
-  when: jenkins_cleanup
+# - include_tasks: cleanup.yml
+#   when: jenkins_cleanup
 
-- import_tasks: install-docker-compose.yml
-- import_tasks: users-add.yml
-- import_tasks: users-delete.yml
+# - import_tasks: install-docker-compose.yml
+# - import_tasks: users-add.yml
+# - import_tasks: users-delete.yml
+# - import_tasks: config.yml
 - import_tasks: jjb.yml
-- import_tasks: config.yml

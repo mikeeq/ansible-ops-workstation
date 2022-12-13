@@ -17,9 +17,12 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         docker-ce-cli \
         python3-pip \
+        git-crypt \
     && pip3 install --no-cache-dir \
         # https://pypi.org/project/jenkins-job-builder/
-        jenkins-job-builder==4.1.0 \
+        jenkins-job-builder \
+        # https://pypi.org/project/ansible/
+        ansible \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,6 +33,7 @@ RUN groupadd -g ${DOCKER_GID} docker \
 
 USER jenkins
 
+
 # https://www.jenkins.io/projects/blueocean/
 # https://github.com/jenkinsci/blueocean-plugin/releases
 
@@ -39,8 +43,13 @@ USER jenkins
 # https://plugins.jenkins.io/ansicolor/#releases
 # https://plugins.jenkins.io/git/#releases
 # https://plugins.jenkins.io/linenumbers/#releases
+# https://plugins.jenkins.io/multiple-scms/
+# https://plugins.jenkins.io/pipeline-as-yaml/
+# https://plugins.jenkins.io/ws-cleanup/
 
 # blueocean:1.25.5
-RUN jenkins-plugin-cli --plugins "workflow-aggregator:590.v6a_d052e5a_a_b_5 rebuild:1.34 ansicolor:1.0.2 git:4.14.3 linenumbers:1.3"
+# RUN jenkins-plugin-cli --plugins "workflow-aggregator:590.v6a_d052e5a_a_b_5 rebuild:1.34 ansicolor:1.0.2 git:4.14.3 linenumbers:1.3 multiple-scms:0.8 pipeline-as-yaml:0.16-rc ws-cleanup:0.44"
+
+RUN jenkins-plugin-cli --plugins "workflow-aggregator rebuild ansicolor git linenumbers multiple-scms pipeline-as-yaml ws-cleanup locale pipeline-multibranch-defaults basic-branch-build-strategies pipeline-stage-view"
 
 # ❯ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
