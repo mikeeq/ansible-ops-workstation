@@ -7,7 +7,7 @@
 - name: JENKINS-CREDENTIALS | Remove admin Jenkins account
   uri:
     method: POST
-    url: 'http://localhost:{{ jenkins_host_port }}/securityRealm/user/{{ item }}/doDelete'
+    url: '{{ jenkins_url }}/securityRealm/user/{{ item }}/doDelete'
     user: "{{ jenkins_admin_username }}"
     password: "{{ jenkins_admin_password }}"
     force_basic_auth: yes

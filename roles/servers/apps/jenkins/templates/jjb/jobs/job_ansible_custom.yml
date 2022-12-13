@@ -7,14 +7,18 @@
       - ansicolor:
           colormap: xterm
     builders:
-      - shell: "git-crypt unlock ~/.ssh/ci_key"
-      - shell: "ANSIBLE_FORCE_COLOR=true ansible-playbook -i inventory/$INVENTORY $PLAYBOOK $EXTRA_PARAMETERS"
+      - shell: "cd ansible_ops_private && git-crypt unlock ~/.ssh/ci_key"
+      - shell: "cd ansible_ops_workstation && ANSIBLE_FORCE_COLOR=true ansible-playbook -i inventory/$INVENTORY $PLAYBOOK $EXTRA_PARAMETERS"
     scm:
-      - ansible_custom
+      - ansible_ops_workstation
+      - ansible_ops_private
     parameters:
       - string:
-          name: BRANCH
-          default: 'master'
+          name: BRANCH_ANSIBLE_OPS_WORKSTATION
+          default: 'main'
+      - string:
+          name: BRANCH_ANSIBLE_OPS_PRIVATE
+          default: 'main'
       - string:
           name: INVENTORY
           default: 'prod.yml'

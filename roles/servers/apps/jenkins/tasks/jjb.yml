@@ -1,4 +1,9 @@
 ---
+# - name: Ensure jjb dir is cleaned
+#   file:
+#     path: "{{ jenkins_home }}/jjb/jobs/"
+#     state: absent
+
 - name: Ensure jjb dir exists
   file:
     path: "{{ jenkins_home }}/jjb/jobs/"
@@ -10,12 +15,16 @@
   template:
     src: "jjb/config.ini"
     dest: "{{ jenkins_home }}/jjb/config.ini"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_uid }}"
     mode: 0664
 
 - name: Add JJB jobs
   template:
     src: "{{ item }}"
     dest: "{{ jenkins_home }}/jjb/jobs/"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_uid }}"
   with_fileglob:
     - ../templates/jjb/jobs/*
 

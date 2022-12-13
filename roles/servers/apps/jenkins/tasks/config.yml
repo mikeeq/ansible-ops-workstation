@@ -1,0 +1,38 @@
+---
+- name: Ensure .ssh in jenkins_home dir exists
+  file:
+    path: "{{ jenkins_home }}/.ssh"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_uid }}"
+    state: directory
+
+- name: Configure ssh config
+  template:
+    src: "ssh_config.j2"
+    dest: "{{ jenkins_home }}/.ssh/config"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+    mode: 0600
+
+- name: Copy private SSH key
+  copy:
+    content: "{{ jenkins_ssh_private_key }}"
+    dest: "{{ jenkins_home }}/.ssh/id_rsa"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+    mode: 0600
+
+- name: Ensure secrets in jenkins_home dir exists
+  file:
+    path: "{{ jenkins_home }}/secrets"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_uid }}"
+    state: directory
+
+- name: Copy git-crypt key
+  copy:
+    content: "{{ jenkins_git_crypt_key | b64decode }}"
+    dest: "{{ jenkins_home }}/secrets/git_crypt_key"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+    mode: 0600

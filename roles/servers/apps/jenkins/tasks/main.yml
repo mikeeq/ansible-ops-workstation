@@ -12,7 +12,8 @@
 - include_tasks: cleanup.yml
   when: jenkins_cleanup
 
-- import_tasks: install-docker-compose.yml
-- import_tasks: users-add.yml
-- import_tasks: users-delete.yml
+# - import_tasks: install-docker-compose.yml
+# - import_tasks: users-add.yml
+# - import_tasks: users-delete.yml
 - import_tasks: jjb.yml
+- import_tasks: config.yml

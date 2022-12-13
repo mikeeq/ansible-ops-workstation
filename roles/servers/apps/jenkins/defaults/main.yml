@@ -31,3 +31,6 @@ jenkins_admin_password: "{{ jjb_password }}"
 
 jenkins_cleanup: false
 jenkins_update: false
+
+jenkins_ssh_private_key: ""
+jenkins_git_crypt_key: ""

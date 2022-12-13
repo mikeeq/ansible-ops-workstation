@@ -1,0 +1,10 @@
+---
+- scm:
+    name: ansible_ops_private
+    scm:
+      - git:
+          url: git@github.com:mikeeq/ansible-ops-private.git
+          branches:
+            - '*/$BRANCH_ANSIBLE_OPS_PRIVATE'
+          skip-tag: true
+          wipe-workspace: false
