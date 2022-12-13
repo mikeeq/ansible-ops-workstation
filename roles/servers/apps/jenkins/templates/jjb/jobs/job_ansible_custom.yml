@@ -11,7 +11,7 @@
       - shell: "cd ansible_ops_workstation && ANSIBLE_FORCE_COLOR=true ansible-playbook -i inventory/$INVENTORY $PLAYBOOK $EXTRA_PARAMETERS"
     scm:
       - ansible_ops_workstation
-      - ansible_ops_private
+      # - ansible_ops_private
     parameters:
       - string:
           name: BRANCH_ANSIBLE_OPS_WORKSTATION

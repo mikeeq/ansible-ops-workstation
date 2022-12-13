@@ -1,32 +1,39 @@
 ---
+- name: SSH user set var
+  set_fact:
+    # jenkins_ssh_uid: "{{ jenkins_uid }}"
+    # jenkins_ssh_gid: "{{ jenkins_gid }}"
+    jenkins_ssh_uid: "root"
+    jenkins_ssh_gid: "root"
+
 - name: Ensure .ssh in jenkins_home dir exists
   file:
-    path: "{{ jenkins_home }}/.ssh"
-    owner: "{{ jenkins_uid }}"
-    group: "{{ jenkins_uid }}"
+    path: "{{ jenkins_ssh_path }}"
+    owner: "{{ jenkins_ssh_uid }}"
+    group: "{{ jenkins_ssh_gid }}"
     state: directory
 
 - name: Configure ssh config
   template:
     src: "ssh_config.j2"
-    dest: "{{ jenkins_home }}/.ssh/config"
-    owner: "{{ jenkins_uid }}"
-    group: "{{ jenkins_gid }}"
+    dest: "{{ jenkins_ssh_path }}/config"
+    owner: "{{ jenkins_ssh_uid }}"
+    group: "{{ jenkins_ssh_gid }}"
     mode: 0600
 
 - name: Copy private SSH key
   copy:
     content: "{{ jenkins_ssh_private_key }}"
-    dest: "{{ jenkins_home }}/.ssh/id_rsa"
-    owner: "{{ jenkins_uid }}"
-    group: "{{ jenkins_gid }}"
+    dest: "{{ jenkins_ssh_path }}/id_rsa"
+    owner: "{{ jenkins_ssh_uid }}"
+    group: "{{ jenkins_ssh_gid }}"
     mode: 0600
 
 - name: Ensure secrets in jenkins_home dir exists
   file:
     path: "{{ jenkins_home }}/secrets"
     owner: "{{ jenkins_uid }}"
-    group: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
     state: directory
 
 - name: Copy git-crypt key

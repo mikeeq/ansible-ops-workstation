@@ -8,7 +8,7 @@
   file:
     path: "{{ jenkins_home }}/jjb/jobs/"
     owner: "{{ jenkins_uid }}"
-    group: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
     state: directory
 
 - name: Configure jjb
@@ -16,7 +16,7 @@
     src: "jjb/config.ini"
     dest: "{{ jenkins_home }}/jjb/config.ini"
     owner: "{{ jenkins_uid }}"
-    group: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
     mode: 0664
 
 - name: Add JJB jobs
@@ -24,7 +24,7 @@
     src: "{{ item }}"
     dest: "{{ jenkins_home }}/jjb/jobs/"
     owner: "{{ jenkins_uid }}"
-    group: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
   with_fileglob:
     - ../templates/jjb/jobs/*
 
