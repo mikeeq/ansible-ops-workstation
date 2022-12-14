@@ -27,11 +27,13 @@
     group: "{{ jenkins_gid }}"
   with_fileglob:
     - ../templates/jjb/jobs/*
+  register: jenkins_jjb_copy
 
 - name: Run jjb in Docker image
   shell: |
     docker-compose exec jenkins /bin/bash -c "cd /var/jenkins_home/jjb && jenkins-jobs --conf ./config.ini update -r ./jobs/"
   changed_when: build_result.stderr_lines | length > 2
   register: build_result
+  # when: jenkins_jjb_copy.changed
   args:
     chdir: "{{ jenkins_install_path }}"

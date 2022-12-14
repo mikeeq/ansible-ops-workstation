@@ -3,6 +3,7 @@
 - job:
     name: test_pipeline_yaml
     project-type: pipeline
+    sandbox: true
     dsl-yaml: |
       pipeline:
           agent:
@@ -11,12 +12,14 @@
               - stage: "Checkout ansible-ops-private"
                 steps:
                   - echo "1"
+                  - dir: "'ansible-ops-private'"
+                    script:
+                        - echo "MyDir"
 
+# git:
+#   url: 'git@github.com:mikeeq/ansible-ops-private.git'
+#   branch: 'feature/servers_v2'
 
-# - dir:
-#     git:
-#       url: 'git@github.com:mikeeq/ansible-ops-private.git'
-#       branch: 'feature/servers_v2'
 
 # stage('Checkout ansible-ops-private') {
 #   steps {

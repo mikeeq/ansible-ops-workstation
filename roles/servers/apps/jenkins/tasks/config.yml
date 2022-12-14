@@ -21,13 +21,16 @@
     group: "{{ jenkins_ssh_gid }}"
     mode: 0600
 
-- name: Copy private SSH key
+- name: Copy private SSH keys
   copy:
-    content: "{{ jenkins_ssh_private_key }}"
-    dest: "{{ jenkins_ssh_path }}/id_rsa"
+    content: "{{ item.value }}"
+    dest: "{{ jenkins_ssh_path }}/{{ item.name }}"
     owner: "{{ jenkins_ssh_uid }}"
     group: "{{ jenkins_ssh_gid }}"
     mode: 0600
+  loop: "{{ jenkins_ssh_private_keys }}"
+  loop_control:
+     label: "{{ item.name}}"
 
 - name: Ensure secrets in jenkins_home dir exists
   file:
@@ -43,3 +46,20 @@
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
     mode: 0600
+
+- name: Create directory for Jenkins configuration as code
+  file:
+    path: "{{ jenkins_home }}/casc_configs"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+    state: directory
+
+- name: Configure Jenkins configuration as code
+  template:
+    src: "{{ item }}"
+    dest: "{{ jenkins_home }}/casc_configs/"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+  with_fileglob:
+    - ../templates/casc_configs/*
+  register: jenkins_config_file
