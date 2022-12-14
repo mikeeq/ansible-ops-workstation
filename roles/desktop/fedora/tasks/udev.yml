@@ -14,6 +14,7 @@
     content: 'KERNEL=="i2c-[0-9]*", GROUP="i2c"'
     dest: /etc/udev/rules.d/10-local_i2c_group.rules
 
+
 - name: Add the user to i2c group
   ansible.builtin.user:
     name: "{{ user_name }}"

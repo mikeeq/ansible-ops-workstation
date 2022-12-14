@@ -16,6 +16,7 @@
     group: "{{ user_name }}"
     mode: 0664
     backup: true
+    remote_src: true
   loop:
     - settings.json
     - keybindings.json

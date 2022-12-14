@@ -43,6 +43,5 @@
 #     dest: /usr/
 #     owner: root
 #     group: root
-#     # remote_src: true
+#     remote_src: true
 #   when: barrier.stat.exists == False
-

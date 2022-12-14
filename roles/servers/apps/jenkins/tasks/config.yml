@@ -46,6 +46,7 @@
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
     mode: 0600
+    remote_src: true
 
 - name: Create directory for Jenkins configuration as code
   file:
