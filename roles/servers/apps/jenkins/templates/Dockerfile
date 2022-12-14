@@ -18,9 +18,11 @@ RUN apt-get update \
         docker-ce-cli \
         python3-pip \
         git-crypt \
+        git \
+        libyaml-dev \
     && pip3 install --no-cache-dir \
         # https://pypi.org/project/jenkins-job-builder/
-        jenkins-job-builder \
+        # jenkins-job-builder \
         # https://pypi.org/project/ansible/
         ansible \
     && apt-get clean \
@@ -31,8 +33,9 @@ ARG DOCKER_GID=955
 RUN groupadd -g ${DOCKER_GID} docker \
     && usermod -a -G docker jenkins
 
-USER jenkins
+WORKDIR /opt/jjb
 
+USER jenkins
 
 # https://www.jenkins.io/projects/blueocean/
 # https://github.com/jenkinsci/blueocean-plugin/releases
@@ -46,10 +49,21 @@ USER jenkins
 # https://plugins.jenkins.io/multiple-scms/
 # https://plugins.jenkins.io/pipeline-as-yaml/
 # https://plugins.jenkins.io/ws-cleanup/
+# https://plugins.jenkins.io/configuration-as-code/
 
 # blueocean:1.25.5
 # RUN jenkins-plugin-cli --plugins "workflow-aggregator:590.v6a_d052e5a_a_b_5 rebuild:1.34 ansicolor:1.0.2 git:4.14.3 linenumbers:1.3 multiple-scms:0.8 pipeline-as-yaml:0.16-rc ws-cleanup:0.44"
 
-RUN jenkins-plugin-cli --plugins "workflow-aggregator rebuild ansicolor git linenumbers multiple-scms pipeline-as-yaml ws-cleanup locale pipeline-multibranch-defaults basic-branch-build-strategies pipeline-stage-view"
+RUN jenkins-plugin-cli --plugins "blueocean workflow-aggregator rebuild ansicolor git linenumbers multiple-scms pipeline-as-yaml ws-cleanup locale pipeline-multibranch-defaults basic-branch-build-strategies pipeline-stage-view configuration-as-code"
 
 # ❯ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+
+USER root
+
+RUN TEST=TEST3 \
+    && git clone --single-branch --branch feature/pipeline_as_yaml https://github.com/mikeeq/jenkins-job-builder \
+    && cd jenkins-job-builder \
+    && pip3 install -r requirements.txt \
+    && PBR_VERSION=9.9.9 python3 setup.py install
+
+USER jenkins
