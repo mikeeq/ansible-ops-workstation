@@ -65,4 +65,3 @@
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
     backup: true
-    remote_src: true
