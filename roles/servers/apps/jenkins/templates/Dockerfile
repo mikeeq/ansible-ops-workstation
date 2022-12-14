@@ -20,6 +20,7 @@ RUN apt-get update \
         git-crypt \
         git \
         libyaml-dev \
+        sshpass \
     && pip3 install --no-cache-dir \
         # https://pypi.org/project/jenkins-job-builder/
         # jenkins-job-builder \

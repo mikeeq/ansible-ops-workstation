@@ -32,7 +32,7 @@
   vars:
     hosts_to_deploy: vms
 
-- name: Install CoreDNS
+- name: Provision DNS1
   hosts:
     - dns1
   become: true
@@ -42,7 +42,7 @@
     - servers/apps/coredns
     - servers/apps/letsencrypt-coredns
 
-- name: Install DNS2
+- name: Provision DNS2
   hosts:
     - dns2
   become: true
@@ -50,10 +50,11 @@
     - servers/network-vms
     - apps/docker
 
-- name: Install NGINX reverse proxy
+- name: Provision clevoF35
   hosts:
     - clevoF35
   become: true
   roles:
     - servers/apps/nginx
-    # - servers/apps/jenkins
+    - servers/apps/home-assistant
+    - servers/apps/jenkins
