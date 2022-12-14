@@ -28,18 +28,6 @@ jenkins:
                 emailAddress: "{{ i.email }}"
             - "favorite"
         {% endfor -%}
-        - id: "test"
-          name: "test"
-          password: "test"
-          properties:
-            - "apiToken"
-            - "myView"
-            - preferredProvider:
-                providerId: "default"
-            - "timezone"
-            - mailer:
-                emailAddress: "test@local.jenkins"
-            - "favorite"
 
 security:
   apiToken:
