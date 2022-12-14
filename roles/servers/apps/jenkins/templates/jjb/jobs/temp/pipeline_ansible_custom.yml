@@ -1,0 +1,60 @@
+---
+- job:
+    name: test_job
+    project-type: pipeline
+    dsl: |
+      pipeline {
+        agent any
+        options {
+          // This is required if you want to clean before build
+          skipDefaultCheckout(true)
+          ansiColor('xterm')
+        }
+        parameters {
+          booleanParam(name: "TEST_BOOLEAN", defaultValue: true, description: "Sample boolean parameter")
+          string(name: "TEST_STRING", defaultValue: "ssbostan", trim: true, description: "Sample string parameter")
+          text(name: "TEST_TEXT", defaultValue: "Jenkins Pipeline Tutorial", description: "Sample multi-line text parameter")
+          password(name: "TEST_PASSWORD", defaultValue: "SECRET", description: "Sample password parameter")
+          choice(name: "TEST_CHOICE", choices: ["production", "staging", "development"], description: "Sample multi-choice parameter")
+        }
+        stages {
+          stage('Checkout ansible-ops-workstation') {
+            steps {
+              // Clean before build
+              cleanWs()
+              // We need to explicitly checkout from SCM here
+              // https://www.jenkins.io/doc/pipeline/steps/git/
+              dir('ansible-ops-workstation') {
+                git (
+                  url: 'git@github.com:mikeeq/ansible-ops-workstation.git',
+                  branch: 'f37'
+                )
+              }
+            }
+          }
+          stage('Checkout ansible-ops-private') {
+            steps {
+              dir('ansible-ops-private') {
+                git (
+                  url: 'git@github.com:mikeeq/ansible-ops-private.git',
+                  branch: 'feature/servers_v2'
+                )
+              }
+            }
+          }
+          stage('Build') {
+            steps {
+              sh '''#!/bin/bash
+                echo "hello world - $params.TEST_STRING"
+                pwd
+                ls
+              '''
+            }
+          }
+          stage('Test') {
+            steps {
+              echo "test"
+            }
+          }
+        }
+      }

@@ -1,26 +1,54 @@
 ---
-# - name: Install CoreDNS
-#   hosts:
-#     - dns1
-#   become: true
-#   # pre_tasks:
-#   #   - debug:
-#   #       var: hostvars[inventory_hostname]
-#   roles:
-#     # - servers/network-vms
-#     # - apps/docker
-#     # - apps/docker-compose
-#     # - servers/apps/coredns
-#     - servers/apps/letsencrypt-coredns
+- name: Fedora on Clevo
+  ansible.builtin.import_playbook: fedora.yml
+  vars:
+    hosts_to_deploy: clevoF35
 
-# - name: Install DNS2
-#   hosts:
-#     - dns2
-#   become: true
-#   roles:
-#     - servers/network-vms
-#     - apps/docker
-#     - apps/docker-compose
+- name: Update all clevo vms and host
+  hosts: clevo
+  become: true
+  tasks:
+    - name: Upgrade all packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+        update_cache: true
+
+    - name: Check if reboot required
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+
+    - name: Reboot if required
+      reboot:
+      when: reboot_required_file.stat.exists == true
+
+    - name: Autoremove unneeded packages installed as dependencies
+      ansible.builtin.dnf:
+        autoremove: yes
+
+- name: Set variables on an imported playbook
+  ansible.builtin.import_playbook: generic-core.yml
+  vars:
+    hosts_to_deploy: vms
+
+- name: Install CoreDNS
+  hosts:
+    - dns1
+  become: true
+  roles:
+    - servers/network-vms
+    - apps/docker
+    - servers/apps/coredns
+    - servers/apps/letsencrypt-coredns
+
+- name: Install DNS2
+  hosts:
+    - dns2
+  become: true
+  roles:
+    - servers/network-vms
+    - apps/docker
 
 - name: Install NGINX reverse proxy
   hosts:
@@ -28,12 +56,4 @@
   become: true
   roles:
     - servers/apps/nginx
-
-# - name: jenkins
-#   hosts: "{{ hosts_to_deploy | default('local') }}"
-#   become: true
-#   pre_tasks:
-#     # - debug:
-#     #     var: hostvars[inventory_hostname]
-#   roles:
-#     - servers/apps/jenkins
+    # - servers/apps/jenkins

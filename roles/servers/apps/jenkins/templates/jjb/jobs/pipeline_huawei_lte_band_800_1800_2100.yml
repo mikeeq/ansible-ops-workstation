@@ -1,6 +1,6 @@
 ---
 - job:
-    name: Ansible Custom
+    name: Huawei LTE band 800+1800+2100
     project-type: pipeline
     sandbox: true
     dsl-yaml: |
@@ -11,6 +11,8 @@
           - ansiColor('xterm')
           - disableConcurrentBuilds()
           - skipDefaultCheckout()
+        triggers:
+          - cron('0 23 * * *')
         parameters:
           - >-
             string(
@@ -25,27 +27,6 @@
               defaultValue: "feature/servers_v2",
               trim: true,
               description: "Branch name repo: ansible-ops-private"
-            )
-          - >-
-            string(
-              name: "INVENTORY_PATH",
-              defaultValue: "../../ansible-ops-private/inventory/hosts.yml",
-              trim: true,
-              description: "Ansible Inventory"
-            )
-          - >-
-            string(
-              name: "PLAYBOOK_NAME",
-              defaultValue: "huawei-lte-setband-800+1800+2100.yml",
-              trim: true,
-              description: "Playbook"
-            )
-          - >-
-            string(
-              name: "EXTRA_ARGS",
-              defaultValue: "",
-              trim: true,
-              description: "Extra arguments for ansible-playbook command, i.e.: -vvv"
             )
         stages:
           - stage: "Checkout ansible-ops-workstation"
@@ -86,5 +67,5 @@
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -i $params.INVENTORY_PATH $params.PLAYBOOK_NAME $params.EXTRA_ARGS
+                      ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband-800+1800+2100.yml
                     """
