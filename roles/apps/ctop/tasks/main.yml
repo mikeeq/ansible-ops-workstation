@@ -34,3 +34,4 @@
     src: "{{ rpms_dwnl_path }}/ctop"
     dest: /usr/local/bin/ctop
     mode: 0755
+    remote_src: true
