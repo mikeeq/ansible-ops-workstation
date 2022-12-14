@@ -27,8 +27,9 @@ jenkins:
             - mailer:
                 emailAddress: "{{ i.email }}"
             - "favorite"
-        {% endfor -%}
+        {% endfor %}
 
+# Security
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
