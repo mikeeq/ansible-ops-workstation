@@ -54,7 +54,7 @@ USER jenkins
 # blueocean:1.25.5
 # RUN jenkins-plugin-cli --plugins "workflow-aggregator:590.v6a_d052e5a_a_b_5 rebuild:1.34 ansicolor:1.0.2 git:4.14.3 linenumbers:1.3 multiple-scms:0.8 pipeline-as-yaml:0.16-rc ws-cleanup:0.44"
 
-RUN jenkins-plugin-cli --plugins "blueocean workflow-aggregator rebuild ansicolor git linenumbers multiple-scms pipeline-as-yaml ws-cleanup locale pipeline-multibranch-defaults basic-branch-build-strategies pipeline-stage-view configuration-as-code job-dsl"
+RUN jenkins-plugin-cli --plugins "blueocean workflow-aggregator rebuild ansicolor git linenumbers multiple-scms pipeline-as-yaml ws-cleanup locale pipeline-multibranch-defaults basic-branch-build-strategies pipeline-stage-view configuration-as-code job-dsl dark-theme"
 
 # ❯ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 

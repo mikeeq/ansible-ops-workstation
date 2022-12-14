@@ -1,5 +1,7 @@
 ---
+# https://www.jenkins.io/doc/book/pipeline/syntax/
 # https://plugins.jenkins.io/pipeline-as-yaml/
+# https://github.com/jenkinsci/pipeline-as-yaml-plugin/blob/master/src/test/resources/pipeline/pipelineAllinOne.yml
 
 - job:
     name: test_pipeline_yaml
@@ -10,7 +12,12 @@
         agent:
           any:
         options:
-          - "ansiColor('xterm')"
+          - ansiColor('xterm')
+          - disableConcurrentBuilds()
+          - skipDefaultCheckout()
+        triggers:
+          - cron('H */4 * * 1-5')
+          # - pollSCM('H */4 * * 1-5')
         parameters:
           - >-
             string(

@@ -7,6 +7,7 @@
 - name: Install dependencies
   pip:
     name: "{{ item }}"
+    state: present
   loop:
     - xmltodict
 
