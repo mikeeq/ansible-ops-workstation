@@ -38,7 +38,6 @@
     dest: "~{{ item }}/.p10k.zsh"
     owner: "{{ item }}"
     backup: true
-    remote_src: true
     mode: 0644
   with_items:
     - "{{ user_name }}"
