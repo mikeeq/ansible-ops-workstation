@@ -26,6 +26,7 @@ services:
     # user: "jenkins:jenkins"
     user: "root:root"
     environment:
+      TZ: "Europe/Warsaw"
       CASC_JENKINS_CONFIG: "/var/jenkins_home/casc_configs"
       JAVA_OPTS: "-Xmx256m"
       JAVA_ARGS: "-Xmx256m"
