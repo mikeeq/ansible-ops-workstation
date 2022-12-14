@@ -50,7 +50,6 @@
   copy:
     src: keeweb.desktop
     dest: /usr/share/applications/keeweb.desktop
-    remote_src: true
 
 - name: Add version file
   shell: echo '{{ version_tag.stdout }}' > /opt/keeweb/version.tag
