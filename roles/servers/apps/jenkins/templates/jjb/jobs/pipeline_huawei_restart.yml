@@ -8,12 +8,12 @@
     parameters:
       - string:
           name: "BRANCH_ANSIBLE_OPS_WORKSTATION"
-          default: "f37"
+          default: "main"
           trim: true
           description: "Branch name repo: ansible-ops-workstation"
       - string:
           name: "BRANCH_ANSIBLE_OPS_PRIVATE"
-          default: "feature/servers_v2"
+          default: "main"
           trim: true
           description: "Branch name repo: ansible-ops-private"
     dsl-yaml: |

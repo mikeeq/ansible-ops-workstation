@@ -4,16 +4,18 @@
     project-type: pipeline
     sandbox: true
     parameters:
-      - string:
-          name: "BRANCH_ANSIBLE_OPS_WORKSTATION"
-          default: "f37"
-          trim: true
-          description: "Branch name repo: ansible-ops-workstation"
-      - string:
-          name: "BRANCH_ANSIBLE_OPS_PRIVATE"
-          default: "feature/servers_v2"
-          trim: true
-          description: "Branch name repo: ansible-ops-private"
+      - git-parameter:
+          branchFilter: 'origin/(.*)'
+          defaultValue: 'main'
+          name: 'BRANCH_ANSIBLE_OPS_WORKSTATION'
+          type: 'PT_BRANCH'
+          useRepository: '.*ansible-ops-workstation.git'
+      - git-parameter:
+          branchFilter: 'origin/(.*)'
+          defaultValue: 'main'
+          name: 'BRANCH_ANSIBLE_OPS_PRIVATE'
+          type: 'PT_BRANCH'
+          useRepository: '.*ansible-ops-private.git'
       - string:
           name: "INVENTORY_PATH"
           default: "../../ansible-ops-private/inventory/hosts.yml"

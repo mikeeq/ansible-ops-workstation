@@ -30,6 +30,8 @@ services:
       CASC_JENKINS_CONFIG: "/var/jenkins_home/casc_configs"
       JAVA_OPTS: "-Xmx256m"
       JAVA_ARGS: "-Xmx256m"
+      # CSP - Content Security Policy, overriden to make git-parameter working
+      # JAVA_ARGS: "-Xmx256m -Djava.awt.headless=true -Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src data:;\""
     volumes:
       # - 'jenkins_home:/var/jenkins_home'
       - '{{ jenkins_ssh_path }}:/root/.ssh'
