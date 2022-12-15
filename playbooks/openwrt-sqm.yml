@@ -49,6 +49,7 @@
       shell: service cake-autorate status
       register: dynamic_sqm_status
       changed_when: false
+      failed_when: false
 
     - name: "{{ cake_service }} Dynamic SQM service"
       shell: service cake-autorate {{ cake_service }}
