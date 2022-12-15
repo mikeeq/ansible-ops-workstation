@@ -16,7 +16,7 @@ services:
           memory: 512M
     # image: jenkins/jenkins:slim-jdk11
     container_name: {{ jenkins_container_name }}
-    restart: on-failure     # other option: always - if you want persistent through host reboots
+    restart: always     # other option: always - if you want persistent through host reboots
     expose:
       - '8080'
       # - '50000:50000'     #  Uncomment if multiagent Jenkins
