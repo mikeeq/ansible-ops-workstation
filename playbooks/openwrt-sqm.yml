@@ -53,7 +53,7 @@
 
     - name: "{{ cake_service }} Dynamic SQM service"
       shell: service cake-autorate {{ cake_service }}
-      when: (dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (dynamic_sqm_status == "inactive" and cake_service == "start")
+      when: (dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (dynamic_sqm_status.stdout == "inactive" and cake_service == "start")
 
 # - python3-light
 # - python3-multiprocessing
