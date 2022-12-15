@@ -26,12 +26,12 @@
       set_fact:
         cake_service: "start"
         sqm_enabled: "1"
-      when: sqm_pipeline
+      when: sqm_pipeline == "true"
     - name: Set vars to disable SQM
       set_fact:
         cake_service: "stop"
         sqm_enabled: "0"
-      when: sqm_pipeline == false
+      when: sqm_pipeline == "false"
 
     - name: Change config SQM
       lineinfile:
@@ -50,7 +50,7 @@
       register: dynamic_sqm_status
       changed_when: false
 
-    - name: "{{ sqm_enabled }} Dynamic SQM service"
+    - name: "{{ cake_service }} Dynamic SQM service"
       shell: service cake-autorate {{ cake_service }}
       when: (dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (dynamic_sqm_status == "inactive" and cake_service == "start")
 
