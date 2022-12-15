@@ -1,20 +1,20 @@
 ---
-- name: Init openwrt ansible support
-  hosts:
-    - openwrt
-  become: true
-  gather_facts: false
-  tasks:
-    - raw: uname -a
-    - raw: opkg install {{ opkgs | join(' ') }}
-      vars:
-        opkgs:
-          - python3-light
-          - python3-multiprocessing
-          - python3-distutils
-          - openssh-sftp-server
-          - python3-logging
-          - python3-urllib
+# - name: Init openwrt ansible support
+#   hosts:
+#     - openwrt
+#   become: true
+#   gather_facts: false
+#   tasks:
+#     - raw: uname -a
+#     - raw: opkg install {{ opkgs | join(' ') }}
+#       vars:
+#         opkgs:
+#           - python3-light
+#           - python3-multiprocessing
+#           - python3-distutils
+#           - openssh-sftp-server
+#           - python3-logging
+#           - python3-urllib
 
 - name: Setup routers
   hosts:
@@ -22,7 +22,21 @@
   become: true
   gather_facts: true
   tasks:
-    - shell: uname -a
+    - set_fact:
+        cake_service: "start"
+        sqm_enabled: "1"
+      when: sqm_pipeline
+    - set_fact:
+        cake_service: "stop"
+        sqm_enabled: "0"
+      when: sqm_pipeline == false
+    - lineinfile:
+        regexp: 'option\senabled'
+        # \s{8}option\senabled\s.\d.
+        line: "        option enabled '{{ sqm_enabled }}'"
+        path: /etc/config/sqm
+    - shell: service sqm restart
+    - shell: service cake-autorate {{ cake_service }}
 
 # - python3-light
 # - python3-multiprocessing

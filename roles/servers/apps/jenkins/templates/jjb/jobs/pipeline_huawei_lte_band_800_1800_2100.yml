@@ -57,11 +57,19 @@
                         ls
                         git-crypt unlock ~jenkins/secrets/git_crypt_key
                       """
-          - stage: "Ansible"
+          - stage: "Ansible LTE Band set"
             steps:
               script:
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
                       ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband-800+1800+2100.yml
+                    """
+          - stage: "Ansible SQM enable"
+            steps:
+              script:
+                  - |
+                    sh """#!/bin/bash
+                      cd ansible-ops-workstation/playbooks
+                      ansible-playbook -e sqm_pipeline=true -i ../../ansible-ops-private/inventory/hosts.yml openwrt-sqm.yml
                     """
