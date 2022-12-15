@@ -1,4 +1,12 @@
 ---
+- name: Configure dynamic SQM config
+  template:
+    src: "cake-autorate_config.sh"
+    dest: "/root/cake-autorate/cake-autorate_config.sh"
+    owner: "root"
+    group: "root"
+    mode: 0755
+
 - name: Set vars to enable SQM
   set_fact:
     cake_service: "start"
