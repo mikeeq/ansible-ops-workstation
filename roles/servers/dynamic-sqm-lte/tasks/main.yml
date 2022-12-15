@@ -11,12 +11,13 @@
   set_fact:
     cake_service: "start"
     sqm_enabled: "1"
-  when: sqm_pipeline == "true"
+  when: dynamic_sqm_enabled == "true"
+
 - name: Set vars to disable SQM
   set_fact:
     cake_service: "stop"
     sqm_enabled: "0"
-  when: sqm_pipeline == "false"
+  when: dynamic_sqm_enabled == "false"
 
 - name: Change config SQM
   lineinfile:

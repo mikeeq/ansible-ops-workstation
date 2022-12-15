@@ -1,2 +1,2 @@
 ---
-sqm_pipeline: "true"
+dynamic_sqm_enabled: "true"
