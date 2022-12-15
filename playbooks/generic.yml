@@ -14,3 +14,4 @@
     - apps/istioctl
     - apps/netcore_sdk
     - apps/argocd
+    - apps/aws-cli
