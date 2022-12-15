@@ -10,12 +10,18 @@
           name: 'BRANCH_ANSIBLE_OPS_WORKSTATION'
           type: 'PT_BRANCH'
           useRepository: '.*ansible-ops-workstation.git'
+          sortMode: 'ASCENDING_SMART'
+          selectedValue: 'DEFAULT'
+          quickFilterEnabled: true
       - git-parameter:
           branchFilter: 'origin/(.*)'
           defaultValue: 'main'
           name: 'BRANCH_ANSIBLE_OPS_PRIVATE'
           type: 'PT_BRANCH'
           useRepository: '.*ansible-ops-private.git'
+          sortMode: 'ASCENDING_SMART'
+          selectedValue: 'DEFAULT'
+          quickFilterEnabled: true
       - string:
           name: "INVENTORY_PATH"
           default: "../../ansible-ops-private/inventory/hosts.yml"
