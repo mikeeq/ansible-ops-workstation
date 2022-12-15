@@ -1,18 +1,18 @@
 ---
-- name: Get installed version of dive
+- name: Get installed version of aws-cli
   become: true
   become_user: "{{ user_name }}"
-  shell: dive version | awk '{print $2}'
-  register: installed_dive_version
+  shell: aws --version | cut -d "/" -f2 | awk '{print $1}'
+  register: installed_aws_cli_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of dive:"
+- name: "Installed version of aws-cli:"
   debug:
-    var: installed_dive_version.stdout
+    var: installed_aws_cli_version.stdout
 
 - include_tasks: get_latest_version.yml
-  when: dive_version is not defined
+  when: aws_cli_version is not defined
 
 - include_tasks: install.yml
-  when: installed_dive_version.stdout != dive_version
+  when: installed_aws_cli_version.stdout != aws_cli_version

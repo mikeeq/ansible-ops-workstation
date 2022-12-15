@@ -1,25 +1,14 @@
 ---
-- name: Directory for dive
+- name: Install PIP aws-cli in virtualenv
+  pip:
+    name: "https://github.com/aws/aws-cli/archive/refs/tags/{{ aws_cli_version }}.tar.gz"
+    state: present
+    virtualenv: "{{ virtualenv_install_path }}/aws-cli"
+
+- name: Create a symbolic link for aws-cli
   file:
-    path: /tmp/dive
-    state: directory
-
-- name: Download dive binary
-  get_url:
-    url: "https://github.com/wagoodman/dive/releases/download/v{{ dive_version }}/dive_{{ dive_version }}_linux_amd64.tar.gz"
-    dest: /tmp/dive/dive.tar.gz
-
-- name: Unarchive a file that is already on the remote machine
-  unarchive:
-    src: /tmp/dive/dive.tar.gz
-    dest: /tmp/dive
-    remote_src: yes
-
-- name: Copy dive
-  copy:
-    src: "/tmp/dive/dive"
-    dest: "/usr/local/bin/dive"
-    remote_src: true
-    mode: 0755
+    src: "{{ virtualenv_install_path }}/aws-cli/bin/aws"
+    dest: "/usr/local/bin/aws"
     owner: root
     group: root
+    state: link
