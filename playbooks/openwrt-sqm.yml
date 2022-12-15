@@ -46,7 +46,7 @@
       when: sqm_config.changed
 
     - name: Check Dynamic SQM service status
-      shell: service cake-autorotate status
+      shell: service cake-autorate status
       register: dynamic_sqm_status
 
     - name: "{{ sqm_enabled }} Dynamic SQM service"
