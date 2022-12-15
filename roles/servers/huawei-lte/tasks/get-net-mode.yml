@@ -1,0 +1,19 @@
+---
+- name: Grab information about radio mode (NetworkMode - 3G/LTE, NetworkMBand - GSM/WCDMA band, LTEBand)
+  ansible.builtin.uri:
+    url: "{{ huawei_url }}/api/net/net-mode"
+    return_content: true
+    method: GET
+    headers:
+      Content-Type: text/xml
+      Cookie: "{{ login_request.cookies_string }}"
+  register: get_net_mode_request
+  failed_when: '"<error>" in get_net_mode_request.content'
+
+- name: Transform get_net_mode_request from XML to YAML
+  ansible.builtin.set_fact:
+    get_net_mode_yaml: "{{ get_net_mode_request.content | ansible.utils.from_xml }}"
+
+- name: Show get_net_mode_request response content in YAML
+  debug:
+    var: get_net_mode_yaml.response

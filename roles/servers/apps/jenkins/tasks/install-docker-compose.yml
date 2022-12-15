@@ -20,22 +20,17 @@
     - docker-compose.yml
     - Dockerfile
 
-# - name: Pull Jenkins Docker image
-#   command: docker-compose pull
-#   changed_when: pull_result.stderr_lines | length > 2
-#   register: pull_result
-#   args:
-#     chdir: "{{ jenkins_install_path }}"
-
 # TODO: Add jenkins user to local machine
 
-- name: Build Jenkins Docker image
+- name: Check if docker image is present
   shell: |
-    docker-compose build --pull --build-arg DOCKER_GID=$(cat /etc/group | grep docker | awk -F\: '{print $3}')
-  changed_when: build_result.stderr_lines | length > 2
-  register: build_result
-  args:
-    chdir: "{{ jenkins_install_path }}"
+    docker images --format {% raw %}'table {{.ID}}\t{{.Repository}}:{{.Tag}}\t{{.Size}}'{% endraw %} | grep -q {{ jenkins_image_name }}
+  register: docker_image_exists
+  ignore_errors: true
+  changed_when: false
+
+- include_tasks: update.yml
+  when: docker_image_exists.rc != 0 or jenkins_update
 
 - name: Run Jenkins using docker-compose
   command: docker-compose up -d

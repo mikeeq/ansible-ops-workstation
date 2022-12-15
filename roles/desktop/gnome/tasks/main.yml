@@ -1,5 +1,6 @@
 ---
+# dnf grouplist -v
+
 - import_tasks: gsettings.yml
 - import_tasks: extensions_manual.yml
-
-# dnf grouplist -v
+- import_tasks: remote_desktop.yml

@@ -1,0 +1,7 @@
+---
+huawei_ip: "192.168.8.1"
+huawei_username: "admin"
+huawei_password: "admin"
+
+huawei_url: "http://{{ huawei_ip }}"
+huawei_lteband: "80005"

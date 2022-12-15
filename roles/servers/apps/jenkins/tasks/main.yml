@@ -5,22 +5,48 @@
   ignore_errors: true
   changed_when: false
 
-- fail:
+- name: Fail when docker-compose is not installed
+  fail:
     msg: "docker-compose is not found! You need to install it first."
   when: docker_compose_result.rc != 0
 
-# - name: Ensure jenkins_home dir is removed (for tests)
-#   file:
-#     path: "{{ jenkins_home }}"
-#     state: absent
+- include_tasks: cleanup.yml
+  when: jenkins_cleanup
 
-# - name: Stop Jenkins using docker-compose (for tests)
-#   command: docker-compose stop
-#   changed_when: up_result.stderr_lines | length > 1
-#   register: up_result
+- import_tasks: config.yml
+- import_tasks: install-docker-compose.yml
+
+# - name: Restart Jenkins using docker-compose
+#   command: docker-compose restart
 #   args:
 #     chdir: "{{ jenkins_install_path }}"
+#   when: jenkins_config_file.changed
 
-- import_tasks: install-docker-compose.yml
-- import_tasks: users.yml
+- name: Wait for jenkins to be fully up
+  include_tasks: api-token.yml
+  vars:
+    jenkins_crumb_admin_username: "{{ jenkins_admin_username }}"
+    jenkins_crumb_admin_password: "{{ jenkins_admin_password }}"
+
+- name: Reload Jenkins Configuration As Code
+  uri:
+    method: POST
+    url: '{{ jenkins_url }}/configuration-as-code/reload'
+    user: "{{ jenkins_admin_username }}"
+    password: "{{ jenkins_admin_password }}"
+    force_basic_auth: yes
+    follow_redirects: all
+    return_content: true
+    headers:
+      Jenkins-Crumb: '{{ crumb.content.split(":")[1] }}'
+      Cookie: '{{ crumb.set_cookie }}'
+    body: 'Submit'
+  when: jenkins_config_file.changed
+  register: casc
+  changed_when: casc.status == 200
+
+# Replaced by configuration-as-code
+# - import_tasks: users-add.yml
+# - import_tasks: users-delete.yml
+
 - import_tasks: jjb.yml

@@ -1,0 +1,59 @@
+---
+- name: Get latest plugins version
+  become: true
+  become_user: "{{ user_name }}"
+  shell: |
+    basename $(find ~/.vagrant.d | grep -i '{{ item }}-[[:digit:]]' | grep -i specifications | grep -i gemspec | head -n 1) .gemspec | rev | cut -d'-' -f1 | rev
+    curl -Ls https://rubygems.org/gems/{{ item }} | grep -i versions | grep -i gems | grep -i item | head -n 1 | cut -d'>' -f2 | cut -d'<' -f1
+  register: vagrant_plugins_version
+  changed_when: false
+  ignore_errors: true
+  loop: "{{ vagrant_plugins }}"
+
+- name: Get embedded plugins versionS
+  become: true
+  shell: |
+    basename $(find /opt/vagrant | grep -i '{{ item }}-[[:digit:]]' | grep -i specifications | grep -i gemspec | head -n 1) .gemspec | rev | cut -d'-' -f1 | rev
+    curl -Ls https://rubygems.org/gems/{{ item }} | grep -i versions | grep -i gems | grep -i item | head -n 1 | cut -d'>' -f2 | cut -d'<' -f1
+  register: vagrant_embedded_plugins_version
+  changed_when: false
+  ignore_errors: true
+  loop: "{{ vagrant_embedded_plugins }}"
+
+# - debug:
+#     var: installed_vagrant_embedded_plugins_version
+
+# - debug:
+#     var: latest_vagrant_embedded_plugins_version
+
+- set_fact:
+    vagrant_plugins_info: >-
+      {{ vagrant_plugins_info | default([]) +
+        [
+          {
+            'name': item.item,
+            'version': item.stdout_lines[0],
+            'latestVersion': item.stdout_lines[1],
+          }
+        ]
+      }}
+  with_items:
+    - "{{ vagrant_embedded_plugins_version.results }}"
+    - "{{ vagrant_plugins_version.results }}"
+
+# - set_fact:
+#     vagrant_installed_plugins_info: >-
+#       {{ vagrant_installed_plugins_info | default([]) +
+#         [
+#           {
+#             'name': item.item,
+#             'version': item.stdout,
+#           }
+#         ]
+#       }}
+#   with_items:
+#     - "{{ installed_vagrant_embedded_plugins_version.results }}"
+#     - "{{ installed_vagrant_plugins_version.results }}"
+
+# - debug:
+#     var: vagrant_installed_plugins_info

@@ -1,0 +1,6 @@
+---
+vagrant_plugins:
+  - vagrant-libvirt
+vagrant_embedded_plugins:
+  - winrm
+  - winrm-elevated

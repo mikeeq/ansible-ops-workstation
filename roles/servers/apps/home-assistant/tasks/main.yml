@@ -1,0 +1,14 @@
+---
+- name: Pull Docker images using docker-compose
+  command: docker-compose pull
+  changed_when: pull_result.stderr_lines | length > 2
+  register: pull_result
+  args:
+    chdir: "{{ install_path }}"
+
+- name: Run/Refresh using docker-compose
+  command: docker-compose up -d
+  changed_when: up_result.stderr_lines | length > 2
+  register: up_result
+  args:
+    chdir: "{{ install_path }}"

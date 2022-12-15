@@ -1,0 +1,108 @@
+---
+- name: Enable RDP
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/enable"
+    value: "true"
+    state: present
+
+- name: Choose screen-share-mode
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/screen-share-mode"
+    value: "'{{ gnome_rd_type }}'"
+    state: present
+
+- name: Choose view-only
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/view-only"
+    value: "false"
+    state: present
+
+- name: Make sure directory for tls cert exists
+  become: true
+  become_user: "{{ user_name }}"
+  file:
+    path: ~/.config/remote-desktop
+    state: directory
+
+- name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
+  become: true
+  become_user: "{{ user_name }}"
+  community.crypto.openssl_privatekey:
+    path: ~/.config/remote-desktop/tls.key
+
+- name: Generate an OpenSSL Certificate Signing Request
+  become: true
+  become_user: "{{ user_name }}"
+  community.crypto.openssl_csr:
+    path: ~/.config/remote-desktop/tls.csr
+    privatekey_path: ~/.config/remote-desktop/tls.key
+    # common_name: www.ansible.com
+
+- name: Generate a Self Signed OpenSSL certificate
+  become: true
+  become_user: "{{ user_name }}"
+  openssl_certificate:
+    path: ~/.config/remote-desktop/tls.crt
+    privatekey_path: ~/.config/remote-desktop/tls.key
+    csr_path: ~/.config/remote-desktop/tls.csr
+    provider: selfsigned
+
+- name: Download grd_rdp_credentials.c
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.get_url:
+    url: https://gitlab.gnome.org/-/snippets/1778/raw/master/grd_rdp_credentials.c
+    dest: "/home/{{ user_name }}/.config/remote-desktop/grd_rdp_credentials.c"
+    mode: '0640'
+
+- name: Install dependencies
+  package:
+    name: libsecret-devel
+    state: present
+
+- name: Compile RDP credentials script
+  become: true
+  become_user: "{{ user_name }}"
+  shell: gcc grd_rdp_credentials.c `pkg-config --libs --cflags libsecret-1` -o grd_rdp_credentials
+  args:
+    chdir: ~/.config/remote-desktop
+
+- name: Generate RDP credentials
+  become: true
+  become_user: "{{ user_name }}"
+  shell: ./grd_rdp_credentials {{ rdp_username }} {{ rdp_passowrd }}
+  args:
+    chdir: ~/.config/remote-desktop
+
+- name: RDP TLS cert path
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/tls-cert"
+    value: "'/home/{{ user_name }}/.config/remote-desktop/tls.crt'"
+    state: present
+
+- name: RDP TLS key path
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/tls-key"
+    value: "'/home/{{ user_name }}/.config/remote-desktop/tls.key'"
+    state: present
+
+- name: Run gnome-remote-desktop.service
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.systemd:
+    name: gnome-remote-desktop
+    state: started
+    scope: user
+    enabled: true
+
+# killall -3 gnome-shell

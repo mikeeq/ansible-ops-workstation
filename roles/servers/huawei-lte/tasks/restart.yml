@@ -1,0 +1,23 @@
+---
+- name: Reboot device - /api/device/control API Call
+  ansible.builtin.uri:
+    url: "{{ huawei_url }}/api/device/control"
+    return_content: true
+    method: POST
+    body: >-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <request>
+        <Control>1</Control>
+      </request>
+    headers:
+      Content-Type: text/xml
+      Cookie: "{{ login_request.cookies_string }}"
+      __RequestVerificationToken: "{{ login_request.__requestverificationtokenone }}"
+  register: restart_request
+  failed_when: '"<error>" in restart_request.content'
+
+# Control:
+# 1 - restart urządzenia
+# 2 - przywrócenie konfiguracji (brak informacji jak podać plik z zapisaną konfiguracją. Być może korzysta z pliku http://192.168.8.1/nvram.bak)
+# 3 - kopia zapasowa konfiguracji (konfiguracja jest dostępna pod adresem http://192.168.8.1/nvram.bak. Plik jest z kodowaniem base64)
+# 4 - wyłączenie urządzenia

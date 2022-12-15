@@ -1,0 +1,40 @@
+---
+- include_tasks: api-token.yml
+  vars:
+    jenkins_crumb_admin_username: "{{ jenkins_admin_username }}"
+    jenkins_crumb_admin_password: "{{ jenkins_admin_password }}"
+
+- name: JENKINS-CREDENTIALS | Remove admin Jenkins account
+  uri:
+    method: POST
+    url: '{{ jenkins_url }}/securityRealm/user/{{ item }}/doDelete'
+    user: "{{ jenkins_admin_username }}"
+    password: "{{ jenkins_admin_password }}"
+    force_basic_auth: yes
+    follow_redirects: all
+    return_content: true
+    headers:
+      Jenkins-Crumb: '{{ crumb.content.split(":")[1] }}'
+      Cookie: '{{ crumb.set_cookie }}'
+    body: 'Submit'
+  loop: "{{ jenkins_users_to_delete }}"
+  loop_control:
+    label: "{{ item }}"
+  failed_when: false
+  register: jenkins_deleted_users
+
+- name: Add status if admin account was removed
+  set_fact:
+    admin_account_status: "{{ jenkins_deleted_users.results | selectattr('item','equalto','admin') | map(attribute='status') | join }}"
+
+- name: Remove temp admin password
+  file:
+    path: "{{ jenkins_home }}/secrets/initialAdminPassword"
+    state: absent
+  when: admin_account_status == "200"
+
+- name: Add flag that admin account is removed
+  copy:
+    dest: "{{ jenkins_home }}/secrets/adminAccountRemoved"
+    content: "removed"
+  when: admin_account_status == "200"

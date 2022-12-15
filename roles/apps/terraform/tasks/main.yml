@@ -1,5 +1,14 @@
 ---
 # terraform_0.11.7_linux_amd64.zip
+- name: Install dependencies
+  package:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - unzip
+      - tar
+
 - name: Get installed version
   shell: terraform version | head -n 1 | grep v | cut -d'v' -f2
   register: installed_terraform_version

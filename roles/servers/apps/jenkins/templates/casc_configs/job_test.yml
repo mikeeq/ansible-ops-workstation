@@ -1,0 +1,25 @@
+---
+# https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/demos/jobs/pipeline.yaml
+# https://jenkinsci.github.io/job-dsl-plugin/#path/pipelineJob
+jobs:
+  - script: >
+      folder('testjobs')
+  - script: >
+      pipelineJob('testjobs/default-agent') {
+        definition {
+          cps {
+            script("""\
+              pipeline {
+                agent any
+                stages {
+                  stage ('test') {
+                    steps {
+                      echo "hello"
+                    }
+                  }
+                }
+              }""".stripIndent())
+            sandbox()
+          }
+        }
+      }

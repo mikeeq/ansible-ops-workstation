@@ -1,0 +1,32 @@
+---
+{% raw %}
+# - job-template:
+#     name: '{name}-build-job'
+#     project-type: pipeline
+#     dsl: |
+#       stage('Build another job') {{
+#         build(job: "{isay}")
+#       }}
+
+# - job-template:
+#     name: '{name}-script'
+#     project-type: pipeline
+#     dsl: |
+#       stage('Build another job') {{
+#         steps{
+#           sh "echo {testVar}"
+#         }
+#       }}
+
+
+# - job-group:
+#     name: '{name}-tests'
+#     jobs:
+#       - '{name}-script':
+#           testVar: 'hello'
+
+# - project:
+#     name: test
+#     jobs:
+#     - '{name}-tests'
+{% endraw %}

@@ -1,0 +1,88 @@
+---
+- job:
+    name: Ansible Custom
+    project-type: pipeline
+    sandbox: true
+    parameters:
+      - git-parameter:
+          branchFilter: 'origin/(.*)'
+          defaultValue: 'main'
+          name: 'BRANCH_ANSIBLE_OPS_WORKSTATION'
+          type: 'PT_BRANCH'
+          useRepository: '.*ansible-ops-workstation.git'
+          sortMode: 'ASCENDING_SMART'
+          selectedValue: 'DEFAULT'
+          quickFilterEnabled: true
+      - git-parameter:
+          branchFilter: 'origin/(.*)'
+          defaultValue: 'main'
+          name: 'BRANCH_ANSIBLE_OPS_PRIVATE'
+          type: 'PT_BRANCH'
+          useRepository: '.*ansible-ops-private.git'
+          sortMode: 'ASCENDING_SMART'
+          selectedValue: 'DEFAULT'
+          quickFilterEnabled: true
+      - string:
+          name: "INVENTORY_PATH"
+          default: "../../ansible-ops-private/inventory/hosts.yml"
+          trim: true
+          description: "Ansible Inventory"
+      - string:
+          name: "PLAYBOOK_NAME"
+          default: "huawei-lte-setband-800+1800+2100.yml"
+          trim: true
+          description: "Playbook"
+      - string:
+          name: "EXTRA_ARGS"
+          default: ""
+          trim: true
+          description: "Extra arguments for ansible-playbook command, i.e.: -vvv"
+    dsl-yaml: |
+      pipeline:
+        agent:
+          any:
+        options:
+          - ansiColor('xterm')
+          - disableConcurrentBuilds()
+          - skipDefaultCheckout()
+        stages:
+          - stage: "Checkout ansible-ops-workstation"
+            steps:
+              script:
+                - dir: "'ansible-ops-workstation'"
+                  script:
+                    - >-
+                      git(
+                        url: "git@github.com:mikeeq/ansible-ops-workstation.git",
+                        branch: "$params.BRANCH_ANSIBLE_OPS_WORKSTATION"
+                      )
+          - stage: "Checkout ansible-ops-private"
+            steps:
+              script:
+                - dir: "'ansible-ops-private'"
+                  script:
+                    - >-
+                      git(
+                        url: "git@github.com:mikeeq/ansible-ops-private.git",
+                        branch: "$params.BRANCH_ANSIBLE_OPS_PRIVATE"
+                      )
+          - stage: "Unlock git-crypt"
+            steps:
+              script:
+                - dir: "'ansible-ops-private'"
+                  script:
+                    - |
+                      sh """#!/bin/bash
+                        id
+                        pwd
+                        ls
+                        git-crypt unlock ~jenkins/secrets/git_crypt_key
+                      """
+          - stage: "Ansible"
+            steps:
+              script:
+                  - |
+                    sh """#!/bin/bash
+                      cd ansible-ops-workstation/playbooks
+                      ansible-playbook -i $params.INVENTORY_PATH $params.PLAYBOOK_NAME $params.EXTRA_ARGS
+                    """

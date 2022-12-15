@@ -5,7 +5,7 @@ services:
   jenkins:
     build: .
     # https://hub.docker.com/r/jenkins/jenkins
-    image: jenkins
+    image: {{ jenkins_image_name }}
     deploy:
       resources:
         limits:
@@ -15,8 +15,8 @@ services:
           cpus: '0.25'
           memory: 512M
     # image: jenkins/jenkins:slim-jdk11
-    container_name: jenkins
-    restart: on-failure     # other option: always - if you want persistent through host reboots
+    container_name: {{ jenkins_container_name }}
+    restart: always     # other option: always - if you want persistent through host reboots
     expose:
       - '8080'
       # - '50000:50000'     #  Uncomment if multiagent Jenkins
@@ -26,10 +26,15 @@ services:
     # user: "jenkins:jenkins"
     user: "root:root"
     environment:
+      TZ: "Europe/Warsaw"
+      CASC_JENKINS_CONFIG: "/var/jenkins_home/casc_configs"
       JAVA_OPTS: "-Xmx256m"
       JAVA_ARGS: "-Xmx256m"
+      # CSP - Content Security Policy, overriden to make git-parameter working
+      # JAVA_ARGS: "-Xmx256m -Djava.awt.headless=true -Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src data:;\""
     volumes:
       # - 'jenkins_home:/var/jenkins_home'
+      - '{{ jenkins_ssh_path }}:/root/.ssh'
       - '{{ jenkins_home }}:/var/jenkins_home'
       - /var/run/docker.sock:/var/run/docker.sock
 

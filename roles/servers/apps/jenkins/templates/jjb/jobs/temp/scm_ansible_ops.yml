@@ -1,0 +1,6 @@
+# ---
+# - scm:
+#     name: ansible_ops
+#     scm:
+#       - ansible_ops_workstation
+#       - ansible_ops_private

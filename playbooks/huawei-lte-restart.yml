@@ -1,0 +1,9 @@
+---
+- name: Huawei LTE router restart
+  hosts: "{{ hosts_to_deploy | default('local') }}"
+  become: false
+  gather_facts: false
+  roles:
+    - servers/huawei-lte
+  vars:
+    huawei_dynamic_task: "restart.yml"

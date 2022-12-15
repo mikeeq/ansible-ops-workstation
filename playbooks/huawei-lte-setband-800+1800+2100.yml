@@ -1,0 +1,10 @@
+---
+- name: Huawei LTE router set band 800+1800+2100
+  hosts: "{{ hosts_to_deploy | default('local') }}"
+  become: false
+  gather_facts: false
+  roles:
+    - servers/huawei-lte
+  vars:
+    huawei_dynamic_task: "set-net-mode.yml"
+    huawei_lteband: "80005"

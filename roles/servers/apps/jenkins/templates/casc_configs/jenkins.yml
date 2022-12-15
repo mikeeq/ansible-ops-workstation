@@ -1,0 +1,49 @@
+---
+jenkins:
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
+  numExecutors: 5
+  scmCheckoutRetryCount: 2
+  mode: NORMAL
+
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+        {% for i in jenkins_users -%}
+        - id: "{{ i.name }}"
+          name: "{{ i.name }}"
+          password: "{{ i.password }}"
+          properties:
+            - "apiToken"
+            - "myView"
+            - preferredProvider:
+                providerId: "default"
+            - "timezone"
+            - mailer:
+                emailAddress: "{{ i.email }}"
+            - "favorite"
+        {% endfor %}
+
+# Security
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: false
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+
+unclassified:
+  locale:
+    systemLocale: en
+    ignoreAcceptLanguage: true
+  location:
+    adminAddress: "mikee@jenkins.local"
+  themeManager:
+    disableUserThemes: true
+    theme: "dark"
