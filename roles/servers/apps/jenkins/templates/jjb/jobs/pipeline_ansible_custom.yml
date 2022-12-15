@@ -27,6 +27,9 @@
           default: "../../ansible-ops-private/inventory/hosts.yml"
           trim: true
           description: "Ansible Inventory"
+      # TODO: Consider switching to
+      # https://plugins.jenkins.io/uno-choice/
+      # https://stackoverflow.com/questions/66049517/populate-choice-parameter-in-jenkinsfile-with-list-of-folders-in-scm-repository
       - string:
           name: "PLAYBOOK_NAME"
           default: "huawei-lte-setband-800+1800+2100.yml"
