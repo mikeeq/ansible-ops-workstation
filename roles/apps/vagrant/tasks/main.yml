@@ -38,7 +38,7 @@
     disable_gpg_check: true
   when: installed_vagrant_version.stdout != vagrant_version
 
-- import_tasks: get_plugins_version.yml
+# - import_tasks: get_plugins_version.yml
 
 # - name: Install vagrant-libvirt plugin
 #   become: true
