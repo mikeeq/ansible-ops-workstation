@@ -38,28 +38,29 @@
     disable_gpg_check: true
   when: installed_vagrant_version.stdout != vagrant_version
 
-- name: Install vagrant-libvirt plugin
-  become: true
-  become_user: "{{ user_name }}"
-  shell: CONFIGURE_ARGS='with-ldflags=-L/opt/vagrant/embedded/lib with-libvirt-include=/usr/include/libvirt with-libvirt-lib=/usr/lib' GEM_HOME=~/.vagrant.d/gems GEM_PATH=$GEM_HOME:/opt/vagrant/embedded/gems PATH=/opt/vagrant/embedded/bin:$PATH vagrant plugin install vagrant-libvirt
-  register: vagrant_libvirt_output
-  changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
+- import_tasks: get_plugins_version.yml
 
-- name: Install vagrant plugins
-  become: true
-  become_user: "{{ user_name }}"
-  shell: vagrant plugin install {{ item }}
-  register: vagrant_libvirt_output
-  changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
-  loop:
-    - winrm
-    - winrm-elevated
+# - name: Install vagrant-libvirt plugin
+#   become: true
+#   become_user: "{{ user_name }}"
+#   shell: CONFIGURE_ARGS='with-ldflags=-L/opt/vagrant/embedded/lib with-libvirt-include=/usr/include/libvirt with-libvirt-lib=/usr/lib' GEM_HOME=~/.vagrant.d/gems GEM_PATH=$GEM_HOME:/opt/vagrant/embedded/gems PATH=/opt/vagrant/embedded/bin:$PATH vagrant plugin install vagrant-libvirt
+#   register: vagrant_libvirt_output
+#   changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
 
-# - name: Install vagrant from fedora repo
-#   dnf:
-#     name: "{{ pkgs }}"
-#     state: latest
-#   vars:
-#     pkgs:
-#       - vagrant
-#       - vagrant-libvirt
+# - name: Install vagrant embedded plugins
+#   become: true
+#   become_user: "{{ user_name }}"
+#   shell: vagrant plugin install {{ item }}
+#   register: vagrant_libvirt_output
+#   changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
+#   when: latest_vagrant_embedded_plugins_version.results[{{ item.index }}].stdout != installed_vagrant_embedded_plugins_version.results[{{ item.index }}].stdout
+#   loop: "{{ vagrant_embedded_plugins }}"
+
+# # - name: Install vagrant from fedora repo
+# #   dnf:
+# #     name: "{{ pkgs }}"
+# #     state: latest
+# #   vars:
+# #     pkgs:
+# #       - vagrant
+# #       - vagrant-libvirt
