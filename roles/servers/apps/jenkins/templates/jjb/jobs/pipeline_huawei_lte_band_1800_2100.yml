@@ -65,11 +65,11 @@
                       cd ansible-ops-workstation/playbooks
                       ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband-1800+2100.yml
                     """
-          - stage: "Ansible SQM disable"
+          - stage: "Ansible SQM enable"
             steps:
               script:
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -e sqm_pipeline=false -i ../../ansible-ops-private/inventory/hosts.yml openwrt-sqm.yml
+                      ansible-playbook -e sqm_pipeline=true -i ../../ansible-ops-private/inventory/hosts.yml openwrt-sqm.yml
                     """
