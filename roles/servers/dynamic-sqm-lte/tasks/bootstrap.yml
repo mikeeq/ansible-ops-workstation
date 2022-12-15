@@ -1,0 +1,17 @@
+---
+# - name: Init openwrt ansible support
+#   hosts:
+#     - openwrt
+#   become: true
+#   gather_facts: false
+#   tasks:
+#     - raw: uname -a
+#     - raw: opkg install {{ opkgs | join(' ') }}
+#       vars:
+#         opkgs:
+#           - python3-light
+#           - python3-multiprocessing
+#           - python3-distutils
+#           - openssh-sftp-server
+#           - python3-logging
+#           - python3-urllib

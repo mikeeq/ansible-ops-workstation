@@ -16,6 +16,10 @@
           default: "main"
           trim: true
           description: "Branch name repo: ansible-ops-private"
+      - bool:
+          name: DYNAMIC_SQM_ENABLED
+          default: false
+          description: "Enable dynamic SQM on OpenWRT"
     dsl-yaml: |
       pipeline:
         agent:
@@ -57,11 +61,19 @@
                         ls
                         git-crypt unlock ~jenkins/secrets/git_crypt_key
                       """
-          - stage: "Ansible"
+          - stage: "Ansible LTE Band set"
             steps:
               script:
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
                       ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband-800+1800+2100.yml
+                    """
+          - stage: "Ansible SQM disable"
+            steps:
+              script:
+                  - |
+                    sh """#!/bin/bash
+                      cd ansible-ops-workstation/playbooks
+                      ansible-playbook -e dynamic_sqm_enabled=$params.DYNAMIC_SQM_ENABLED -i ../../ansible-ops-private/inventory/hosts.yml openwrt-sqm.yml
                     """

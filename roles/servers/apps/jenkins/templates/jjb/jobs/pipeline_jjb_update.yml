@@ -1,10 +1,11 @@
 ---
 - job:
-    name: Huawei LTE band 1800+2100
+    name: JJB update
     project-type: pipeline
     sandbox: true
     triggers:
-      - timed: '0 8 * * *'
+      - pollscm:
+          cron: "*/5 * * * *"
     parameters:
       - string:
           name: "BRANCH_ANSIBLE_OPS_WORKSTATION"
@@ -16,10 +17,6 @@
           default: "main"
           trim: true
           description: "Branch name repo: ansible-ops-private"
-      - bool:
-          name: DYNAMIC_SQM_ENABLED
-          default: true
-          description: "Enable dynamic SQM on OpenWRT"
     dsl-yaml: |
       pipeline:
         agent:
@@ -61,19 +58,11 @@
                         ls
                         git-crypt unlock ~jenkins/secrets/git_crypt_key
                       """
-          - stage: "Ansible LTE Band set"
+          - stage: "Ansible"
             steps:
               script:
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband-1800+2100.yml
-                    """
-          - stage: "Ansible SQM enable"
-            steps:
-              script:
-                  - |
-                    sh """#!/bin/bash
-                      cd ansible-ops-workstation/playbooks
-                      ansible-playbook -e dynamic_sqm_enabled=$params.DYNAMIC_SQM_ENABLED -i ../../ansible-ops-private/inventory/hosts.yml openwrt-sqm.yml
+                      ansible-playbook -e hosts_to_deploy=clevoF35 -t jjb -i ../../ansible-ops-private/inventory/hosts.yml jenkins.yml
                     """

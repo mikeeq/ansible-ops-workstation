@@ -1,0 +1,42 @@
+---
+- name: Configure dynamic SQM config
+  template:
+    src: "cake-autorate_config.sh"
+    dest: "/root/cake-autorate/cake-autorate_config.sh"
+    owner: "root"
+    group: "root"
+    mode: 0755
+
+- name: Set vars to enable SQM
+  set_fact:
+    cake_service: "start"
+    sqm_enabled: "1"
+  when: dynamic_sqm_enabled == "true"
+
+- name: Set vars to disable SQM
+  set_fact:
+    cake_service: "stop"
+    sqm_enabled: "0"
+  when: dynamic_sqm_enabled == "false"
+
+- name: Change config SQM
+  lineinfile:
+    regexp: 'option\senabled'
+    # \s{8}option\senabled\s.\d.
+    line: "        option enabled '{{ sqm_enabled }}'"
+    path: /etc/config/sqm
+  register: sqm_config
+
+- name: Restart SQM service
+  shell: service sqm restart
+  when: sqm_config.changed
+
+- name: Check Dynamic SQM service status
+  shell: service cake-autorate status
+  register: dynamic_sqm_status
+  changed_when: false
+  failed_when: false
+
+- name: "Change Dynamic SQM service: {{ cake_service }}"
+  shell: service cake-autorate {{ cake_service }}
+  when: (dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (dynamic_sqm_status.stdout == "inactive" and cake_service == "start")

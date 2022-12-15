@@ -19,9 +19,12 @@
         path: /var/run/reboot-required
       register: reboot_required_file
 
+    # TODO: Fix reboot on Clevo
     - name: Reboot if required
       reboot:
-      when: reboot_required_file.stat.exists == true
+      when:
+        - reboot_required_file.stat.exists == true
+        - inventory_hostname != "clevoF35"
 
     - name: Autoremove unneeded packages installed as dependencies
       ansible.builtin.dnf:

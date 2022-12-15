@@ -1,9 +1,12 @@
 ---
+- import_tasks: get-net-mode.yml
+
 - name: "Set LTE band to - {{ huawei_lteband }}, /api/net/net-mode API call"
   ansible.builtin.uri:
     url: "{{ huawei_url }}/api/net/net-mode"
     return_content: true
     method: POST
+    timeout: 30
     body: >-
       <?xml version="1.0" encoding="UTF-8"?>
       <request>
@@ -17,6 +20,9 @@
       __RequestVerificationToken: "{{ login_request.__requestverificationtokenone }}"
   register: set_net_mode_request
   failed_when: '"<error>" in set_net_mode_request.content'
+  changed_when: set_net_mode_request.content == ""
+
+- import_tasks: get-net-mode.yml
 
 # LTEBand 1800+2100 FDD = 5
 # LTEBand 800+1800+2100 FDD = 80005

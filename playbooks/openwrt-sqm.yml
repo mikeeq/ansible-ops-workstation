@@ -1,0 +1,8 @@
+---
+- name: Setup dynamic SQM on OpenWRT
+  hosts:
+    - openwrt_office
+  become: true
+  gather_facts: true
+  roles:
+    - servers/dynamic-sqm-lte
