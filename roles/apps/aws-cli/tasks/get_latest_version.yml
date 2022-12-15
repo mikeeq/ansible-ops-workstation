@@ -1,14 +1,14 @@
 ---
-- name: Get latest version dive
-  shell: curl -Is https://github.com/wagoodman/dive/releases/latest | grep -i 'location:' | cut -f3 -d'v' | cut -f1 -d'"'
+- name: Get latest version aws_cli
+  shell: basename $(curl -Ls https://github.com/aws/aws-cli/tags/ | grep -i "archive" | grep -i "tar.gz" | grep -i "tags/{{ aws_cli_base_version }}" | cut -d'=' -f3 | cut -d'"' -f2 | head -n 1) .tar.gz
   register: version
   changed_when: false
   ignore_errors: true
 
-- name: "Latest version of dive:"
+- name: "Latest version of aws_cli:"
   debug:
     var: version.stdout
 
-- name: "Set fact with latest version of dive"
+- name: "Set fact with latest version of aws_cli"
   set_fact:
-    dive_version: "{{ version.stdout }}"
+    aws_cli_version: "{{ version.stdout }}"

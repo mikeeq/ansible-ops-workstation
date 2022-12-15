@@ -1,26 +1,18 @@
 ---
-- name: Install PIP Apps in virtualenv
-  pip:
-    name: "https://github.com/aws/aws-cli/archive/refs/tags/2.9.7.tar.gz"
-    state: present
-    virtualenv: "{{ virtualenv_install_path }}/aws-cli"
+- name: Get installed version of aws-cli
+  become: true
+  become_user: "{{ user_name }}"
+  shell: aws --version | cut -d "/" -f2 | awk '{print $1}'
+  register: installed_aws_cli_version
+  changed_when: false
+  ignore_errors: true
 
-# - name: Get installed version of dive
-#   become: true
-#   become_user: "{{ user_name }}"
-#   shell: dive version | awk '{print $2}'
-#   register: installed_dive_version
-#   changed_when: false
-#   ignore_errors: true
+- name: "Installed version of aws-cli:"
+  debug:
+    var: installed_aws_cli_version.stdout
 
-# - name: "Installed version of dive:"
-#   debug:
-#     var: installed_dive_version.stdout
+- include_tasks: get_latest_version.yml
+  when: aws_cli_version is not defined
 
-# - include_tasks: get_latest_version.yml
-#   when: dive_version is not defined
-
-# - include_tasks: install.yml
-#   when: installed_dive_version.stdout != dive_version
-
-# TODO: fix
+- include_tasks: install.yml
+  when: installed_aws_cli_version.stdout != aws_cli_version
