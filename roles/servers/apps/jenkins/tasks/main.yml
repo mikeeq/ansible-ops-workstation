@@ -50,3 +50,5 @@
 # - import_tasks: users-delete.yml
 
 - import_tasks: jjb.yml
+  tags:
+    - jjb

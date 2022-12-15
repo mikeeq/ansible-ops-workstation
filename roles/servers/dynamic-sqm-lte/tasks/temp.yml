@@ -1,0 +1,30 @@
+---
+# - python3-light
+# - python3-multiprocessing
+# - python3-distutils
+# - openssh-sftp-server
+# - python3-logging
+# - python3-urllib
+
+# Clean
+# root@AX3200Mikee:~# df -h
+# Filesystem                Size      Used Available Use% Mounted on
+# /dev/ubi0_1              90.4M      2.4M     83.4M   3% /overlay
+
+# python3-light
+# /dev/ubi0_1              90.4M      7.3M     78.4M   9% /overlay
+
+# python3-multiprocessing
+# /dev/ubi0_1              90.4M      7.7M     78.0M   9% /overlay
+
+# python3-distutils
+# /dev/ubi0_1              90.4M      8.7M     77.0M  10% /overlay
+
+# openssh-sftp-server
+# /dev/ubi0_1              90.4M     12.1M     73.6M  14% /overlay
+
+# python3-logging
+# /dev/ubi0_1              90.4M     11.7M     74.0M  14% /overlay
+
+# python3-urllib
+# /dev/ubi0_1              90.4M      9.3M     76.4M  11% /overlay
