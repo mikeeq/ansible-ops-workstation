@@ -3,6 +3,19 @@
     name: Huawei LTE restart
     project-type: pipeline
     sandbox: true
+    triggers:
+      - timed: '0 4 * * *'
+    parameters:
+      - string:
+          name: "BRANCH_ANSIBLE_OPS_WORKSTATION"
+          default: "f37"
+          trim: true
+          description: "Branch name repo: ansible-ops-workstation"
+      - string:
+          name: "BRANCH_ANSIBLE_OPS_PRIVATE"
+          default: "feature/servers_v2"
+          trim: true
+          description: "Branch name repo: ansible-ops-private"
     dsl-yaml: |
       pipeline:
         agent:
@@ -11,23 +24,6 @@
           - ansiColor('xterm')
           - disableConcurrentBuilds()
           - skipDefaultCheckout()
-        triggers:
-          - cron('0 4 * * *')
-        parameters:
-          - >-
-            string(
-              name: "BRANCH_ANSIBLE_OPS_WORKSTATION",
-              defaultValue: "f37",
-              trim: true,
-              description: "Branch name repo: ansible-ops-workstation"
-            )
-          - >-
-            string(
-              name: "BRANCH_ANSIBLE_OPS_PRIVATE",
-              defaultValue: "feature/servers_v2",
-              trim: true,
-              description: "Branch name repo: ansible-ops-private"
-            )
         stages:
           - stage: "Checkout ansible-ops-workstation"
             steps:

@@ -3,6 +3,32 @@
     name: Ansible Custom
     project-type: pipeline
     sandbox: true
+    parameters:
+      - string:
+          name: "BRANCH_ANSIBLE_OPS_WORKSTATION"
+          default: "f37"
+          trim: true
+          description: "Branch name repo: ansible-ops-workstation"
+      - string:
+          name: "BRANCH_ANSIBLE_OPS_PRIVATE"
+          default: "feature/servers_v2"
+          trim: true
+          description: "Branch name repo: ansible-ops-private"
+      - string:
+          name: "INVENTORY_PATH"
+          default: "../../ansible-ops-private/inventory/hosts.yml"
+          trim: true
+          description: "Ansible Inventory"
+      - string:
+          name: "PLAYBOOK_NAME"
+          default: "huawei-lte-setband-800+1800+2100.yml"
+          trim: true
+          description: "Playbook"
+      - string:
+          name: "EXTRA_ARGS"
+          default: ""
+          trim: true
+          description: "Extra arguments for ansible-playbook command, i.e.: -vvv"
     dsl-yaml: |
       pipeline:
         agent:
@@ -11,42 +37,6 @@
           - ansiColor('xterm')
           - disableConcurrentBuilds()
           - skipDefaultCheckout()
-        parameters:
-          - >-
-            string(
-              name: "BRANCH_ANSIBLE_OPS_WORKSTATION",
-              defaultValue: "f37",
-              trim: true,
-              description: "Branch name repo: ansible-ops-workstation"
-            )
-          - >-
-            string(
-              name: "BRANCH_ANSIBLE_OPS_PRIVATE",
-              defaultValue: "feature/servers_v2",
-              trim: true,
-              description: "Branch name repo: ansible-ops-private"
-            )
-          - >-
-            string(
-              name: "INVENTORY_PATH",
-              defaultValue: "../../ansible-ops-private/inventory/hosts.yml",
-              trim: true,
-              description: "Ansible Inventory"
-            )
-          - >-
-            string(
-              name: "PLAYBOOK_NAME",
-              defaultValue: "huawei-lte-setband-800+1800+2100.yml",
-              trim: true,
-              description: "Playbook"
-            )
-          - >-
-            string(
-              name: "EXTRA_ARGS",
-              defaultValue: "",
-              trim: true,
-              description: "Extra arguments for ansible-playbook command, i.e.: -vvv"
-            )
         stages:
           - stage: "Checkout ansible-ops-workstation"
             steps:
