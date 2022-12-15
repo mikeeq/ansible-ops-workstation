@@ -5,7 +5,6 @@
   roles:
     - pkg_mgmt/pip
     - apps/keybase
-    - apps/terragrunt
     - apps/kubectl
     - apps/helm
     - apps/stern
