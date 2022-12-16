@@ -1,9 +1,4 @@
 ---
-- name: Directory temp for install script
-  file:
-    path: "{{ rpms_dwnl_path }}"
-    state: directory
-
 - name: oh-my-zsh deps
   package:
     name: "{{ pkgs }}"
@@ -23,20 +18,13 @@
     - "{{ user_name }}"
     - root
 
-- name: Download oh-my-zsh install script
-  get_url:
-    url: "https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh"
-    dest: "{{ rpms_dwnl_path }}/install_oh_my_zsh.sh"
-    force: true
-    mode: 0755
-
-- name: "oh-my-zsh install"
+- name: "Download oh-my-zsh"
   become: true
   become_user: "{{ item }}"
-  shell: |
-    {{ rpms_dwnl_path }}/install_oh_my_zsh.sh
-  args:
-    creates: "~{{ item }}/.oh-my-zsh"
+  git:
+    repo: 'https://github.com/ohmyzsh/ohmyzsh'
+    dest: "~/.oh-my-zsh"
+    update: false
   with_items:
     - "{{ user_name }}"
     - root

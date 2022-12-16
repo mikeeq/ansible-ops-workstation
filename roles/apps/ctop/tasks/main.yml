@@ -1,39 +1,18 @@
 ---
-- name: Directory for ctop
-  file:
-    path: "{{ rpms_dwnl_path }}"
-    state: directory
-
-# curl -s https://api.github.com/repos/bcicen/ctop/releases/latest | jq .name -r | cut -f2 -d'v'
-- name: Get latest version
-  shell: curl -Is https://github.com/bcicen/ctop/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+- name: Get installed version of ctop
+  become: true
+  become_user: "{{ user_name }}"
+  shell: ctop -v | cut -d' ' -f3 | cut -d',' -f1
+  register: installed_ctop_version
   changed_when: false
   ignore_errors: true
-  when: ctop_version is not defined
 
-- name: "Latest version of ctop:"
+- name: "Installed version of ctop:"
   debug:
-    var: version.stdout
+    var: installed_ctop_version.stdout
+
+- include_tasks: get_latest_version.yml
   when: ctop_version is not defined
 
-- name: "Set fact with latest version of ctop"
-  set_fact:
-    ctop_version: "{{ version.stdout }}"
-  when: ctop_version is not defined
-
-# https://github.com/bcicen/ctop/releases/download/v{{ ctop_version }}/ctop-{{ ctop_version }}-linux-amd64
-- name: Download ctop
-  get_url:
-    url: "https://github.com/bcicen/ctop/releases/download/v{{ ctop_version }}/ctop-{{ ctop_version }}-linux-amd64"
-    dest: "{{ rpms_dwnl_path }}/ctop"
-    force: true
-
-- name: Copy ctop
-  copy:
-    src: "{{ rpms_dwnl_path }}/ctop"
-    dest: /usr/local/bin/ctop
-    remote_src: true
-    mode: 0755
-    owner: root
-    group: root
+- include_tasks: install.yml
+  when: installed_ctop_version.stdout != ctop_version
