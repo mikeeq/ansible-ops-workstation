@@ -16,32 +16,9 @@
     update_cache: yes
 
 - name: Install packages
-  package:
-    name: "{{ pkgs }}"
+  apt:
+    name: "{{ item }}"
     state: present
-  vars:
-    pkgs:
-      - python3-pip
-      - curl
-      - tar
-      - git
-      - unzip
-      - sudo
-      - ack
-      - gcc
-      - screen
-      - tmux
-      - powertop
-      - htop
-      - vim
-      - wget
-      - gnupg
-      - gnupg2
-      - openvpn
-      - git-crypt
-      - python3-dev
-      - jq
-      - pass
-      - shellcheck
-      - p7zip
-      - openjdk-11-jdk
+  with_items:
+    - "[{{ generic_pkgs }}]"
+    - "[{{ apt_pkgs }}]"

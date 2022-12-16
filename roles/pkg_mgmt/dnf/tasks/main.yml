@@ -6,8 +6,9 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - "[{{ dnf_apps }}]"
-    - "[{{ dnf_gui_apps }}]"
+    - "[{{ generic_pkgs }}]"
+    - "[{{ dnf_pkgs }}]"
+    - "[{{ dnf_gui_pkgs }}]"
 
 - import_tasks: update.yml
   tags:

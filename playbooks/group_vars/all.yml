@@ -5,68 +5,79 @@ user_name: 'mikee'
 git_modules_path: '/opt/git_modules'
 rpms_dwnl_path: '/opt/rpms'
 
-dnf_apps:
-  - sudo
+generic_pkgs:
   - ack
+  - curl
+  - file-roller
   - gcc
-  - flatpak
-  - python3-pip
-  - screen
-  - tmux
-  - powertop
-  - lm_sensors
-  - htop
   - git
-  - vim
-  - wget
-  - fuse-exfat
+  - git-crypt
+  - git-lfs
   - gnupg
   - gnupg2
-  - openvpn
-  - git-crypt
-  - python3-devel
+  - htop
   - jq
+  - nnn
+  - openvpn
+  - p7zip
   - pass
-  - java-11-openjdk
-  # - policycoreutils-python
-  - redhat-rpm-config
-  # - python3-molecule
-  - clamav
-  - smartmontools
+  - powertop
+  - python3-pip
+  - screen
+  - sudo
+  - tar
+  - tmux
+  - unzip
+  - vim
+  - wget
+
+apt_pkgs:
+  - openjdk-11-jdk
+  - python3-dev
+  - shellcheck
+
+dnf_pkgs:
   - aspell-pl
-  - hunspell-pl
+  - clamav
   - edk2-ovmf
+  - flatpak
+  - fuse-exfat
+  - hunspell-pl
+  - java-11-openjdk
+  - lm_sensors
+  # - policycoreutils-python
+  - python3-devel
+  # - python3-molecule
+  - python3-pip
+  - redhat-rpm-config
   - setroubleshoot-server
   - ShellCheck
-  - p7zip
-  - git-lfs
-  - nnn
-  - file-roller
+  - smartmontools
 
-dnf_gui_apps:
+dnf_gui_pkgs:
+  - clamtk
+  - clusterssh
+  - dconf-editor
+  - ddcutil
+  - deluge
   - fedora-workstation-repositories
-  - gnome-tweaks
   - filezilla
-  - vlc
-  - putty
-  - kgpg            # GUI for GnuPG
+  - gimp
   - gnome-shell-extension-gpaste
+  - gnome-tweaks
+  - gparted
   - gpaste          # Clipboard saver
   - gpaste-ui
+  - kgpg            # GUI for GnuPG
+  # - kodi
+  # "msg": "Depsolve Error occurred: \n Problem: conflicting requests\n  - nothing provides libwayland-client++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64\n  - nothing provides libwayland-cursor++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64\n  - nothing provides libwayland-egl++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64",
   - pinta
-  - gimp
+  - putty
   - remmina
   - 'remmina-plugins-*'
-  - dconf-editor
   - seahorse
-  - gparted
-  # "msg": "Depsolve Error occurred: \n Problem: conflicting requests\n  - nothing provides libwayland-client++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64\n  - nothing provides libwayland-cursor++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64\n  - nothing provides libwayland-egl++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64",
-  # - kodi
-  - deluge
-  - clamtk
+  - vlc
   - wireshark
-  - clusterssh
-  - ddcutil
 
 snap_apps: []
 
