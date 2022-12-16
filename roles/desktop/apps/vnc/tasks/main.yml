@@ -3,7 +3,6 @@
   shell: curl -s https://www.realvnc.com/en/connect/download/viewer/linux/ | grep VNC-Viewer | cut -d'-' -f3 | head -n1
   register: version
   changed_when: false
-  ignore_errors: true
 
 - name: "Latest version of VNC-Viewer:"
   debug:

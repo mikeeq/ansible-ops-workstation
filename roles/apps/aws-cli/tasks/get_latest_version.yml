@@ -3,7 +3,6 @@
   shell: basename $(curl -Ls https://github.com/aws/aws-cli/tags/ | grep -i "archive" | grep -i "tar.gz" | grep -i "tags/{{ aws_cli_base_version }}" | cut -d'=' -f3 | cut -d'"' -f2 | head -n 1) .tar.gz
   register: version
   changed_when: false
-  ignore_errors: true
 
 - name: "Latest version of aws_cli:"
   debug:

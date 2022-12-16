@@ -10,7 +10,7 @@
       - git
       - fzf
 
-- name: "Change user - {{ item }} - shell to zsh"
+- name: "Change user default shell to zsh"
   user:
     name: "{{ item }}"
     shell: /bin/zsh

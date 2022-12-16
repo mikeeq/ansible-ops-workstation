@@ -3,7 +3,6 @@
   shell: curl -Is https://github.com/istio/istio/releases/latest  | grep -i 'location:' | cut -f8 -d'/' | cut -d'"' -f1
   register: version
   changed_when: false
-  ignore_errors: true
 
 - name: "Latest version of istioctl:"
   debug:

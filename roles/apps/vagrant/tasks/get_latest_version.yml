@@ -3,7 +3,6 @@
   shell: curl -Ls https://releases.hashicorp.com/vagrant/ | grep vagrant | cut -d'_' -f2 | cut -d'<' -f1 | head -n1
   register: version
   changed_when: false
-  ignore_errors: true
 
 - name: "Latest version of vagrant:"
   debug:

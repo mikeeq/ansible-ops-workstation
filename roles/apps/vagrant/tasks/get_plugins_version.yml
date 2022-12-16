@@ -7,7 +7,6 @@
     curl -Ls https://rubygems.org/gems/{{ item }} | grep -i versions | grep -i gems | grep -i item | head -n 1 | cut -d'>' -f2 | cut -d'<' -f1
   register: vagrant_plugins_version
   changed_when: false
-  ignore_errors: true
   loop: "{{ vagrant_plugins }}"
 
 - name: Get embedded plugins versionS
@@ -17,7 +16,6 @@
     curl -Ls https://rubygems.org/gems/{{ item }} | grep -i versions | grep -i gems | grep -i item | head -n 1 | cut -d'>' -f2 | cut -d'<' -f1
   register: vagrant_embedded_plugins_version
   changed_when: false
-  ignore_errors: true
   loop: "{{ vagrant_embedded_plugins }}"
 
 # - debug:

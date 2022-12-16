@@ -3,7 +3,6 @@
   shell: curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt | cut -d'v' -f2
   register: version
   changed_when: false
-  ignore_errors: true
 
 - name: "Latest version of kubectl:"
   debug:

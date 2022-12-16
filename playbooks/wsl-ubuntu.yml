@@ -1,15 +1,15 @@
 ---
-# - name: Ubuntu WSL bootstrap
-#   hosts: localhost
-#   become: true
-#   # pre_tasks:
-#   #   - debug:
-#   #       var: hostvars[inventory_hostname]
-#   roles:
-#     - desktop/machines/wsl
+- name: Ubuntu WSL bootstrap
+  hosts: localhost
+  become: true
+  # pre_tasks:
+  #   - debug:
+  #       var: hostvars[inventory_hostname]
+  roles:
+    - desktop/machines/wsl
 
 - name: Include a playbook for generic-core provisioning
   import_playbook: generic-core.yml
 
-# - name: Include a playbook for generic provision
-#   import_playbook: generic.yml
+- name: Include a playbook for generic provision
+  import_playbook: generic.yml
