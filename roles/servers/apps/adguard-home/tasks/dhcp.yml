@@ -14,17 +14,21 @@
 - set_fact:
     dhcp_config: "{{ dhcp_status.content }}"
 
-- debug:
+- name: "Display var 'dhcp_config.static_leases'"
+  debug:
     var: dhcp_config.static_leases
 
-- debug:
+- name: "Display var 'dhcp'"
+  debug:
     var: dhcp
 
-- set_fact:
+- name: "Create empty tables 'dhcp_to_create' and 'dhcp_to_delete'"
+  set_fact:
     dhcp_to_create: []
     dhcp_to_delete: []
 
-- set_fact:
+- name: "Create var 'dhcp_to_create'"
+  set_fact:
     dhcp_to_create: >-
       {{ dhcp_to_create + entry }}
   when: old_entry_ip != item.ip or old_entry_hostname != item.hostname
@@ -41,11 +45,12 @@
       ]
   loop: "{{ dhcp }}"
 
-- name: Print the dhcp_to_create var
+- name: "Print the 'dhcp_to_create' var"
   debug:
     var: dhcp_to_create
 
-- set_fact:
+- name: "Create var 'dhcp_to_delete'"
+  set_fact:
     dhcp_to_delete: "{{ dhcp_to_delete + entry }}"
   when:
     - (new_entry_ip != item.ip and new_entry_ip != 'N/A') or (new_entry_hostname != item.hostname and new_entry_hostname != 'N/A') or (new_entry_ip == 'N/A' and new_entry_hostname == 'N/A')
@@ -62,7 +67,7 @@
       ]
   loop: "{{ dhcp_config.static_leases }}"
 
-- name: Print the dhcp_to_delete var
+- name: "Print the 'dhcp_to_delete' var"
   debug:
     var: dhcp_to_delete
 
@@ -91,7 +96,7 @@
 # /dhcp/add_static_lease
 # Adds a static lease
 # {
-#   "mac": "00:11:09:b3:b3:b8",
+#   "mac": "00:11:09:b3:22:11",
 #   "ip": "192.168.1.22",
 #   "hostname": "dell"
 # }
