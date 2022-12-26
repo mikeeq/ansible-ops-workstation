@@ -19,6 +19,6 @@
 # - include_tasks: cleanup.yml
 #   when: adguard_home_clean
 
-# - import_tasks: install.yml
+- import_tasks: install.yml
 
 - import_tasks: dhcp.yml

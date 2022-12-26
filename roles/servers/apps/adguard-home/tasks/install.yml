@@ -12,6 +12,7 @@
     src: "{{ item }}"
     dest: "{{ install_path }}/{{ item }}"
     mode: 0664
+    backup: true
   loop:
     - docker-compose.yml
     - config/AdGuardHome.yaml
