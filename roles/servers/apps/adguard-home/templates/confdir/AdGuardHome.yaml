@@ -69,11 +69,15 @@ dns:
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576
   cache_time: 30
+{% if private_dns_entries == [] %}
+  rewrites: []
+{% else %}
   rewrites:
-    {% for i in private_dns_entries -%}
+{% for i in private_dns_entries %}
     - domain: {{ i.source }}
       answer: {{ i.destination }}
-    {% endfor %}
+{% endfor %}
+{% endif %}
   blocked_services: []
   upstream_timeout: 10s
   private_networks: []
