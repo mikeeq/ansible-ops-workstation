@@ -61,8 +61,7 @@ RUN jenkins-plugin-cli --plugins "blueocean workflow-aggregator rebuild ansicolo
 
 USER root
 
-RUN TEST=TEST3 \
-    && git clone --single-branch --branch feature/pipeline_as_yaml https://github.com/mikeeq/jenkins-job-builder \
+RUN git clone --single-branch --branch feature/pipeline_as_yaml https://github.com/mikeeq/jenkins-job-builder \
     && cd jenkins-job-builder \
     && pip3 install -r requirements.txt \
     && PBR_VERSION=9.9.9 python3 setup.py install
