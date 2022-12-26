@@ -9,7 +9,6 @@
     force_basic_auth: true
     return_content: true
   register: dhcp_status
-  # failed_when: "'AWESOME' not in this.content"
 
 - set_fact:
     dhcp_config: "{{ dhcp_status.content }}"
