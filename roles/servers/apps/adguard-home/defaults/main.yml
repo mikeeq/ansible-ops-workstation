@@ -14,3 +14,9 @@ dhcp:
   - hostname: xbox-one-x
     mac: 28:16:a8:ca:fa:61
     ip: 192.168.1.43
+
+private_dns_entries:
+  - source: test.com
+    destination: 192.168.1.10
+  - source: test2.com
+    destination: 192.168.1.11
