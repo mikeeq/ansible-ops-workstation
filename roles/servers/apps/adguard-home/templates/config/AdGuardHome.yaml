@@ -1,9 +1,9 @@
 bind_host: 0.0.0.0
 bind_port: 80
 beta_bind_port: 0
-# users:
-# - name: test_user
-#   password: asdf
+users:
+- name: {{ adguard_home_user }}
+  password: {{ adguard_home_password | password_hash('bcrypt') }}
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
@@ -11,9 +11,9 @@ language: en
 debug_pprof: false
 web_session_ttl: 720
 dns:
-  bind_hosts:
-  - 192.168.1.22
-  port: 53
+  # bind_hosts:
+  # - 192.168.1.22
+  port: 10053
   statistics_interval: 1
   querylog_enabled: true
   querylog_file_enabled: true

@@ -14,9 +14,9 @@
     mode: 0664
   loop:
     - docker-compose.yml
-    - config/nginx.conf
+    - config/AdGuardHome.yaml
 
-- import_tasks: config.yml
+# - import_tasks: config.yml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

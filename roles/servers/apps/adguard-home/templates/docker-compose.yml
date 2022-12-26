@@ -10,10 +10,20 @@ services:
     # Volumes store your data between container upgrades
     volumes:
       - './workdir:/opt/adguardhome/work'
-      - './confdir:/opt/adguardhome/conf'
+      - './config:/opt/adguardhome/conf'
     # Recommended but not required (DHCP needs NET_ADMIN)
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
     # cap_add:
     #   - NET_ADMIN
     network_mode: "host"
     restart: always
+    # expose:
+    #   - '3000'
+    #   - '53'
+    #   - '80'
+    # ports:
+    #   - '53:53'
+    #   - '3000:3000'
+    #   - '80:80'
+
+# adguard web starts on 3000 port

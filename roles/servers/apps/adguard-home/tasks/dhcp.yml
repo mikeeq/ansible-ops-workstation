@@ -1,0 +1,114 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/uri_module.html
+
+- name: Get dhcp config
+  ansible.builtin.uri:
+    url: http://localhost/control/dhcp/status
+    user: "{{ adguard_home_user }}"
+    password: "{{ adguard_home_password }}"
+    force_basic_auth: true
+    return_content: true
+  register: dhcp_status
+  # failed_when: "'AWESOME' not in this.content"
+
+- set_fact:
+    dhcp_config: "{{ dhcp_status.content }}"
+
+- debug:
+    var: dhcp_config.static_leases
+
+- debug:
+    var: dhcp
+
+- set_fact:
+    dhcp_to_create: []
+    dhcp_to_delete: []
+
+- set_fact:
+    dhcp_to_create: >-
+      {{ dhcp_to_create + entry }}
+  when: old_entry_ip != item.ip or old_entry_hostname != item.hostname
+  vars:
+    old_entry_ip: "{{ dhcp_config.static_leases | selectattr('mac','equalto',item['mac']) | map(attribute='ip') | first | default('N/A') }}"
+    old_entry_hostname: "{{ dhcp_config.static_leases | selectattr('mac','equalto',item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
+    entry: >-
+      [
+        {
+          'hostname': '{{ item.hostname }}',
+          'ip': '{{ item.ip }}',
+          'mac': '{{ item.mac }}'
+        }
+      ]
+  loop: "{{ dhcp }}"
+
+- name: Print the dhcp_to_create var
+  debug:
+    var: dhcp_to_create
+
+- set_fact:
+    dhcp_to_delete: "{{ dhcp_to_delete + entry }}"
+  when:
+    - (new_entry_ip != item.ip and new_entry_ip != 'N/A') or (new_entry_hostname != item.hostname and new_entry_hostname != 'N/A') or (new_entry_ip == 'N/A' and new_entry_hostname == 'N/A')
+  vars:
+    new_entry_ip: "{{ dhcp | selectattr('mac','equalto',item['mac']) | map(attribute='ip') | first | default('N/A') }}"
+    new_entry_hostname: "{{ dhcp | selectattr('mac','equalto',item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
+    entry: >-
+      [
+        {
+          'hostname': '{{ item.hostname }}',
+          'ip': '{{ item.ip }}',
+          'mac': '{{ item.mac }}'
+        }
+      ]
+  loop: "{{ dhcp_config.static_leases }}"
+
+- name: Print the dhcp_to_delete var
+  debug:
+    var: dhcp_to_delete
+
+# POST
+# /dhcp/remove_static_lease
+# Removes a static lease
+
+- name: Removes a static lease
+  ansible.builtin.uri:
+    url: http://localhost/control/dhcp/remove_static_lease
+    user: "{{ adguard_home_user }}"
+    password: "{{ adguard_home_password }}"
+    force_basic_auth: true
+    return_content: true
+    method: POST
+    body_format: json
+    body: |
+      {
+        "mac": "{{ item.mac }}",
+        "ip": "{{ item.ip }}",
+        "hostname": "{{ item.hostname }}"
+      }
+  loop: "{{ dhcp_to_delete }}"
+
+# POST
+# /dhcp/add_static_lease
+# Adds a static lease
+# {
+#   "mac": "00:11:09:b3:b3:b8",
+#   "ip": "192.168.1.22",
+#   "hostname": "dell"
+# }
+
+- name: Adds a static lease
+  ansible.builtin.uri:
+    url: http://localhost/control/dhcp/add_static_lease
+    user: "{{ adguard_home_user }}"
+    password: "{{ adguard_home_password }}"
+    force_basic_auth: true
+    return_content: true
+    method: POST
+    body_format: json
+    body: |
+      {
+        "mac": "{{ item.mac }}",
+        "ip": "{{ item.ip }}",
+        "hostname": "{{ item.hostname }}"
+      }
+  loop: "{{ dhcp_to_create }}"
