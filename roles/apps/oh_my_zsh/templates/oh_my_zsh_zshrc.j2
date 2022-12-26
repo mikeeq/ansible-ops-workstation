@@ -68,7 +68,9 @@ kbdown () {
 export EDITOR=/usr/bin/vim
 
 autoload -U +X bashcompinit && bashcompinit
+{% if skip_azure_cli_autocompletion is not defined %}
 source /opt/virtualenv/azure-cli/bin/az.completion.sh
+{% endif %}
 
 alias git_root='cd $(git rev-parse --show-toplevel)'
 alias git_current_branch='$(git branch --show-current)'
