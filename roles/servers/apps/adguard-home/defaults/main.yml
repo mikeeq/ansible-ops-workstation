@@ -1,11 +1,12 @@
 ---
 install_path: "/opt/adguardhome"
 
-# adguard_home_clean: false
-adguard_home_clean: true
+adguard_home_clean: false
+# adguard_home_clean: true
 
 adguard_home_user: testuser
 adguard_home_password: pass_tes1
+adguard_home_templates_path: templates
 
 dhcp:
   - hostname: sony-ps5

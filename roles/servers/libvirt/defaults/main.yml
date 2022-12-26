@@ -18,9 +18,9 @@ cloud_init_config_files:
 # cloud_image_name: "Fedora-Cloud-Base-35-1.2.aarch64.qcow2"
 # cloud_image_checksum: "sha256:c71f2e6ce75b516d565e2c297ea9994c69b946cb3eaa0a4bbea400dbd6f59ae6."
 # https://download.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/x86_64/images/
-cloud_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/36/Cloud/x86_64/images/Fedora-Cloud-Base-36-1.5.x86_64.qcow2"
-cloud_image_name: "Fedora-Cloud-Base-36-1.5.x86_64.qcow2"
-cloud_image_checksum: "sha256:ca9e514cc2f4a7a0188e7c68af60eb4e573d2e6850cc65b464697223f46b4605"
+cloud_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2"
+cloud_image_name: "Fedora-Cloud-Base-37-1.7.x86_64.qcow2"
+cloud_image_checksum: "sha256:b5b9bec91eee65489a5745f6ee620573b23337cbb1eb4501ce200b157a01f3a0"
 
 libvirt_images_dir: "/var/lib/libvirt/images"
 
