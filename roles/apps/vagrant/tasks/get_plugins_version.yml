@@ -18,13 +18,8 @@
   changed_when: false
   loop: "{{ vagrant_embedded_plugins }}"
 
-# - debug:
-#     var: installed_vagrant_embedded_plugins_version
-
-# - debug:
-#     var: latest_vagrant_embedded_plugins_version
-
-- set_fact:
+- name: "Set var 'vagrant_plugins_info'"
+  set_fact:
     vagrant_plugins_info: >-
       {{ vagrant_plugins_info | default([]) +
         [
@@ -38,20 +33,5 @@
   with_items:
     - "{{ vagrant_embedded_plugins_version.results }}"
     - "{{ vagrant_plugins_version.results }}"
-
-# - set_fact:
-#     vagrant_installed_plugins_info: >-
-#       {{ vagrant_installed_plugins_info | default([]) +
-#         [
-#           {
-#             'name': item.item,
-#             'version': item.stdout,
-#           }
-#         ]
-#       }}
-#   with_items:
-#     - "{{ installed_vagrant_embedded_plugins_version.results }}"
-#     - "{{ installed_vagrant_plugins_version.results }}"
-
-# - debug:
-#     var: vagrant_installed_plugins_info
+  loop_control:
+    label: "{{ item.item }}"
