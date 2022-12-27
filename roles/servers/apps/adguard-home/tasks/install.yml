@@ -5,18 +5,28 @@
     state: directory
   loop:
     - "{{ install_path }}"
-    - "{{ install_path }}/config"
+    - "{{ install_path }}/confdir"
+    - "{{ install_path }}/workdir"
 
 - name: Configure docker-compose file
   template:
     src: "{{ item }}"
     dest: "{{ install_path }}/{{ item }}"
     mode: 0664
+    backup: true
   loop:
     - docker-compose.yml
-    - config/nginx.conf
 
-- import_tasks: config.yml
+- name: Configure confdir/AdGuardHome.yaml file
+  template:
+    src: "{{ adguard_home_templates_path }}/{{ item }}"
+    dest: "{{ install_path }}/{{ item }}"
+    mode: 0664
+    backup: true
+  loop:
+    - confdir/AdGuardHome.yaml
+
+# - import_tasks: config.yml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

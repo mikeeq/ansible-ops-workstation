@@ -1,6 +1,0 @@
----
-- name: Jenkins
-  hosts: "{{ hosts_to_deploy | default('local') }}"
-  become: true
-  roles:
-    - servers/apps/jenkins

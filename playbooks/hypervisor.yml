@@ -1,6 +1,6 @@
 ---
 - name: Fedora host
-  hosts: clevoF35
+  hosts: mikeeClevo
   become: true
   pre_tasks:
     # - debug:

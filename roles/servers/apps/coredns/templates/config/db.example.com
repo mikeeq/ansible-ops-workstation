@@ -13,8 +13,6 @@ $ORIGIN example.com.
 dns1   IN A     8.8.8.8 ; public IP of your 1st DNS server
 dns2   IN A     1.1.1.1 ; public IP of your 2nd DNS server
 
-_acme-challenge IN TXT 939il4ogNMh20ozSGILM1jLvRqX1Yw6hA-wgs-b6Tao
-
 ; NOTES:
 ; If you wish for this file to be reloaded after change,
 ; Make sure to increment the serial number !

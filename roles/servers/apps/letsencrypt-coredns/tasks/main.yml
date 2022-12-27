@@ -1,6 +1,16 @@
 ---
 # https://docs.ansible.com/ansible/latest/collections/community/crypto/acme_certificate_module.html
 
+- name: Install dependencies
+  package:
+    name: python3-pip
+    state: present
+
+- name: Install pip dependencies
+  pip:
+    name: cryptography
+    state: present
+
 - import_tasks: account_key.yml
 
 - name: "Create dir for certs - {{ certs_path }}"

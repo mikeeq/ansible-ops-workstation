@@ -2,7 +2,7 @@
 - name: Fedora on Clevo
   ansible.builtin.import_playbook: fedora.yml
   vars:
-    hosts_to_deploy: clevoF35
+    hosts_to_deploy: mikeeClevo
 
 - name: Update all clevo vms and host
   hosts: clevo
@@ -24,7 +24,7 @@
       reboot:
       when:
         - reboot_required_file.stat.exists == true
-        - inventory_hostname != "clevoF35"
+        - inventory_hostname != "mikeeClevo"
 
     - name: Autoremove unneeded packages installed as dependencies
       ansible.builtin.dnf:
@@ -52,10 +52,11 @@
   roles:
     - servers/network-vms
     - apps/docker
+    - servers/apps/adguard-home
 
-- name: Provision clevoF35
+- name: Provision mikeeClevo
   hosts:
-    - clevoF35
+    - mikeeClevo
   become: true
   roles:
     - servers/apps/nginx
