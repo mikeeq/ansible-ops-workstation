@@ -43,5 +43,6 @@
   ],
   "[markdown]": {
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
-  }
+  },
+  "window.customMenuBarAltFocus": false
 }
