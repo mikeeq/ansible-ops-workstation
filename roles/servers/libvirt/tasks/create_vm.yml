@@ -47,11 +47,22 @@
 #     virsh --connect qemu:///system vol-resize "{{ images_dir }}/{{ instance_id }}.qcow2" "{{ vm.disk_size }}"
 #     /sbin/xfs_growfs "{{ images_dir }}/{{ vm.name }}.qcow2"
 
+- name: Check VM state
+  virt:
+    name: "{{ vm.name }}"
+    command: status
+  register: vm_state
+  ignore_errors: true
+  failed_when: false
+
+# - debug:
+#     var: vm_state
+
 - name: Shutdown if config changed and already running
   virt:
     name: "{{ vm.name }}"
     state: shutdown
-  when: (vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true
+  when: vm_state.exception is not defined and ((vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true)
 
 - name: Wait for shutdown of the VM
   shell: virsh list | grep -w "{{ vm.name }}"

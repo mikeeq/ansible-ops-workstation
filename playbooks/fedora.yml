@@ -6,23 +6,22 @@
     # - debug:
     #     var: hostvars[inventory_hostname]
   roles:
-    - servers/apps/adguard-home
-    # - pkg_mgmt/dnf
-    # - pkg_mgmt/flatpak
-    # - desktop/apps/google_chrome
-    # - desktop/apps/keeweb
-    # - apps/docker
-    # - apps/qemu
-    # - desktop/apps/terminator
-    # - apps/vagrant
-    # - desktop/gnome
-    # - desktop/apps/vscode
-    # - desktop/apps/x11docker
-    # - desktop/fedora
-    # - apps/nordvpn
+    - pkg_mgmt/dnf
+    - pkg_mgmt/flatpak
+    - desktop/apps/google_chrome
+    - desktop/apps/keeweb
+    - apps/docker
+    - apps/qemu
+    - desktop/apps/terminator
+    - apps/vagrant
+    - desktop/gnome
+    - desktop/apps/vscode
+    - desktop/apps/x11docker
+    - desktop/fedora
+    - apps/nordvpn
 
-# - name: Include a playbook for generic-core provisioning
-#   import_playbook: generic-core.yml
+- name: Include a playbook for generic-core provisioning
+  import_playbook: generic-core.yml
 
-# - name: Include a playbook for generic provisioning
-#   import_playbook: generic.yml
+- name: Include a playbook for generic provisioning
+  import_playbook: generic.yml

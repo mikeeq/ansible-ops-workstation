@@ -40,7 +40,7 @@
     - dns1
   become: true
   roles:
-    - servers/network-vms
+    - servers/network-static-dns
     - apps/docker
     - servers/apps/coredns
     - servers/apps/letsencrypt-coredns
@@ -50,7 +50,7 @@
     - dns2
   become: true
   roles:
-    - servers/network-vms
+    - servers/network-static-dns
     - apps/docker
     - servers/apps/adguard-home
 

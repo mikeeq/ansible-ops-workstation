@@ -1,0 +1,7 @@
+---
+baremetal_lan_interface: "eth0"
+baremetal_bridge_interface_cidr: "192.168.1.11/24"
+baremetal_bridge_interface_default_gw: "192.168.1.1"
+
+baremetal_bridge_state: "present"
+# baremetal_bridge_state: "absent"
