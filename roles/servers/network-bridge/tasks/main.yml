@@ -1,0 +1,85 @@
+---
+# - name: parse interfaces
+#   set_fact:
+#     nic_name: "{{ item }}"
+#     nic_ip: "{{ hostvars[inventory_hostname][item_name]['ipv4']['address'] }}"
+#   when:
+#     - hostvars[inventory_hostname][item_name]['ipv4']['address'] is defined
+#     - hostvars[inventory_hostname][item_name]['ipv4']['address'] | regex_search("192.168.1")
+#   with_items:
+#     - "{{ ansible_interfaces }}"
+#   vars:
+#     item_name: "ansible_{{ item }}"
+
+# - debug:
+#     var: ansible_interfaces
+
+# - name: print result
+#   debug:
+#     var: nic_name
+
+- name: Set var nic_name
+  set_fact:
+    nic_name: "{{ baremetal_lan_interface }}"
+
+- name: Set vars bridge_name and bridge_slave_name
+  set_fact:
+    bridge_name: "br-vm-{{ nic_name }}"
+    bridge_slave_name: "br-vm-slave-{{ nic_name }}"
+
+- name: check active connection
+  # shell: nmcli con show --active | grep -i ethernet | grep -w {{ nic_name }} | awk '{print $1}' | head -n1
+  shell: nmcli -t -f NAME,TYPE,DEVICE c show --active | grep -v {{ bridge_slave_name }} | grep -w {{ nic_name }} | grep -i ethernet | cut -d':' -f1
+  register: nmcli_active
+  changed_when: false
+
+- name: Add bridge
+  community.general.nmcli:
+    conn_name: "{{ bridge_name }}"
+    ifname: "{{ bridge_name }}"
+    type: bridge
+    ip4: "{{ baremetal_bridge_interface_cidr }}"
+    gw4: "{{ baremetal_bridge_interface_default_gw }}"
+    state: "{{ baremetal_bridge_state }}"
+    autoconnect: true
+
+- name: Add bridge-slave
+  community.general.nmcli:
+    conn_name: "{{ bridge_slave_name }}"
+    ifname: "{{ nic_name }}"
+    type: bridge-slave
+    master: "{{ bridge_name }}"
+    state: "{{ baremetal_bridge_state }}"
+    hairpin: false
+    autoconnect: true
+
+- name: Allow ip forwarding for bridge network
+  lineinfile:
+    path: /etc/sysctl.conf
+    line: "{{ item }}"
+  loop:
+    - "net.ipv4.ip_forward=1"
+    - "net.bridge.bridge-nf-call-ip6tables = 0"
+    - "net.bridge.bridge-nf-call-iptables = 0"
+    - "net.bridge.bridge-nf-call-arptables = 0"
+    - "net.ipv6.conf.all.disable_ipv6 = 1"
+    - "net.ipv6.conf.default.disable_ipv6 = 1"
+    - "net.ipv6.conf.lo.disable_ipv6 = 1"
+  register: sysctl_changes
+
+- name: Reload sysctl
+  shell: sysctl -p
+  when: sysctl_changes.changed
+
+- name: Disable previous connection
+  community.general.nmcli:
+    conn_name: "{{ nmcli_active.stdout }}"
+    ifname: "{{ nic_name }}"
+    state: absent
+  when: nmcli_active.stdout != ""
+
+# https://wiki.debian.org/BridgeNetworkConnections#Bridging_with_a_wireless_NIC
+# https://briantward.github.io/bridge-host-vm/
+
+# net.ipv4.conf.all.proxy_arp = 1
+# Jul 03 01:21:01 mikeeMac20-F36 NetworkManager[1089]: <warn>  [1656804061.1860] platform-linux: do-change-link[3]: failure changing link: failure 95 (Operation not supported - Device does not allow >

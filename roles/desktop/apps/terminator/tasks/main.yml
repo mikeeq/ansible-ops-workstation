@@ -12,6 +12,8 @@
     name: "terminator"
     state: present
 
+# To fix terminator run: dnf reinstall python3-psutil
+
 # - name: Fonts
 #   become: true
 #   become_user: "{{ user_name }}"

@@ -6,5 +6,6 @@
     # - debug:
     #     var: hostvars[inventory_hostname]
   roles:
-    # - servers/network-baremetal
+    - servers/network-static-dns
+    - servers/network-bridge
     - servers/libvirt
