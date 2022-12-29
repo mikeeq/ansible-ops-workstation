@@ -106,3 +106,25 @@
     enabled: true
 
 # killall -3 gnome-shell
+
+- name: Add keyring-unlock script
+  copy:
+    content: |
+      #!/usr/bin/env bash
+
+      echo >&2 "===]> Info: killall gnome-keyring-daemon..."
+      killall gnome-keyring-daemon
+
+      echo >&2 "===]> Info: Unlocking gnome-keyring..."
+      echo
+      read -rsp "Password: " pass
+      echo -n "$pass" | gnome-keyring-daemon --unlock
+      unset pass
+
+      echo
+      echo >&2 "===]> Info: Restarting gnome-remote-desktop..."
+      systemctl --user restart gnome-remote-desktop
+    dest: /usr/local/bin/keyring-unlock
+    mode: 0755
+    owner: root
+    group: root
