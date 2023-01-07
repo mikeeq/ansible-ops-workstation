@@ -21,6 +21,7 @@ RUN apt-get update \
         git \
         libyaml-dev \
         sshpass \
+        passlib \
     && pip3 install --no-cache-dir \
         # https://pypi.org/project/jenkins-job-builder/
         # jenkins-job-builder \
