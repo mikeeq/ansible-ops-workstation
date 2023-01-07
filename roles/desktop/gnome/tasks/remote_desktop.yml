@@ -23,6 +23,28 @@
     value: "false"
     state: present
 
+- name: Add keyring-unlock script
+  copy:
+    content: |
+      #!/usr/bin/env bash
+
+      echo >&2 "===]> Info: killall gnome-keyring-daemon..."
+      killall gnome-keyring-daemon
+
+      echo >&2 "===]> Info: Unlocking gnome-keyring..."
+      echo
+      read -rsp "Password: " pass
+      echo -n "$pass" | gnome-keyring-daemon --unlock
+      unset pass
+
+      echo
+      echo >&2 "===]> Info: Restarting gnome-remote-desktop..."
+      systemctl --user restart gnome-remote-desktop
+    dest: /usr/local/bin/keyring-unlock
+    mode: 0755
+    owner: root
+    group: root
+
 - name: Make sure directory for tls cert exists
   become: true
   become_user: "{{ user_name }}"
@@ -79,10 +101,20 @@
   become_user: "{{ user_name }}"
   shell: openssl enc -aes-256-cbc -pbkdf2 -salt -d -in rdp_credentials -k '{{ rdp_username }}:{{ rdp_password }}'
   ignore_errors: true
+  changed_when: false
   args:
     chdir: ~/.config/remote-desktop
   register: rdp_current_creds
 
+- name: Unlock keyring
+  become: true
+  become_user: "{{ user_name }}"
+  shell: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock
+  args:
+    chdir: ~/.config/remote-desktop
+  when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
+
+# keyring needs to be unlocked for that to work
 - name: Generate RDP credentials
   become: true
   become_user: "{{ user_name }}"
@@ -125,25 +157,3 @@
     enabled: true
 
 # killall -3 gnome-shell
-
-- name: Add keyring-unlock script
-  copy:
-    content: |
-      #!/usr/bin/env bash
-
-      echo >&2 "===]> Info: killall gnome-keyring-daemon..."
-      killall gnome-keyring-daemon
-
-      echo >&2 "===]> Info: Unlocking gnome-keyring..."
-      echo
-      read -rsp "Password: " pass
-      echo -n "$pass" | gnome-keyring-daemon --unlock
-      unset pass
-
-      echo
-      echo >&2 "===]> Info: Restarting gnome-remote-desktop..."
-      systemctl --user restart gnome-remote-desktop
-    dest: /usr/local/bin/keyring-unlock
-    mode: 0755
-    owner: root
-    group: root
