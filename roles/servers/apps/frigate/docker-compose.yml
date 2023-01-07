@@ -7,7 +7,7 @@ services:
   frigate:
     container_name: frigate
     privileged: true # this may not be necessary for all setups
-    restart: unless-stopped
+    restart: always
     # https://hub.docker.com/r/blakeblackshear/frigate
     # 0.10.1-amd64nvidia
     image: blakeblackshear/frigate:0.10.1-amd64

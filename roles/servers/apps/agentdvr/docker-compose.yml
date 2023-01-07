@@ -6,7 +6,7 @@ services:
   agentdvr:
     container_name: agentdvr
     privileged: true # this may not be necessary for all setups
-    restart: unless-stopped
+    restart: always
     # https://hub.docker.com/r/doitandbedone/ispyagentdvr/tags
     # https://hub.docker.com/layers/pv-nvidia-agentdvr/lostkiwi/pv-nvidia-agentdvr/latest/images/sha256-21d7af5942ce7406e1f6317b0e5314c166305a64e33975e5021ea9c6806ba459?context=explore
     image: doitandbedone/ispyagentdvr:4.1.0.0
