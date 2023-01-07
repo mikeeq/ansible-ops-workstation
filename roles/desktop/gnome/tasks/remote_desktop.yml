@@ -106,13 +106,19 @@
     chdir: ~/.config/remote-desktop
   register: rdp_current_creds
 
-- name: Unlock keyring
-  become: true
-  become_user: "{{ user_name }}"
-  shell: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock
-  args:
-    chdir: ~/.config/remote-desktop
-  when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
+# - name: Unlock keyring
+#   become: true
+#   become_user: "{{ user_name }}"
+#   shell: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock
+#   when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
+
+# - name: Unlock keyring
+#   become: true
+#   become_user: "{{ user_name }}"
+#   ansible.builtin.raw: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock && sleep 30
+#   args:
+#     executable: /bin/bash
+#   when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
 
 # keyring needs to be unlocked for that to work
 - name: Generate RDP credentials
