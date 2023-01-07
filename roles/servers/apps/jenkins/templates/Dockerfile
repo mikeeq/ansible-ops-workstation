@@ -26,6 +26,7 @@ RUN apt-get update \
         # jenkins-job-builder \
         # https://pypi.org/project/ansible/
         ansible \
+        # https://pypi.org/project/passlib/
         passlib \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
