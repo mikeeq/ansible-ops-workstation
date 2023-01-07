@@ -62,3 +62,10 @@
     - servers/apps/nginx
     - servers/apps/home-assistant
     - servers/apps/jenkins
+
+- name: Cleanup Docker
+  hosts: clevo
+  become: true
+  tasks:
+    - name: Cleanup Docker
+      shell: docker system prune -f --volumes

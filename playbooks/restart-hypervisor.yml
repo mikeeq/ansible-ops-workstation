@@ -1,0 +1,14 @@
+---
+- name: Update all clevo vms and host
+  hosts: mikeeClevo
+  become: true
+  tasks:
+    - name: Check if reboot required
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+
+    - name: Reboot if required
+      reboot:
+      when:
+        - reboot_required_file.stat.exists == true
