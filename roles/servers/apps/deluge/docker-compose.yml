@@ -1,0 +1,20 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+---
+version: '3.8'
+services:
+  adguard:
+    container_name: deluge
+    image: linuxserver/deluge:latest
+    environment:
+      - PUID=1000
+      - PGID=31415
+      - TZ=Europe/Warsaw
+      # - DELUGE_LOGLEVEL=error #optional
+    volumes:
+      - ./config:/config
+      - /opt/nfs/smb/downloads:/downloads
+    restart: always
+    ports:
+      - 8112:8112       # webui
+      - 6881:6881
+      - 6881:6881/udp
