@@ -1,0 +1,21 @@
+---
+# ~/.local/share/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version
+# /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version | grep -i synergy-core | awk '{print $2}' | cut -d'-' -f1
+- name: Get installed version of synergy
+  become: true
+  become_user: "{{ user_name }}"
+  shell: /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version | grep -i synergy-core | awk '{print $2}' | cut -d'-' -f3 | cut -d',' -f1
+  register: installed_synergy_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of synergy:"
+  debug:
+    var: installed_synergy_version.stdout
+
+- include_tasks: get_latest_version.yml
+  when: synergy_version is not defined
+
+- include_tasks: install.yml
+  when:
+    - installed_synergy_version.stdout != synergy_version

@@ -9,7 +9,7 @@
 - import_tasks: grub.yml
 - import_tasks: nested_kvm.yml
 - import_tasks: udev.yml
+- import_tasks: wake_on_lan.yml
 
 ### TODO:
-# qnapi
 # Gnome scaling
