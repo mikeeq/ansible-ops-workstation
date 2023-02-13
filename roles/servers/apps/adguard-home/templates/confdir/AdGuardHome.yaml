@@ -3,7 +3,7 @@ bind_port: 80
 beta_bind_port: 0
 users:
 - name: {{ adguard_home_user }}
-  password: {{ adguard_home_password | password_hash('bcrypt') }}
+  password: {{ adguard_home_password | password_hash('bcrypt', 1234567890123456789012) }}
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
