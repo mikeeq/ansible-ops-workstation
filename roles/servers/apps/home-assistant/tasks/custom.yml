@@ -1,0 +1,23 @@
+---
+- name: Ensure install dir exists
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}/config/custom_components"
+    - "{{ install_path }}/config/git"
+
+- name: "Install custom components"
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ install_path }}/config/git/{{ item.name }}"
+    update: true
+  loop: "{{ home_assistant_custom_components }}"
+
+
+- name: Create a symbolic link
+  file:
+    src: "../git/{{ item.name }}/custom_components/{{ item.name }}"
+    dest: "{{ install_path }}/config/custom_components/{{ item.name }}"
+    state: link
+  loop: "{{ home_assistant_custom_components }}"

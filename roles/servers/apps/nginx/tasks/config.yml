@@ -20,3 +20,4 @@
   with_nested:
     - "{{ certs | map(attribute='cn')}}"
     - ['cert.key','cert.crt','cert.fullchain']
+  register: cert_flag

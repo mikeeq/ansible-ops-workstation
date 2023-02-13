@@ -1,0 +1,219 @@
+---
+- id: '1657294740897'
+  alias: Inching Garaz Brama
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: a1e5bca30eafc22f204025a917f7bba0
+    entity_id: switch.garaz_brama
+    domain: switch
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 200
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.garaz_brama
+  mode: single
+- id: '1657295756635'
+  alias: Inching Garaz Swiatlo
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: a1e5bca30eafc22f204025a917f7bba0
+    entity_id: switch.garaz_swiatlo
+    domain: switch
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 200
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.garaz_swiatlo
+  mode: single
+- id: '1657295825641'
+  alias: Inching Dwor Garaz Swiatlo
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: a1e5bca30eafc22f204025a917f7bba0
+    entity_id: switch.dwor_garaz_swiatlo
+    domain: switch
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 200
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.dwor_garaz_swiatlo
+  mode: single
+- id: '1657548345574'
+  alias: Wlacz cyrkulacje
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  - platform: time
+    at: '16:00:00'
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 1f607e10e4ecb6ed3a8680fb4bad2733
+    entity_id: switch.tasmota_6
+    domain: switch
+  mode: single
+- id: '1657548384326'
+  alias: Wylacz cyrkulacje
+  description: ''
+  trigger:
+  - platform: time
+    at: '10:00:00'
+  - platform: time
+    at: '21:00:00'
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 1f607e10e4ecb6ed3a8680fb4bad2733
+    entity_id: switch.tasmota_6
+    domain: switch
+  mode: single
+- id: '1657712970762'
+  alias: Wlacz swiatlo przyciskiem zigbee
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.sonoff_zigbee_button
+    to: Click
+  condition: []
+  action:
+  - service: light.toggle
+    data: {}
+    target:
+      entity_id: light.kuchnia_led_szafki
+  mode: single
+- id: '1657715394260'
+  alias: Alert Brama
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.brama_garaz_status
+    from: Closed
+    to: Opened
+  condition: []
+  action:
+  - service: notify.mobile_app_oneplus8t_miki
+    data:
+      message: Brama Garazowa Otwarta!
+  mode: single
+- id: '1657827128587'
+  alias: Wlacz swiatlo przyciskiem zigbee w salonie
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.sonoff_zigbee_button
+    to: Double-Click
+  condition: []
+  action:
+  - type: toggle
+    device_id: 33f4c43168200983b2f9427ae0d7478b
+    entity_id: switch.tasmota_3
+    domain: switch
+  mode: single
+- id: '1661236143309'
+  alias: Wylacz wszystkie swiatla
+  description: ''
+  trigger:
+  - platform: time
+    at: 01:00:00
+  condition: []
+  action:
+  - type: turn_off
+    device_id: e4beb9b2ca69eda5c851ebb01a7ee963
+    entity_id: switch.tasmota_7
+    domain: switch
+  - type: turn_off
+    device_id: 33f4c43168200983b2f9427ae0d7478b
+    entity_id: switch.tasmota_3
+    domain: switch
+  - type: toggle
+    device_id: a1e5bca30eafc22f204025a917f7bba0
+    entity_id: switch.garaz_swiatlo
+    domain: switch
+    enabled: false
+  - type: turn_off
+    device_id: 87407cfebdb7f0d3f44baf121d1bae63
+    entity_id: switch.tasmota
+    domain: switch
+  - type: turn_off
+    device_id: a7bcf875cbcee458c883e3c148edc969
+    entity_id: switch.tasmota_5
+    domain: switch
+  - type: turn_off
+    device_id: c59b48db54c2d56c6cfcf49a0e98bdf3
+    entity_id: switch.taras_swiatlo
+    domain: switch
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.kuchnia_led_szafki
+  - type: turn_off
+    device_id: 1f607e10e4ecb6ed3a8680fb4bad2733
+    entity_id: switch.tasmota_6
+    domain: switch
+  mode: single
+- id: '1661236226555'
+  alias: Wylacz swiatla na zewnatrz
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: c44b239e8275792655ec1c39f8867e59
+    entity_id: switch.tasmota_4
+    domain: switch
+  - type: toggle
+    device_id: a1e5bca30eafc22f204025a917f7bba0
+    entity_id: switch.dwor_garaz_swiatlo
+    domain: switch
+    enabled: false
+  mode: single
+- id: '1661236249343'
+  alias: Wlacz swiatla na zewnatrz
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 0
+  condition: []
+  action:
+  - type: turn_on
+    device_id: c44b239e8275792655ec1c39f8867e59
+    entity_id: switch.tasmota_4
+    domain: switch
+  - type: toggle
+    device_id: a1e5bca30eafc22f204025a917f7bba0
+    entity_id: switch.dwor_garaz_swiatlo
+    domain: switch
+    enabled: false
+  mode: single

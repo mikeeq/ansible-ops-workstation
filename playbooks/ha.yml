@@ -1,0 +1,11 @@
+---
+- name: Home Assistant
+  hosts: "{{ hosts_to_deploy | default('local') }}"
+  become: true
+  pre_tasks:
+    # - debug:
+    #     var: hostvars[inventory_hostname]
+    # - debug:
+    #     msg: "{{ user_name | password_hash('bcrypt', 1234567890123456789012) }}"
+  roles:
+    - servers/apps/home-assistant

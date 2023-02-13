@@ -1,0 +1,55 @@
+---
+- resource: https://www.home-assistant.io
+  scan_interval: 3600
+  sensor:
+    - unique_id: ha_latest_version
+      name: Latest version
+      select: ".current-version > h1:nth-child(1)"
+      value_template: '{{ (value.split(":")[1]) }}'
+    - unique_id: ha_release_date
+      icon: >-
+        {% if is_state('binary_sensor.ha_version_check', 'on') %}
+          mdi:alarm-light
+        {% else %}
+          mdi:bat
+        {% endif %}
+      name: Release date
+      select: ".release-date"
+  binary_sensor:
+    - unique_id: ha_version_check
+      name: Latest version == 2021.7.0
+      select: ".current-version > h1:nth-child(1)"
+      value_template: '{{ (value.split(":")[1]) | trim == "2021.7.0" }}'
+      attributes:
+        - name: Release notes link
+          select: "div.links:nth-child(3) > a:nth-child(1)"
+          attribute: href
+- resource: https://mojlicznik.energa-operator.pl/dp/UserData.do
+  scan_interval: 3600
+  form_submit:
+    resource: "https://mojlicznik.energa-operator.pl/dp/UserLogin.do"
+    select: "form#loginForm"
+    submit_once: True
+    resubmit_on_error: True
+    input:
+      j_username: !secret energa_username
+      j_password: !secret energa_password
+  sensor:
+    - unique_id: consumed_energy_total
+      name: Consumed energy total
+      select: 'div#right > table > tr:nth-of-type(1) > td.last'
+      value_template: "{{ value|regex_replace('[^0-9,]', '')|replace(',', '.')|float }}"
+      unit_of_measurement: kWh
+      device_class: energy
+      state_class: total_increasing
+      on_error:
+        value: last
+    - unique_id: donated_energy_total
+      name: Donated energy total
+      select: 'div#right > table > tr:nth-of-type(3) > td.last'
+      value_template: "{{ value|regex_replace('[^0-9,]', '')|replace(',', '.')|float }}"
+      unit_of_measurement: kWh
+      device_class: energy
+      state_class: total_increasing
+      on_error:
+        value: last

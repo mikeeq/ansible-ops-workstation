@@ -1,2 +1,19 @@
 ---
 install_path: "/opt/homeassistant"
+
+# home_assistant_clean: false
+home_assistant_clean: true
+
+# home_assistant_user: testuser
+# home_assistant_password: pass_tes1
+home_assistant_templates_path: templates
+
+home_assistant_custom_components:
+  - name: ble_monitor
+    repo: https://github.com/custom-components/ble_monitor
+  - name: gardena_smart_system
+    repo: https://github.com/py-smart-gardena/hass-gardena-smart-system
+  - name: multiscrape
+    repo: https://github.com/danieldotnl/ha-multiscrape
+  - name: yi_hack
+    repo: https://github.com/roleoroleo/yi-hack_ha_integration

@@ -1,0 +1,72 @@
+---
+sensor:
+  - platform: mqtt
+    name: "Energia Pobrana" #Nazwa encji
+    state_topic: "home/energa" #Nasz temat MQTT
+    unit_of_measurement: "kWh"
+    value_template: "{{ value_json.used }}"
+  - platform: mqtt
+    name: "Energia Oddana" #Nazwa encji
+    state_topic: "home/energa" #Nasz temat MQTT
+    unit_of_measurement: "kWh"
+    value_template: "{{ value_json.produced }}"
+
+  - platform: mqtt
+    name: brama garaz status
+    state_topic: "tele/tasmota_2AA7C2/SENSOR"
+    value_template: "{{ value_json['ZbReceived']['0x0c51']['ZoneStatusChange'] }}"
+    payload_on: 1
+    payload_off: 0
+    availability_topic: "tele/tasmota_2AA7C2/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 0
+    device_class: "door"
+
+binary_sensor:
+  - platform: mqtt
+    name: brama garaz status
+    state_topic: "tele/tasmota_2AA7C2/AA83/SENSOR"
+    value_template: "{{ value_json['ZbReceived']['0xAA83']['ZoneStatusChange'] }}"
+    payload_on: 1
+    payload_off: 0
+    availability_topic: "tele/tasmota_2AA7C2/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 0
+    device_class: "door"
+
+# switch:
+#   - platform: mqtt
+#     name: "sonoff guzik"
+#     state_topic: "tele/tasmota_2AA7C2/SENSOR"
+#     value_template: "{{ value_json['ZbReceived']['0x0c51']['Power'] }}"
+#     state_on: 1
+#     state_off: 0
+#     command_topic: "cmnd/tasmota_2AA7C2/ZbSend"
+#     payload_on: '{"device": "0x0c51","send":{"Power":1}}'
+#     payload_off: '{"device": "0x0c51","send":{"Power":0}}'
+#     availability_topic: "tele/tasmota_2AA7C2/LWT"
+#     payload_available: "Online"
+#     payload_not_available: "Offline"
+#     optimistic: false
+#     qos: 0
+
+# # 0C51
+# button:
+#   - platform: mqtt
+#     # unique_id: bedroom_switch_reboot_btn
+#     name: "Sonoff button"
+#     # command_topic: "tele/tasmota_2AA7C2/0C51/SENSOR"
+#     # command_template: "{{ value_json['ZbReceived']['0x0c51']['Power'] }}"
+#     # payload_press: '{"device": "0x0c51","send":{"Power":2}}'
+#     # command_topic: "cmnd/tasmota_2AA7C2/ZbSend"
+#     # payload_on: '{"device": "0x0c51","send":{"Power":1}}'
+#     # payload_off: '{"device": "0x0c51","send":{"Power":0}}'
+#     availability_topic: "tele/tasmota_2AA7C2/LWT"
+#     payload_available: "Online"
+#     payload_not_available: "Offline"
+#     qos: 0
+#     retain: false
+#     # entity_category: "config"
+#     # device_class: "None"

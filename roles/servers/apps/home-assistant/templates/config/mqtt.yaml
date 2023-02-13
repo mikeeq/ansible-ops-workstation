@@ -1,0 +1,99 @@
+---
+sensor:
+  - name: sypialnia temperature sensor
+    state_topic: "tele/tasmota_2AA7C2/A23B/SENSOR"
+    value_template: >
+      {% if value_json['ZbReceived']['0xA23B']['Temperature'] > 0 %}
+        {{ value_json['ZbReceived']['0xA23B']['Temperature'] }}
+      {% else %}
+        {{ states(entity_id) }}
+      {% endif %}
+    availability_topic: "tele/tasmota_2AA7C2/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 0
+    device_class: "temperature"
+    expire_after: 86400
+    unit_of_measurement: 'C'
+  - name: sypialnia humidity sensor
+    state_topic: "tele/tasmota_2AA7C2/A23B/SENSOR"
+    value_template: >
+      {% if value_json['ZbReceived']['0xA23B']['Humidity'] > 0 %}
+        {{ value_json['ZbReceived']['0xA23B']['Humidity'] }}
+      {% else %}
+        {{ states(entity_id) }}
+      {% endif %}
+    availability_topic: "tele/tasmota_2AA7C2/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 0
+    device_class: "humidity"
+    expire_after: 86400
+    unit_of_measurement: '%'
+  - name: sonoff zigbee button
+    state_topic: "tele/tasmota_2AA7C2/0C51/SENSOR"
+    value_template: >
+      {% if value_json['ZbReceived']['0x0C51']['Power'] == 2 %}
+        Click
+      {% elif value_json['ZbReceived']['0x0C51']['Power'] == 1 %}
+        Double-Click
+      {% elif value_json['ZbReceived']['0x0C51']['Power'] == 0 %}
+        Hold
+      {% else %}
+        None
+      {% endif %}
+    availability_topic: "tele/tasmota_2AA7C2/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 0
+    # device_class: "temperature"
+    expire_after: 1
+    # unit_of_measurement: 'C'
+binary_sensor:
+  - name: brama garaz status
+    state_topic: "tele/tasmota_2AA7C2/AA83/SENSOR"
+    value_template: "{{ value_json['ZbReceived']['0xAA83']['ZoneStatusChange'] }}"
+    payload_on: 1
+    payload_off: 0
+    availability_topic: "tele/tasmota_2AA7C2/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 0
+    device_class: "door"
+light:
+  - name: "Kuchnia Led Szafki"
+    schema: template
+    command_topic: "cmnd/tasmota_2AA7C2/ZbSend"
+    state_topic: "tele/tasmota_2AA7C2/A38D/SENSOR"
+    command_on_template: >
+      {"device": "0xA38D","send":{
+      {%- if brightness is defined -%}
+      "Dimmer": {%- if brightness == 255 -%}254{%- else -%}{{ brightness }}{%- endif -%}
+      {%- else -%}
+      "Power": 1
+      {%- endif -%}
+      }}
+    command_off_template: '{"device": "0xA38D","send":{"Power":0}}'
+    state_template: >
+      {% if value_json['ZbReceived']['0xA38D']['Power'] == 1 %}
+        on
+      {% elif value_json['ZbReceived']['0xA38D']['Power'] == 0 %}
+        off
+      {% else  %}
+        {{ states('light.0xA38D') }}
+      {% endif %}
+    brightness_template: >
+      {% if value_json['ZbReceived']['0xA38D']['Dimmer'] is defined %}
+        {% if value_json['ZbReceived']['0xA38D']['Dimmer'] == 255 %}
+          254
+        {% else %}
+          {{ value_json['ZbReceived']['0xA38D']['Dimmer'] }}
+        {% endif %}
+      {% else %}
+        {{ state_attr('light.0xA38D','brightness') }}
+      {% endif %}
+    availability_topic: "tele/tasmota_2AA7C2/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    optimistic: false
+    qos: 0

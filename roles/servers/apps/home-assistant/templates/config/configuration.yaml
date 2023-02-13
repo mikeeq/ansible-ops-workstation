@@ -1,0 +1,41 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+homeassistant:
+  name: ha-mikeeq
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: 161
+  unit_system: metric
+  # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Warsaw
+
+recorder:
+  purge_keep_days: 90
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.4.20      # Add the IP address of the proxy server
+    - 172.16.0.0/12     # You may also provide the subnet mask
+
+# group: !include groups.yaml
+# script: !include scripts.yaml
+# scene: !include scenes.yaml
+
+automation: !include automations.yaml
+
+rainbird:
+  host: 192.168.4.83
+  password: !secret rainbird_password
+  trigger_time:
+    minutes: 5
+
+
+mqtt: !include mqtt.yaml
+multiscrape: !include multiscrape.yaml
+sensor: !include sensors.yaml
