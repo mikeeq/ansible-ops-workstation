@@ -1,7 +1,7 @@
 ---
 - platform: saj
-  name: saj-wifi-dtu-a2c8e9
+  name: !secret saj_name
   host: 192.168.4.50
   type: wifi
-  username: mikiq1w2
+  username: !secret saj_username
   password: !secret saj_password
