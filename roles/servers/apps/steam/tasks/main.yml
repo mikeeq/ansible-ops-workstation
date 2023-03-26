@@ -1,0 +1,11 @@
+---
+- name: Unlock keyring to enable RDP
+  become: true
+  become_user: "{{ user_name }}"
+  shell: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock
+
+- include_tasks: start.yml
+  when: steam_action == "start"
+
+- include_tasks: stop.yml
+  when: steam_action == "stop"

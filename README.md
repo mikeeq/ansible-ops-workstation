@@ -455,6 +455,19 @@ Contributions are what make the open source community such an amazing place to b
     code --folder-uri vscode-remote://ssh-remote+user@192.168.1.10/home/user/git
     ```
 
+16. To change brightness:
+
+```
+cat /sys/class/backlight/acpi_video0/max_brightness
+echo 2 > /sys/class/backlight/acpi_video0/brightness
+```
+
+17. To give Steam access to local storage outside of flatpak
+
+```
+
+```
+
 <!-- LICENSE -->
 ## License
 
