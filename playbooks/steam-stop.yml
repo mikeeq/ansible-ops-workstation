@@ -1,0 +1,9 @@
+---
+- name: Stop Steam
+  hosts: mikeeClevo
+  become: false
+  gather_facts: false
+  roles:
+    - servers/apps/steam
+  vars:
+    steam_action: "stop"

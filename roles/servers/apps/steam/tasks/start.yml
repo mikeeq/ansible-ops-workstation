@@ -1,0 +1,64 @@
+---
+- name: Run Steam and battle.net
+  shell: |
+    if ps -ef | grep -v grep | grep -w "Battle.net.exe"; then
+      echo "Steam is already running"
+    else
+      DISPLAY=:0 flatpak run com.valvesoftware.Steam steam://rungameid/16901283689520955392 & disown
+
+      while :
+      do
+        echo "Wait for Steam and Battle.net to be up and running..."
+        if ps -ef | grep -v grep | grep -w "Battle.net.exe"; then
+          break
+        fi
+        sleep 1
+      done
+    fi
+  register: battle_flag
+  async: 360
+  poll: 0
+
+# - name: Async sleeping for batched_items
+#   ansible.builtin.command: sleep {{ async_item }}
+#   async: 45
+#   poll: 0
+#   loop: "{{ durations }}"
+#   loop_control:
+#     loop_var: "async_item"
+#   register: async_results
+
+- name: Check battle_flag sync status
+  async_status:
+    jid: "{{ battle_flag.ansible_job_id }}"
+  register: battle_flag_results
+  until: battle_flag_results.finished
+  retries: 30
+
+- name: Run Steam and Epic Games Launcher
+  shell: |
+    if ps -ef | grep -v grep | grep -i "epic"; then
+      echo "Steam is already running"
+    else
+      DISPLAY=:0 flatpak run com.valvesoftware.Steam steam://rungameid/11884185060800200704 & disown
+
+      while :
+      do
+        echo "Wait for Steam and Epic Games Launcher to be up and running..."
+        if ps -ef | grep -v grep | grep -i "epic"; then
+          break
+        fi
+        sleep 1
+      done
+    fi
+  register: epic_flag
+  # changed_when: '"Wait for Steam" in epic_flag.stdout'
+  async: 360
+  poll: 0
+
+- name: Check epic_flag sync status
+  async_status:
+    jid: "{{ epic_flag.ansible_job_id }}"
+  register: epic_flag_results
+  until: epic_flag_results.finished
+  retries: 30

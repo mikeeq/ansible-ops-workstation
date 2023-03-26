@@ -1,0 +1,11 @@
+---
+- name: Stop Steam
+  shell: |
+    if ps -ef | grep -v grep | grep -i "steam"; then
+      echo "Killing Steam"
+      flatpak kill com.valvesoftware.Steam
+    else
+      echo "Steam is already turned off"
+    fi
+  register: epic_flag
+  changed_when: '"Killing Steam" in epic_flag.stdout'
