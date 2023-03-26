@@ -1,0 +1,17 @@
+---
+  # 640  systemctl status smb
+  # 641  systemctl start smb
+  # 642  systemctl enable smb
+  # 643  history
+  # 644  systemctl status nfs-server
+  # 645  systemctl start nfs-server
+  # 646  systemctl enable nfs-server
+  # 647  history | grep -i nfs
+  # 648  systemctl status rpcbinmd
+  # 649  systemctl status rpcbind
+
+# nfsidmap -l
+# groupadd nfs -g 31415
+
+  # 314  smbpasswd mikee
+  # 315  smbpasswd -a mikee

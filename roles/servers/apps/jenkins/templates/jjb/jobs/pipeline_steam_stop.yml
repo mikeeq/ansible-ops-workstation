@@ -1,6 +1,6 @@
 ---
 - job:
-    name: Steam stop
+    name: Steam Stop
     project-type: pipeline
     sandbox: true
     triggers:
@@ -61,7 +61,7 @@
                         ls
                         git-crypt unlock ~jenkins/secrets/git_crypt_key
                       """
-          - stage: "Ansible steam-stop"
+          - stage: "Ansible"
             steps:
               script:
                   - |
