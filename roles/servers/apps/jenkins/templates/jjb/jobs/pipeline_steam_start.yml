@@ -16,10 +16,6 @@
           default: "main"
           trim: true
           description: "Branch name repo: ansible-ops-private"
-      - bool:
-          name: DYNAMIC_SQM_ENABLED
-          default: false
-          description: "Enable dynamic SQM on OpenWRT"
     dsl-yaml: |
       pipeline:
         agent:
