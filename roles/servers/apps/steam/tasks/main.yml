@@ -1,0 +1,6 @@
+---
+- include_tasks: start.yml
+  when: steam_action == "start"
+
+- include_tasks: stop.yml
+  when: steam_action == "stop"

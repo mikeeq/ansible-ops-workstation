@@ -1,0 +1,71 @@
+---
+- job:
+    name: Steam stop
+    project-type: pipeline
+    sandbox: true
+    triggers:
+      - timed: '0 6 * * *'
+    parameters:
+      - string:
+          name: "BRANCH_ANSIBLE_OPS_WORKSTATION"
+          default: "main"
+          trim: true
+          description: "Branch name repo: ansible-ops-workstation"
+      - string:
+          name: "BRANCH_ANSIBLE_OPS_PRIVATE"
+          default: "main"
+          trim: true
+          description: "Branch name repo: ansible-ops-private"
+      - bool:
+          name: DYNAMIC_SQM_ENABLED
+          default: true
+          description: "Enable dynamic SQM on OpenWRT"
+    dsl-yaml: |
+      pipeline:
+        agent:
+          any:
+        options:
+          - ansiColor('xterm')
+          - disableConcurrentBuilds()
+          - skipDefaultCheckout()
+        stages:
+          - stage: "Checkout ansible-ops-workstation"
+            steps:
+              script:
+                - dir: "'ansible-ops-workstation'"
+                  script:
+                    - >-
+                      git(
+                        url: "git@github.com:mikeeq/ansible-ops-workstation.git",
+                        branch: "$params.BRANCH_ANSIBLE_OPS_WORKSTATION"
+                      )
+          - stage: "Checkout ansible-ops-private"
+            steps:
+              script:
+                - dir: "'ansible-ops-private'"
+                  script:
+                    - >-
+                      git(
+                        url: "git@github.com:mikeeq/ansible-ops-private.git",
+                        branch: "$params.BRANCH_ANSIBLE_OPS_PRIVATE"
+                      )
+          - stage: "Unlock git-crypt"
+            steps:
+              script:
+                - dir: "'ansible-ops-private'"
+                  script:
+                    - |
+                      sh """#!/bin/bash
+                        id
+                        pwd
+                        ls
+                        git-crypt unlock ~jenkins/secrets/git_crypt_key
+                      """
+          - stage: "Ansible steam-stop"
+            steps:
+              script:
+                  - |
+                    sh """#!/bin/bash
+                      cd ansible-ops-workstation/playbooks
+                      ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yml steam-stop.yml
+                    """
