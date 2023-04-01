@@ -465,7 +465,7 @@ echo 2 > /sys/class/backlight/acpi_video0/brightness
 17. To give Steam access to local storage outside of flatpak
 
 ```
-
+flatpak override com.valvesoftware.Steam --filesystem=${PATH_TO_FILESYSTEM}
 ```
 
 <!-- LICENSE -->

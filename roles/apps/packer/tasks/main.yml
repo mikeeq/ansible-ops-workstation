@@ -1,0 +1,16 @@
+---
+- name: Get installed version
+  shell: packer --version
+  register: installed_packer_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of packer:"
+  debug:
+    var: installed_packer_version.stdout
+
+- include_tasks: get_latest_version.yml
+  when: packer_version is not defined
+
+- include_tasks: install.yml
+  when: installed_packer_version.stdout != packer_version
