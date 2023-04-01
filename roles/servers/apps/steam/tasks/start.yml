@@ -19,15 +19,6 @@
   async: 360
   poll: 0
 
-# - name: Async sleeping for batched_items
-#   ansible.builtin.command: sleep {{ async_item }}
-#   async: 45
-#   poll: 0
-#   loop: "{{ durations }}"
-#   loop_control:
-#     loop_var: "async_item"
-#   register: async_results
-
 - name: Check battle_flag sync status
   async_status:
     jid: "{{ battle_flag.ansible_job_id }}"

@@ -1,0 +1,63 @@
+# https://docs.docker.com/compose/environment-variables/
+
+version: "2.4"
+
+services:
+  postgres:
+    image: postgres:13-alpine
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - /opt/mattermost/psql:/var/lib/postgresql/data
+    environment:
+      # timezone inside container
+      TZ: "Europe/Warsaw"
+      # necessary Postgres options/variables
+      POSTGRES_USER: "pgadmin"
+      POSTGRES_PASSWORD: "pgpass"
+      POSTGRES_DB: "mattermost"
+
+  mattermost:
+    depends_on:
+      - postgres
+    ## This will be 'mattermost-enterprise-edition' or 'mattermost-team-edition' based on the version of Mattermost you're installing.
+    # https://hub.docker.com/r/mattermost/mattermost-enterprise-edition/tags?page=1&name=7.8
+    image: mattermost/mattermost-team-edition:7.8
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    ports:
+      - 8065:8065       # APP_PORT
+      - 8443:8443/udp   # CALLS_PORT
+    read_only: false
+    tmpfs:
+      - /tmp
+    volumes:
+      - /opt/mattermost/app/config:/mattermost/config:rw
+      - /opt/mattermost/app/data:/mattermost/data:rw
+      - /opt/mattermost/app/logs:/mattermost/logs:rw
+      - /opt/mattermost/app/plugins:/mattermost/plugins:rw
+      - /opt/mattermost/app/client/plugins:/mattermost/client/plugins:rw
+      - /opt/mattermost/app/bleve-indexes:/mattermost/bleve-indexes:rw
+      # When you want to use SSO with GitLab, you have to add the cert pki chain of GitLab inside Alpine
+      # to avoid Token request failed: certificate signed by unknown authority
+      # (link: https://github.com/mattermost/mattermost-server/issues/13059 and https://github.com/mattermost/docker/issues/34)
+      # - ${GITLAB_PKI_CHAIN_PATH}:/etc/ssl/certs/pki_chain.pem:ro
+    environment:
+      # timezone inside container
+      TZ: "Europe/Warsaw"
+      # necessary Mattermost options/variables (see env.example)
+      MM_SQLSETTINGS_DRIVERNAME: "postgres"
+      # - MM_SQLSETTINGS_DATASOURCE: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable&connect_timeout=10"
+      MM_SQLSETTINGS_DATASOURCE: "postgres://pgadmin:pgpass@postgres:5432/mattermost?sslmode=disable&connect_timeout=10"
+      # necessary for bleve
+      MM_BLEVESETTINGS_INDEXDIR: "/mattermost/bleve-indexes"
+      # additional settings
+      MM_SERVICESETTINGS_SITEURL: "https://mm.test.com"
