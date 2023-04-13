@@ -11,6 +11,7 @@
       - iputils-ping
       - luci-app-sqm
 
+# TODO: Add update mechanism
 - name: Install cake-autorate
   shell: |
     wget -O /tmp/cake-autorate_setup.sh https://raw.githubusercontent.com/lynxthecat/CAKE-autorate/master/cake-autorate_setup.sh
