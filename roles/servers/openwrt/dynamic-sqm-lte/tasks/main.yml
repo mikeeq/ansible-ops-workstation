@@ -1,4 +1,23 @@
 ---
+# https://github.com/lynxthecat/cake-autorate
+- name: Install dependencies
+  package:
+    name: "{{ sqm_opkgs }}"
+    state: present
+  vars:
+    sqm_opkgs:
+      - bash
+      - fping
+      - iputils-ping
+      - luci-app-sqm
+
+- name: Install cake-autorate
+  shell: |
+    wget -O /tmp/cake-autorate_setup.sh https://raw.githubusercontent.com/lynxthecat/CAKE-autorate/master/cake-autorate_setup.sh
+    sh /tmp/cake-autorate_setup.sh
+  args:
+    creates: /root/cake-autorate/cake-autorate.sh
+
 - name: Configure dynamic SQM config
   template:
     src: "cake-autorate_config.sh"
