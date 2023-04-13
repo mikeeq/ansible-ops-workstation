@@ -5,7 +5,5 @@
   roles:
     - apps/ctop
     - apps/oh_my_zsh
-    - apps/terraform
-    - apps/terragrunt
     - apps/dive
     - apps/docker-compose

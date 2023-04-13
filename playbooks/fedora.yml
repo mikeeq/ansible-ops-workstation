@@ -14,6 +14,7 @@
     - apps/qemu
     - desktop/apps/terminator
     - apps/vagrant
+    - apps/packer
     - desktop/gnome
     - desktop/apps/vscode
     - desktop/apps/x11docker

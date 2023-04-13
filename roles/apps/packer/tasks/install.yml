@@ -1,0 +1,27 @@
+---
+- name: Directory for packer
+  file:
+    path: /tmp/packer
+    state: directory
+
+# https://releases.hashicorp.com/packer/1.8.6/packer_1.8.6_linux_amd64.zip
+
+- name: Download packer
+  get_url:
+    url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_amd64.zip"
+    dest: /tmp/packer/packer.zip
+
+- name: Unarchive a file that is already on the remote machine
+  unarchive:
+    src: /tmp/packer/packer.zip
+    dest: /tmp/packer
+    remote_src: yes
+
+- name: Copy packer
+  copy:
+    src: "/tmp/packer/packer"
+    dest: "/usr/local/bin/packer"
+    remote_src: true
+    mode: 0755
+    owner: root
+    group: root
