@@ -1,10 +1,25 @@
 ---
-# - python3-light
-# - python3-multiprocessing
-# - python3-distutils
-# - openssh-sftp-server
-# - python3-logging
-# - python3-urllib
+- name: Refresh opkg repos on OpenWRT
+  raw: |
+    opkg update
+  register: opkg_update
+  # changed_when: '"Updated" in opkg_update.stdout'
+  changed_when: false
+  failed_when: '"Updated" not in opkg_update.stdout'
+
+- name: Install Ansible dependencies on OpenWRT
+  raw: |
+    opkg install {{ opkgs | join(' ') }}
+  vars:
+    opkgs:
+      - python3-light
+      - python3-multiprocessing
+      - python3-distutils
+      - openssh-sftp-server
+      - python3-logging
+      - python3-urllib
+  register: opkg_install
+  changed_when: '"Installing" in opkg_install.stdout'
 
 # Clean
 # root@AX3200Mikee:~# df -h
