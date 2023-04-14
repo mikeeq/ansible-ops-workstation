@@ -17,3 +17,7 @@ home_assistant_custom_components:
     repo: https://github.com/danieldotnl/ha-multiscrape
   - name: yi_hack
     repo: https://github.com/roleoroleo/yi-hack_ha_integration
+
+home_assistant_custom_dashboards:
+  - name: 'lovelace-multiple-entity-row'
+    repo: https://github.com/benct/lovelace-multiple-entity-row

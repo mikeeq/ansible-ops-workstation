@@ -12,6 +12,7 @@
       - luci-app-sqm
 
 # TODO: Add update mechanism
+# cat cake-autorate/cake-autorate.sh | grep -i 'version=' | cut -d'"' -f2 | awk '{print $1}'
 - name: Install cake-autorate
   shell: |
     wget -O /tmp/cake-autorate_setup.sh https://raw.githubusercontent.com/lynxthecat/CAKE-autorate/master/cake-autorate_setup.sh
@@ -22,7 +23,7 @@
 - name: Configure dynamic SQM config
   template:
     src: "cake-autorate_config.sh"
-    dest: "/root/cake-autorate/cake-autorate_config.sh"
+    dest: "/root/cake-autorate/cake-autorate_config.primary.sh"
     owner: "root"
     group: "root"
     mode: 0755

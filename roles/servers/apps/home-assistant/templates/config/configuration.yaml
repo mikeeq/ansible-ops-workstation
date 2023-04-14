@@ -35,7 +35,6 @@ rainbird:
   trigger_time:
     minutes: 5
 
-
 mqtt: !include mqtt.yaml
 multiscrape: !include multiscrape.yaml
 sensor: !include sensors.yaml
