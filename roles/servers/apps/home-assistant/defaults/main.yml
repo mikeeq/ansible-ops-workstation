@@ -1,8 +1,8 @@
 ---
 install_path: "/opt/homeassistant"
 
-# home_assistant_clean: false
-home_assistant_clean: true
+home_assistant_clean: false
+# home_assistant_clean: true
 
 # home_assistant_user: testuser
 # home_assistant_password: pass_tes1
@@ -21,3 +21,19 @@ home_assistant_custom_components:
 home_assistant_custom_dashboards:
   - name: 'lovelace-multiple-entity-row'
     repo: https://github.com/benct/lovelace-multiple-entity-row
+
+home_assistant:
+  automations:
+    inching:
+      - entity_id: switch.garaz_brama_automat
+  mqtt:
+    sonoff:
+      temp_humidity:
+        - name: sypialnia_dol
+          zigbee_id: A23B
+      button:
+        - name: kuchnia
+          zigbee_id: 0C51
+      door:
+        - name: garaz_brama
+          zigbee_id: AA83

@@ -1,0 +1,15 @@
+---
+- alias: Wlacz swiatlo przyciskiem zigbee
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.sonoff_zigbee_button
+    to: Click
+  condition: []
+  action:
+  - service: light.toggle
+    data: {}
+    target:
+      entity_id: light.kuchnia_led_szafki
+  mode: single

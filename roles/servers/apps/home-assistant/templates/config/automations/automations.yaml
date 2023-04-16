@@ -1,69 +1,5 @@
 ---
-- id: '1657294740897'
-  alias: Inching Garaz Brama
-  description: ''
-  trigger:
-  - platform: device
-    type: turned_on
-    device_id: a1e5bca30eafc22f204025a917f7bba0
-    entity_id: switch.garaz_brama
-    domain: switch
-  condition: []
-  action:
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 0
-      milliseconds: 200
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.garaz_brama
-  mode: single
-- id: '1657295756635'
-  alias: Inching Garaz Swiatlo
-  description: ''
-  trigger:
-  - platform: device
-    type: turned_on
-    device_id: a1e5bca30eafc22f204025a917f7bba0
-    entity_id: switch.garaz_swiatlo
-    domain: switch
-  condition: []
-  action:
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 0
-      milliseconds: 200
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.garaz_swiatlo
-  mode: single
-- id: '1657295825641'
-  alias: Inching Dwor Garaz Swiatlo
-  description: ''
-  trigger:
-  - platform: device
-    type: turned_on
-    device_id: a1e5bca30eafc22f204025a917f7bba0
-    entity_id: switch.dwor_garaz_swiatlo
-    domain: switch
-  condition: []
-  action:
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 0
-      milliseconds: 200
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.dwor_garaz_swiatlo
-  mode: single
-- id: '1657548345574'
-  alias: Wlacz cyrkulacje
+- alias: Wlacz cyrkulacje
   description: ''
   trigger:
   - platform: time
@@ -73,12 +9,10 @@
   condition: []
   action:
   - type: turn_on
-    device_id: 1f607e10e4ecb6ed3a8680fb4bad2733
     entity_id: switch.tasmota_6
     domain: switch
   mode: single
-- id: '1657548384326'
-  alias: Wylacz cyrkulacje
+- alias: Wylacz cyrkulacje
   description: ''
   trigger:
   - platform: time
@@ -88,24 +22,8 @@
   condition: []
   action:
   - type: turn_off
-    device_id: 1f607e10e4ecb6ed3a8680fb4bad2733
     entity_id: switch.tasmota_6
     domain: switch
-  mode: single
-- id: '1657712970762'
-  alias: Wlacz swiatlo przyciskiem zigbee
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - sensor.sonoff_zigbee_button
-    to: Click
-  condition: []
-  action:
-  - service: light.toggle
-    data: {}
-    target:
-      entity_id: light.kuchnia_led_szafki
   mode: single
 - id: '1657715394260'
   alias: Alert Brama

@@ -27,7 +27,8 @@ http:
 # script: !include scripts.yaml
 # scene: !include scenes.yaml
 
-automation: !include automations.yaml
+# https://www.home-assistant.io/docs/configuration/splitting_configuration/#advanced-usage
+automation: !include_dir_merge_list automations/
 
 rainbird:
   host: 192.168.4.83
@@ -38,3 +39,5 @@ rainbird:
 mqtt: !include mqtt.yaml
 multiscrape: !include multiscrape.yaml
 sensor: !include sensors.yaml
+
+# https://smarthomescene.com/blog/top-8-home-assistant-thermostat-cards/

@@ -1,21 +1,24 @@
 ---
-- name: Ensure install dir exists
-  file:
-    path: "{{ item }}"
-    state: directory
-  loop:
-    - "{{ install_path }}"
-    - "{{ install_path }}/config"
-    - "{{ install_path }}/config/.storage"
+# - name: Ensure install dir exists
+#   file:
+#     path: "{{ item }}"
+#     state: directory
+#   loop:
+#     - "{{ install_path }}"
+#     - "{{ install_path }}/config"
+#     - "{{ install_path }}/config/automations"
+#     - "{{ install_path }}/config/.storage"
+#     - "{{ install_path }}/config/mqtt/binary_sensors"
+#     - "{{ install_path }}/config/mqtt/sensors"
 
-- name: Configure docker-compose file
-  template:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
-    mode: 0664
-    backup: true
-  loop:
-    - docker-compose.yml
+# - name: Configure docker-compose file
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/{{ item }}"
+#     mode: 0664
+#     backup: true
+#   loop:
+#     - docker-compose.yml
 
 - name: Configure config
   copy:
@@ -25,7 +28,34 @@
     backup: true
   with_fileglob:
     - ../templates/config/*
-    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/*"
+    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/*"
+
+- name: Configure config/automations
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/automations/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/automations/*
+
+- name: Configure config/mqtt/sensors
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/mqtt/sensors/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/mqtt/sensors/*
+
+- name: Configure config/mqtt/binary_sensors
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/mqtt/binary_sensors/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/mqtt/binary_sensors/*
 
 - name: Configure .storage
   copy:
@@ -38,19 +68,19 @@
 
 # - import_tasks: config.yml
 
-- name: Pull Docker image using docker-compose
-  command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
-  args:
-    chdir: "{{ install_path }}"
+# - name: Pull Docker image using docker-compose
+#   command: docker-compose pull
+#   changed_when: pull_result.stderr_lines | length > 2
+#   register: pull_result
+#   args:
+#     chdir: "{{ install_path }}"
 
-- name: Run using docker-compose
-  command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 2
-  register: up_result
-  args:
-    chdir: "{{ install_path }}"
+# - name: Run using docker-compose
+#   command: docker-compose up -d
+#   changed_when: up_result.stderr_lines | length > 2
+#   register: up_result
+#   args:
+#     chdir: "{{ install_path }}"
 
 # - name: Restart using docker-compose
 #   command: docker-compose restart

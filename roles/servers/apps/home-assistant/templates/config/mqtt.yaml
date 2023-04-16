@@ -1,65 +1,8 @@
 ---
-sensor:
-  - name: sypialnia temperature sensor
-    state_topic: "tele/tasmota_2AA7C2/A23B/SENSOR"
-    value_template: >
-      {% if value_json['ZbReceived']['0xA23B']['Temperature'] > 0 %}
-        {{ value_json['ZbReceived']['0xA23B']['Temperature'] }}
-      {% else %}
-        {{ states(entity_id) }}
-      {% endif %}
-    availability_topic: "tele/tasmota_2AA7C2/LWT"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    qos: 0
-    device_class: "temperature"
-    expire_after: 86400
-    unit_of_measurement: 'C'
-  - name: sypialnia humidity sensor
-    state_topic: "tele/tasmota_2AA7C2/A23B/SENSOR"
-    value_template: >
-      {% if value_json['ZbReceived']['0xA23B']['Humidity'] > 0 %}
-        {{ value_json['ZbReceived']['0xA23B']['Humidity'] }}
-      {% else %}
-        {{ states(entity_id) }}
-      {% endif %}
-    availability_topic: "tele/tasmota_2AA7C2/LWT"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    qos: 0
-    device_class: "humidity"
-    expire_after: 86400
-    unit_of_measurement: '%'
-  - name: sonoff zigbee button
-    state_topic: "tele/tasmota_2AA7C2/0C51/SENSOR"
-    value_template: >
-      {% if value_json['ZbReceived']['0x0C51']['Power'] == 2 %}
-        Click
-      {% elif value_json['ZbReceived']['0x0C51']['Power'] == 1 %}
-        Double-Click
-      {% elif value_json['ZbReceived']['0x0C51']['Power'] == 0 %}
-        Hold
-      {% else %}
-        None
-      {% endif %}
-    availability_topic: "tele/tasmota_2AA7C2/LWT"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    qos: 0
-    # device_class: "temperature"
-    expire_after: 1
-    # unit_of_measurement: 'C'
-binary_sensor:
-  - name: brama garaz status
-    state_topic: "tele/tasmota_2AA7C2/AA83/SENSOR"
-    value_template: "{{ value_json['ZbReceived']['0xAA83']['ZoneStatusChange'] }}"
-    payload_on: 1
-    payload_off: 0
-    availability_topic: "tele/tasmota_2AA7C2/LWT"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    qos: 0
-    device_class: "door"
+sensor: !include_dir_merge_list mqtt/sensors/
+
+binary_sensor: !include_dir_merge_list mqtt/binary_sensors/
+
 light:
   - name: "Kuchnia Led Szafki"
     schema: template

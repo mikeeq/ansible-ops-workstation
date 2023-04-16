@@ -1,0 +1,23 @@
+---
+{% for i in home_assistant.automations.inching %}
+- alias: inching_{{ i.entity_id }}
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+      - {{ i.entity_id }}
+    from: "off"
+    to: "on"
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 200
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: {{ i.entity_id }}
+  mode: single
+{% endfor %}
