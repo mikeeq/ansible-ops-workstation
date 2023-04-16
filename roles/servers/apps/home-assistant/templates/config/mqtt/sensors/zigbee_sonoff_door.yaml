@@ -1,14 +1,14 @@
 ---
 {% for i in home_assistant.mqtt.sonoff.door %}
 - name: door_battery_percentage_{{ i.name }}
-  state_topic: "tele/tasmota_2AA7C2/{{ i.zigbee_id }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.zigbee_id }}/SENSOR"
   value_template: >
     {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['BatteryPercentage'] > 0 %}
       {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['BatteryPercentage'] }}
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}
-  availability_topic: "tele/tasmota_2AA7C2/LWT"
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
   payload_available: "Online"
   payload_not_available: "Offline"
   qos: 0
@@ -16,14 +16,14 @@
   expire_after: 86400
   unit_of_measurement: '%'
 - name: door_battery_voltage_{{ i.name }}
-  state_topic: "tele/tasmota_2AA7C2/{{ i.zigbee_id }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.zigbee_id }}/SENSOR"
   value_template: >
     {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['BatteryVoltage'] > 0 %}
       {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['BatteryVoltage'] }}
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}
-  availability_topic: "tele/tasmota_2AA7C2/LWT"
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
   payload_available: "Online"
   payload_not_available: "Offline"
   qos: 0

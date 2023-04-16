@@ -1,5 +1,5 @@
 ---
-{% for i in home_assistant.mqtt.sonoff.button %}
+{% for i in home_assistant.mqtt.ikea.button %}
 - name: button_state_{{ i.name }}
   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.zigbee_id }}/SENSOR"
   value_template: >
@@ -47,3 +47,34 @@
   device_class: "voltage"
   expire_after: 86400
 {% endfor %}
+
+# 0x4643
+
+# Dimmer click down
+
+# Topic: tele/tasmota_10B490/SENSORQoS: 0
+# {"ZbReceived":{"0x4643":{"Device":"0x4643","Name":"IkeaButton","0008!02":"012B0500","DimmerStepDown":43,"Endpoint":1,"Group":17955,"LinkQuality":72}}}
+
+# Dimmer down keep pressing
+
+# Topic: tele/tasmota_10B490/SENSORQoS: 0
+# {"ZbReceived":{"0x4643":{"Device":"0x4643","Name":"IkeaButton","0008!01":"0153","DimmerMove":1,"Endpoint":1,"Group":17955,"LinkQuality":69}}}
+# 2023-04-16 18:54:11:807
+
+# Topic: tele/tasmota_10B490/SENSORQoS: 0
+# {"ZbReceived":{"0x4643":{"Device":"0x4643","Name":"IkeaButton","0008!03":"","DimmerStop":true,"Endpoint":1,"Group":17955,"LinkQuality":72}}}
+
+# Dimmer up keep pressing
+
+# Topic: tele/tasmota_10B490/SENSORQoS: 0
+# {"ZbReceived":{"0x4643":{"Device":"0x4643","Name":"IkeaButton","0008!05":"0053","DimmerMove":0,"Endpoint":1,"Group":17955,"LinkQuality":76}}}
+# 2023-04-16 18:55:12:309
+
+# Topic: tele/tasmota_10B490/SENSORQoS: 0
+# {"ZbReceived":{"0x4643":{"Device":"0x4643","Name":"IkeaButton","0008!07":"","DimmerStop":true,"Endpoint":1,"Group":17955,"LinkQuality":76}}}
+
+
+# Dimmer up click
+
+# Topic: tele/tasmota_10B490/SENSORQoS: 0
+# {"ZbReceived":{"0x4643":{"Device":"0x4643","Name":"IkeaButton","0008!06":"002B0500","DimmerUp":true,"Endpoint":1,"Group":17955,"LinkQuality":76}}}

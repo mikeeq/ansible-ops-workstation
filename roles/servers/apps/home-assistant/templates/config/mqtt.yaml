@@ -6,36 +6,36 @@ binary_sensor: !include_dir_merge_list mqtt/binary_sensors/
 light:
   - name: "Kuchnia Led Szafki"
     schema: template
-    command_topic: "cmnd/tasmota_2AA7C2/ZbSend"
-    state_topic: "tele/tasmota_2AA7C2/A38D/SENSOR"
+    command_topic: "cmnd/tasmota_10B490/ZbSend"
+    state_topic: "tele/tasmota_10B490/F887/SENSOR"
     command_on_template: >
-      {"device": "0xA38D","send":{
+      {"device": "0xF887","send":{
       {%- if brightness is defined -%}
       "Dimmer": {%- if brightness == 255 -%}254{%- else -%}{{ brightness }}{%- endif -%}
       {%- else -%}
       "Power": 1
       {%- endif -%}
       }}
-    command_off_template: '{"device": "0xA38D","send":{"Power":0}}'
+    command_off_template: '{"device": "0xF887","send":{"Power":0}}'
     state_template: >
-      {% if value_json['ZbReceived']['0xA38D']['Power'] == 1 %}
+      {% if value_json['ZbReceived']['0xF887']['Power'] == 1 %}
         on
-      {% elif value_json['ZbReceived']['0xA38D']['Power'] == 0 %}
+      {% elif value_json['ZbReceived']['0xF887']['Power'] == 0 %}
         off
       {% else  %}
-        {{ states('light.0xA38D') }}
+        {{ states('light.0xF887') }}
       {% endif %}
     brightness_template: >
-      {% if value_json['ZbReceived']['0xA38D']['Dimmer'] is defined %}
-        {% if value_json['ZbReceived']['0xA38D']['Dimmer'] == 255 %}
+      {% if value_json['ZbReceived']['0xF887']['Dimmer'] is defined %}
+        {% if value_json['ZbReceived']['0xF887']['Dimmer'] == 255 %}
           254
         {% else %}
-          {{ value_json['ZbReceived']['0xA38D']['Dimmer'] }}
+          {{ value_json['ZbReceived']['0xF887']['Dimmer'] }}
         {% endif %}
       {% else %}
-        {{ state_attr('light.0xA38D','brightness') }}
+        {{ state_attr('light.0xF887','brightness') }}
       {% endif %}
-    availability_topic: "tele/tasmota_2AA7C2/LWT"
+    availability_topic: "tele/tasmota_10B490/LWT"
     payload_available: "Online"
     payload_not_available: "Offline"
     optimistic: false

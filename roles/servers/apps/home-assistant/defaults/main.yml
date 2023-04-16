@@ -22,18 +22,27 @@ home_assistant_custom_dashboards:
   - name: 'lovelace-multiple-entity-row'
     repo: https://github.com/benct/lovelace-multiple-entity-row
 
+# 0x4CBA - zbrouter
+
 home_assistant:
   automations:
     inching:
       - entity_id: switch.garaz_brama_automat
   mqtt:
+    zigbee_coordinator_base_topic: "tasmota_10B490"
     sonoff:
       temp_humidity:
         - name: sypialnia_dol
-          zigbee_id: A23B
+          zigbee_id: 1348
+        - name: kuchnia
+          zigbee_id: 17F6
       button:
         - name: kuchnia
-          zigbee_id: 0C51
+          zigbee_id: C84F
       door:
         - name: garaz_brama
-          zigbee_id: AA83
+          zigbee_id: C490
+    ikea:
+      button:
+        - name: kuchnia
+          zigbee_id: 4643
