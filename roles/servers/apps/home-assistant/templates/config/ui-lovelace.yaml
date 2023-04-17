@@ -1,0 +1,202 @@
+views:
+  - title: Home
+    path: home
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.th_temperature_kuchnia
+            type: custom:multiple-entity-row
+            name: Kuchnia
+            show_state: false
+            entities:
+              - entity: sensor.th_temperature_kuchnia
+                name: Temperatura
+              - entity: sensor.th_humidity_kuchnia
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_kuchnia
+                name: Bateria
+      - type: entities
+        entities:
+          - entity: sensor.ble_temperature_a4c1384f4cde
+          - entity: sensor.ble_humidity_a4c1384f4cde
+            name: Biuro Wilgotnosc
+          - entity: sensor.ble_temperature_a4c1383dd188
+            name: Salon
+          - entity: sensor.ble_humidity_a4c1383dd188
+            name: Salon Wilgotnosc
+          - entity: sensor.ble_temperature_a4c1380c4f8b
+          - entity: sensor.ble_humidity_a4c1380c4f8b
+            name: Kuchnia Wilgotnosc
+          - entity: sensor.sypialnia_temperature_sensor
+            name: Sypialnia
+          - entity: sensor.sypialnia_humidity_sensor
+            name: Sypialnia Wilgotnosc
+        title: Temperatury
+      - type: entities
+        entities:
+          - entity: switch.minir2_swiatlo_salon_kinkiety
+            name: Salon Kinkiety
+            icon: mdi:wall-sconce
+          - entity: light.ikea_tradfri_kuchnia_szafki
+          - entity: switch.minir2_swiatlo_taras
+          - type: section
+          - entity: switch.minir2_swiatlo_sypialnia
+          - type: section
+            label: przedpokoj
+          - entity: switch.minir2_swiatlo_przedpokoj
+          - entity: switch.minir2_swiatlo_drzwi_dwor
+          - type: section
+        title: Światła
+        show_header_toggle: false
+        state_color: true
+      - type: entities
+        entities:
+          - entity: switch.gosund_switch_clevo
+            type: custom:multiple-entity-row
+            name: Clevo
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.gosund_clevo_energy_power
+                name: Zuzycie
+          - entity: switch.gosund_switch_monitory
+            type: custom:multiple-entity-row
+            name: Biuro Monitory
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.gosund_monitory_energy_power
+                name: Zuzycie
+          - entity: switch.gosund_switch_pompa_cyrkulacyjna
+            type: custom:multiple-entity-row
+            name: Pompa Cyrkulacyjna
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.gosund_pompa_energy_power
+                name: Zuzycie
+          - entity: switch.gosund_switch_pc
+            type: custom:multiple-entity-row
+            name: PC
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.gosund_pc_energy_power
+                name: Zuzycie
+        title: Gniazdka
+        show_header_toggle: false
+        state_color: true
+      - type: entities
+        entities:
+          - entity: sensor.speedtest_ping
+            type: custom:multiple-entity-row
+            name: Speedtest
+            show_state: true
+            entities:
+              - entity: sensor.speedtest_download
+                name: Download
+              - entity: sensor.speedtest_upload
+                name: Upload
+        title: SpeedTest
+      - type: entities
+        entities:
+          - entity: switch.4chpror3_swiatlo_podjazd
+          - entity: switch.4chpror3_swiatlo_boki_ogrodu
+          - entity: switch.4chpror3_swiatlo_tyl_ogrodu
+            name: 'Tył ogrodu '
+          - entity: switch.4chpror3_swiatlo_slupki_ognisko
+            name: Boki ogrodu
+          - entity: switch.minir2_swiatlo_taras
+        title: Swiatla Ogrod
+  - title: Garaż
+    path: garaz
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.consumed_energy_total
+          - entity: sensor.donated_energy_total
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_state
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_temperature
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_time
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_yield
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_total_yield
+        title: SAJ
+      - type: entities
+        entities:
+          - entity: switch.garaz_swiatlo
+          - entity: switch.garaz_brama
+          - entity: switch.dwor_garaz_swiatlo
+          - entity: binary_sensor.brama_garaz_status
+            name: 'Stan Bramy Garażowej '
+            icon: mdi:garage-alert
+        title: Garaż
+        show_header_toggle: true
+      - show_name: true
+        show_icon: true
+        show_state: true
+        type: glance
+        entities:
+          - entity: automation.inching_garaz_brama
+          - entity: automation.inching_garaz_swiatlo
+          - entity: automation.inching_dwor_garaz_swiatlo
+        state_color: false
+      - type: entities
+        entities:
+          - entity: binary_sensor.gardena_smart_system_connection
+          - entity: vacuum.sileno_life_750
+          - entity: sensor.sileno_life_750_battery_level
+        title: Kosiarka
+      - type: entities
+        entities:
+          - entity: switch.sprinkler_1
+          - entity: switch.sprinkler_2
+          - entity: switch.sprinkler_3
+          - entity: switch.sprinkler_4
+          - entity: switch.sprinkler_5
+          - entity: switch.sprinkler_6
+          - entity: switch.sprinkler_7
+          - entity: switch.sprinkler_8
+          - entity: switch.sprinkler_9
+          - entity: switch.sprinkler_10
+          - entity: binary_sensor.rainsensor
+          - entity: sensor.rainsensor
+          - entity: binary_sensor.raindelay
+          - entity: sensor.raindelay
+        title: Nawodnienie
+  - title: Pogoda
+    path: pogoda
+    badges: []
+    cards:
+      - type: picture
+        image: >-
+          https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=342&col=208&lang=pl
+      - type: iframe
+        url: >-
+          https://embed.windy.com/embed2.html?lat=54.459&lon=18.357&detailLat=54.495&detailLon=18.357&width=650&height=450&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1
+        aspect_ratio: 122%
+      - type: weather-forecast
+        entity: weather.dom
+  - theme: Backend-selected
+    title: Kamery
+    path: kamery
+    badges: []
+    cards:
+      - type: picture-entity
+        entity: camera.yi_hack_a2_d8a470_cam
+      - type: picture-entity
+        entity: camera.yi_hack_a_cd2a17_cam
+      - show_state: true
+        show_name: true
+        camera_view: auto
+        type: picture-entity
+        entity: camera.yi_hack_a2_723336_cam
+        image: https://demo.home-assistant.io/stub_config/bedroom.png
+  - theme: Backend-selected
+    title: Ogrzewanie
+    path: ogrzewanie
+    badges: []
+    cards: []
+title: MikiDashboardYAML

@@ -1,8 +1,8 @@
 ---
 install_path: "/opt/homeassistant"
 
-home_assistant_clean: false
-# home_assistant_clean: true
+# home_assistant_clean: false
+home_assistant_clean: true
 
 # home_assistant_user: testuser
 # home_assistant_password: pass_tes1
@@ -18,8 +18,9 @@ home_assistant_custom_components:
   - name: yi_hack
     repo: https://github.com/roleoroleo/yi-hack_ha_integration
 
-home_assistant_custom_dashboards:
+home_assistant_custom_lovelace_plugins:
   - name: 'lovelace-multiple-entity-row'
+    entity_name: 'multiple-entity-row.js'
     repo: https://github.com/benct/lovelace-multiple-entity-row
 
 # 0x4CBA - zbrouter
@@ -36,6 +37,10 @@ home_assistant:
           zigbee_id: 1348
         - name: kuchnia
           zigbee_id: 17F6
+        - name: salon
+          zigbee_id: 6255
+        - name: sypialnia_gora
+          zigbee_id: 9C45
       button:
         - name: kuchnia
           zigbee_id: C84F
@@ -46,3 +51,6 @@ home_assistant:
       button:
         - name: kuchnia
           zigbee_id: 4643
+      tradfri_single_dimm:
+        - name: kuchnia_szafki
+          zigbee_id: F887

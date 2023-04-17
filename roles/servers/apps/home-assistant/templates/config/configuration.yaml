@@ -13,6 +13,22 @@ homeassistant:
 recorder:
   purge_keep_days: 90
 
+# https://smarthomescene.com/blog/top-8-home-assistant-thermostat-cards/
+lovelace:
+  mode: yaml
+  # Add yaml dashboards
+  dashboards:
+    lovelace-generated: # Needs to contain a hyphen (-)
+      mode: yaml
+      filename: notexist.yaml
+      title: Generated
+      icon: mdi:tools
+      show_in_sidebar: true
+      require_admin: true
+  resources:
+    - url: /local/multiple-entity-row.js
+      type: module
+
 # Text to speech
 tts:
   - platform: google_translate
@@ -30,14 +46,14 @@ http:
 # https://www.home-assistant.io/docs/configuration/splitting_configuration/#advanced-usage
 automation: !include_dir_merge_list automations/
 
-rainbird:
-  host: 192.168.4.83
-  password: !secret rainbird_password
-  trigger_time:
-    minutes: 5
+# deprecated
+# rainbird:
+#   host: 192.168.4.83
+#   password: !secret rainbird_password
+#   trigger_time:
+#     minutes: 5
 
 mqtt: !include mqtt.yaml
 multiscrape: !include multiscrape.yaml
 sensor: !include sensors.yaml
-
-# https://smarthomescene.com/blog/top-8-home-assistant-thermostat-cards/
+template: !include template.yaml

@@ -22,5 +22,5 @@
 #   when: home_assistant_clean
 
 # - import_tasks: custom.yml
-
-- import_tasks: install.yml
+- import_tasks: config.yml
+# - import_tasks: install.yml

@@ -1,0 +1,13 @@
+---
+# - sensor:
+#   - name: meteo_url
+#     state: >-
+#       {% if now().hour >= 0 and now().hour < 10 -%}
+#       https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&fdate={{ (now() - timedelta( days = 1 )).strftime('%Y%m%d') }}18&row=466&col=232&lang=pl
+#       {%- elif now().hour >= 10 and now().hour < 12 -%}
+#       https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&fdate={{ now().strftime('%Y%m%d') }}00&row=466&col=232&lang=pl
+#       {%- elif now().hour >= 12 and now().hour < 19 -%}
+#       https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&fdate={{ now().strftime('%Y%m%d') }}06&row=466&col=232&lang=pl
+#       {%- elif now().hour >= 19 and now().hour < 24 -%}
+#       https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&fdate={{ now().strftime('%Y%m%d') }}12&row=466&col=232&lang=pl
+#       {%- endif %}
