@@ -4,6 +4,7 @@ views:
     badges: []
     cards:
       - type: entities
+        title: Temperatury Zigbee
         entities:
           - entity: sensor.th_temperature_kuchnia
             type: custom:multiple-entity-row
@@ -15,6 +16,28 @@ views:
               - entity: sensor.th_humidity_kuchnia
                 name: Wilgotnosc
               - entity: sensor.th_battery_percentage_kuchnia
+                name: Bateria
+          - entity: sensor.th_temperature_salon
+            type: custom:multiple-entity-row
+            name: Salon
+            show_state: false
+            entities:
+              - entity: sensor.th_temperature_salon
+                name: Temperatura
+              - entity: sensor.th_humidity_salon
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_salon
+                name: Bateria
+          - entity: sensor.th_temperature_sypialnia_dol
+            type: custom:multiple-entity-row
+            name: Sypialnia Dol
+            show_state: false
+            entities:
+              - entity: sensor.th_temperature_sypialnia_dol
+                name: Temperatura
+              - entity: sensor.th_humidity_sypialnia_dol
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_sypialnia_dol
                 name: Bateria
       - type: entities
         entities:
@@ -32,7 +55,7 @@ views:
             name: Sypialnia
           - entity: sensor.sypialnia_humidity_sensor
             name: Sypialnia Wilgotnosc
-        title: Temperatury
+        title: Temperatury BT
       - type: entities
         entities:
           - entity: switch.minir2_swiatlo_salon_kinkiety
