@@ -1,4 +1,18 @@
 ---
+- alias: Wlacz swiatlo przyciskiem zigbee w salonie
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.button_state_kuchnia
+    to: Double-Click
+  condition: []
+  action:
+  - service: switch.toggle
+    data: {}
+    target:
+      entity_id: switch.minir2_swiatlo_salon_kinkiety
+  mode: single
 - alias: Wlacz swiatlo przyciskiem zigbee
   description: ''
   trigger:

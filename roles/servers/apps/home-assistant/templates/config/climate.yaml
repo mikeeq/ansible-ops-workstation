@@ -1,0 +1,14 @@
+---
+- platform: generic_thermostat
+  name: sypialnia_dol
+  heater: switch.virtual_ogrzewanie_dol_sypialnia
+  target_sensor: sensor.th_temperature_sypialnia_dol
+- platform: generic_thermostat
+  name: kuchnia
+  heater: switch.virtual_ogrzewanie_dol_kuchnia
+  target_sensor: sensor.th_temperature_kuchnia
+  min_temp: 16
+  max_temp: 24
+  initial_hvac_mode: heat
+  cold_tolerance: 0.2
+  hot_tolerance: 0.2

@@ -14,7 +14,7 @@
   qos: 0
   device_class: "temperature"
   expire_after: 86400
-  unit_of_measurement: 'C'
+  unit_of_measurement: "°C"
 - name: th_humidity_{{ i.name }}
   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.zigbee_id }}/SENSOR"
   value_template: >
@@ -57,6 +57,6 @@
   payload_available: "Online"
   payload_not_available: "Offline"
   qos: 0
-  device_class: "voltage"
+  # device_class: "voltage"
   expire_after: 86400
 {% endfor %}

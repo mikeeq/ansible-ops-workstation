@@ -3,7 +3,7 @@
 - name: door_state_{{ i.name }}
   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.zigbee_id }}/SENSOR"
   value_template: >
-    {% raw %}"{{ value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['ZoneStatusChange'] }}"
+    {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['ZoneStatusChange'] }}
   payload_on: 1
   payload_off: 0
   availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"

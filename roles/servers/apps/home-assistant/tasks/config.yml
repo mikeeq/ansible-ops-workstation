@@ -30,23 +30,23 @@
   with_fileglob:
     - ../templates/config/automations/*
 
-# - name: Configure config/mqtt/sensors
-#   template:
-#     src: "{{ item }}"
-#     dest: "{{ install_path }}/config/mqtt/sensors/"
-#     mode: 0664
-#     backup: true
-#   with_fileglob:
-#     - ../templates/config/mqtt/sensors/*
+- name: Configure config/mqtt/sensors
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/mqtt/sensors/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/mqtt/sensors/*
 
-# - name: Configure config/mqtt/binary_sensors
-#   template:
-#     src: "{{ item }}"
-#     dest: "{{ install_path }}/config/mqtt/binary_sensors/"
-#     mode: 0664
-#     backup: true
-#   with_fileglob:
-#     - ../templates/config/mqtt/binary_sensors/*
+- name: Configure config/mqtt/binary_sensors
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/mqtt/binary_sensors/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/mqtt/binary_sensors/*
 
 # - name: Configure config/mqtt/lights
 #   template:

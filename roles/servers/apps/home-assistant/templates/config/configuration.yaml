@@ -57,3 +57,8 @@ mqtt: !include mqtt.yaml
 multiscrape: !include multiscrape.yaml
 sensor: !include sensors.yaml
 template: !include template.yaml
+
+virtual:
+
+switch: !include switch.yaml
+climate: !include climate.yaml
