@@ -214,7 +214,7 @@ views:
       - type: entities
         entities:
           - type: section
-            label: Front
+            label: Front ogrodu
           - entity: switch.rain_bird_sprinkler_1
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_2
@@ -224,7 +224,7 @@ views:
           - entity: switch.rain_bird_sprinkler_4
             icon: mdi:sprinkler
           - type: section
-            label: Typ
+            label: Tyl ogrodu
           - entity: switch.rain_bird_sprinkler_5
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_6
@@ -240,6 +240,7 @@ views:
           - entity: switch.rain_bird_sprinkler_10
             icon: mdi:sprinkler
         title: Nawodnienie
+        show_header_toggle: false
       - type: entities
         entities:
           - entity: number.rain_bird_controller_rain_delay
