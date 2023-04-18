@@ -62,15 +62,24 @@ views:
             name: Salon Kinkiety
             icon: mdi:wall-sconce
           - entity: light.ikea_tradfri_kuchnia_szafki
+            name: Kuchnia LED szafki
+            icon: mdi:led-strip
           - entity: switch.minir2_swiatlo_taras
+            name: Taras
+            icon: mdi:coach-lamp-variant
           - type: section
           - entity: switch.minir2_swiatlo_sypialnia
+            name: Sypialnia
+            icon: mdi:ceiling-light
           - type: section
             label: przedpokoj
           - entity: switch.minir2_swiatlo_przedpokoj
+            name: Przedpokoj
+            icon: mdi:ceiling-light
           - entity: switch.minir2_swiatlo_drzwi_dwor
-          - type: section
-        title: Światła
+            name: Drzwi Dwor
+            icon: mdi:coach-lamp
+        title: Swiatla
         show_header_toggle: false
         state_color: true
       - type: entities
@@ -78,6 +87,7 @@ views:
           - entity: switch.gosund_switch_clevo
             type: custom:multiple-entity-row
             name: Clevo
+            icon: mdi:laptop
             toggle: true
             show_state: true
             entities:
@@ -86,6 +96,7 @@ views:
           - entity: switch.gosund_switch_monitory
             type: custom:multiple-entity-row
             name: Biuro Monitory
+            icon: mdi:monitor
             toggle: true
             show_state: true
             entities:
@@ -94,6 +105,7 @@ views:
           - entity: switch.gosund_switch_pompa_cyrkulacyjna
             type: custom:multiple-entity-row
             name: Pompa Cyrkulacyjna
+            icon: mdi:thermometer-water
             toggle: true
             show_state: true
             entities:
@@ -125,14 +137,22 @@ views:
       - type: entities
         entities:
           - entity: switch.4chpror3_swiatlo_podjazd
+            name: Podjazd
+            icon: mdi:post-lamp
           - entity: switch.4chpror3_swiatlo_boki_ogrodu
-          - entity: switch.4chpror3_swiatlo_tyl_ogrodu
-            name: 'Tył ogrodu '
-          - entity: switch.4chpror3_swiatlo_slupki_ognisko
             name: Boki ogrodu
+            icon: mdi:light-flood-up
+          - entity: switch.4chpror3_swiatlo_tyl_ogrodu
+            name: Tyl ogrodu
+            icon: mdi:light-flood-up
+          - entity: switch.4chpror3_swiatlo_slupki_ognisko
+            name: Slupki ognisko
+            icon: mdi:post-lamp
           - entity: switch.minir2_swiatlo_taras
+            name: Taras
+            icon: mdi:coach-lamp-variant
         title: Swiatla Ogrod
-  - title: Garaż
+  - title: Garaz
     path: garaz
     badges: []
     cards:
@@ -149,13 +169,22 @@ views:
         title: SAJ
       - type: entities
         entities:
+          - entity: switch.4chpror3_switch_garaz_brama
+            type: custom:multiple-entity-row
+            name: Brama Garazowa
+            icon: mdi:garage-alert
+            toggle: true
+            show_state: true
+            entities:
+              - entity: binary_sensor.door_state_garaz_brama
+                name: Stan
           - entity: switch.garaz_swiatlo
           - entity: switch.garaz_brama
           - entity: switch.dwor_garaz_swiatlo
           - entity: binary_sensor.brama_garaz_status
-            name: 'Stan Bramy Garażowej '
+            name: 'Stan Bramy Garazowej'
             icon: mdi:garage-alert
-        title: Garaż
+        title: Garaz
         show_header_toggle: true
       - show_name: true
         show_icon: true
