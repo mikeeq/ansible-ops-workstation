@@ -1,7 +1,7 @@
 ---
 - platform: saj
   name: !secret saj_name
-  host: 192.168.4.50
+  host: !secret saj_host
   type: wifi
   username: !secret saj_username
   password: !secret saj_password

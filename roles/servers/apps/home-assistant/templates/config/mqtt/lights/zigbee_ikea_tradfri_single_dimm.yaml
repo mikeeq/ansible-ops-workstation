@@ -3,9 +3,9 @@
 - name: ikea_tradfri_{{ i.name }}
   schema: template
   command_topic: "cmnd/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ZbSend"
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_tradfri_{{ i.name }}/SENSOR"
   command_on_template: >
-    {"device": "0x{{ i.name }}","send":{
+    {"device": "ikea_tradfri_{{ i.name }}","send":{
     {% raw -%}
     {%- if brightness is defined -%}
     "Dimmer": {%- if brightness == 255 -%}254{%- else -%}{{ brightness }}{%- endif -%}
@@ -15,21 +15,21 @@
     }}
     {%- endraw +%}
   command_off_template: >
-    {"device": "0x{{ i.name }}","send":{"Power":0}}
+    {"device": "ikea_tradfri_{{ i.name }}","send":{"Power":0}}
   state_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Power'] == 1 %}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Power'] == 1 %}
       on
-    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Power'] == 0 %}
+    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Power'] == 0 %}
       off
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}
   brightness_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Dimmer'] is defined %}
-      {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Dimmer'] == 255 %}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Dimmer'] is defined %}
+      {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Dimmer'] == 255 %}
         254
       {% raw %}{% else %}
-        {{ value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Dimmer'] }}
+        {{ value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Dimmer'] }}
       {% raw %}{% endif %}
     {% else %}
       {{ state_attr(entity_id,'brightness') }}

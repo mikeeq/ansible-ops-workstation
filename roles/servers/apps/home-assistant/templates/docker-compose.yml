@@ -8,23 +8,24 @@ services:
       - ./config:/config
       # - /etc/localtime:/etc/localtime:ro
     restart: always
-    privileged: true
-    network_mode: host
+    # privileged: true
+    # network_mode: host
     environment:
       # DISABLE_JEMALLOC: true
       TZ: 'Europe/Warsaw'
     # devices:
     #   - /dev/ttyUSB0:/dev/ttyUSB0
-  # mqtt:
-  #   container_name: mqtt
-  #   # https://hub.docker.com/_/eclipse-mosquitto
-  #   image: "eclipse-mosquitto:2.0"
-  #   volumes:
-  #     - ./credentials:/mosquitto/config/credentials
-  #     - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
-  #     - ./mqtt/data:/mosquitto/data
-  #     - ./mqtt/log:/mosquitto/log
-  #   ports:
-  #     - '1883:1883'
-  #     - '9001:9001'
-  #   restart: always
+    ports:
+      - '8123:8123'
+  mosquitto:
+    container_name: mosquitto
+    # https://hub.docker.com/_/eclipse-mosquitto
+    image: "eclipse-mosquitto:2.0"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+    restart: always

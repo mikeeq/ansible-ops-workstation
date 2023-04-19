@@ -4,7 +4,7 @@
   trigger:
   - platform: state
     entity_id:
-    - sensor.button_state_kuchnia
+    - sensor.button_state_dol_1
     to: Double-Click
   condition: []
   action:
@@ -18,12 +18,12 @@
   trigger:
   - platform: state
     entity_id:
-    - sensor.sonoff_zigbee_button
+    - sensor.button_state_dol_1
     to: Click
   condition: []
   action:
   - service: light.toggle
     data: {}
     target:
-      entity_id: light.kuchnia_led_szafki
+      entity_id: light.ikea_tradfri_kuchnia_szafki
   mode: single

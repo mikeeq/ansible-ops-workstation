@@ -6,10 +6,13 @@ views:
       - type: entities
         title: Temperatury Zigbee
         entities:
+          - type: section
+            label: Dol
           - entity: sensor.th_temperature_kuchnia
             type: custom:multiple-entity-row
             name: Kuchnia
             show_state: false
+            secondary_info: last-changed
             entities:
               - entity: sensor.th_temperature_kuchnia
                 name: Temperatura
@@ -21,6 +24,7 @@ views:
             type: custom:multiple-entity-row
             name: Salon
             show_state: false
+            secondary_info: last-changed
             entities:
               - entity: sensor.th_temperature_salon
                 name: Temperatura
@@ -32,6 +36,7 @@ views:
             type: custom:multiple-entity-row
             name: Sypialnia Dol
             show_state: false
+            secondary_info: last-changed
             entities:
               - entity: sensor.th_temperature_sypialnia_dol
                 name: Temperatura
@@ -39,7 +44,32 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_battery_percentage_sypialnia_dol
                 name: Bateria
-
+          - type: section
+            label: Gora
+          - entity: sensor.th_temperature_sypialnia_gora
+            type: custom:multiple-entity-row
+            name: Sypialnia Gora
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_sypialnia_gora
+                name: Temperatura
+              - entity: sensor.th_humidity_sypialnia_gora
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_sypialnia_gora
+                name: Bateria
+          - entity: sensor.th_temperature_biuro_miki
+            type: custom:multiple-entity-row
+            name: Biuro Miki
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_biuro_miki
+                name: Temperatura
+              - entity: sensor.th_humidity_biuro_miki
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_biuro_miki
+                name: Bateria
       - type: entities
         entities:
           - entity: switch.minir2_swiatlo_salon_kinkiety
@@ -56,7 +86,6 @@ views:
             name: Sypialnia
             icon: mdi:ceiling-light
           - type: section
-            label: przedpokoj
           - entity: switch.minir2_swiatlo_przedpokoj
             name: Przedpokoj
             icon: mdi:ceiling-light

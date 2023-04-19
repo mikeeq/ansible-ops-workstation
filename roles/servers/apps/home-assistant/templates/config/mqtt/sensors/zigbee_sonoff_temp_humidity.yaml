@@ -1,10 +1,10 @@
 ---
 {% for i in home_assistant.mqtt.sonoff.temp_humidity %}
 - name: th_temperature_{{ i.name }}
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/th_{{ i.name }}/SENSOR"
   value_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Temperature'] > 0 %}
-      {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Temperature'] }}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['Temperature'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['Temperature'] }}
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}
@@ -16,10 +16,10 @@
   expire_after: 86400
   unit_of_measurement: "°C"
 - name: th_humidity_{{ i.name }}
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/th_{{ i.name }}/SENSOR"
   value_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Humidity'] > 0 %}
-      {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Humidity'] }}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['Humidity'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['Humidity'] }}
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}
@@ -31,10 +31,10 @@
   expire_after: 86400
   unit_of_measurement: '%'
 - name: th_battery_percentage_{{ i.name }}
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/th_{{ i.name }}/SENSOR"
   value_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['BatteryPercentage'] > 0 %}
-      {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['BatteryPercentage'] }}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['BatteryPercentage'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['BatteryPercentage'] }}
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}
@@ -46,10 +46,10 @@
   expire_after: 86400
   unit_of_measurement: '%'
 - name: th_battery_voltage_{{ i.name }}
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/th_{{ i.name }}/SENSOR"
   value_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['BatteryVoltage'] > 0 %}
-      {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['BatteryVoltage'] }}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['BatteryVoltage'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['BatteryVoltage'] }}
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}

@@ -10,6 +10,7 @@
     - "{{ install_path }}/config/mqtt/binary_sensors"
     - "{{ install_path }}/config/mqtt/sensors"
     - "{{ install_path }}/config/mqtt/lights"
+    - "{{ install_path }}/config/mqtt/switches"
 
 - name: Configure config
   copy:
@@ -57,12 +58,20 @@
   with_fileglob:
     - ../templates/config/mqtt/lights/*
 
+- name: Configure config/mqtt/switches
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/mqtt/switches/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/mqtt/switches/*
+
 - name: Check that the .storage exists
   stat:
-    path: "{{ install_path }}/config/.storage"
+    path: "{{ install_path }}/config/.storage/onboarding"
   register: storage_result
 
-# TODO: Copy only at first run
 - name: Configure .storage
   copy:
     src: "{{ item }}"

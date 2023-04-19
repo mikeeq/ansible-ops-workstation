@@ -1,26 +1,27 @@
 ---
-# - name: Check docker-compose executable is present
-#   shell: "which docker-compose"
-#   register: docker_compose_result
-#   ignore_errors: true
-#   changed_when: false
+- name: Check docker-compose executable is present
+  shell: "which docker-compose"
+  register: docker_compose_result
+  ignore_errors: true
+  changed_when: false
 
-# - fail:
-#     msg: "docker-compose is not found! You need to install it first."
-#   when: docker_compose_result.rc != 0
+- fail:
+    msg: "docker-compose is not found! You need to install it first."
+  when: docker_compose_result.rc != 0
 
-# - name: Ensure passlib is installed
-#   delegate_to: localhost
-#   pip:
-#     name:
-#       - passlib
-#     state: present
+- name: Ensure passlib is installed
+  delegate_to: localhost
+  pip:
+    name:
+      - passlib
+    state: present
 
-# # TODO: add stat to check if docker-compose file exists before running cleanup
+# TODO: add stat to check if docker-compose file exists before running cleanup
 
-# - include_tasks: cleanup.yml
-#   when: home_assistant_clean
+- include_tasks: cleanup.yml
+  when: home_assistant_clean
 
-# - import_tasks: custom.yml
+- import_tasks: custom.yml
 - import_tasks: config.yml
-# - import_tasks: install.yml
+- import_tasks: config_mosquitto.yml
+- import_tasks: install.yml
