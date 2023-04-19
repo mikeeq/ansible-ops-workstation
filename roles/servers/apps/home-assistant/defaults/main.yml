@@ -36,9 +36,19 @@ home_assistant:
     sonoff:
       temp_humidity:
         - name: sypialnia_dol
+<<<<<<< HEAD
+=======
+          zigbee_id: AAA3
+>>>>>>> 33ad396b2cbd385bca41f7d5c0d9ef7760261d6f
         - name: kuchnia
         - name: salon
         - name: sypialnia_gora
+<<<<<<< HEAD
+=======
+          zigbee_id: 9A73
+        - name: biuro
+          zigbee_id: 9B9A
+>>>>>>> 33ad396b2cbd385bca41f7d5c0d9ef7760261d6f
       button:
         - name: kuchnia
       door:

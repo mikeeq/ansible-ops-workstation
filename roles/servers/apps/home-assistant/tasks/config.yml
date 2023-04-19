@@ -48,21 +48,27 @@
   with_fileglob:
     - ../templates/config/mqtt/binary_sensors/*
 
-# - name: Configure config/mqtt/lights
-#   template:
-#     src: "{{ item }}"
-#     dest: "{{ install_path }}/config/mqtt/lights/"
-#     mode: 0664
-#     backup: true
-#   with_fileglob:
-#     - ../templates/config/mqtt/lights/*
+- name: Configure config/mqtt/lights
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/mqtt/lights/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/mqtt/lights/*
+
+- name: Check that the .storage exists
+  stat:
+    path: "{{ install_path }}/config/.storage"
+  register: storage_result
 
 # TODO: Copy only at first run
-# - name: Configure .storage
-#   copy:
-#     src: "{{ item }}"
-#     dest: "{{ install_path }}/config/.storage"
-#     mode: 0664
-#     backup: true
-#   with_fileglob:
-#     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/.storage/*"
+- name: Configure .storage
+  copy:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/.storage"
+    mode: 0664
+    backup: true
+  when: not storage_result.stat.exists
+  with_fileglob:
+    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/.storage/*"
