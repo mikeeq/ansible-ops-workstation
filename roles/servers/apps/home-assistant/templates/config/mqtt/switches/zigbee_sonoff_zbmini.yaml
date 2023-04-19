@@ -1,19 +1,11 @@
 ---
-{% for i in home_assistant.mqtt.ikea.tradfri_single_dimm %}
-- name: ikea_tradfri_{{ i.name }}
+{% for i in home_assistant.mqtt.sonoff.zbmini %}
+- name: zbmini_swiatlo_{{ i.name }}
   schema: template
   command_topic: "cmnd/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ZbSend"
   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
   command_on_template: >
-    {"device": "0x{{ i.name }}","send":{
-    {% raw -%}
-    {%- if brightness is defined -%}
-    "Dimmer": {%- if brightness == 255 -%}254{%- else -%}{{ brightness }}{%- endif -%}
-    {%- else -%}
-    "Power": 1
-    {%- endif -%}
-    }}
-    {%- endraw +%}
+    {"device": "0x{{ i.name }}","send":{"Power":1}}
   command_off_template: >
     {"device": "0x{{ i.name }}","send":{"Power":0}}
   state_template: >
@@ -23,16 +15,6 @@
       off
     {% raw %}{% else %}
       {{ states(entity_id) }}
-    {% endif %}{% endraw +%}
-  brightness_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Dimmer'] is defined %}
-      {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Dimmer'] == 255 %}
-        254
-      {% raw %}{% else %}
-        {{ value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Dimmer'] }}
-      {% raw %}{% endif %}
-    {% else %}
-      {{ state_attr(entity_id,'brightness') }}
     {% endif %}{% endraw +%}
   availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
   payload_available: "Online"

@@ -25,8 +25,6 @@ home_assistant_custom_lovelace_plugins:
     entity_name: 'multiple-entity-row.js'
     repo: https://github.com/benct/lovelace-multiple-entity-row
 
-# 0x4CBA - zbrouter
-
 home_assistant:
   automations:
     inching:
@@ -38,19 +36,15 @@ home_assistant:
     sonoff:
       temp_humidity:
         - name: sypialnia_dol
-          zigbee_id: 1348
         - name: kuchnia
-          zigbee_id: 17F6
         - name: salon
-          zigbee_id: 3B9E
         - name: sypialnia_gora
-          zigbee_id: 9A73
       button:
         - name: kuchnia
-          zigbee_id: C84F
       door:
         - name: garaz_brama
-          zigbee_id: C490
+      zbmini:
+        - name: sypialnia_gora
     ikea:
       button:
         - name: kuchnia

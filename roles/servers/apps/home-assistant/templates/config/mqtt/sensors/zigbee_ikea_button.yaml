@@ -1,13 +1,13 @@
 ---
 {% for i in home_assistant.mqtt.ikea.button %}
 - name: button_state_{{ i.name }}
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.zigbee_id }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
   value_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['Power'] == 2 %}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Power'] == 2 %}
       Click
-    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['Power'] == 1 %}
+    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Power'] == 1 %}
       Double-Click
-    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['Power'] == 0 %}
+    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['Power'] == 0 %}
       Hold
     {% raw %}{% else %}
       None
@@ -18,10 +18,10 @@
   qos: 0
   expire_after: 1
 - name: button_battery_percentage_{{ i.name }}
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.zigbee_id }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
   value_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['BatteryPercentage'] > 0 %}
-      {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['BatteryPercentage'] }}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['BatteryPercentage'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['BatteryPercentage'] }}
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}
@@ -33,10 +33,10 @@
   expire_after: 86400
   unit_of_measurement: '%'
 - name: button_battery_voltage_{{ i.name }}
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.zigbee_id }}/SENSOR"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
   value_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['BatteryVoltage'] > 0 %}
-      {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.zigbee_id }}']['BatteryVoltage'] }}
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['BatteryVoltage'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['0x{{ i.name }}']['BatteryVoltage'] }}
     {% raw %}{% else %}
       {{ states(entity_id) }}
     {% endif %}{% endraw +%}

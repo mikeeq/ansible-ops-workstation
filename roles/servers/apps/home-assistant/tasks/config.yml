@@ -1,15 +1,15 @@
 ---
-# - name: Ensure install dir exists
-#   file:
-#     path: "{{ item }}"
-#     state: directory
-#   loop:
-#     - "{{ install_path }}/config"
-#     - "{{ install_path }}/config/automations"
-#     - "{{ install_path }}/config/.storage"
-#     - "{{ install_path }}/config/mqtt/binary_sensors"
-#     - "{{ install_path }}/config/mqtt/sensors"
-#     - "{{ install_path }}/config/mqtt/lights"
+- name: Ensure install dir exists
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}/config"
+    - "{{ install_path }}/config/automations"
+    - "{{ install_path }}/config/.storage"
+    - "{{ install_path }}/config/mqtt/binary_sensors"
+    - "{{ install_path }}/config/mqtt/sensors"
+    - "{{ install_path }}/config/mqtt/lights"
 
 - name: Configure config
   copy:
