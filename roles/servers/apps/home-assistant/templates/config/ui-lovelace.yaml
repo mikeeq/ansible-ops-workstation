@@ -46,6 +46,30 @@ views:
                 name: Bateria
           - type: section
             label: Gora
+          - entity: sensor.th_temperature_pokoj_timi
+            type: custom:multiple-entity-row
+            name: Pokoj Timi
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_pokoj_timi
+                name: Temperatura
+              - entity: sensor.th_humidity_pokoj_timi
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_pokoj_timi
+                name: Bateria
+          - entity: sensor.th_temperature_pokoj_nad_garazem
+            type: custom:multiple-entity-row
+            name: Pokoj nad garazem
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_pokoj_nad_garazem
+                name: Temperatura
+              - entity: sensor.th_humidity_pokoj_nad_garazem
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_pokoj_nad_garazem
+                name: Bateria
           - entity: sensor.th_temperature_sypialnia_gora
             type: custom:multiple-entity-row
             name: Sypialnia Gora
@@ -57,6 +81,30 @@ views:
               - entity: sensor.th_humidity_sypialnia_gora
                 name: Wilgotnosc
               - entity: sensor.th_battery_percentage_sypialnia_gora
+                name: Bateria
+          - entity: sensor.th_temperature_garderoba
+            type: custom:multiple-entity-row
+            name: Garderoba
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_garderoba
+                name: Temperatura
+              - entity: sensor.th_humidity_garderoba
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_garderoba
+                name: Bateria
+          - entity: sensor.th_temperature_serwerownia
+            type: custom:multiple-entity-row
+            name: Serwerownia
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_serwerownia
+                name: Temperatura
+              - entity: sensor.th_humidity_serwerownia
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_serwerownia
                 name: Bateria
           - entity: sensor.th_temperature_biuro_miki
             type: custom:multiple-entity-row

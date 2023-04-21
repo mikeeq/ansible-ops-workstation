@@ -32,18 +32,4 @@
   device_class: "battery"
   expire_after: 86400
   unit_of_measurement: '%'
-- name: button_battery_voltage_{{ i.name }}
-  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/button_{{ i.name }}/SENSOR"
-  value_template: >
-    {% raw %}{% if value_json['ZbReceived']{% endraw %}['button_{{ i.name }}']['BatteryVoltage'] > 0 %}
-      {% raw %}{{ value_json['ZbReceived']{% endraw %}['button_{{ i.name }}']['BatteryVoltage'] }}
-    {% raw %}{% else %}
-      {{ states(entity_id) }}
-    {% endif %}{% endraw +%}
-  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
-  payload_available: "Online"
-  payload_not_available: "Offline"
-  qos: 0
-  device_class: "voltage"
-  expire_after: 86400
 {% endfor %}

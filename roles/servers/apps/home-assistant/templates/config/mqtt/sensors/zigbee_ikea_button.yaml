@@ -1,52 +1,38 @@
 # ---
-# {% for i in home_assistant.mqtt.ikea.button %}
-# - name: ikea_button_state_{{ i.name }}
-#   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_button_{{ i.name }}/SENSOR"
-#   value_template: >
-#     {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['Power'] == 2 %}
-#       Click
-#     {% raw %}{% elif value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['Power'] == 1 %}
-#       Double-Click
-#     {% raw %}{% elif value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['Power'] == 0 %}
-#       Hold
-#     {% raw %}{% else %}
-#       None
-#     {% endif %}{% endraw +%}
-#   availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
-#   payload_available: "Online"
-#   payload_not_available: "Offline"
-#   qos: 0
-#   expire_after: 1
-# - name: ikea_button_battery_percentage_{{ i.name }}
-#   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_button_{{ i.name }}/SENSOR"
-#   value_template: >
-#     {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['BatteryPercentage'] > 0 %}
-#       {% raw %}{{ value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['BatteryPercentage'] }}
-#     {% raw %}{% else %}
-#       {{ states(entity_id) }}
-#     {% endif %}{% endraw +%}
-#   availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
-#   payload_available: "Online"
-#   payload_not_available: "Offline"
-#   qos: 0
-#   device_class: "battery"
-#   expire_after: 86400
-#   unit_of_measurement: '%'
-# - name: ikea_button_battery_voltage_{{ i.name }}
-#   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_button_{{ i.name }}/SENSOR"
-#   value_template: >
-#     {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['BatteryVoltage'] > 0 %}
-#       {% raw %}{{ value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['BatteryVoltage'] }}
-#     {% raw %}{% else %}
-#       {{ states(entity_id) }}
-#     {% endif %}{% endraw +%}
-#   availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
-#   payload_available: "Online"
-#   payload_not_available: "Offline"
-#   qos: 0
-#   device_class: "voltage"
-#   expire_after: 86400
-# {% endfor %}
+{% for i in home_assistant.mqtt.ikea.button %}
+- name: ikea_button_state_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_button_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['Power'] == 2 %}
+      Click
+    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['Power'] == 1 %}
+      Double-Click
+    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['Power'] == 0 %}
+      Hold
+    {% raw %}{% else %}
+      None
+    {% endif %}{% endraw +%}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  qos: 0
+  expire_after: 1
+- name: ikea_button_battery_percentage_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_button_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['BatteryPercentage'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['ikea_button_{{ i.name }}']['BatteryPercentage'] }}
+    {% raw %}{% else %}
+      {{ states(entity_id) }}
+    {% endif %}{% endraw +%}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  qos: 0
+  device_class: "battery"
+  expire_after: 86400
+  unit_of_measurement: '%'
+{% endfor %}
 
 # 0x4643
 

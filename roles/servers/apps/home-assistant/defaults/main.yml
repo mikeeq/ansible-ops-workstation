@@ -40,6 +40,10 @@ home_assistant:
         - name: salon
         - name: sypialnia_gora
         - name: biuro_miki
+        - name: pokoj_timi
+        - name: pokoj_nad_garazem
+        - name: garderoba
+        - name: serwerownia
       button:
         - name: dol_1
       door:
