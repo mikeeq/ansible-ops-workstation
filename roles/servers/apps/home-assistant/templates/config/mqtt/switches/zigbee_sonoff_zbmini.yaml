@@ -21,3 +21,5 @@
 #   optimistic: false
 #   qos: 0
 # {% endfor %}
+
+# zbsend {"device": "zbmini_swiatlo_sypialnia_gora","send":{"Power":1}}
