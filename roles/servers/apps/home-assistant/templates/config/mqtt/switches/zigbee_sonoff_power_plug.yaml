@@ -1,0 +1,20 @@
+---
+{% for i in home_assistant.mqtt.sonoff.power_plug %}
+- name: spp_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/spp_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{{ value_json['ZbReceived']{% endraw %}['spp_{{ i.name }}']['Power'] }}
+  state_on: 1
+  state_off: 0
+  command_topic: "cmnd/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ZbSend"
+  payload_on: >
+    {"device": "spp_{{ i.name }}","send":{"Power":1}}
+  payload_off: >
+    {"device": "spp_{{ i.name }}","send":{"Power":0}}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  optimistic: false
+  qos: 0
+  retain: true
+{% endfor %}

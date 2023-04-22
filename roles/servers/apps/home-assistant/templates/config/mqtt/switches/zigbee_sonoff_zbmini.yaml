@@ -1,23 +1,20 @@
-# ---
-# {% for i in home_assistant.mqtt.sonoff.zbmini %}
-# - name: zbmini_swiatlo_{{ i.name }}
-#   command_topic: "cmnd/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ZbSend"
-#   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/{{ i.name }}/SENSOR"
-#   command_on_template: >
-#     {"device": "{{ i.name }}","send":{"Power":1}}
-#   command_off_template: >
-#     {"device": "{{ i.name }}","send":{"Power":0}}
-#   value_template: >
-#     {% raw %}{% if value_json['ZbReceived']{% endraw %}['{{ i.name }}']['Power'] == 1 %}
-#       on
-#     {% raw %}{% elif value_json['ZbReceived']{% endraw %}['{{ i.name }}']['Power'] == 0 %}
-#       off
-#     {% raw %}{% else %}
-#       {{ states(entity_id) }}
-#     {% endif %}{% endraw +%}
-#   availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
-#   payload_available: "Online"
-#   payload_not_available: "Offline"
-#   optimistic: false
-#   qos: 0
-# {% endfor %}
+---
+{% for i in home_assistant.mqtt.sonoff.zbmini %}
+- name: zbmini_swiatlo_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/zbmini_swiatlo_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{{ value_json['ZbReceived']{% endraw %}['zbmini_swiatlo_{{ i.name }}']['Power'] }}
+  state_on: 1
+  state_off: 0
+  command_topic: "cmnd/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ZbSend"
+  payload_on: >
+    {"device": "zbmini_swiatlo_{{ i.name }}","send":{"Power":1}}
+  payload_off: >
+    {"device": "zbmini_swiatlo_{{ i.name }}","send":{"Power":0}}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  optimistic: false
+  qos: 0
+  retain: true
+{% endfor %}
