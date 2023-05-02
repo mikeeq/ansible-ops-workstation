@@ -50,6 +50,8 @@ home_assistant:
         - name: garaz_brama
       zbmini:
         - name: sypialnia_gora
+      power_plug:
+        - name: salon
     ikea:
       button:
         - name: kuchnia
