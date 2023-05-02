@@ -4,12 +4,12 @@
 # https://github.com/HSPDev/Huawei-E5180-API
 # http://forum.jdtech.pl/Watek-hilink-api-dla-urzadzen-huawei
 ---
-- name: Install dependencies
-  pip:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - xmltodict
+# - name: Install dependencies
+#   pip:
+#     name: "{{ item }}"
+#     state: present
+#   loop:
+#     - xmltodict
 
 - import_tasks: login.yml
 
