@@ -1,6 +1,8 @@
 ---
 - name: Home Assistant
-  hosts: "{{ hosts_to_deploy | default('local') }}"
+  hosts:
+    # - "{{ hosts_to_deploy | default('local') }}"
+    - mikeeClevo
   become: true
   pre_tasks:
     # - debug:

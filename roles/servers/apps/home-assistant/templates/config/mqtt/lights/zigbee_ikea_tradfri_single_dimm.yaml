@@ -1,4 +1,7 @@
 ---
+# IKEA ICPSHC24-30EU-IL-1
+# IKEA TRADFRI LED driver for wireless control (30 watt)
+# https://www.zigbee2mqtt.io/devices/ICPSHC24-30EU-IL-1.html
 {% for i in home_assistant.mqtt.ikea.tradfri_single_dimm %}
 - name: ikea_tradfri_{{ i.name }}
   schema: template

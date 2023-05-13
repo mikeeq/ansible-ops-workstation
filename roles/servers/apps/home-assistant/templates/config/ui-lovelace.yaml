@@ -120,9 +120,14 @@ views:
                 name: Bateria
       - type: entities
         entities:
+          - type: section
+            label: Dol
           - entity: switch.minir2_swiatlo_salon_kinkiety
             name: Salon Kinkiety
             icon: mdi:wall-sconce
+          - entity: switch.spp_salon
+            name: Salon Lampa
+            icon: mdi:floor-lamp-torchiere-variant
           - entity: light.ikea_tradfri_kuchnia_szafki
             name: Kuchnia LED szafki
             icon: mdi:led-strip
@@ -137,9 +142,11 @@ views:
           - entity: switch.minir2_swiatlo_przedpokoj
             name: Przedpokoj
             icon: mdi:ceiling-light
-          - entity: switch.minir2_swiatlo_drzwi_dwor
-            name: Drzwi Dwor
-            icon: mdi:coach-lamp
+          - type: section
+            label: Gora
+          - entity: switch.zbmini_swiatlo_sypialnia_gora
+            name: Sypialnia Gora
+            icon: mdi:ceiling-light
         title: Swiatla
         show_header_toggle: false
         state_color: true
@@ -232,8 +239,11 @@ views:
             name: Garaz Swiatlo
             icon: mdi:lightbulb-fluorescent-tube
           - entity: switch.4chpror3_swiatlo_garaz_zew
-            name: Swiatlo nad garazem
+            name: Swiatlo nad Brama Garazowa
             icon: mdi:coach-lamp-variant
+          - entity: switch.minir2_swiatlo_drzwi_dwor
+            name: Drzwi Dwor
+            icon: mdi:coach-lamp
         title: Garaz
         show_header_toggle: false
       - type: entities
@@ -291,30 +301,38 @@ views:
       - type: entities
         entities:
           - type: section
-            label: Front ogrodu
+            label: Trawnik
           - entity: switch.rain_bird_sprinkler_1
+            name: "1. Front Lewa Strona"
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_2
+            name: "2. Front Prawa Strona"
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_3
+            name: "3. Bok"
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_4
+            name: "4. Tyl Ukos 3000"
             icon: mdi:sprinkler
-          - type: section
-            label: Tyl ogrodu
           - entity: switch.rain_bird_sprinkler_5
+            name: "5. Tyl Srodek"
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_6
+            name: "6. Tyl Prawa Strona"
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_7
+            name: "7. Skarpa Tyl"
             icon: mdi:sprinkler
           - type: section
             label: Linie Kroplujace
           - entity: switch.rain_bird_sprinkler_8
+            name: "8. Rabaty/Donice"
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_9
+            name: "9. Tuje"
             icon: mdi:sprinkler
           - entity: switch.rain_bird_sprinkler_10
+            name: "10. Bok Skarpa"
             icon: mdi:sprinkler
         title: Nawodnienie
         show_header_toggle: false

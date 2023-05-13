@@ -1,4 +1,6 @@
 ---
+# Sonoff ZBMINI
+# https://www.zigbee2mqtt.io/devices/ZBMINI.html
 {% for i in home_assistant.mqtt.sonoff.zbmini %}
 - name: zbmini_swiatlo_{{ i.name }}
   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/zbmini_swiatlo_{{ i.name }}/SENSOR"

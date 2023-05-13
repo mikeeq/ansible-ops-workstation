@@ -21,9 +21,19 @@ home_assistant_custom_components:
     repo: https://github.com/twrecked/hass-virtual
 
 home_assistant_custom_lovelace_plugins:
+  # - name: 'lovelace-multiple-entity-row'
+  #   entity_name: 'multiple-entity-row.js'
+  #   repo: https://github.com/benct/lovelace-multiple-entity-row
+  #   version: v4.4.1
+  # https://github.com/benct/lovelace-multiple-entity-row/pull/293
   - name: 'lovelace-multiple-entity-row'
     entity_name: 'multiple-entity-row.js'
-    repo: https://github.com/benct/lovelace-multiple-entity-row
+    repo: https://github.com/mill1000/lovelace-multiple-entity-row.git
+    version: issue/compute_state_display
+  - name: 'lovelace-xiaomi-vacuum-map-card'
+    entity_name: 'xiaomi-vacuum-map-card.js'
+    repo: https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card.git
+    version: master
 
 home_assistant:
   automations:

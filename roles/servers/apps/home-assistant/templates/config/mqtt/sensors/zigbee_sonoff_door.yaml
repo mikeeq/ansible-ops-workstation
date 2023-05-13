@@ -1,4 +1,6 @@
 ---
+# Sonoff SNZB-04
+# https://www.zigbee2mqtt.io/devices/SNZB-04.html
 {% for i in home_assistant.mqtt.sonoff.door %}
 - name: door_battery_percentage_{{ i.name }}
   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/door_{{ i.name }}/SENSOR"

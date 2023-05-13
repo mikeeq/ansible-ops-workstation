@@ -1,4 +1,6 @@
 ---
+# Sonoff SNZB-02
+# https://www.zigbee2mqtt.io/devices/SNZB-02.html
 {% for i in home_assistant.mqtt.sonoff.temp_humidity %}
 - name: th_temperature_{{ i.name }}
   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/th_{{ i.name }}/SENSOR"

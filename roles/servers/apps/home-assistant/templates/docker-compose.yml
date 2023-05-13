@@ -3,6 +3,9 @@ version: '3'
 services:
   homeassistant:
     container_name: homeassistant
+    # https://github.com/benct/lovelace-multiple-entity-row/pull/293
+    # change image tag to stable when PR above gets merged
+    # image: "homeassistant/home-assistant:2023.3"
     image: "homeassistant/home-assistant:stable"
     volumes:
       - ./config:/config

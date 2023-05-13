@@ -1,4 +1,6 @@
-# ---
+---
+# Ikea Tradfri Wireless 5-Button Remote
+# https://www.zigbee2mqtt.io/devices/E1524_E1810.html
 {% for i in home_assistant.mqtt.ikea.button %}
 - name: ikea_button_state_{{ i.name }}
   state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_button_{{ i.name }}/SENSOR"

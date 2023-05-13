@@ -13,6 +13,7 @@
     repo: "{{ item.repo }}"
     dest: "{{ install_path }}/config/git/{{ item.name }}"
     update: true
+    version: "{{ item.version | default('HEAD') }}"
   with_items:
     - "{{ home_assistant_custom_components }}"
     - "{{ home_assistant_custom_lovelace_plugins }}"

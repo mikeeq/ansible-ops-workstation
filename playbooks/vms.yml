@@ -60,7 +60,7 @@
   become: true
   roles:
     - servers/apps/nginx
-    - servers/apps/home-assistant
+    # - servers/apps/home-astopsistant
     - servers/apps/jenkins
 
 - name: Cleanup Docker

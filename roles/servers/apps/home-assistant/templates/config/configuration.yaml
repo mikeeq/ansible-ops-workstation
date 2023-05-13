@@ -25,8 +25,9 @@ lovelace:
       icon: mdi:tools
       show_in_sidebar: true
       require_admin: true
+  # Info: Change ?ver= to force browser to refresh new custom resources
   resources:
-    - url: /local/multiple-entity-row.js
+    - url: /local/multiple-entity-row.js?ver=1
       type: module
 
 # Text to speech
