@@ -7,6 +7,32 @@ views:
         title: Temperatury Zigbee
         entities:
           - type: section
+            label: Inne
+          - entity: sensor.th_temperature_ogrod
+            type: custom:multiple-entity-row
+            name: Ogrod
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_ogrod
+                name: Temperatura
+              - entity: sensor.th_humidity_ogrod
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_ogrod
+                name: Bateria
+          - entity: sensor.th_temperature_garaz
+            type: custom:multiple-entity-row
+            name: Garaz
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_garaz
+                name: Temperatura
+              - entity: sensor.th_humidity_garaz
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_garaz
+                name: Bateria
+          - type: section
             label: Dol
           - entity: sensor.th_temperature_kuchnia
             type: custom:multiple-entity-row
@@ -220,6 +246,25 @@ views:
               - entity: sensor.speedtest_upload
                 name: Upload
         title: SpeedTest
+      - type: entities
+        entities:
+          - entity: sensor.ikea_button_state_kuchnia
+            type: custom:multiple-entity-row
+            name: Ikea kuchnia
+            show_state: false
+            icon: mdi:gesture-tap-button
+            entities:
+              - entity: sensor.ikea_button_battery_percentage_kuchnia
+                name: Battery
+          - entity: sensor.button_state_dol_1
+            type: custom:multiple-entity-row
+            name: Sonoff Dol 1
+            icon: mdi:gesture-tap-button
+            show_state: false
+            entities:
+              - entity: sensor.button_battery_percentage_dol_1
+                name: Battery
+        title: Przyciski
   - title: Garaz
     path: garaz
     badges: []
@@ -233,6 +278,8 @@ views:
             toggle: true
             show_state: true
             entities:
+              - entity: sensor.door_battery_percentage_garaz_brama
+                name: Bateria
               - entity: binary_sensor.door_state_garaz_brama
                 name: Stan
           - entity: switch.4chpror3_swiatlo_garaz_wew
