@@ -37,6 +37,7 @@
     owner: root
     group: root
     state: link
+    force: true
   with_items:
     - "{{ pip_apps }}"
   when: item.virtualenv_enabled and not item.name == "azure-cli"
