@@ -1,0 +1,16 @@
+---
+# Sonoff SNZB-04
+# https://www.zigbee2mqtt.io/devices/SNZB-04.html
+{% for i in home_assistant.mqtt.sonoff.door %}
+- name: door_state_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/door_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{{ value_json['ZbReceived']{% endraw %}['door_{{ i.name }}']['ZoneStatusChange'] }}
+  payload_on: 1
+  payload_off: 0
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  qos: 0
+  device_class: "door"
+{% endfor %}

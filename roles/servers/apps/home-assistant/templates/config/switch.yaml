@@ -1,0 +1,39 @@
+---
+- platform: virtual
+  name: ogrzewanie_pompy
+
+- platform: virtual
+  name: ogrzewanie_dol_lazienka
+
+- platform: virtual
+  name: ogrzewanie_dol_sypialnia
+
+- platform: virtual
+  name: ogrzewanie_dol_salon
+
+- platform: virtual
+  name: ogrzewanie_dol_kuchnia
+
+- platform: virtual
+  name: ogrzewanie_dol_korytarz
+
+- platform: virtual
+  name: ogrzewanie_gora_biuro_miki
+
+- platform: virtual
+  name: ogrzewanie_gora_garderoba
+
+- platform: virtual
+  name: ogrzewanie_gora_sypialnia
+
+- platform: virtual
+  name: ogrzewanie_gora_pokoj_nad_garazem
+
+- platform: virtual
+  name: ogrzewanie_gora_lazienka
+
+- platform: virtual
+  name: ogrzewanie_gora_timi_pokoj
+
+- platform: virtual
+  name: ogrzewanie_gora_korytarz

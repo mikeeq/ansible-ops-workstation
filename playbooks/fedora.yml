@@ -1,6 +1,8 @@
 ---
 - name: Fedora bootstrap
-  hosts: "{{ hosts_to_deploy | default('local') }}"
+  hosts:
+    - "{{ hosts_to_deploy | default('local') }}"
+    # - mikeeClevo
   become: true
   pre_tasks:
     # - debug:
@@ -19,7 +21,7 @@
     - desktop/apps/vscode
     - desktop/apps/x11docker
     - desktop/fedora
-    - apps/nordvpn
+    # - apps/nordvpn
 
 - name: Include a playbook for generic-core provisioning
   import_playbook: generic-core.yml

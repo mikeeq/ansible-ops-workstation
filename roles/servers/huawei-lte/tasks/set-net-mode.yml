@@ -27,6 +27,7 @@
 # LTEBand 1800+2100 FDD = 5
 # LTEBand 800+1800+2100 FDD = 80005
 
+# tryb sieci może być połączony np '0302' jest równoważne z 'Preferowane LTE -> 3G'
 # Uwagi:
 # NetworkMode:
 # 00 - automatycznie (wszystkie sieci)
@@ -34,7 +35,9 @@
 # 02 - tylko 3G
 # 03 - Tylko 4G (LTE)
 # 99 - bez zmian
-# tryb sieci może być połączony np '0302' jest równoważne z 'Preferowane LTE -> 3G'
+
+
+# inny zapis jest sumą heksadecymalną powyższych sieci (np. GSM900 + UTMS B8 = 0x2000000000000 + 0x300 = 0x2000000000300)
 # NetworkBand:
 # 80 - GSM1800
 # 300 - GSM900
@@ -61,7 +64,9 @@
 # 20000000 - BC13
 # 80000000 - BC14
 # 3FFFFFFF - wszystkie obsługiwane
-# inny zapis jest sumą heksadecymalną powyższych sieci (np. GSM900 + UTMS B8 = 0x2000000000000 + 0x300 = 0x2000000000300)
+
+
+# inny zapis jest sumą heksadecymalną powyższych sieci
 # LTEBand:
 # 1 - B1 (FDD 2100)
 # 4 - B3 (FDD 1800)
@@ -73,7 +78,6 @@
 # 800C5 - pasma EU (LTE Band 1, 3, 7, 8, 20)
 # 800D5 - pasma EU/Asia/Africa (LTE Band 1, 3, 5, 7, 8, 20)
 # 7FFFFFFFFFFFFFFF - wszystkie pasma
-# inny zapis jest sumą heksadecymalną powyższych sieci
 
 # bandsList = [
 #     ('b1', 'FDD', '2100', '1'),

@@ -1,0 +1,459 @@
+views:
+  - title: Home
+    path: home
+    badges: []
+    cards:
+      - type: entities
+        title: Temperatury Zigbee
+        entities:
+          - type: section
+            label: Inne
+          - entity: sensor.th_temperature_ogrod
+            type: custom:multiple-entity-row
+            name: Ogrod
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_ogrod
+                name: Temperatura
+              - entity: sensor.th_humidity_ogrod
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_ogrod
+                name: Bateria
+          - entity: sensor.th_temperature_garaz
+            type: custom:multiple-entity-row
+            name: Garaz
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_garaz
+                name: Temperatura
+              - entity: sensor.th_humidity_garaz
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_garaz
+                name: Bateria
+          - type: section
+            label: Dol
+          - entity: sensor.th_temperature_kuchnia
+            type: custom:multiple-entity-row
+            name: Kuchnia
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_kuchnia
+                name: Temperatura
+              - entity: sensor.th_humidity_kuchnia
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_kuchnia
+                name: Bateria
+          - entity: sensor.th_temperature_salon
+            type: custom:multiple-entity-row
+            name: Salon
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_salon
+                name: Temperatura
+              - entity: sensor.th_humidity_salon
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_salon
+                name: Bateria
+          - entity: sensor.th_temperature_sypialnia_dol
+            type: custom:multiple-entity-row
+            name: Sypialnia Dol
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_sypialnia_dol
+                name: Temperatura
+              - entity: sensor.th_humidity_sypialnia_dol
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_sypialnia_dol
+                name: Bateria
+          - type: section
+            label: Gora
+          - entity: sensor.th_temperature_pokoj_timi
+            type: custom:multiple-entity-row
+            name: Pokoj Timi
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_pokoj_timi
+                name: Temperatura
+              - entity: sensor.th_humidity_pokoj_timi
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_pokoj_timi
+                name: Bateria
+          - entity: sensor.th_temperature_pokoj_nad_garazem
+            type: custom:multiple-entity-row
+            name: Pokoj nad garazem
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_pokoj_nad_garazem
+                name: Temperatura
+              - entity: sensor.th_humidity_pokoj_nad_garazem
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_pokoj_nad_garazem
+                name: Bateria
+          - entity: sensor.th_temperature_sypialnia_gora
+            type: custom:multiple-entity-row
+            name: Sypialnia Gora
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_sypialnia_gora
+                name: Temperatura
+              - entity: sensor.th_humidity_sypialnia_gora
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_sypialnia_gora
+                name: Bateria
+          - entity: sensor.th_temperature_garderoba
+            type: custom:multiple-entity-row
+            name: Garderoba
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_garderoba
+                name: Temperatura
+              - entity: sensor.th_humidity_garderoba
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_garderoba
+                name: Bateria
+          - entity: sensor.th_temperature_serwerownia
+            type: custom:multiple-entity-row
+            name: Serwerownia
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_serwerownia
+                name: Temperatura
+              - entity: sensor.th_humidity_serwerownia
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_serwerownia
+                name: Bateria
+          - entity: sensor.th_temperature_biuro_miki
+            type: custom:multiple-entity-row
+            name: Biuro Miki
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_biuro_miki
+                name: Temperatura
+              - entity: sensor.th_humidity_biuro_miki
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_biuro_miki
+                name: Bateria
+      - type: entities
+        entities:
+          - type: section
+            label: Dol
+          - entity: switch.minir2_swiatlo_salon_kinkiety
+            name: Salon Kinkiety
+            icon: mdi:wall-sconce
+          - entity: switch.spp_salon
+            name: Salon Lampa
+            icon: mdi:floor-lamp-torchiere-variant
+          - entity: light.ikea_tradfri_kuchnia_szafki
+            name: Kuchnia LED szafki
+            icon: mdi:led-strip
+          - entity: switch.minir2_swiatlo_taras
+            name: Taras
+            icon: mdi:coach-lamp-variant
+          - type: section
+          - entity: switch.minir2_swiatlo_sypialnia
+            name: Sypialnia
+            icon: mdi:ceiling-light
+          - type: section
+          - entity: switch.minir2_swiatlo_przedpokoj
+            name: Przedpokoj
+            icon: mdi:ceiling-light
+          - type: section
+            label: Gora
+          - entity: switch.zbmini_swiatlo_sypialnia_gora
+            name: Sypialnia Gora
+            icon: mdi:ceiling-light
+        title: Swiatla
+        show_header_toggle: false
+        state_color: true
+      - type: entities
+        entities:
+          - entity: switch.gosund_switch_clevo
+            type: custom:multiple-entity-row
+            name: Clevo
+            icon: mdi:laptop
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.gosund_clevo_energy_power
+                name: Zuzycie
+          - entity: switch.gosund_switch_monitory
+            type: custom:multiple-entity-row
+            name: Biuro Monitory
+            icon: mdi:monitor
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.gosund_monitory_energy_power
+                name: Zuzycie
+          - entity: switch.gosund_switch_pompa_cyrkulacyjna
+            type: custom:multiple-entity-row
+            name: Pompa Cyrkulacyjna
+            icon: mdi:thermometer-water
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.gosund_pompa_energy_power
+                name: Zuzycie
+          - entity: switch.gosund_switch_pc
+            type: custom:multiple-entity-row
+            name: PC
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.gosund_pc_energy_power
+                name: Zuzycie
+        title: Gniazdka
+        show_header_toggle: false
+        state_color: true
+      - type: entities
+        entities:
+          - entity: switch.4chpror3_swiatlo_podjazd
+            name: Podjazd
+            icon: mdi:post-lamp
+          - entity: switch.4chpror3_swiatlo_boki_ogrodu
+            name: Boki ogrodu
+            icon: mdi:light-flood-up
+          - entity: switch.4chpror3_swiatlo_tyl_ogrodu
+            name: Tyl ogrodu
+            icon: mdi:light-flood-up
+          - entity: switch.4chpror3_swiatlo_slupki_ognisko
+            name: Slupki ognisko
+            icon: mdi:post-lamp
+          - entity: switch.minir2_swiatlo_taras
+            name: Taras
+            icon: mdi:coach-lamp-variant
+        title: Swiatla Ogrod
+      - type: entities
+        entities:
+          - entity: sensor.speedtest_ping
+            type: custom:multiple-entity-row
+            name: Speedtest
+            show_state: true
+            entities:
+              - entity: sensor.speedtest_download
+                name: Download
+              - entity: sensor.speedtest_upload
+                name: Upload
+        title: SpeedTest
+      - type: entities
+        entities:
+          - entity: sensor.ikea_button_state_kuchnia
+            type: custom:multiple-entity-row
+            name: Ikea kuchnia
+            show_state: false
+            icon: mdi:gesture-tap-button
+            entities:
+              - entity: sensor.ikea_button_battery_percentage_kuchnia
+                name: Battery
+          - entity: sensor.button_state_dol_1
+            type: custom:multiple-entity-row
+            name: Sonoff Dol 1
+            icon: mdi:gesture-tap-button
+            show_state: false
+            entities:
+              - entity: sensor.button_battery_percentage_dol_1
+                name: Battery
+        title: Przyciski
+  - title: Garaz
+    path: garaz
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: switch.4chpror3_switch_garaz_brama
+            type: custom:multiple-entity-row
+            name: Brama Garazowa
+            icon: mdi:garage-alert
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.door_battery_percentage_garaz_brama
+                name: Bateria
+              - entity: binary_sensor.door_state_garaz_brama
+                name: Stan
+          - entity: switch.4chpror3_swiatlo_garaz_wew
+            name: Garaz Swiatlo
+            icon: mdi:lightbulb-fluorescent-tube
+          - entity: switch.4chpror3_swiatlo_garaz_zew
+            name: Swiatlo nad Brama Garazowa
+            icon: mdi:coach-lamp-variant
+          - entity: switch.minir2_swiatlo_drzwi_dwor
+            name: Drzwi Dwor
+            icon: mdi:coach-lamp
+        title: Garaz
+        show_header_toggle: false
+      - type: entities
+        entities:
+          - entity: switch.4chpror3_swiatlo_podjazd
+            name: Podjazd
+            icon: mdi:post-lamp
+          - entity: switch.4chpror3_swiatlo_boki_ogrodu
+            name: Boki ogrodu
+            icon: mdi:light-flood-up
+          - entity: switch.4chpror3_swiatlo_tyl_ogrodu
+            name: Tyl ogrodu
+            icon: mdi:light-flood-up
+          - entity: switch.4chpror3_swiatlo_slupki_ognisko
+            name: Slupki ognisko
+            icon: mdi:post-lamp
+          - entity: switch.minir2_swiatlo_taras
+            name: Taras
+            icon: mdi:coach-lamp-variant
+        title: Swiatla Ogrod
+      - type: entities
+        entities:
+          - entity: sensor.consumed_energy_total
+            name: Consumed Energy Total
+          - entity: sensor.donated_energy_total
+            name: Donated Energy Total
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
+            name: Current Power
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_state
+            name: State
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_temperature
+            name: Temperature
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_time
+            name: Today Time
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_yield
+            name: Today Yield
+          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_total_yield
+            name: Total Yield
+        title: SAJ
+      - show_name: true
+        show_icon: true
+        show_state: true
+        type: glance
+        entities:
+          - entity: automation.inching_switch_4chpror3_switch_garaz_brama
+          - entity: automation.inching_switch_4chpror3_swiatlo_garaz_wew
+          - entity: automation.inching_switch_4chpror3_swiatlo_garaz_zew
+        state_color: false
+      - type: entities
+        entities:
+          - entity: binary_sensor.gardena_smart_system_connection
+          - entity: vacuum.sileno_life_750
+          - entity: sensor.sileno_life_750_battery_level
+        title: Kosiarka
+      - type: entities
+        entities:
+          - type: section
+            label: Trawnik
+          - entity: switch.rain_bird_sprinkler_1
+            name: "1. Front Lewa Strona"
+            icon: mdi:sprinkler
+          - entity: switch.rain_bird_sprinkler_2
+            name: "2. Front Prawa Strona"
+            icon: mdi:sprinkler
+          - entity: switch.rain_bird_sprinkler_3
+            name: "3. Bok"
+            icon: mdi:sprinkler
+          - entity: switch.rain_bird_sprinkler_4
+            name: "4. Tyl Ukos 3000"
+            icon: mdi:sprinkler
+          - entity: switch.rain_bird_sprinkler_5
+            name: "5. Tyl Srodek"
+            icon: mdi:sprinkler
+          - entity: switch.rain_bird_sprinkler_6
+            name: "6. Tyl Prawa Strona"
+            icon: mdi:sprinkler
+          - entity: switch.rain_bird_sprinkler_7
+            name: "7. Skarpa Tyl"
+            icon: mdi:sprinkler
+          - type: section
+            label: Linie Kroplujace
+          - entity: switch.rain_bird_sprinkler_8
+            name: "8. Rabaty/Donice"
+            icon: mdi:sprinkler
+          - entity: switch.rain_bird_sprinkler_9
+            name: "9. Tuje"
+            icon: mdi:sprinkler
+          - entity: switch.rain_bird_sprinkler_10
+            name: "10. Bok Skarpa"
+            icon: mdi:sprinkler
+        title: Nawodnienie
+        show_header_toggle: false
+      - type: entities
+        entities:
+          - entity: number.rain_bird_controller_rain_delay
+            name: Rain delay
+          - sensor.raindelay
+          - binary_sensor.rainsensor
+        title: Rain Bird Controller
+  - title: Pogoda
+    path: pogoda
+    badges: []
+    cards:
+      - type: picture
+        image: >-
+          https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=342&col=208&lang=pl
+      - type: iframe
+        url: >-
+          https://embed.windy.com/embed2.html?lat=54.459&lon=18.357&detailLat=54.495&detailLon=18.357&width=650&height=450&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1
+        aspect_ratio: 122%
+      - type: weather-forecast
+        entity: weather.dom
+  - theme: Backend-selected
+    title: Kamery
+    path: kamery
+    badges: []
+    cards:
+      - type: picture-entity
+        entity: camera.yi_hack_a2_d8a470_cam
+      - type: picture-entity
+        entity: camera.yi_hack_a_cd2a17_cam
+      - show_state: true
+        show_name: true
+        camera_view: auto
+        type: picture-entity
+        entity: camera.yi_hack_a2_723336_cam
+        image: https://demo.home-assistant.io/stub_config/bedroom.png
+  - theme: Backend-selected
+    title: Ogrzewanie
+    path: ogrzewanie
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - switch.virtual_ogrzewanie_pompy
+          - switch.virtual_ogrzewanie_dol_korytarz
+          - switch.virtual_ogrzewanie_dol_kuchnia
+          - switch.virtual_ogrzewanie_dol_lazienka
+          - switch.virtual_ogrzewanie_dol_salon
+          - switch.virtual_ogrzewanie_dol_sypialnia
+          - switch.virtual_ogrzewanie_gora_biuro_miki
+          - switch.virtual_ogrzewanie_gora_garderoba
+          - switch.virtual_ogrzewanie_gora_korytarz
+          - switch.virtual_ogrzewanie_gora_lazienka
+          - switch.virtual_ogrzewanie_gora_pokoj_nad_garazem
+          - switch.virtual_ogrzewanie_gora_sypialnia
+          - switch.virtual_ogrzewanie_gora_timi_pokoj
+      - type: thermostat
+        entity: climate.sypialnia_dol
+      - type: thermostat
+        entity: climate.kuchnia
+      - type: entities
+        title: Temperatury Zigbee
+        entities:
+          - entity: climate.kuchnia
+            type: custom:multiple-entity-row
+            name: Kuchnia
+            show_state: false
+            entities:
+              - entity: sensor.th_temperature_kuchnia
+                name: Temperatura
+              - entity: sensor.th_humidity_kuchnia
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_kuchnia
+                name: Bateria
+title: MikiDashboardYAML

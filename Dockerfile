@@ -1,4 +1,4 @@
-FROM fedora:37
+FROM fedora:38
 
 # ENV container docker
 ENV FEDORA_USERNAME=mikee
@@ -6,7 +6,7 @@ ENV FEDORA_USERNAME=mikee
 # https://github.com/wagoodman/dive/releases
 ARG DIVE_VERSION=0.10.0
 # https://github.com/hadolint/hadolint/releases
-ARG HADOLINT_VERSION=2.7.0
+ARG HADOLINT_VERSION=2.12.0
 
 RUN dnf clean all \
     && dnf update -y \
@@ -28,18 +28,18 @@ rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # https://pypi.org/project/pip/
-RUN pip3 install --no-cache-dir --upgrade pip==22.3.1 && \
+RUN pip3 install --no-cache-dir --upgrade pip==23.1.2 && \
     pip3 install --no-cache-dir \
       # https://pypi.org/project/ansible/
-      ansible==7.0.0 \
+      ansible==8.0.0 \
       # https://pypi.org/project/ansible-lint/
-      ansible-lint==6.9.0 \
+      ansible-lint==6.17.1 \
       # https://pypi.org/project/yamllint/
-      yamllint==1.28.0 \
+      yamllint==1.32.0 \
       # https://pypi.org/project/packaging/
-      packaging==21.3 \
+      packaging==23.1 \
       # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL==22.1.0
+      pyOpenSSL==23.2.0
 
 # Dive
 RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.tar.gz && \

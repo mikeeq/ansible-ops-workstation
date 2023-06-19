@@ -1,0 +1,34 @@
+---
+version: '3'
+services:
+  homeassistant:
+    container_name: homeassistant
+    # https://github.com/benct/lovelace-multiple-entity-row/pull/293
+    # change image tag to stable when PR above gets merged
+    # image: "homeassistant/home-assistant:2023.3"
+    image: "homeassistant/home-assistant:stable"
+    volumes:
+      - ./config:/config
+      # - /etc/localtime:/etc/localtime:ro
+    restart: always
+    # privileged: true
+    # network_mode: host
+    environment:
+      # DISABLE_JEMALLOC: true
+      TZ: 'Europe/Warsaw'
+    # devices:
+    #   - /dev/ttyUSB0:/dev/ttyUSB0
+    ports:
+      - '8123:8123'
+  mosquitto:
+    container_name: mosquitto
+    # https://hub.docker.com/_/eclipse-mosquitto
+    image: "eclipse-mosquitto:2.0"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+    restart: always

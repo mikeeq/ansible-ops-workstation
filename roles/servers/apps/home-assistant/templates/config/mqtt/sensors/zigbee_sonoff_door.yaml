@@ -1,0 +1,20 @@
+---
+# Sonoff SNZB-04
+# https://www.zigbee2mqtt.io/devices/SNZB-04.html
+{% for i in home_assistant.mqtt.sonoff.door %}
+- name: door_battery_percentage_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/door_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['door_{{ i.name }}']['BatteryPercentage'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['door_{{ i.name }}']['BatteryPercentage'] }}
+    {% raw %}{% else %}
+      {{ states(entity_id) }}
+    {% endif %}{% endraw +%}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  qos: 0
+  device_class: "battery"
+  expire_after: 86400
+  unit_of_measurement: '%'
+{% endfor %}

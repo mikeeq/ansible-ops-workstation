@@ -1,0 +1,45 @@
+---
+# IKEA ICPSHC24-30EU-IL-1
+# IKEA TRADFRI LED driver for wireless control (30 watt)
+# https://www.zigbee2mqtt.io/devices/ICPSHC24-30EU-IL-1.html
+{% for i in home_assistant.mqtt.ikea.tradfri_single_dimm %}
+- name: ikea_tradfri_{{ i.name }}
+  schema: template
+  command_topic: "cmnd/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ZbSend"
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_tradfri_{{ i.name }}/SENSOR"
+  command_on_template: >
+    {"device": "ikea_tradfri_{{ i.name }}","send":{
+    {% raw -%}
+    {%- if brightness is defined -%}
+    "Dimmer": {%- if brightness == 255 -%}254{%- else -%}{{ brightness }}{%- endif -%}
+    {%- else -%}
+    "Power": 1
+    {%- endif -%}
+    }}
+    {%- endraw +%}
+  command_off_template: >
+    {"device": "ikea_tradfri_{{ i.name }}","send":{"Power":0}}
+  state_template: >
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Power'] == 1 %}
+      on
+    {% raw %}{% elif value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Power'] == 0 %}
+      off
+    {% raw %}{% else %}
+      {{ states(entity_id) }}
+    {% endif %}{% endraw +%}
+  brightness_template: >
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Dimmer'] is defined %}
+      {% raw %}{% if value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Dimmer'] == 255 %}
+        254
+      {% raw %}{% else %}
+        {{ value_json['ZbReceived']{% endraw %}['ikea_tradfri_{{ i.name }}']['Dimmer'] }}
+      {% raw %}{% endif %}
+    {% else %}
+      {{ state_attr(entity_id,'brightness') }}
+    {% endif %}{% endraw +%}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  optimistic: false
+  qos: 0
+{% endfor %}

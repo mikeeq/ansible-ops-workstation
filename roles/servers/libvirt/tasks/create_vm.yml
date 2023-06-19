@@ -42,6 +42,12 @@
     mode: 0600
   when: vm_force_recreation == true or qcow_check.stat.exists == false
 
+# TODO: Add disk size, default 5GB BTRFS only
+# qemu-img info disk.qcow2
+# virt-sparsify --in-place disk.qcow2
+# virt-resize
+# qemu-img resize disk.qcow2 30G
+
 # - name: Extend disk image
 #   shell: |
 #     virsh --connect qemu:///system vol-resize "{{ images_dir }}/{{ instance_id }}.qcow2" "{{ vm.disk_size }}"

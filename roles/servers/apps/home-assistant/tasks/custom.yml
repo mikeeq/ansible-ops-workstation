@@ -1,0 +1,33 @@
+---
+- name: Ensure install dir exists
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}/config/custom_components"
+    - "{{ install_path }}/config/www"
+    - "{{ install_path }}/config/git"
+
+- name: "Pull custom components"
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ install_path }}/config/git/{{ item.name }}"
+    update: true
+    version: "{{ item.version | default('HEAD') }}"
+  with_items:
+    - "{{ home_assistant_custom_components }}"
+    - "{{ home_assistant_custom_lovelace_plugins }}"
+
+- name: Create a symbolic link custom_components
+  file:
+    src: "../git/{{ item.name }}/custom_components/{{ item.name }}"
+    dest: "{{ install_path }}/config/custom_components/{{ item.name }}"
+    state: link
+  loop: "{{ home_assistant_custom_components }}"
+
+- name: Copy www
+  copy:
+    src: "{{ install_path }}/config/git/{{ item.name }}/{{ item.entity_name }}"
+    dest: "{{ install_path }}/config/www/{{ item.entity_name }}"
+    remote_src: true
+  loop: "{{ home_assistant_custom_lovelace_plugins }}"

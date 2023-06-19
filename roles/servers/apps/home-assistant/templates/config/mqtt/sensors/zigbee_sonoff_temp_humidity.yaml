@@ -1,0 +1,50 @@
+---
+# Sonoff SNZB-02
+# https://www.zigbee2mqtt.io/devices/SNZB-02.html
+{% for i in home_assistant.mqtt.sonoff.temp_humidity %}
+- name: th_temperature_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/th_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['Temperature'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['Temperature'] | round(1) }}
+    {% raw %}{% else %}
+      {{ states(entity_id) }}
+    {% endif %}{% endraw +%}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  qos: 0
+  device_class: "temperature"
+  expire_after: 86400
+  unit_of_measurement: "°C"
+- name: th_humidity_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/th_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['Humidity'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['Humidity'] | round(0) }}
+    {% raw %}{% else %}
+      {{ states(entity_id) }}
+    {% endif %}{% endraw +%}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  qos: 0
+  device_class: "humidity"
+  expire_after: 86400
+  unit_of_measurement: '%'
+- name: th_battery_percentage_{{ i.name }}
+  state_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/th_{{ i.name }}/SENSOR"
+  value_template: >
+    {% raw %}{% if value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['BatteryPercentage'] > 0 %}
+      {% raw %}{{ value_json['ZbReceived']{% endraw %}['th_{{ i.name }}']['BatteryPercentage'] }}
+    {% raw %}{% else %}
+      {{ states(entity_id) }}
+    {% endif %}{% endraw +%}
+  availability_topic: "tele/{{ home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  qos: 0
+  device_class: "battery"
+  expire_after: 86400
+  unit_of_measurement: '%'
+{% endfor %}

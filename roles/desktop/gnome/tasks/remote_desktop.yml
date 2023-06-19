@@ -1,4 +1,6 @@
 ---
+# https://gitlab.gnome.org/-/snippets/1778#note_1310610
+# https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353
 - name: Enable RDP
   become: true
   become_user: "{{ user_name }}"

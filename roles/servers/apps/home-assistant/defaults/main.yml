@@ -1,2 +1,66 @@
 ---
 install_path: "/opt/homeassistant"
+
+home_assistant_clean: false
+# home_assistant_clean: true
+
+# home_assistant_user: testuser
+# home_assistant_password: pass_tes1
+home_assistant_templates_path: templates
+
+home_assistant_custom_components:
+  - name: ble_monitor
+    repo: https://github.com/custom-components/ble_monitor
+  - name: gardena_smart_system
+    repo: https://github.com/py-smart-gardena/hass-gardena-smart-system
+  - name: multiscrape
+    repo: https://github.com/danieldotnl/ha-multiscrape
+  - name: yi_hack
+    repo: https://github.com/roleoroleo/yi-hack_ha_integration
+  - name: virtual
+    repo: https://github.com/twrecked/hass-virtual
+
+home_assistant_custom_lovelace_plugins:
+  - name: 'lovelace-multiple-entity-row'
+    entity_name: 'multiple-entity-row.js'
+    repo: https://github.com/benct/lovelace-multiple-entity-row
+    version: v4.5.0
+  # - name: 'lovelace-xiaomi-vacuum-map-card'
+  #   entity_name: 'xiaomi-vacuum-map-card.js'
+  #   repo: https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card.git
+  #   version: master
+
+home_assistant:
+  automations:
+    inching:
+      - entity_id: switch.4chpror3_switch_garaz_brama
+      - entity_id: switch.4chpror3_swiatlo_garaz_wew
+      - entity_id: switch.4chpror3_swiatlo_garaz_zew
+  mqtt:
+    zigbee_coordinator_base_topic: "tasmota_10B490"
+    sonoff:
+      temp_humidity:
+        - name: sypialnia_dol
+        - name: kuchnia
+        - name: salon
+        - name: sypialnia_gora
+        - name: biuro_miki
+        - name: pokoj_timi
+        - name: pokoj_nad_garazem
+        - name: garderoba
+        - name: serwerownia
+        - name: ogrod
+        - name: garaz
+      button:
+        - name: dol_1
+      door:
+        - name: garaz_brama
+      zbmini:
+        - name: sypialnia_gora
+      power_plug:
+        - name: salon
+    ikea:
+      button:
+        - name: kuchnia
+      tradfri_single_dimm:
+        - name: kuchnia_szafki

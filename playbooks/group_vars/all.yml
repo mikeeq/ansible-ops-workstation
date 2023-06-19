@@ -124,7 +124,7 @@ pip_apps:
   - name: azure-cli
     virtualenv_enabled: true
   - name: ansible-lint
-    virtualenv_enabled: false
+    virtualenv_enabled: true
   - name: yamllint
     virtualenv_enabled: false
   - name: psutil
