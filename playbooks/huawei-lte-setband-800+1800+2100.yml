@@ -7,8 +7,8 @@
     - servers/huawei-lte
   vars:
     huawei_dynamic_task: "set-net-mode.yml"
-    # huawei_lteband: "80005"
+    huawei_lteband: "80005"
     # huawei_lteband: "5"                   # 1800+2100
     # huawei_lteband: "4"                   # 1800
     # huawei_lteband: "1"                   # 2100
-    huawei_lteband: "7FFFFFFFFFFFFFFF"    # all
+    # huawei_lteband: "7FFFFFFFFFFFFFFF"    # all
