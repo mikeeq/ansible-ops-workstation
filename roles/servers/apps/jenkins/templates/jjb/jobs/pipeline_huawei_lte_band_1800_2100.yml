@@ -77,7 +77,7 @@
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -e huawei_lteband="5" -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband.yml
+                      ansible-playbook -e huawei_lteband=$params.HUAWEI_LTE_BAND -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband.yml
                     """
           - stage: "Ansible SQM disable"
             steps:
