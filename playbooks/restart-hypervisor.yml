@@ -3,12 +3,17 @@
   hosts: mikeeClevo
   become: true
   tasks:
+    - name: Install dnf-utils
+      ansible.builtin.dnf:
+        name: "dnf-utils"
+        state: present
+
     - name: Check if reboot required
-      stat:
-        path: /var/run/reboot-required
-      register: reboot_required_file
+      shell: |
+        needs-restarting -r
+      register: reboot_required
 
     - name: Reboot if required
       reboot:
       when:
-        - reboot_required_file.stat.exists == true
+        - reboot_required.rc != 0

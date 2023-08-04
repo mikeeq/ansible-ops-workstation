@@ -20,6 +20,16 @@
           name: DYNAMIC_SQM_ENABLED
           default: true
           description: "Enable dynamic SQM on OpenWRT"
+      - choice:
+          name: HUAWEI_LTE_BAND
+          choices:
+            - "5"
+            - "7FFFFFFFFFFFFFFF"
+            - "80005"
+            - "80000"
+            - "4"
+            - "1"
+          description: "LTE Band: 1800+2100, all, 800+1800+2100, 800, 1800, 2100"
     dsl-yaml: |
       pipeline:
         agent:
@@ -61,7 +71,15 @@
                         ls
                         git-crypt unlock ~jenkins/secrets/git_crypt_key
                       """
-          - stage: "Ansible SQM enable"
+          - stage: "Ansible LTE Band set"
+            steps:
+              script:
+                  - |
+                    sh """#!/bin/bash
+                      cd ansible-ops-workstation/playbooks
+                      ansible-playbook -e huawei_lteband=$params.HUAWEI_LTE_BAND -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband.yml
+                    """
+          - stage: "Ansible SQM disable"
             steps:
               script:
                   - |
