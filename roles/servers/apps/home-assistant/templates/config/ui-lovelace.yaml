@@ -146,6 +146,9 @@ views:
                 name: Bateria
       - type: entities
         entities:
+          - entity: switch.minir2_swiatlo_przedpokoj
+            name: Przedpokoj
+            icon: mdi:ceiling-light
           - type: section
             label: Dol
           - entity: switch.minir2_swiatlo_salon_kinkiety
@@ -163,10 +166,6 @@ views:
           - type: section
           - entity: switch.minir2_swiatlo_sypialnia
             name: Sypialnia
-            icon: mdi:ceiling-light
-          - type: section
-          - entity: switch.minir2_swiatlo_przedpokoj
-            name: Przedpokoj
             icon: mdi:ceiling-light
           - type: section
             label: Gora
@@ -271,6 +270,13 @@ views:
     cards:
       - type: entities
         entities:
+          - entity: switch.4chpror3_switch_dwor_brama
+            name: Brama Dwor
+            icon: mdi:gate
+          - entity: switch.4chpror3_switch_dwor_furtka
+            name: Furtka
+            icon: mdi:door
+          - type: section
           - entity: switch.4chpror3_switch_garaz_brama
             type: custom:multiple-entity-row
             name: Brama Garazowa
@@ -334,10 +340,13 @@ views:
         show_icon: true
         show_state: true
         type: glance
+        title: Automations
         entities:
           - entity: automation.inching_switch_4chpror3_switch_garaz_brama
           - entity: automation.inching_switch_4chpror3_swiatlo_garaz_wew
           - entity: automation.inching_switch_4chpror3_swiatlo_garaz_zew
+          - entity: automation.inching_switch_4chpror3_switch_dwor_brama
+          - entity: automation.inching_switch_4chpror3_switch_dwor_furtka
         state_color: false
       - type: entities
         entities:
