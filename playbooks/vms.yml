@@ -1,4 +1,4 @@
-# ---
+---
 # - name: Fedora on Clevo
 #   ansible.builtin.import_playbook: fedora.yml
 #   vars:
@@ -45,14 +45,31 @@
 #     - servers/apps/coredns
 #     - servers/apps/letsencrypt-coredns
 
-- name: Provision DNS2
+# - name: Provision DNS2
+#   hosts:
+#     - dns2
+#   become: true
+#   roles:
+#     - servers/network-static-dns
+#     - apps/docker
+#     - servers/apps/adguard-home
+
+# - name: Provision GW1
+#   hosts:
+#     - gw1
+#   become: true
+#   roles:
+#     - servers/network-static-dns
+#     - apps/openvpn-client
+#     - servers/apps/vpn-gw
+
+- name: Provision VPN1
   hosts:
-    - dns2
+    - vpn1
   become: true
   roles:
     - servers/network-static-dns
-    - apps/docker
-    - servers/apps/adguard-home
+    - servers/apps/openvpn
 
 # - name: Provision mikeeClevo
 #   hosts:
@@ -64,7 +81,7 @@
 #     - servers/apps/jenkins
 
 # - name: Cleanup Docker
-#   hosts: clevo
+#   hosts: clevo:!gw1:!vpn1
 #   become: true
 #   tasks:
 #     - name: Cleanup Docker

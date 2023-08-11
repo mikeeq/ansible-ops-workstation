@@ -1,5 +1,4 @@
 ---
-# make sure nordvpn is installed
 # dnf install -y iptables-services
 
 # sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
@@ -13,3 +12,34 @@
 # echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 # iptables-save > /etc/sysconfig/iptables
 # systemctl enable iptables
+
+- name: Install iptables-services
+  dnf:
+    name: "iptables-services"
+    state: present
+
+
+- name: Allow ip forwarding for tun network
+  lineinfile:
+    path: /etc/sysctl.conf
+    line: "{{ item }}"
+  loop:
+    - "net.ipv4.ip_forward=1"
+  register: sysctl_changes
+
+- name: Reload sysctl
+  shell: sysctl -p
+  when: sysctl_changes.changed
+
+- name: Configure iptables files
+  copy:
+    src: "files/iptables"
+    dest: "/etc/sysconfig/iptables"
+    mode: 0664
+    backup: true
+
+- name: Enable service iptables
+  systemd:
+    name: iptables
+    enabled: true
+    state: started

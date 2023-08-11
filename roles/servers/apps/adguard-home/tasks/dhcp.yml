@@ -90,6 +90,7 @@
         "hostname": "{{ item.hostname }}"
       }
   loop: "{{ dhcp_to_delete }}"
+  changed_when: true
 
 # POST
 # /dhcp/add_static_lease
@@ -116,3 +117,4 @@
         "hostname": "{{ item.hostname }}"
       }
   loop: "{{ dhcp_to_create }}"
+  changed_when: true

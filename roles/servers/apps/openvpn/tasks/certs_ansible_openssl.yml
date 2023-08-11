@@ -87,8 +87,15 @@
     ownca_path: "{{ ssl_path }}/ca.crt"
     ownca_privatekey_path: "{{ ssl_path }}/ca.pem"
 
-- openssl_dhparam:
-    path: "{{ ssl_path }}/dhparams.pem"
+- name: Generate dhparam
+  delegate_to: 127.0.0.1
+  openssl_dhparam:
+    path: "/tmp/dhparams.pem"
+
+- name: Copy dhparam
+  copy:
+    src: "/tmp/dhparams.pem"
+    dest: "{{ ssl_path }}/dhparams.pem"
 
 - name: Openssl TLS key_usage
   shell: openvpn --genkey --secret {{ ssl_path }}/tls.key
