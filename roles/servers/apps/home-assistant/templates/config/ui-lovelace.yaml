@@ -412,6 +412,64 @@ views:
         aspect_ratio: 122%
       - type: weather-forecast
         entity: weather.dom
+  - title: Smart
+    path: smart
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: select.roborock_s5_max_mop_intensity
+            name: Mop intensity
+          - select.roborock_s5_max_mop_mode
+          - vacuum.roborock_s5_max
+          - entity: sensor.roborock_s5_max_cleaning_time
+            name: Cleaning time
+          - entity: sensor.roborock_s5_max_total_cleaning_time
+            name: Total cleaning time
+        title: Roborock S5 Max
+      - type: entities
+        entities:
+          - entity: sensor.nawilzacz_powietrza_humidity
+            name: Humidity
+          - entity: sensor.nawilzacz_powietrza_temperature
+            name: Temperature
+          - entity: sensor.nawilzacz_powietrza_water_level
+            name: Water Level
+        title: Nawilżacz powietrza
+      - type: humidifier
+        entity: humidifier.nawilzacz_powietrza
+      - type: entities
+        entities:
+          - entity: siren.downstairs_siren
+            name: Siren
+          - entity: sensor.downstairs_volume
+            name: Volume
+        title: Ring Dzwonek Dol
+      - type: grid
+        square: false
+        columns: 1
+        cards:
+          - type: entities
+            entities:
+              - entity: sensor.furtka_battery
+                name: Battery
+              - entity: binary_sensor.furtka_ding
+                name: Ding
+              - entity: sensor.furtka_last_activity
+                name: Last Activity
+              - entity: sensor.furtka_last_ding
+                name: Last Ding
+              - entity: sensor.furtka_last_motion
+                name: Last Motion
+              - entity: binary_sensor.furtka_motion
+                name: Motion
+              - entity: sensor.furtka_volume
+                name: Volume
+            title: Ring Furtka
+          - type: picture-entity
+            entity: camera.furtka
+      - type: media-control
+        entity: media_player.spotify_mikiq1w2
   - theme: Backend-selected
     title: Kamery
     path: kamery
