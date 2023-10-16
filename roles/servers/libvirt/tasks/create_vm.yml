@@ -82,7 +82,7 @@
   virt:
     name: "{{ vm.name }}"
     command: undefine
-  when: vm_config.changed or vm_force_recreation == true
+  when: (vm_config.changed or vm_force_recreation == true) and vm_state.exception is not defined
 
 - name: Wait for undefine of the VM
   shell: virsh list --all | grep -w "{{ vm.name }}"

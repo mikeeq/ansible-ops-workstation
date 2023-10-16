@@ -17,3 +17,8 @@
     owner: qemu
     group: qemu
     checksum: "{{ cloud_image_checksum }}"
+
+- name: "Install genisoimage"
+  package:
+    name: genisoimage
+    state: present

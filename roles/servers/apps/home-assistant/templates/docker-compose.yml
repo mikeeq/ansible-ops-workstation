@@ -9,6 +9,7 @@ services:
     image: "homeassistant/home-assistant:stable"
     volumes:
       - ./config:/config
+      - /var/run/dbus:/run/dbus:ro
       # - /etc/localtime:/etc/localtime:ro
     restart: always
     # privileged: true
