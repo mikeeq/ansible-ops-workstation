@@ -19,6 +19,10 @@ services:
       - './config/backend-not-found.html:/var/www/error_page/backend-not-found.html'
       - '/etc/ssl/le:/etc/ssl/le'
       - './config/dhparam.pem:/etc/nginx/dhparam.pem'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"
   # app:
   #   # https://hub.docker.com/_/nginx
   #   image: httpd:2
