@@ -15,3 +15,7 @@ services:
     volumes:
       - './config:/etc/coredns'
     command: ["-conf", "/etc/coredns/Corefile"]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"

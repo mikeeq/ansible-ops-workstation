@@ -64,7 +64,7 @@
     - servers/apps/jenkins
 
 - name: Cleanup Docker
-  hosts: clevo
+  hosts: clevo:!gw1:!vpn1
   become: true
   tasks:
     - name: Cleanup Docker
