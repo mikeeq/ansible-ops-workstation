@@ -4,7 +4,7 @@ FROM fedora:39
 ENV FEDORA_USERNAME=mikee
 
 # https://github.com/wagoodman/dive/releases
-ARG DIVE_VERSION=0.10.0
+ARG DIVE_VERSION=0.11.0
 # https://github.com/hadolint/hadolint/releases
 ARG HADOLINT_VERSION=2.12.0
 
@@ -28,18 +28,18 @@ rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # https://pypi.org/project/pip/
-RUN pip3 install --no-cache-dir --upgrade pip==23.1.2 && \
+RUN pip3 install --no-cache-dir --upgrade pip==23.3.1 && \
     pip3 install --no-cache-dir \
       # https://pypi.org/project/ansible/
-      ansible==8.0.0 \
+      ansible==8.5.0 \
       # https://pypi.org/project/ansible-lint/
-      ansible-lint==6.17.1 \
+      ansible-lint==6.22.0 \
       # https://pypi.org/project/yamllint/
       yamllint==1.32.0 \
       # https://pypi.org/project/packaging/
-      packaging==23.1 \
+      packaging==23.2 \
       # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL==23.2.0
+      pyOpenSSL==23.3.0
 
 # Dive
 RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.tar.gz && \
