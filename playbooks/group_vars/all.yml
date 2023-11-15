@@ -53,6 +53,7 @@ dnf_pkgs:
   - setroubleshoot-server
   - ShellCheck
   - smartmontools
+  - python3.11
 
 dnf_gui_pkgs:
   - clamtk
