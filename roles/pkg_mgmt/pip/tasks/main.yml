@@ -26,6 +26,7 @@
     name: "{{ item.name }}"
     state: present
     virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
+    virtualenv_python: "{{ item.virtualenv_python | default(omit) }}"
   with_items:
     - "{{ pip_apps }}"
   when: item.virtualenv_enabled
