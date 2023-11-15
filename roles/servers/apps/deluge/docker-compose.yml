@@ -18,3 +18,7 @@ services:
       - 8112:8112       # webui
       - 6881:6881
       - 6881:6881/udp
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"

@@ -22,3 +22,7 @@ services:
     cap_add:
       - NET_ADMIN
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"

@@ -31,3 +31,7 @@ services:
       FRIGATE_RTSP_PASSWORD: "password"
       # iHD, i965
       LIBVA_DRIVER_NAME: "iHD"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"

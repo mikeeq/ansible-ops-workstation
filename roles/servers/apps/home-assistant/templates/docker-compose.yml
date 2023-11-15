@@ -21,6 +21,10 @@ services:
     #   - /dev/ttyUSB0:/dev/ttyUSB0
     ports:
       - '8123:8123'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"
   mosquitto:
     container_name: mosquitto
     # https://hub.docker.com/_/eclipse-mosquitto
@@ -33,3 +37,7 @@ services:
       - '1883:1883'
       - '9001:9001'
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"
