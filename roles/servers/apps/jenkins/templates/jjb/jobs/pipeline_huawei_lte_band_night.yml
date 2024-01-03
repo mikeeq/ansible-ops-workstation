@@ -1,10 +1,10 @@
 ---
 - job:
-    name: Huawei LTE band 800+1800+2100
+    name: Huawei LTE band 800+1800+2100+2600
     project-type: pipeline
     sandbox: true
-    triggers:
-      - timed: '0 23 * * *'
+    # triggers:
+    #   - timed: '0 23 * * *'
     parameters:
       - string:
           name: "BRANCH_ANSIBLE_OPS_WORKSTATION"
@@ -20,16 +20,21 @@
           name: DYNAMIC_SQM_ENABLED
           default: false
           description: "Enable dynamic SQM on OpenWRT"
+      - bool:
+          name: LOCAL_REPO_RUN
+          default: false
+          description: "Run from local copy of the repo, disable checkout"
       - choice:
           name: HUAWEI_LTE_BAND
           choices:
+            - "80045"
             - "80005"
             - "7FFFFFFFFFFFFFFF"
             - "5"
             - "80000"
             - "4"
             - "1"
-          description: "LTE Band: 800+1800+2100, all, 1800+2100, 800, 1800, 2100"
+          description: "LTE Band: 800+1800+2100+2600, 800+1800+2100, all, 1800+2100, 800, 1800, 2100"
     dsl-yaml: |
       pipeline:
         agent:
@@ -40,6 +45,9 @@
           - skipDefaultCheckout()
         stages:
           - stage: "Checkout ansible-ops-workstation"
+            when:
+              expression:
+                - "params.LOCAL_REPO_RUN == false"
             steps:
               script:
                 - dir: "'ansible-ops-workstation'"
@@ -50,6 +58,9 @@
                         branch: "$params.BRANCH_ANSIBLE_OPS_WORKSTATION"
                       )
           - stage: "Checkout ansible-ops-private"
+            when:
+              expression:
+                - "params.LOCAL_REPO_RUN == false"
             steps:
               script:
                 - dir: "'ansible-ops-private'"

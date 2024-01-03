@@ -44,6 +44,8 @@ unclassified:
     ignoreAcceptLanguage: true
   location:
     adminAddress: "mikee@jenkins.local"
+
+appearance:
   themeManager:
     disableUserThemes: true
-    theme: "dark"
+    theme: "darkSystem"

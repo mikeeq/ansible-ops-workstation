@@ -427,6 +427,8 @@ views:
           - entity: sensor.roborock_s5_max_total_cleaning_time
             name: Total cleaning time
         title: Roborock S5 Max
+      - type: picture
+        image_entity: image.roborock_s5_max_dol
       - type: entities
         entities:
           - entity: sensor.nawilzacz_powietrza_humidity

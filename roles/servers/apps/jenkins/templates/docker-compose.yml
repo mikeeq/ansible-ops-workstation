@@ -28,7 +28,7 @@ services:
     environment:
       TZ: "Europe/Warsaw"
       CASC_JENKINS_CONFIG: "/var/jenkins_home/casc_configs"
-      JAVA_OPTS: "-Xmx256m"
+      JAVA_OPTS: "-Xmx256m -Djenkins.install.runSetupWizard=false"
       JAVA_ARGS: "-Xmx256m"
       # CSP - Content Security Policy, overriden to make git-parameter working
       # JAVA_ARGS: "-Xmx256m -Djava.awt.headless=true -Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src data:;\""
@@ -42,3 +42,5 @@ services:
       options:
         max-size: "250m"
 # mkdir -p ./jenkins_home; chown -R 1000:1000 ./jenkins_home
+
+# ENV JAVA_OPTS "-Djenkins.install.runSetupWizard=false ${JAVA_OPTS:-}"
