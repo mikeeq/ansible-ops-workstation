@@ -426,6 +426,8 @@ views:
             name: Cleaning time
           - entity: sensor.roborock_s5_max_total_cleaning_time
             name: Total cleaning time
+          - type: picture
+            image_entity: image.roborock_s5_max_dol
         title: Roborock S5 Max
       - type: entities
         entities:
