@@ -429,6 +429,8 @@ views:
           - type: picture
             image_entity: image.roborock_s5_max_dol
         title: Roborock S5 Max
+      - type: picture
+        image_entity: image.roborock_s5_max_dol
       - type: entities
         entities:
           - entity: sensor.nawilzacz_powietrza_humidity
