@@ -3,8 +3,8 @@
     name: Huawei LTE restart
     project-type: pipeline
     sandbox: true
-    triggers:
-      - timed: '0 4 * * *'
+    # triggers:
+    #   - timed: '0 4 * * *'
     parameters:
       - string:
           name: "BRANCH_ANSIBLE_OPS_WORKSTATION"

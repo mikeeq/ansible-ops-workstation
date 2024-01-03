@@ -8,6 +8,7 @@
   pip:
     name: "{{ item }}"
     state: present
+  ignore_errors: true
   loop:
     - xmltodict
 
