@@ -35,24 +35,24 @@
 #   vars:
 #     hosts_to_deploy: vms
 
-# - name: Provision DNS1
-#   hosts:
-#     - dns1
-#   become: true
-#   roles:
-#     - servers/network-static-dns
-#     - apps/docker
-#     - servers/apps/coredns
-#     - servers/apps/letsencrypt-coredns
+- name: Provision DNS1
+  hosts:
+    - dns1
+  become: true
+  roles:
+    - servers/network-static-dns
+    - apps/docker
+    - servers/apps/coredns
+    - servers/apps/letsencrypt-coredns
 
-# - name: Provision DNS2
-#   hosts:
-#     - dns2
-#   become: true
-#   roles:
-#     - servers/network-static-dns
-#     - apps/docker
-#     - servers/apps/adguard-home
+- name: Provision DNS2
+  hosts:
+    - dns2
+  become: true
+  roles:
+    - servers/network-static-dns
+    - apps/docker
+    - servers/apps/adguard-home
 
 # - name: Provision GW1
 #   hosts:

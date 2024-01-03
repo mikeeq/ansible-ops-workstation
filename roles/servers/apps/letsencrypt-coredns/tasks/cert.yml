@@ -53,7 +53,7 @@
   when: le_challenge.changed
 
 - name: Check if DNS records propagated
-  shell: dig @127.0.0.1 -i txt {{ item.value['dns-01'].record }} | grep -w "{{ item.value['dns-01'].resource_value }}"
+  shell: dig @127.0.0.1 -i txt {{ item.value['dns-01'].record }} | grep -w -- "{{ item.value['dns-01'].resource_value }}"
   loop: "{{ le_challenge.challenge_data | dict2items }}"
   retries: 5
   changed_when: false
