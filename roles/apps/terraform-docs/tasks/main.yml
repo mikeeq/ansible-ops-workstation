@@ -1,0 +1,18 @@
+---
+- name: Get installed version
+  become: true
+  become_user: "{{ user_name }}"
+  shell: terraform-docs version | awk '{print $3}' | cut -f2 -d'v'
+  register: installed_terraform_docs_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of terraform_docs:"
+  debug:
+    var: installed_terraform_docs_version.stdout
+
+- include_tasks: get_latest_version.yml
+  when: terraform_docs_version is not defined
+
+- include_tasks: install.yml
+  when: installed_terraform_docs_version.stdout != terraform_docs_version
