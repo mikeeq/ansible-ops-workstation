@@ -15,7 +15,7 @@
 # cat cake-autorate/cake-autorate.sh | grep -i 'version=' | cut -d'"' -f2 | awk '{print $1}'
 - name: Install cake-autorate
   shell: |
-    wget -O /tmp/cake-autorate_setup.sh https://raw.githubusercontent.com/lynxthecat/CAKE-autorate/master/cake-autorate_setup.sh
+    wget -O /tmp/cake-autorate_setup.sh https://raw.githubusercontent.com/lynxthecat/CAKE-autorate/master/setup.sh
     sh /tmp/cake-autorate_setup.sh
   args:
     creates: /root/cake-autorate/cake-autorate.sh
