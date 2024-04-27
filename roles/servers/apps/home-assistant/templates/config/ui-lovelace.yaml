@@ -271,8 +271,16 @@ views:
       - type: entities
         entities:
           - entity: switch.4chpror3_switch_dwor_brama
+            type: custom:multiple-entity-row
             name: Brama Dwor
             icon: mdi:gate
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.door_battery_percentage_dwor_brama
+                name: Bateria
+              - entity: binary_sensor.door_state_dwor_brama
+                name: Stan
           - entity: switch.4chpror3_switch_dwor_furtka
             name: Furtka
             icon: mdi:door
@@ -443,35 +451,14 @@ views:
       - type: humidifier
         entity: humidifier.nawilzacz_powietrza
       - type: entities
+        title: Tesla Wall Connector
         entities:
-          - entity: siren.downstairs_siren
-            name: Siren
-          - entity: sensor.downstairs_volume
-            name: Volume
-        title: Ring Dzwonek Dol
-      - type: grid
-        square: false
-        columns: 1
-        cards:
-          - type: entities
-            entities:
-              - entity: sensor.furtka_battery
-                name: Battery
-              - entity: binary_sensor.furtka_ding
-                name: Ding
-              - entity: sensor.furtka_last_activity
-                name: Last Activity
-              - entity: sensor.furtka_last_ding
-                name: Last Ding
-              - entity: sensor.furtka_last_motion
-                name: Last Motion
-              - entity: binary_sensor.furtka_motion
-                name: Motion
-              - entity: sensor.furtka_volume
-                name: Volume
-            title: Ring Furtka
-          - type: picture-entity
-            entity: camera.furtka
+          - entity: sensor.tesla_wall_connector_energy
+            name: Energy
+          - entity: sensor.tesla_wall_connector_session_energy
+            name: Session energy
+          - entity: sensor.tesla_wall_connector_status
+            name: Status
       - type: media-control
         entity: media_player.spotify_mikiq1w2
   - theme: Backend-selected

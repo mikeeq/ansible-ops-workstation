@@ -35,7 +35,7 @@
       j_username: !secret energa_username
       j_password: !secret energa_password
   sensor:
-    - unique_id: consumed_energy_total
+    - unique_id: consumed_energy_dzien_total
       name: Consumed energy total
       select: 'div#right > table > tr:nth-of-type(1) > td.last'
       value_template: "{{ value|regex_replace('[^0-9,]', '')|replace(',', '.')|float }}"
@@ -44,9 +44,27 @@
       state_class: total_increasing
       on_error:
         value: last
-    - unique_id: donated_energy_total
-      name: Donated energy total
+    - unique_id: consumed_energy_noc_total
+      name: Consumed energy total
       select: 'div#right > table > tr:nth-of-type(3) > td.last'
+      value_template: "{{ value|regex_replace('[^0-9,]', '')|replace(',', '.')|float }}"
+      unit_of_measurement: kWh
+      device_class: energy
+      state_class: total_increasing
+      on_error:
+        value: last
+    - unique_id: donated_energy_dzien_total
+      name: Donated energy total
+      select: 'div#right > table > tr:nth-of-type(5) > td.last'
+      value_template: "{{ value|regex_replace('[^0-9,]', '')|replace(',', '.')|float }}"
+      unit_of_measurement: kWh
+      device_class: energy
+      state_class: total_increasing
+      on_error:
+        value: last
+    - unique_id: donated_energy_noc_total
+      name: Donated energy total
+      select: 'div#right > table > tr:nth-of-type(7) > td.last'
       value_template: "{{ value|regex_replace('[^0-9,]', '')|replace(',', '.')|float }}"
       unit_of_measurement: kWh
       device_class: energy

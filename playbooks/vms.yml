@@ -8,6 +8,7 @@
 #   hosts: clevo
 #   become: true
 #   tasks:
+<<<<<<< Updated upstream
 #     - name: Upgrade all packages
 #       ansible.builtin.dnf:
 #         name: "*"
@@ -34,16 +35,47 @@
 #   ansible.builtin.import_playbook: generic-core.yml
 #   vars:
 #     hosts_to_deploy: vms
+=======
+#     - name: Clean DNF
+#       shell: dnf clean all
 
-- name: Provision DNS1
-  hosts:
-    - dns1
-  become: true
-  roles:
-    - servers/network-static-dns
-    - apps/docker
-    - servers/apps/coredns
-    - servers/apps/letsencrypt-coredns
+#     - name: Upgrade all packages
+#       ansible.builtin.dnf:
+#         name: "*"
+#         state: latest
+#         update_cache: true
+
+#     - name: Check if reboot required
+#       stat:
+#         path: /var/run/reboot-required
+#       register: reboot_required_file
+
+#     # TODO: Fix reboot on Clevo
+#     - name: Reboot if required
+#       reboot:
+#       when:
+#         - reboot_required_file.stat.exists == true
+#         - inventory_hostname != "mikeeClevo"
+
+#     - name: Autoremove unneeded packages installed as dependencies
+#       ansible.builtin.dnf:
+#         autoremove: yes
+>>>>>>> Stashed changes
+
+# - name: Set variables on an imported playbook
+#   ansible.builtin.import_playbook: generic-core.yml
+#   vars:
+#     hosts_to_deploy: vms
+
+# - name: Provision DNS1
+#   hosts:
+#     - dns1
+#   become: true
+#   roles:
+#     - servers/network-static-dns
+#     - apps/docker
+#     - servers/apps/coredns
+#     - servers/apps/letsencrypt-coredns
 
 - name: Provision DNS2
   hosts:
@@ -54,6 +86,7 @@
     - apps/docker
     - servers/apps/adguard-home
 
+<<<<<<< Updated upstream
 # - name: Provision GW1
 #   hosts:
 #     - gw1
@@ -80,6 +113,17 @@
 #     # - servers/apps/home-assistant
 #     - servers/apps/jenkins
 
+=======
+# - name: Provision mikeeClevo
+#   hosts:
+#     - mikeeClevo
+#   become: true
+#   roles:
+#     - servers/apps/nginx
+#     # - servers/apps/home-assistant
+#     - servers/apps/jenkins
+
+>>>>>>> Stashed changes
 # - name: Cleanup Docker
 #   hosts: clevo:!gw1:!vpn1
 #   become: true

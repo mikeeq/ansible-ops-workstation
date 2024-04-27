@@ -58,6 +58,7 @@ home_assistant:
         - name: dol_1
       door:
         - name: garaz_brama
+        - name: dwor_brama
       zbmini:
         - name: sypialnia_gora
       power_plug:
