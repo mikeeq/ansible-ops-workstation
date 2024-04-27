@@ -1,4 +1,5 @@
 ---
+# erp ready/power saving option needs to be disabled in bios
 - name: Create wol systemd service
   copy:
     content: |

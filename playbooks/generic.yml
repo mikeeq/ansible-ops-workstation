@@ -17,3 +17,4 @@
     - apps/aws-cli
     - apps/terraform
     - apps/terragrunt
+    - apps/terraform-docs

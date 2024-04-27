@@ -144,8 +144,10 @@ gnome_shell_extensions:
   - 517         # caffeine
   - 615         # appindicator
   - 4792        # frequency-boost-switch
-  - 906         # Sound Input & Output Device Chooser
-  - 4652        # adjust-display-brightness
+  - 3193        # Blur my Shell
+  - 2645        # brightness-control-using-ddcutil
+  # - 906         # Sound Input & Output Device Chooser
+  # - 4652        # adjust-display-brightness
   # - 1082        # cpufreq
   # - 4144        # vertical-overview
   # - 945         # cpu-power-manager
@@ -170,7 +172,7 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # https://releases.hashicorp.com/vagrant
 # vagrant_version: 2.2.19
 # https://github.com/boz/kail/releases
-kail_version: 0.16.1
+# kail_version: 0.16.1
 
 vscode_extensions:
   - bbenoist.vagrant

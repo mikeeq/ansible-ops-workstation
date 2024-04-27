@@ -314,6 +314,11 @@ Contributions are what make the open source community such an amazing place to b
    keybase pgp export --query $KEY_ID -s > private.gpg; gpg --import private.gpg; rm -v private.gpg
    keybase pgp export --query $KEY_ID > public.gpg; gpg --import public.gpg; rm -v public.gpg
    git-crypt add-gpg-user -n --trusted $USER_ID[could be email]
+
+   # If `gpg -vvvvv --import` hangs on:
+   ## gpg: waiting for lock (held by 5555) ...
+   ## gpg: no running keyboxd - starting '/usr/libexec/keyboxd'
+   ### you can fix it by commenting out use-keyboxd in ~/.gnupg/common.conf.
    ```
 
 10. To save HTTPS git credentials
@@ -379,6 +384,9 @@ Contributions are what make the open source community such an amazing place to b
     dracut -f
 
     # If you fail to boot to Fedora, you can edit boot entry in grub by clicking "e" in grub bootmenu and in line starting with "linux ..." add at the end "init 3" to boot in multi-user.target (without graphical interface)
+
+    # If you are using Secure Boot, during installation of the NVIDIA drivers create new key pair (or use existing one), and if it's a new key pair then add them to UEFI key by executing
+    mokutil --import /usr/share/nvidia/nvidia-modsign-crt-${id}.der
     ```
 
 12. To fix purple'ish screen, enable OC and Fan control (I recommend to use GreenWithEnvy - gwe (installed using flatpak)) apply those changes to `/etc/X11/xorg.conf`:
@@ -467,6 +475,8 @@ echo 2 > /sys/class/backlight/acpi_video0/brightness
 ```
 flatpak override com.valvesoftware.Steam --filesystem=${PATH_TO_FILESYSTEM}
 ```
+
+18. Terminator fails to open with an error `terminator:24:<module>:ModuleNotFoundError: No module named 'psutil'`, try reinstalling `dnf reinstall python3-psutil` to fix it
 
 <!-- LICENSE -->
 ## License

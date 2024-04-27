@@ -2,7 +2,7 @@
 - name: Get installed version
   become: true
   become_user: "{{ user_name }}"
-  shell: kail version | awk '{print $1}'
+  shell: kail version | awk '{print $1}' | cut -d'v' -f2
   register: installed_kail_version
   changed_when: false
   ignore_errors: true

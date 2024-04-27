@@ -96,6 +96,6 @@ USER jenkins
 # cloudbees-folder
 # timestamper
 # build-timeout
-RUN jenkins-plugin-cli --plugins "blueocean workflow-aggregator rebuild ansicolor git multiple-scms pipeline-as-yaml:0.17-rc-SNAPSHOT:https://github.com/mikeeq/pipeline-as-yaml-plugin/releases/download/v0.17-rc-SNAPSHOT/pipeline-as-yaml.hpi ws-cleanup locale pipeline-multibranch-defaults basic-branch-build-strategies pipeline-stage-view configuration-as-code job-dsl dark-theme git-parameter conditional-buildstep run-condition theme-manager"
+RUN jenkins-plugin-cli --plugins "blueocean workflow-aggregator rebuild ansicolor git multiple-scms pipeline-as-yaml ws-cleanup locale pipeline-multibranch-defaults basic-branch-build-strategies pipeline-stage-view configuration-as-code job-dsl dark-theme git-parameter conditional-buildstep run-condition theme-manager"
 
 # ❯ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
