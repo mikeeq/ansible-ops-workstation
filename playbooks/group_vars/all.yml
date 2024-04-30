@@ -54,6 +54,7 @@ dnf_pkgs:
   - ShellCheck
   - smartmontools
   - python3.11
+  - cargo
 
 dnf_gui_pkgs:
   - clamtk
