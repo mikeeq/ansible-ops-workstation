@@ -1,7 +1,11 @@
 ---
+# TODO: Fix renaming nic to eth
 version: 2
 ethernets:
-  enp1s0:
+  eth0:
+    match:
+      name: enp1*
+    set-name: eth0
     dhcp4: false
     addresses:
 {% for ip in vm.ipv4_addresses %}

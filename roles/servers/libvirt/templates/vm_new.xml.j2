@@ -1,12 +1,14 @@
 <domain type="kvm">
+  <name>fedora39</name>
+  <uuid>59317a28-dac2-4224-8b1f-29e0196a2579</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
-      <libosinfo:os id="http://fedoraproject.org/fedora/40"/>
+      <libosinfo:os id="http://fedoraproject.org/fedora/39"/>
     </libosinfo:libosinfo>
   </metadata>
-  <name>{{ vm.name }}</name>
-  <memory unit='MiB'>{{ vm.memory }}</memory>
-  <vcpu placement='static'>{{ vm.cpu }}</vcpu>
+  <memory unit="KiB">2097152</memory>
+  <currentMemory unit="KiB">2097152</currentMemory>
+  <vcpu placement="static">2</vcpu>
   <os firmware="efi">
     <type arch="x86_64" machine="pc-q35-8.2">hvm</type>
     <firmware>
@@ -14,7 +16,7 @@
       <feature enabled="yes" name="secure-boot"/>
     </firmware>
     <loader readonly="yes" secure="yes" type="pflash" format="qcow2">/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2</loader>
-    <nvram template="/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2" format="qcow2">/var/lib/libvirt/qemu/nvram/{{ vm.name }}_VARS.qcow2</nvram>
+    <nvram template="/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2" format="qcow2">/var/lib/libvirt/qemu/nvram/fedora39_VARS.qcow2</nvram>
     <boot dev="hd"/>
   </os>
   <features>
@@ -37,16 +39,16 @@
     <suspend-to-disk enabled="no"/>
   </pm>
   <devices>
-    <emulator>{{ qemu_emulator }}</emulator>
+    <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type="file" device="disk">
       <driver name="qemu" type="qcow2"/>
-      <source file="{{ vm_disk_path }}"/>
+      <source file="/var/lib/libvirt/images/dns1n.qcow2"/>
       <target dev="vda" bus="virtio"/>
       <address type="pci" domain="0x0000" bus="0x04" slot="0x00" function="0x0"/>
     </disk>
     <disk type="file" device="cdrom">
-      <driver name="qemu" type="raw"/>
-      <source file="{{ vm_cloud_init_path }}"/>
+      <driver name="qemu" type="qcow2"/>
+      <source file="/var/lib/libvirt/images/Fedora-Cloud-Base-UEFI-UKI.x86_64-40-1.14.qcow2"/>
       <target dev="sda" bus="sata"/>
       <readonly/>
       <address type="drive" controller="0" bus="0" target="0" unit="0"/>
@@ -134,19 +136,12 @@
     <controller type="scsi" index="0" model="virtio-scsi">
       <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x0"/>
     </controller>
-{% if vm_network == "nat" %}
-    <interface type='network'>
-      <source network='default'/>
-      <model type='virtio'/>
+    <interface type="bridge">
+      <mac address="52:54:00:10:75:b7"/>
+      <source bridge="br-vm-enp0s20u1"/>
+      <model type="virtio"/>
       <address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x0"/>
     </interface>
-{% elif vm_network == "bridge" %}
-    <interface type='bridge'>
-      <source bridge='{{ baremetal_bridge_interface }}'/>
-      <model type='virtio'/>
-      <address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x0"/>
-    </interface>
-{% endif %}
     <serial type="pty">
       <target type="isa-serial" port="0">
         <model name="isa-serial"/>
