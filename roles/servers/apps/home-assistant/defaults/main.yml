@@ -24,7 +24,11 @@ home_assistant_custom_lovelace_plugins:
   - name: 'lovelace-multiple-entity-row'
     entity_name: 'multiple-entity-row.js'
     repo: https://github.com/benct/lovelace-multiple-entity-row
-    version: v4.5.0
+    # version: v4.5.0
+  - name: 'button-card'
+    entity_name: 'button-card.js'
+    repo: https://github.com/custom-cards/button-card
+    release: true
   # - name: 'lovelace-xiaomi-vacuum-map-card'
   #   entity_name: 'xiaomi-vacuum-map-card.js'
   #   repo: https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card.git
@@ -33,12 +37,14 @@ home_assistant_custom_lovelace_plugins:
 home_assistant:
   automations:
     inching:
-      - entity_id: switch.4chpror3_switch_garaz_brama
-      - entity_id: switch.4chpror3_switch_dwor_brama
-      - entity_id: switch.4chpror3_switch_dwor_furtka
+      - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+      - entity_id: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+      - entity_id: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
         inching_seconds: 15
-      - entity_id: switch.4chpror3_swiatlo_garaz_wew
-      - entity_id: switch.4chpror3_swiatlo_garaz_zew
+      - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
+      - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
+      - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_brama_dwor_btn
+
   mqtt:
     zigbee_coordinator_base_topic: "tasmota_10B490"
     sonoff:

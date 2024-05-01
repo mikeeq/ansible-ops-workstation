@@ -8,15 +8,27 @@
     - "{{ install_path }}/config/www"
     - "{{ install_path }}/config/git"
 
-- name: "Pull custom components"
+- name: "Pull custom components via git"
   git:
     repo: "{{ item.repo }}"
     dest: "{{ install_path }}/config/git/{{ item.name }}"
     update: true
     version: "{{ item.version | default('HEAD') }}"
+  when: item.release is not defined or item.release != true
   with_items:
     - "{{ home_assistant_custom_components }}"
     - "{{ home_assistant_custom_lovelace_plugins }}"
+
+# - name: "Pull custom components via release"
+#   git:
+# https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card/releases/download/v2.2.2/xiaomi-vacuum-map-card.js
+#     repo: "{{ item.repo }}"
+#     dest: "{{ install_path }}/config/git/{{ item.name }}"
+#     update: true
+#     version: "{{ item.version | default('HEAD') }}"
+#   with_items:
+#     - "{{ home_assistant_custom_components }}"
+#     - "{{ home_assistant_custom_lovelace_plugins }}"
 
 - name: Create a symbolic link custom_components
   file:
@@ -31,3 +43,4 @@
     dest: "{{ install_path }}/config/www/{{ item.entity_name }}"
     remote_src: true
   loop: "{{ home_assistant_custom_lovelace_plugins }}"
+  when: item.release is not defined or item.release != true

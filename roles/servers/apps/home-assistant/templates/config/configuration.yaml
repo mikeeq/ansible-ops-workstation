@@ -30,6 +30,8 @@ lovelace:
   resources:
     - url: /local/multiple-entity-row.js?ver=1
       type: module
+    - url: /local/button-card.js?ver=1
+      type: module
 
 # Text to speech
 tts:
