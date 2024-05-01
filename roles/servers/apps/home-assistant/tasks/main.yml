@@ -23,5 +23,5 @@
 
 - import_tasks: custom.yml
 - import_tasks: config.yml
-# - import_tasks: config_mosquitto.yml
+- import_tasks: config_mosquitto.yml
 - import_tasks: install.yml

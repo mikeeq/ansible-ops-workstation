@@ -50,8 +50,20 @@
 
 # - name: Extend disk image
 #   shell: |
-#     virsh --connect qemu:///system vol-resize "{{ images_dir }}/{{ instance_id }}.qcow2" "{{ vm.disk_size }}"
-#     /sbin/xfs_growfs "{{ images_dir }}/{{ vm.name }}.qcow2"
+#     virsh --connect qemu:///system vol-resize "{{ vm_disk_path }}" "{{ vm.disk_size }}"
+#     /sbin/xfs_growfs "{{ vm_disk_path }}"
+#   when: vm_force_recreation == true or qcow_check.stat.exists == false
+
+# virt-filesystems --long -h --all -a olddisk.qcow2
+# qemu-img create -f qcow2 -o preallocation=metadata newdisk.qcow2 50G
+# virt-resize --expand /dev/sda2 olddisk newdisk.qcow2
+
+# virt-filesystems --long -h --all -a olddisk.qcow2
+- name: Create disk image and resize
+  shell: |
+    qemu-img create -f qcow2 -o preallocation=metadata {{ vm_disk_path }} {{ vm.disk_size }}
+    virt-resize --expand /dev/sda3 "{{ libvirt_images_dir }}/{{ cloud_image_name }}" {{ vm_disk_path }}
+  when: vm_force_recreation == true or qcow_check.stat.exists == false
 
 - name: Check VM state
   virt:
@@ -81,6 +93,7 @@
 - name: Undefine the domain with XML specification
   virt:
     name: "{{ vm.name }}"
+    flags: "nvram"
     command: undefine
   when: (vm_config.changed or vm_force_recreation == true) and vm_state.exception is not defined
 
