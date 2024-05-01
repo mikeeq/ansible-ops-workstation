@@ -26,11 +26,20 @@ lovelace:
       icon: mdi:tools
       show_in_sidebar: true
       require_admin: true
+    lovelace-tesla:
+      mode: yaml
+      filename: dashboard-tesla.yaml
+      title: Tesla
+      icon: mdi:car
+      show_in_sidebar: true
+      require_admin: false
   # Info: Change ?ver= to force browser to refresh new custom resources
   resources:
     - url: /local/multiple-entity-row.js?ver=1
       type: module
     - url: /local/button-card.js?ver=1
+      type: module
+    - url: /local/vacuum-card.js?ver=1
       type: module
 
 # Text to speech

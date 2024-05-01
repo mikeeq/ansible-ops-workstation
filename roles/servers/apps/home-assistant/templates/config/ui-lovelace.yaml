@@ -291,7 +291,7 @@ views:
           - entity: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
             type: custom:multiple-entity-row
             name: Brama Garazowa
-            icon: mdi:garage-alert
+            icon: mdi:garage-variant
             toggle: true
             show_state: true
             entities:
@@ -476,12 +476,20 @@ views:
       - type: entities
         title: Tesla Wall Connector
         entities:
-          - entity: sensor.tesla_wall_connector_energy
-            name: Energy
-          - entity: sensor.tesla_wall_connector_session_energy
-            name: Session energy
-          - entity: sensor.tesla_wall_connector_status
-            name: Status
+          - binary_sensor.tesla_wall_connector_vehicle_connected
+          - sensor.tesla_wall_connector_status
+          - binary_sensor.tesla_wall_connector_contactor_closed
+          - sensor.tesla_wall_connector_energy
+          - sensor.tesla_wall_connector_session_energy
+          - sensor.tesla_wall_connector_grid_frequency
+          - sensor.tesla_wall_connector_grid_voltage
+          - sensor.tesla_wall_connector_handle_temperature
+          - sensor.tesla_wall_connector_phase_a_current
+          - sensor.tesla_wall_connector_phase_a_voltage
+          - sensor.tesla_wall_connector_phase_b_current
+          - sensor.tesla_wall_connector_phase_b_voltage
+          - sensor.tesla_wall_connector_phase_c_current
+          - sensor.tesla_wall_connector_phase_c_voltage
       - type: media-control
         entity: media_player.spotify_mikiq1w2
   - theme: Backend-selected
