@@ -146,12 +146,12 @@ views:
                 name: Bateria
       - type: entities
         entities:
-          - entity: switch.minir2_swiatlo_przedpokoj
+          - entity: switch.sonoff_minir2_przedpokoj_minir2_swiatlo_przedpokoj
             name: Przedpokoj
             icon: mdi:ceiling-light
           - type: section
             label: Dol
-          - entity: switch.minir2_swiatlo_salon_kinkiety
+          - entity: switch.sonoff_minir2_salon_kinkiety_minir2_swiatlo_salon_kinkiety
             name: Salon Kinkiety
             icon: mdi:wall-sconce
           - entity: switch.spp_salon
@@ -160,11 +160,11 @@ views:
           - entity: light.ikea_tradfri_kuchnia_szafki
             name: Kuchnia LED szafki
             icon: mdi:led-strip
-          - entity: switch.minir2_swiatlo_taras
+          - entity: switch.sonoff_minir2_taras_minir2_swiatlo_taras
             name: Taras
             icon: mdi:coach-lamp-variant
           - type: section
-          - entity: switch.minir2_swiatlo_sypialnia
+          - entity: switch.sonoff_minir2_sypialnia_minir2_swiatlo_sypialnia
             name: Sypialnia
             icon: mdi:ceiling-light
           - type: section
@@ -177,7 +177,7 @@ views:
         state_color: true
       - type: entities
         entities:
-          - entity: switch.gosund_switch_clevo
+          - entity: switch.gosund_clevo_gosund_switch_clevo
             type: custom:multiple-entity-row
             name: Clevo
             icon: mdi:laptop
@@ -186,7 +186,7 @@ views:
             entities:
               - entity: sensor.gosund_clevo_energy_power
                 name: Zuzycie
-          - entity: switch.gosund_switch_monitory
+          - entity: switch.gosund_monitory_gosund_switch_monitory
             type: custom:multiple-entity-row
             name: Biuro Monitory
             icon: mdi:monitor
@@ -195,16 +195,19 @@ views:
             entities:
               - entity: sensor.gosund_monitory_energy_power
                 name: Zuzycie
-          - entity: switch.gosund_switch_pompa_cyrkulacyjna
+          - entity: switch.gosund_pompa_gosund_switch_pompa_cyrkulacyjna
             type: custom:multiple-entity-row
             name: Pompa Cyrkulacyjna
             icon: mdi:thermometer-water
             toggle: true
             show_state: true
             entities:
+              - entity: automation.wlacz_cyrkulacje
+                name: Auto
+                toggle: true
               - entity: sensor.gosund_pompa_energy_power
                 name: Zuzycie
-          - entity: switch.gosund_switch_pc
+          - entity: switch.gosund_pc_gosund_switch_pc
             type: custom:multiple-entity-row
             name: PC
             toggle: true
@@ -216,23 +219,23 @@ views:
         show_header_toggle: false
         state_color: true
       - type: entities
+        title: Swiatla Ogrod
         entities:
-          - entity: switch.4chpror3_swiatlo_podjazd
+          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_podjazd
             name: Podjazd
             icon: mdi:post-lamp
-          - entity: switch.4chpror3_swiatlo_boki_ogrodu
+          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_boki_ogrodu
             name: Boki ogrodu
             icon: mdi:light-flood-up
-          - entity: switch.4chpror3_swiatlo_tyl_ogrodu
+          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_tyl_ogrodu
             name: Tyl ogrodu
             icon: mdi:light-flood-up
-          - entity: switch.4chpror3_swiatlo_slupki_ognisko
+          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_slupki_ognisko
             name: Slupki ognisko
             icon: mdi:post-lamp
-          - entity: switch.minir2_swiatlo_taras
+          - entity: switch.sonoff_minir2_taras_minir2_swiatlo_taras
             name: Taras
             icon: mdi:coach-lamp-variant
-        title: Swiatla Ogrod
       - type: entities
         entities:
           - entity: sensor.speedtest_ping
@@ -270,17 +273,25 @@ views:
     cards:
       - type: entities
         entities:
-          - entity: switch.4chpror3_switch_dwor_brama
+          - entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+            type: custom:multiple-entity-row
             name: Brama Dwor
             icon: mdi:gate
-          - entity: switch.4chpror3_switch_dwor_furtka
+            toggle: true
+            show_state: true
+            entities:
+              - entity: sensor.door_battery_percentage_dwor_brama
+                name: Bateria
+              - entity: binary_sensor.door_state_dwor_brama
+                name: Stan
+          - entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
             name: Furtka
             icon: mdi:door
           - type: section
-          - entity: switch.4chpror3_switch_garaz_brama
+          - entity: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
             type: custom:multiple-entity-row
             name: Brama Garazowa
-            icon: mdi:garage-alert
+            icon: mdi:garage-variant
             toggle: true
             show_state: true
             entities:
@@ -288,41 +299,45 @@ views:
                 name: Bateria
               - entity: binary_sensor.door_state_garaz_brama
                 name: Stan
-          - entity: switch.4chpror3_swiatlo_garaz_wew
+          - entity: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
             name: Garaz Swiatlo
             icon: mdi:lightbulb-fluorescent-tube
-          - entity: switch.4chpror3_swiatlo_garaz_zew
+          - entity: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
             name: Swiatlo nad Brama Garazowa
             icon: mdi:coach-lamp-variant
-          - entity: switch.minir2_swiatlo_drzwi_dwor
+          - entity: switch.sonoff_minir2_drzwi_dwor_minir2_swiatlo_drzwi_dwor
             name: Drzwi Dwor
             icon: mdi:coach-lamp
         title: Garaz
         show_header_toggle: false
       - type: entities
+        title: Swiatla Ogrod
         entities:
-          - entity: switch.4chpror3_swiatlo_podjazd
+          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_podjazd
             name: Podjazd
             icon: mdi:post-lamp
-          - entity: switch.4chpror3_swiatlo_boki_ogrodu
+          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_boki_ogrodu
             name: Boki ogrodu
             icon: mdi:light-flood-up
-          - entity: switch.4chpror3_swiatlo_tyl_ogrodu
+          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_tyl_ogrodu
             name: Tyl ogrodu
             icon: mdi:light-flood-up
-          - entity: switch.4chpror3_swiatlo_slupki_ognisko
+          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_slupki_ognisko
             name: Slupki ognisko
             icon: mdi:post-lamp
-          - entity: switch.minir2_swiatlo_taras
+          - entity: switch.sonoff_minir2_taras_minir2_swiatlo_taras
             name: Taras
             icon: mdi:coach-lamp-variant
-        title: Swiatla Ogrod
       - type: entities
         entities:
-          - entity: sensor.consumed_energy_total
-            name: Consumed Energy Total
-          - entity: sensor.donated_energy_total
-            name: Donated Energy Total
+          - entity: sensor.consumed_energy_dzien_total
+            name: Consumed Energy Day Total
+          - entity: sensor.donated_energy_dzien_total
+            name: Donated Energy Day Total
+          - entity: sensor.consumed_energy_noc_total
+            name: Consumed Energy Night Total
+          - entity: sensor.donated_energy_noc_total
+            name: Donated Energy Night Total
           - entity: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
             name: Current Power
           - entity: sensor.saj_saj_wifi_dtu_a2c8e9_state
@@ -342,11 +357,22 @@ views:
         type: glance
         title: Automations
         entities:
-          - entity: automation.inching_switch_4chpror3_switch_garaz_brama
-          - entity: automation.inching_switch_4chpror3_swiatlo_garaz_wew
-          - entity: automation.inching_switch_4chpror3_swiatlo_garaz_zew
-          - entity: automation.inching_switch_4chpror3_switch_dwor_brama
-          - entity: automation.inching_switch_4chpror3_switch_dwor_furtka
+          - entity: automation.inching_switch_sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+            name: inching_garaz_brama
+          - entity: automation.inching_switch_sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+            name: inching_dwor_brama
+          - entity: automation.inching_switch_sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
+            name: inching_dwor_furtka
+          - entity: automation.inching_switch_sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
+            name: inching_swiatlo_garaz_wew
+          - entity: automation.inching_switch_sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
+            name: inching_swiatlo_garaz_zew
+          - entity: automation.inching_switch_sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_brama_dwor_btn
+            name: inching_garaz_brama_dwor_btn
+          - entity: automation.wlacz_cyrkulacje
+            name: wlacz_cyrkulacje
+          - entity: automation.wylacz_cyrkulacje
+            name: wylacz_cyrkulacje
         state_color: false
       - type: entities
         entities:
@@ -394,10 +420,14 @@ views:
         show_header_toggle: false
       - type: entities
         entities:
+          - entity: calendar.rain_bird_controller
+            name: Nawodnienie status
           - entity: number.rain_bird_controller_rain_delay
-            name: Rain delay
-          - sensor.raindelay
-          - binary_sensor.rainsensor
+            name: Rain delay setting
+          - entity: sensor.rain_bird_controller_raindelay
+            name: Rain delay status
+          - entity: binary_sensor.rain_bird_controller_rainsensor
+            name: Rain Sensor status
         title: Rain Bird Controller
   - title: Pogoda
     path: pogoda
@@ -418,17 +448,20 @@ views:
     cards:
       - type: entities
         entities:
+          - vacuum.roborock_s5_max
+          - sensor.roborock_s5_max_battery
+          - sensor.roborock_s5_max_status
           - entity: select.roborock_s5_max_mop_intensity
             name: Mop intensity
-          - select.roborock_s5_max_mop_mode
-          - vacuum.roborock_s5_max
+          - binary_sensor.roborock_s5_max_mop_attached
+          - binary_sensor.roborock_s5_max_water_box_attached
           - entity: sensor.roborock_s5_max_cleaning_time
             name: Cleaning time
-          - entity: sensor.roborock_s5_max_total_cleaning_time
-            name: Total cleaning time
+          - entity: image.roborock_s5_max_dol
+            name: Mapa dol
+          - entity: image.roborock_s5_max_gora
+            name: Mapa gora
         title: Roborock S5 Max
-      - type: picture
-        image_entity: image.roborock_s5_max_dol
       - type: entities
         entities:
           - entity: sensor.nawilzacz_powietrza_humidity
@@ -441,35 +474,22 @@ views:
       - type: humidifier
         entity: humidifier.nawilzacz_powietrza
       - type: entities
+        title: Tesla Wall Connector
         entities:
-          - entity: siren.downstairs_siren
-            name: Siren
-          - entity: sensor.downstairs_volume
-            name: Volume
-        title: Ring Dzwonek Dol
-      - type: grid
-        square: false
-        columns: 1
-        cards:
-          - type: entities
-            entities:
-              - entity: sensor.furtka_battery
-                name: Battery
-              - entity: binary_sensor.furtka_ding
-                name: Ding
-              - entity: sensor.furtka_last_activity
-                name: Last Activity
-              - entity: sensor.furtka_last_ding
-                name: Last Ding
-              - entity: sensor.furtka_last_motion
-                name: Last Motion
-              - entity: binary_sensor.furtka_motion
-                name: Motion
-              - entity: sensor.furtka_volume
-                name: Volume
-            title: Ring Furtka
-          - type: picture-entity
-            entity: camera.furtka
+          - binary_sensor.tesla_wall_connector_vehicle_connected
+          - sensor.tesla_wall_connector_status
+          - binary_sensor.tesla_wall_connector_contactor_closed
+          - sensor.tesla_wall_connector_energy
+          - sensor.tesla_wall_connector_session_energy
+          - sensor.tesla_wall_connector_grid_frequency
+          - sensor.tesla_wall_connector_grid_voltage
+          - sensor.tesla_wall_connector_handle_temperature
+          - sensor.tesla_wall_connector_phase_a_current
+          - sensor.tesla_wall_connector_phase_a_voltage
+          - sensor.tesla_wall_connector_phase_b_current
+          - sensor.tesla_wall_connector_phase_b_voltage
+          - sensor.tesla_wall_connector_phase_c_current
+          - sensor.tesla_wall_connector_phase_c_voltage
       - type: media-control
         entity: media_player.spotify_mikiq1w2
   - theme: Backend-selected
@@ -487,6 +507,21 @@ views:
         type: picture-entity
         entity: camera.yi_hack_a2_723336_cam
         image: https://demo.home-assistant.io/stub_config/bedroom.png
+      - type: entities
+        entities:
+          - entity: select.reolink_furtka_play_quick_reply_message
+            name: Play quick reply message
+          - entity: siren.reolink_furtka_siren
+            name: Siren
+          - entity: binary_sensor.reolink_furtka_motion
+            name: Motion
+          - entity: binary_sensor.reolink_furtka_person
+            name: Person
+          - entity: binary_sensor.reolink_furtka_visitor
+            name: Visitor
+        title: Reolink-Furtka
+      - type: picture-entity
+        entity: camera.reolink_furtka_fluent
   - theme: Backend-selected
     title: Ogrzewanie
     path: ogrzewanie

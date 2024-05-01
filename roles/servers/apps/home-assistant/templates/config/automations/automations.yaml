@@ -27,6 +27,22 @@
     target:
       entity_id: switch.gosund_switch_pompa_cyrkulacyjna
   mode: single
+- alias: Click button to close dwor_brama
+  description: ''
+  trigger:
+    - platform: state
+      entity_id:
+        - switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_brama_dwor_btn
+      from: "off"
+      to: "on"
+  condition: []
+  action:
+    - service: switch.toggle
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+  mode: single
 # - alias: Alert Brama
 #   description: ''
 #   trigger:
