@@ -15,3 +15,5 @@ server_crt_path: "{{ certs_path }}/{{ server_crt_name }}.crt"
 
 client_crts:
   - client
+
+server_port: 443

@@ -1,0 +1,112 @@
+# https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation
+# nvidia-ctk runtime configure --runtime=docker
+# systemctl restart docker
+# https://github.com/muka/ollama-docker/blob/main/docker-compose.yaml
+
+version: "3.9"
+
+networks:
+  ollama:
+
+
+services:
+
+  ollama:
+    image: ollama/ollama
+    networks:
+      - ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    volumes:
+      - ./data/ollama:/root/.ollama
+    ports:
+      - 11434:11434
+
+  ollama-webui:
+    # image: ghcr.io/ollama-webui/ollama-webui:main
+    image: ghcr.io/open-webui/open-webui
+    volumes:
+      - ./data/ollama-webui:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - 3002:8080
+    environment:
+      - 'OLLAMA_API_BASE_URL=http://ollama:11434/api'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - ollama
+
+  # litellm:
+  #   image: ghcr.io/berriai/litellm:main-latest
+  #   networks:
+  #     - ollama
+  #   volumes:
+  #     - ./config/litellm/config.yaml:/app/config.yaml
+  #   command:
+  #     [
+  #       "--config",
+  #       "/app/config.yaml",
+  #       "--port",
+  #       "8000",
+  #       "--num_workers",
+  #       "8"
+  #     ]
+  #   depends_on:
+  #     - ollama
+  #     - redis
+  #     - litellm-database
+  #   ports:
+  #     - 8000:8000
+  #   environment:
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: 6379
+  #     REDIS_PASSWORD: SDsdgFsfm4lmf43lfnm34lkf
+
+  # litellm-database:
+  #   image: ghcr.io/berriai/litellm-database:main-latest
+  #   networks:
+  #     - ollama
+  #   # volumes:
+  #   #   - ./config/litellm/config.yaml:/app/config.yaml
+  #   # command:
+  #   #   [
+  #   #     "--config",
+  #   #     "/app/config.yaml",
+  #   #     "--port",
+  #   #     "8000",
+  #   #     "--num_workers",
+  #   #     "8"
+  #   #   ]
+  #   # depends_on:
+  #   #   - ollama
+  #   #   - redis
+  #   # ports:
+  #   #   - 8000:8000
+  #   # environment:
+  #   #   REDIS_HOST: redis
+  #   #   REDIS_PORT: 6379
+  #   #   REDIS_PASSWORD: SDsdgFsfm4lmf43lfnm34lkf
+
+  #           #  env:
+  #           #   - name: DATABASE_URL
+  #           #     value: postgresql://<user>:<password>@<host>:<port>/<dbname>
+
+  # redis:
+  #   image: redis:7-alpine
+  #   command:
+  #     - sh
+  #     - -c # this is to evaluate the $REDIS_PASSWORD from the env
+  #     - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
+  #   environment:
+  #     REDIS_PASSWORD: SDsdgFsfm4lmf43lfnm34lkf
+  #   volumes:
+  #     - ./data/redis:/data
+  #   networks:
+  #     - ollama
