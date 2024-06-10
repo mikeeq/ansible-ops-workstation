@@ -42,7 +42,7 @@ home_assistant:
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
       - entity_id: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
       - entity_id: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
-        inching_seconds: 15
+        inching_seconds: 30
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_brama_dwor_btn

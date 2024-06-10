@@ -30,6 +30,7 @@
     backup: true
   with_fileglob:
     - ../templates/config/automations/*
+    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/automations/*"
 
 - name: Configure config/mqtt/sensors
   template:
