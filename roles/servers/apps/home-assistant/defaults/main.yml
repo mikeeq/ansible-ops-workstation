@@ -19,6 +19,10 @@ home_assistant_custom_components:
     repo: https://github.com/roleoroleo/yi-hack_ha_integration
   - name: virtual
     repo: https://github.com/twrecked/hass-virtual
+  - name: tesla_custom
+    repo: https://github.com/alandtse/tesla
+  # - name: virtual
+  #   repo: https://github.com/twrecked/hass-virtual
 
 home_assistant_custom_lovelace_plugins:
   - name: 'lovelace-multiple-entity-row'
