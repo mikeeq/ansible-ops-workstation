@@ -1,5 +1,5 @@
 ---
-user_name: 'mikee'
+user_name: 'kobeep'
 # hostname: "mikeeMac19"
 
 git_modules_path: '/opt/git_modules'
@@ -101,14 +101,14 @@ flatpak_apps:
   #   remote: flathub
   # - name: org.signal.Signal
   #   remote: flathub
-  - name: com.spotify.Client
-    remote: flathub
-  - name: com.slack.Slack
-    remote: flathub
+  # - name: com.spotify.Client
+  #   remote: flathub
+  # - name: com.slack.Slack
+  #   remote: flathub
   - name: com.github.debauchee.barrier
     remote: flathub
-  - name: com.discordapp.Discord
-    remote: flathub
+  # - name: com.discordapp.Discord
+  #   remote: flathub
 
 flatpak_repos:
   - name: flathub

@@ -8,7 +8,7 @@
 
 - name: Download packer
   get_url:
-    url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_amd64.zip"
+    url: "https://releases.hashicorp.com/packer/{{ packer_version }}/{{ package_name }}"
     dest: /tmp/packer/packer.zip
 
 - name: Unarchive a file that is already on the remote machine

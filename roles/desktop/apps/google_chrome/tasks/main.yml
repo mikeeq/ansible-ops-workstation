@@ -1,13 +1,6 @@
 ---
-- name: Setup google-chrome yum repo
-  copy:
-    src: google-chrome.repo
-    dest: /etc/yum.repos.d/google-chrome.repo
-    owner: "root"
-    group: "root"
-    mode: 0644
+- include_tasks: install_x86.yml
+  when: ansible_architecture == "x86_64"
 
-- name: Install chrome
-  dnf:
-    name: "google-chrome-stable"
-    state: present
+- include_tasks: install_arm64.yml
+  when: ansible_architecture == "aarch64"

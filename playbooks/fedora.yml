@@ -5,8 +5,8 @@
     # - mikeeClevo
   become: true
   pre_tasks:
-    # - debug:
-    #     var: hostvars[inventory_hostname]
+    - debug:
+        var: hostvars[inventory_hostname]
   roles:
     - pkg_mgmt/dnf
     - pkg_mgmt/flatpak
