@@ -8,6 +8,12 @@
 #   ansible.builtin.debug:
 #     var: ansible_facts.services
 
+- include_vars: x86_64.yml
+  when: ansible_architecture == "x86_64"
+
+- include_vars: arm64.yml
+  when: ansible_architecture == "aarch64"
+
 - name: Disable and stop firewalld
   ansible.builtin.service:
     name: firewalld

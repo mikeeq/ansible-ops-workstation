@@ -9,8 +9,8 @@ services:
     privileged: true # this may not be necessary for all setups
     restart: always
     # https://hub.docker.com/r/blakeblackshear/frigate
-    # 0.10.1-amd64nvidia
-    image: blakeblackshear/frigate:0.10.1-amd64
+    # 0.10.1-{{ package_name }}nvidia
+    image: blakeblackshear/frigate:0.10.1-{{ package_name }}
     shm_size: "64mb" # update for your cameras based on calculation above
     devices:
       # - /dev/bus/usb:/dev/bus/usb # passes the USB Coral, needs to be modified for other versions

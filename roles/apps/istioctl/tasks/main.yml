@@ -7,6 +7,12 @@
   changed_when: false
   ignore_errors: true
 
+- include_vars: x86_64.yml
+  when: ansible_architecture == "x86_64"
+
+- include_vars: arm64.yml
+  when: ansible_architecture == "aarch64"
+
 - name: "Installed version of istioctl:"
   debug:
     var: installed_istioctl_version.stdout

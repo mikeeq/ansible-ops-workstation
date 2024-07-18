@@ -1,7 +1,7 @@
 ---
 - name: Download argocd binary
   get_url:
-    url: "https://github.com/argoproj/argo-cd/releases/download/v{{ argocd_version }}/argocd-linux-amd64"
+    url: "https://github.com/argoproj/argo-cd/releases/download/v{{ argocd_version }}/argocd-linux-{{ package_name }}"
     dest: "/usr/local/bin/argocd"
     mode: 0755
     owner: root

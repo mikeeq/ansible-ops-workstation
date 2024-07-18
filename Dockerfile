@@ -42,10 +42,10 @@ RUN pip3 install --no-cache-dir --upgrade pip==24.0 && \
       pyOpenSSL==24.1.0
 
 # Dive
-RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.tar.gz && \
-    tar -xf dive_${DIVE_VERSION}_linux_amd64.tar.gz && \
+RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_{{ package_name }}.tar.gz && \
+    tar -xf dive_${DIVE_VERSION}_linux_{{ package_name }}.tar.gz && \
     mv ./dive /usr/local/bin/dive && \
-    rm -rf dive_${DIVE_VERSION}_linux_amd64.tar.gz
+    rm -rf dive_${DIVE_VERSION}_linux_{{ package_name }}.tar.gz
 
 # Hadolint
 RUN curl -L "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-x86_64" \

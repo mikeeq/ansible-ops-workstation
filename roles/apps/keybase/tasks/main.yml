@@ -2,6 +2,12 @@
 - name: Add OS vars
   include_vars: "{{ ansible_distribution | lower }}.yml"
 
+- include_vars: x86_64.yml
+  when: ansible_architecture == "x86_64"
+
+- include_vars: arm64.yml
+  when: ansible_architecture == "aarch64"
+
 - name: Check if installed
   ansible.builtin.shell: |
     {{ package_manager }} list --installed | grep keybase
@@ -11,7 +17,7 @@
 
 - name: Install keybase on Fedora
   dnf:
-    name: "https://prerelease.keybase.io/keybase_amd64.rpm"
+    name: "https://prerelease.keybase.io/keybase_{{ package_name }}.rpm"
     state: present
     disable_gpg_check: true
   when:
@@ -20,7 +26,7 @@
 
 - name: Install keybase on Ubuntu
   apt:
-    deb: "https://prerelease.keybase.io/keybase_amd64.deb"
+    deb: "https://prerelease.keybase.io/keybase_{{ package_name }}.deb"
     state: present
   when:
     - keybase_installed.rc != 0
@@ -38,8 +44,8 @@
     regexp: '^ExecStart=/opt/keybase/Keybase'
     line: "ExecStart=/opt/keybase/Keybase --disable-seccomp-filter-sandbox"
 
-# curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
-# sudo apt install ./keybase_amd64.deb
+# curl --remote-name https://prerelease.keybase.io/keybase_{{ package_name }}.deb
+# sudo apt install ./keybase_{{ package_name }}.deb
 
-# yum install https://prerelease.keybase.io/keybase_amd64.rpm
+# yum install https://prerelease.keybase.io/keybase_{{ package_name }}.rpm
 # run_keybase

@@ -1,0 +1,6 @@
+---
+package_name: "arm64"
+
+# https://github.com/ishantanu/awesome-kubectl-plugins
+krew_plugins:
+  - hns

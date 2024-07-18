@@ -1,10 +1,16 @@
 ---
-# https://github.com/gruntwork-io/terragrunt/releases/download/v0.31.8/terragrunt_linux_amd64
+# https://github.com/gruntwork-io/terragrunt/releases/download/v0.31.8/terragrunt_linux_{{ package_name }}
 - name: Get installed version
   shell: terragrunt --version | head -n 1 | grep v | cut -d'v' -f3
   register: installed_terragrunt_version
   changed_when: false
   ignore_errors: true
+
+- include_vars: x86_64.yml
+  when: ansible_architecture == "x86_64"
+
+- include_vars: arm64.yml
+  when: ansible_architecture == "aarch64"
 
 - name: "Installed version of terragrunt:"
   debug:
@@ -15,7 +21,7 @@
 
 - name: Download terragrunt
   get_url:
-    url: "https://github.com/gruntwork-io/terragrunt/releases/download/v{{ terragrunt_version }}/terragrunt_linux_amd64"
+    url: "https://github.com/gruntwork-io/terragrunt/releases/download/v{{ terragrunt_version }}/terragrunt_linux_{{ package_name }}"
     dest: /usr/local/bin/terragrunt
     mode: 0755
     owner: root

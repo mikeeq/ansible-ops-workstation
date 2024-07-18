@@ -1,5 +1,5 @@
 ---
-# terraform_0.11.7_linux_amd64.zip
+# terraform_0.11.7_linux_{{ package_name }}.zip
 - name: Install dependencies
   package:
     name: "{{ pkgs }}"
@@ -8,6 +8,12 @@
     pkgs:
       - unzip
       - tar
+
+- include_vars: x86_64.yml
+  when: ansible_architecture == "x86_64"
+
+- include_vars: arm64.yml
+  when: ansible_architecture == "aarch64"
 
 - name: Get installed version
   shell: terraform version | head -n 1 | grep v | cut -d'v' -f2
@@ -24,7 +30,7 @@
 
 - name: Download terraform
   get_url:
-    url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+    url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_{{ package_name }}.zip"
     dest: /tmp/terraform.zip
   when: installed_terraform_version.stdout != terraform_version
 

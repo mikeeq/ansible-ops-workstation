@@ -3,3 +3,9 @@
 # Vagrant is not available for arm64 linux.
 - include_tasks: install.yml
   when: ansible_architecture != "aarch64"
+
+- include_vars: x86_64.yml
+  when: ansible_architecture == "x86_64"
+
+- include_vars: arm64.yml
+  when: ansible_architecture == "aarch64"
