@@ -13,7 +13,7 @@
   when: packer_version is not defined
 
 - include_vars: x86_64.yml
-  when: ansible_architecture == "x86_64"
+  when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
 - include_vars: arm64.yml
   when: ansible_architecture == "aarch64"

@@ -6,7 +6,7 @@
 
 - name: Download krew binary
   get_url:
-    url: "https://github.com/kubernetes-sigs/krew/releases/download/v{{ krew_version }}/krew-linux_amd64.tar.gz"
+    url: "https://github.com/kubernetes-sigs/krew/releases/download/v{{ krew_version }}/krew-linux_{{ package_name }}.tar.gz"
     dest: /tmp/krew/krew.tar.gz
 
 - name: Download krew config
@@ -40,7 +40,6 @@
 - name: Install krew
   become: true
   become_user: "{{ user_name }}"
-  shell: |
-    ./krew-"$(uname | tr '[:upper:]' '[:lower:]')_amd64" install krew
+  shell: /tmp/krew/krew-linux_{{ package_name }} install krew
   args:
     chdir: /tmp/krew

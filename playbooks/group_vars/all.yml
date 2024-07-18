@@ -1,5 +1,5 @@
 ---
-user_name: 'kobeep'
+user_name: 'jakubpospieszny'
 # hostname: "mikeeMac19"
 
 git_modules_path: '/opt/git_modules'
@@ -203,8 +203,3 @@ vscode_extensions:
   - streetsidesoftware.code-spell-checker
   - vscode-icons-team.vscode-icons
   - yzhang.markdown-all-in-one
-
-# https://github.com/ishantanu/awesome-kubectl-plugins
-krew_plugins:
-  - sniff
-  - hns

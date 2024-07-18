@@ -1,9 +1,16 @@
 ---
+
 - name: Get installed version
   shell: kubectl version --short --client=true | grep -i client | cut -d'v' -f2
   register: installed_kubectl_version
   changed_when: false
   ignore_errors: true
+
+- include_vars: x86_64.yml
+  when: ansible_architecture == "x86_64" or "amd64"
+
+- include_vars: arm64.yml
+  when: ansible_architecture == "aarch64"
 
 - name: "Installed version of kubectl:"
   debug:
@@ -14,7 +21,7 @@
 
 - name: Download kubectl
   get_url:
-    url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl"
+    url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/{{ package_name }}/kubectl"
     dest: /usr/local/bin/kubectl
     force: true
   when: installed_kubectl_version.stdout != kubectl_version

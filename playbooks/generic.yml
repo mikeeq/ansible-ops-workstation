@@ -3,7 +3,7 @@
   hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
   roles:
-    - pkg_mgmt/pip
+    # - pkg_mgmt/pip
     # - apps/keybase
     - apps/kubectl
     - apps/helm
