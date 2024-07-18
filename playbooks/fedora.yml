@@ -8,20 +8,21 @@
     # - debug:
     #     var: hostvars[inventory_hostname]
   roles:
+    - { role: pkg_mgmt/flatpak, when: ansible_architecture == "x86_64" }
+    - { role: desktop/apps/google_chrome, when: ansible_architecture == "x86_64" }
+    - { role: desktop/apps/keeweb, when: ansible_architecture == "x86_64" }
+    - { role: apps/vagrant, when: ansible_architecture == "x86_64" }
     - pkg_mgmt/dnf
-    # - pkg_mgmt/flatpak
-    # - desktop/apps/google_chrome
-    # - desktop/apps/keeweb
     - apps/docker
     - apps/qemu
-    # - desktop/apps/terminator
-    # - apps/vagrant
+    - desktop/apps/terminator
     - apps/packer
     - desktop/gnome
     - desktop/apps/vscode
     - desktop/apps/x11docker
     - desktop/fedora
-    # - apps/nordvpn
+    - apps/nordvpn
+
 
 - name: Include a playbook for generic-core provisioning
   import_playbook: generic-core.yml

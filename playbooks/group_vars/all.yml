@@ -1,5 +1,5 @@
 ---
-user_name: 'mikee'
+user_name: 'jakubpospieszny'
 # hostname: "mikeeMac19"
 
 git_modules_path: '/opt/git_modules'
@@ -54,7 +54,10 @@ dnf_pkgs:
   - ShellCheck
   - smartmontools
   - python3.11
+  - python3.11-devel
   - cargo
+  - python3-argcomplete
+  - python3-psutil
 
 dnf_gui_pkgs:
   - clamtk
@@ -98,8 +101,8 @@ pip_apps:
     virtualenv_enabled: false
   - name: ansible
     virtualenv_enabled: false
-  - name: argcomplete
-    virtualenv_enabled: false
+  # - name: argcomplete
+  #   virtualenv_enabled: false
   - name: azure-cli
     virtualenv_enabled: true
     virtualenv_python: "python3.11"
@@ -107,8 +110,8 @@ pip_apps:
     virtualenv_enabled: true
   - name: yamllint
     virtualenv_enabled: false
-  - name: psutil
-    virtualenv_enabled: false
+  # - name: psutil
+  #   virtualenv_enabled: false
   - name: pywinrm
     virtualenv_enabled: false
   - name: niet
