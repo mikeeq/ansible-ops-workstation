@@ -86,10 +86,33 @@ snap_apps: []
 snap_classic_apps: []
   # - kubectl
   # - helm
+  # Slack and Skype are failing on Wayland Desktop mode
+  # - slack
   # - skype
   #### they are not working on fedora
   # - hollywood
   # - wallstreet
+
+# Flatpak is better for GUI applications
+flatpak_apps:
+  # - name: com.valvesoftware.Steam
+  #   remote: flathub
+  # - name: com.skype.Client
+  #   remote: flathub
+  # - name: org.signal.Signal
+  #   remote: flathub
+  - name: com.spotify.Client
+    remote: flathub
+  - name: com.slack.Slack
+    remote: flathub
+  - name: com.github.debauchee.barrier
+    remote: flathub
+  - name: com.discordapp.Discord
+    remote: flathub
+
+flatpak_repos:
+  - name: flathub
+    url: https://flathub.org/repo/flathub.flatpakrepo
 
 pip_apps:
   - name: pip

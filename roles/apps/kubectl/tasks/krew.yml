@@ -26,4 +26,3 @@
   when: installed_krew_version.stdout != krew_version
 
 - import_tasks: krew/plugins.yml
-  when: ansible_architecture != "aarch64"

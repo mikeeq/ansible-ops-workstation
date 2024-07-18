@@ -8,15 +8,15 @@
     # - debug:
     #     var: hostvars[inventory_hostname]
   roles:
-    # - pkg_mgmt/dnf
+    - pkg_mgmt/dnf
     # - pkg_mgmt/flatpak
     # - desktop/apps/google_chrome
     # - desktop/apps/keeweb
-    # - apps/docker
-    # - apps/qemu
+    - apps/docker
+    - apps/qemu
     # - desktop/apps/terminator
     # - apps/vagrant
-    # - apps/packer
+    - apps/packer
     - desktop/gnome
     - desktop/apps/vscode
     - desktop/apps/x11docker
