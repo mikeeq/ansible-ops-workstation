@@ -1,0 +1,2 @@
+---
+package_name: "ctop-{{ ctop_version }}-linux-{{ architecture_common_name }}"

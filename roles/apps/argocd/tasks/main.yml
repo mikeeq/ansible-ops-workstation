@@ -7,8 +7,6 @@
   changed_when: false
   ignore_errors: true
 
-- include_vars: "{{ ansible_architecture }}.yml"
-
 - name: "Installed version of argocd:"
   debug:
     var: installed_argocd_version.stdout

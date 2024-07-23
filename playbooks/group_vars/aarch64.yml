@@ -1,2 +1,3 @@
 ---
 # ansible_architecture == "aarch64"
+architecture_common_name: "arm64"
