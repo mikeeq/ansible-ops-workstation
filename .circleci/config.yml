@@ -16,3 +16,18 @@ jobs:
           name: Run tests
           command: |
             uname -a; free -m; docker --version
+
+      - run:
+          name: "Runner storage cleanup"
+          command: |
+            ./.github/cleanup-runner.sh
+
+      - run:
+          name: "Build fedora-systemd image..."
+          command: |
+            docker build -t fedora_systemd:latest .
+
+      - run:
+          name: "Run Ansible in Docker..."
+          command: |
+            scripts/run_ansible_in_docker.sh
