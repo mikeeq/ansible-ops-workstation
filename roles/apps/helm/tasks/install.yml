@@ -17,7 +17,7 @@
 
 - name: Copy helm and tiller
   copy:
-    src: "/tmp/helm/linux-{{ package_name }}/{{ item }}"
+    src: "/tmp/helm/linux-{{ architecture_common_name }}/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     remote_src: true
     mode: 0755
