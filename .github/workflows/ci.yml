@@ -65,3 +65,14 @@ jobs:
       #       apk add --no-cache shellcheck bash
       #       shellcheck ./*.sh
       #     '
+
+  build-fedora-arm64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Runner storage cleanup"
+        run: ./.github/cleanup-runner.sh
+      - name: "Build fedora-systemd image..."
+        run: docker build -t fedora_systemd:latest .
+      - name: "Run Ansible in Docker..."
+        run: scripts/run_ansible_in_docker.sh
