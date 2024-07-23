@@ -6,7 +6,7 @@ version: 2.1
 jobs:
   build:
     working_directory: ~/app
-    docker:
+    machine:
       - image: ubuntu-2204:2024.05.1
     resource_class: arm.medium
     steps:
