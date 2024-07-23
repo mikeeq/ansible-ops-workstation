@@ -163,7 +163,7 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 
 vscode_extensions:
   - bbenoist.vagrant
-  - DavidAnson.vscode-markdownlint
+  - davidanson.vscode-markdownlint
   - eamodio.gitlens
   - hashicorp.terraform
   - hediet.vscode-drawio
