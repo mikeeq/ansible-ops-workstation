@@ -24,7 +24,7 @@
 
 - name: Download terraform
   get_url:
-    url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+    url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_{{ architecture_common_name }}.zip"
     dest: /tmp/terraform.zip
   when: installed_terraform_version.stdout != terraform_version
 

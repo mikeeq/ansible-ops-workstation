@@ -14,7 +14,7 @@
 
 - name: Download kubectl
   get_url:
-    url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl"
+    url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/{{ architecture_common_name }}/kubectl"
     dest: /usr/local/bin/kubectl
     force: true
   when: installed_kubectl_version.stdout != kubectl_version

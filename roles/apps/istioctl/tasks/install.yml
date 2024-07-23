@@ -6,7 +6,7 @@
 
 - name: Download istioctl binary
   get_url:
-    url: "https://github.com/istio/istio/releases/download/{{ istioctl_version }}/istioctl-{{ istioctl_version }}-linux-amd64.tar.gz"
+    url: "https://github.com/istio/istio/releases/download/{{ istioctl_version }}/istioctl-{{ istioctl_version }}-linux-{{ architecture_common_name }}.tar.gz"
     dest: /tmp/istioctl/istioctl.tar.gz
 
 - name: Unarchive a file that is already on the remote machine

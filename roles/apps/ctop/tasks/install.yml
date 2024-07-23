@@ -1,7 +1,7 @@
 ---
 - name: Download ctop
   get_url:
-    url: "https://github.com/bcicen/ctop/releases/download/v{{ ctop_version }}/ctop-{{ ctop_version }}-linux-amd64"
+    url: "https://github.com/bcicen/ctop/releases/download/v{{ ctop_version }}/ctop-{{ ctop_version }}-linux-{{ architecture_common_name }}"
     dest: /usr/local/bin/ctop
     force: true
     mode: 0755

@@ -6,7 +6,7 @@
 
 - name: Download kail binary
   get_url:
-    url: "https://github.com/boz/kail/releases/download/v{{ kail_version }}/kail_v{{ kail_version }}_linux_amd64.tar.gz"
+    url: "https://github.com/boz/kail/releases/download/v{{ kail_version }}/kail_v{{ kail_version }}_linux_{{ architecture_common_name }}.tar.gz"
     dest: /tmp/kail/kail.tar.gz
 
 - name: Unarchive a file that is already on the remote machine
