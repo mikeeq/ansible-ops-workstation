@@ -6,7 +6,7 @@
 
 - name: Download stern
   get_url:
-    url: "https://github.com/stern/stern/releases/download/v{{ stern_version }}/stern_{{ stern_version }}_linux_{{ package_name }}.tar.gz"
+    url: "https://github.com/stern/stern/releases/download/v{{ stern_version }}/stern_{{ stern_version }}_linux_{{ architecture_common_name }}.tar.gz"
     dest: /tmp/stern/stern.tar.gz
 
 - name: Unarchive a file that is already on the remote machine

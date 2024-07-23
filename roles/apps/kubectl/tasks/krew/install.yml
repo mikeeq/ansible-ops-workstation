@@ -40,6 +40,7 @@
 - name: Install krew
   become: true
   become_user: "{{ user_name }}"
-  shell: /tmp/krew/krew-linux_{{ package_name }} install krew
+  shell: |
+    ./krew-"$(uname | tr '[:upper:]' '[:lower:]')_{{ architecture_common_name }}" install krew
   args:
     chdir: /tmp/krew

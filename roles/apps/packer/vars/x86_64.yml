@@ -1,2 +1,0 @@
----
-package_name: "packer_{{ packer_version }}_linux_amd64.zip"

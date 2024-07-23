@@ -12,11 +12,5 @@
 - include_tasks: get_latest_version.yml
   when: packer_version is not defined
 
-- include_vars: x86_64.yml
-  when: ansible_architecture == "x86_64"
-
-- include_vars: arm64.yml
-  when: ansible_architecture == "aarch64"
-
 - include_tasks: install.yml
   when: installed_packer_version.stdout != packer_version
