@@ -70,8 +70,6 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - name: "Runner storage cleanup"
-        run: ./.github/cleanup-runner.sh
       - name: Setup docker and docker-compose (missing on MacOS)
         if: runner.os == 'macos'
         run: |
@@ -82,6 +80,8 @@ jobs:
           ln -sfn /usr/local/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
 
           colima start
+      - name: "Runner storage cleanup"
+        run: ./.github/cleanup-runner.sh
       - name: "Build fedora-systemd image..."
         run: docker build -t fedora_systemd:latest .
       - name: "Run Ansible in Docker..."
