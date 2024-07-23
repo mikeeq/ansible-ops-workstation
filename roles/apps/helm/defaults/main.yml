@@ -1,2 +1,0 @@
----
-package_name: "helm-v{{ helm_version }}-linux-{{ architecture_common_name }}.tar.gz"

@@ -1,2 +1,2 @@
 ---
-package_architecture_name: "x86_64"
+hadolint_architecture_name: "x86_64"

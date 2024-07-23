@@ -1,2 +1,2 @@
 ---
-package_architecture_name: "arm64"
+hadolint_architecture_name: "arm64"
