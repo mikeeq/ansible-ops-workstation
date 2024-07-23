@@ -1,6 +1,2 @@
 ---
-- include_tasks: install_x86.yml
-  when: ansible_architecture == "x86_64"
-
-- include_tasks: install_arm64.yml
-  when: ansible_architecture == "aarch64"
+- include_tasks: "install_{{ ansible_architecture }}.yml"
