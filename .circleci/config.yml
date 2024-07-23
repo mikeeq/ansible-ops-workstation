@@ -1,3 +1,5 @@
+# https://circleci.com/blog/how-to-build-a-docker-image-on-circleci-2-0/
+# https://circleci.com/docs/configuration-reference/#resourceclass
 ---
 version: 2.1
 jobs:
@@ -5,6 +7,7 @@ jobs:
     working_directory: ~/app
     docker:
       - image: cimg/base:2024.07
+    resource_class: arm.medium
     steps:
       - checkout
       - setup_remote_docker:
@@ -12,4 +15,4 @@ jobs:
       - run:
           name: Run tests
           command: |
-            echo tests
+            uname -a; free -m; docker --version
