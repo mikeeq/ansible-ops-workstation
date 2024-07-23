@@ -1,4 +1,7 @@
 ---
+- name: Include a playbook for including arch specifc vars
+  import_playbook: vars.yml
+
 - name: Ubuntu WSL bootstrap
   hosts: localhost
   become: true

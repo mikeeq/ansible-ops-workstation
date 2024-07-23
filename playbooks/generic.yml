@@ -1,4 +1,7 @@
 ---
+- name: Include a playbook for including arch specifc vars
+  import_playbook: vars.yml
+
 - name: Generic bootstrap
   hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
