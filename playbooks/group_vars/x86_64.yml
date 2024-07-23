@@ -19,10 +19,6 @@ flatpak_apps:
   - name: com.discordapp.Discord
     remote: flathub
 
-flatpak_repos:
-  - name: flathub
-    url: https://flathub.org/repo/flathub.flatpakrepo
-
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins:
   - sniff

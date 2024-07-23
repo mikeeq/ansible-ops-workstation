@@ -96,6 +96,10 @@ snap_classic_apps: []
   # - hollywood
   # - wallstreet
 
+flatpak_repos:
+  - name: flathub
+    url: https://flathub.org/repo/flathub.flatpakrepo
+
 pip_apps:
   - name: pip
     virtualenv_enabled: false
