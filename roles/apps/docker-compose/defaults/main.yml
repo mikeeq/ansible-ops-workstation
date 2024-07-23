@@ -1,2 +1,0 @@
----
-package_name: "docker-compose-linux-{{ ansible_architecture }}"

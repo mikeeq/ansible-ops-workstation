@@ -1,7 +1,2 @@
 ---
-package_name: "amd64"
-
-# https://github.com/ishantanu/awesome-kubectl-plugins
-krew_plugins:
-  - sniff
-  - hns
+package_architecture_name: "x86_64"

@@ -1,2 +1,0 @@
----
-package_name: "argocd-linux-{{ architecture_common_name }}"

@@ -1,7 +1,7 @@
 ---
 - name: Download helm archive
   get_url:
-    url: "https://get.helm.sh/helm-v{{ helm_version }}-linux-{{ package_name }}.tar.gz"
+    url: "https://get.helm.sh/{{ package_name }}"
     dest: /tmp/helm.tar.gz
 
 - name: Directory for helm

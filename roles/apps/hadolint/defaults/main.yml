@@ -1,0 +1,2 @@
+---
+package_name: "hadolint-Linux-{{ package_architecture_name }}"

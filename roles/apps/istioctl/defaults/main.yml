@@ -1,0 +1,2 @@
+---
+package_name: "istioctl-{{ istioctl_version }}-linux-{{ architecture_common_name }}.tar.gz"

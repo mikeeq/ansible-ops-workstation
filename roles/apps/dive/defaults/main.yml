@@ -1,2 +1,0 @@
----
-package_name: "dive_{{ dive_version }}_linux_{{ architecture_common_name }}.tar.gz"
