@@ -1,5 +1,5 @@
 ---
-user_name: 'jakubpospieszny'
+user_name: 'mikee'
 # hostname: "mikeeMac19"
 
 git_modules_path: '/opt/git_modules'
@@ -89,6 +89,8 @@ snap_apps: []
 snap_classic_apps: []
   # - kubectl
   # - helm
+  # Slack and Skype are failing on Wayland Desktop mode
+  # - slack
   # - skype
   #### they are not working on fedora
   # - hollywood

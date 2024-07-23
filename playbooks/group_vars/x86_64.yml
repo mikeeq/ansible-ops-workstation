@@ -1,10 +1,4 @@
 ---
-user_name: 'jakubpospieszny'
-# hostname: "mikeeMac19"
-
-git_modules_path: '/opt/git_modules'
-rpms_dwnl_path: '/opt/rpms'
-
 # Flatpak is better for GUI applications
 flatpak_apps:
   # - name: com.valvesoftware.Steam
