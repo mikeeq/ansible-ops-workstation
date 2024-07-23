@@ -1,4 +1,6 @@
 ---
+# "ansible_architecture": "x86_64"
+
 # Flatpak is better for GUI applications
 flatpak_apps:
   # - name: com.valvesoftware.Steam
@@ -19,3 +21,8 @@ flatpak_apps:
 flatpak_repos:
   - name: flathub
     url: https://flathub.org/repo/flathub.flatpakrepo
+
+# https://github.com/ishantanu/awesome-kubectl-plugins
+krew_plugins:
+  - sniff
+  - hns

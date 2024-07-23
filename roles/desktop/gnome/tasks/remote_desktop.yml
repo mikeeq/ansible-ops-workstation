@@ -6,7 +6,6 @@
     name: "gnome-remote-desktop"
     state: present
 
-
 - name: Enable RDP
   become: true
   become_user: "{{ user_name }}"
