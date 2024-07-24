@@ -1,6 +1,11 @@
 ---
 # https://gitlab.gnome.org/-/snippets/1778#note_1310610
 # https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353
+- name: Install gnome-remote-desktop
+  dnf:
+    name: "gnome-remote-desktop"
+    state: present
+
 - name: Enable RDP
   become: true
   become_user: "{{ user_name }}"
@@ -159,6 +164,7 @@
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.systemd:
+    daemon_reload: true
     name: gnome-remote-desktop
     state: started
     scope: user

@@ -1,0 +1,45 @@
+---
+- name: Add OS vars
+  include_vars: "{{ ansible_distribution | lower }}.yml"
+
+- name: Check if installed
+  ansible.builtin.shell: |
+    {{ package_manager }} list --installed | grep keybase
+  register: keybase_installed
+  changed_when: false
+  ignore_errors: true
+
+- name: Install keybase on Fedora
+  dnf:
+    name: "https://prerelease.keybase.io/keybase_{{ package_name }}.rpm"
+    state: present
+    disable_gpg_check: true
+  when:
+    - keybase_installed.rc != 0
+    - ansible_distribution == "Fedora"
+
+- name: Install keybase on Ubuntu
+  apt:
+    deb: "https://prerelease.keybase.io/keybase_{{ package_name }}.deb"
+    state: present
+  when:
+    - keybase_installed.rc != 0
+    - ansible_distribution == "Ubuntu"
+
+- name: Run keybase
+  shell: run_keybase
+  args:
+    creates: /keybase
+
+# https://github.com/keybase/client/issues/24688
+- name: Fix keybase on newer Fedoras
+  ansible.builtin.lineinfile:
+    path: /usr/lib/systemd/user/keybase.gui.service
+    regexp: '^ExecStart=/opt/keybase/Keybase'
+    line: "ExecStart=/opt/keybase/Keybase --disable-seccomp-filter-sandbox"
+
+# curl --remote-name https://prerelease.keybase.io/keybase_{{ package_name }}.deb
+# sudo apt install ./keybase_{{ package_name }}.deb
+
+# yum install https://prerelease.keybase.io/keybase_{{ package_name }}.rpm
+# run_keybase

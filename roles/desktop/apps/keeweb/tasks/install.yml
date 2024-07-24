@@ -1,0 +1,55 @@
+---
+# /usr/share/applications/sublime_text.desktop
+# https://github.com/keeweb/keeweb/releases/download/v1.6.3/KeeWeb-1.6.3.linux.x64.zip
+
+- name: Get installed version
+  shell: cat /opt/keeweb/version.tag
+  register: installed_version
+  changed_when: false
+  ignore_errors: true
+
+- name: 'Installed version of keeweb:'
+  debug:
+    var: installed_version.stdout
+
+- name: Directory for KeeWeb
+  file:
+    path: /opt/keeweb
+    state: directory
+
+- name: Get latest version
+  shell: curl -Is "https://github.com/keeweb/keeweb/releases/latest" | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
+  register: version_tag
+  changed_when: version_tag.stdout != installed_version.stdout
+
+- name: "Latest version of keeweb:"
+  debug:
+    var: version_tag.stdout
+
+- name: Download .zip
+  get_url:
+    url: "https://github.com/keeweb/keeweb/releases/download/v{{ version_tag.stdout }}/KeeWeb-{{ version_tag.stdout }}.linux.x64.zip"
+    dest: /tmp/keeweb.zip
+  when: installed_version.stdout != version_tag.stdout
+
+- name: Remove old KeeWeb
+  file:
+    path: /opt/keeweb/*
+    state: absent
+  when: installed_version.stdout != version_tag.stdout
+
+- name: Unarchive a file that is already on the remote machine
+  unarchive:
+    src: /tmp/keeweb.zip
+    dest: /opt/keeweb/
+    remote_src: yes
+  when: installed_version.stdout != version_tag.stdout
+
+- name: Add gnome icon
+  copy:
+    src: keeweb.desktop
+    dest: /usr/share/applications/keeweb.desktop
+
+- name: Add version file
+  shell: echo '{{ version_tag.stdout }}' > /opt/keeweb/version.tag
+  when: installed_version.stdout != version_tag.stdout

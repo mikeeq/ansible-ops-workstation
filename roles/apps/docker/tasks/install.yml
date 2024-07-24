@@ -1,7 +1,7 @@
 ---
 - name: Check if docker is installed
   shell: |
-    dnf list --installed | grep docker-ce
+    dnf list --installed | awk '{print $1}' | grep docker-ce
   register: docker_check
   changed_when: docker_check.rc != 0
   ignore_errors: true
@@ -23,6 +23,7 @@
       - docker-selinux
       - docker-engine-selinux
       - docker-engine
+      - podman-docker
 
 - name: Check if docker-repo is installed
   shell: |

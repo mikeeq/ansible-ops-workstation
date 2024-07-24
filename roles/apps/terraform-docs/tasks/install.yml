@@ -6,7 +6,7 @@
 
 - name: Download terraform_docs binary
   get_url:
-    url: "https://github.com/terraform-docs/terraform-docs/releases/download/v{{ terraform_docs_version }}/terraform-docs-v{{ terraform_docs_version }}-linux-amd64.tar.gz"
+    url: "https://github.com/terraform-docs/terraform-docs/releases/download/v{{ terraform_docs_version }}/terraform-docs-v{{ terraform_docs_version }}-linux-{{ architecture_common_name }}.tar.gz"
     dest: /tmp/terraform_docs/terraform_docs.tar.gz
 
 - name: Unarchive a file that is already on the remote machine

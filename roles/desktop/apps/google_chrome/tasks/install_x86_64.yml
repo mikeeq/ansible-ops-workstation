@@ -1,0 +1,13 @@
+---
+- name: Setup google-chrome yum repo
+  copy:
+    src: google-chrome.repo
+    dest: /etc/yum.repos.d/google-chrome.repo
+    owner: "root"
+    group: "root"
+    mode: 0644
+
+- name: Install chrome
+  dnf:
+    name: "google-chrome-stable"
+    state: present
