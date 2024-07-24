@@ -43,6 +43,7 @@
       target:
         entity_id: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
   mode: single
+
 # - alias: Alert Brama
 #   description: ''
 #   trigger:

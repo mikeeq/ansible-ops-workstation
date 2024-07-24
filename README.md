@@ -54,6 +54,8 @@
 
 [![CI](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yml/badge.svg)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yml)
 
+[![CircleCI](https://circleci.com/gh/mikeeq/ansible-ops-workstation.svg?style=svg)](https://circleci.com/gh/mikeeq/ansible-ops-workstation)
+
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>

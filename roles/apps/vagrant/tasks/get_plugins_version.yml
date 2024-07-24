@@ -9,7 +9,7 @@
   changed_when: false
   loop: "{{ vagrant_plugins }}"
 
-- name: Get embedded plugins versionS
+- name: Get embedded plugins version
   become: true
   shell: |
     basename $(find /opt/vagrant | grep -i '{{ item }}-[[:digit:]]' | grep -i specifications | grep -i gemspec | head -n 1) .gemspec | rev | cut -d'-' -f1 | rev

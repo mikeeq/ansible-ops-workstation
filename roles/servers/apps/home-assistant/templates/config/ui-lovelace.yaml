@@ -308,6 +308,20 @@ views:
           - entity: switch.sonoff_minir2_drzwi_dwor_minir2_swiatlo_drzwi_dwor
             name: Drzwi Dwor
             icon: mdi:coach-lamp
+          - type: section
+          - entity: automation.auto_furtka_dzwonek
+            type: custom:multiple-entity-row
+            name: Furtka_Auto
+            icon: mdi:door
+            toggle: true
+            show_state: true
+            entities:
+              - entity: automation.auto_furtka_dzwonek_off
+                name: AutoOff
+                toggle: true
+              - entity: automation.auto_furtka_dzwonek_on
+                name: AutoOn
+                toggle: true
         title: Garaz
         show_header_toggle: false
       - type: entities
