@@ -388,7 +388,28 @@ Contributions are what make the open source community such an amazing place to b
     # If you fail to boot to Fedora, you can edit boot entry in grub by clicking "e" in grub bootmenu and in line starting with "linux ..." add at the end "init 3" to boot in multi-user.target (without graphical interface)
 
     # If you are using Secure Boot, during installation of the NVIDIA drivers create new key pair (or use existing one), and if it's a new key pair then add them to UEFI key by executing
-    mokutil --import /usr/share/nvidia/nvidia-modsign-crt-${id}.der
+
+    mkdir -p /usr/share/uefimok/
+    cp -rfv /usr/share/nvidia/nvidia-modsign-crt-${id}.der /usr/share/uefimok/
+    cp -rfv /usr/share/nvidia/nvidia-modsign-key-${id}.key /usr/share/uefimok/
+
+    mokutil --import /usr/share/uefimok/nvidia-modsign-crt-${id}.der
+
+    bash NVIDIA-Linux-x86_64-550.107.02.run --module-signing-secret-key=/usr/share/uefimok/nvidia-modsign-key-${id}.key --module-signing-public-key=/usr/share/uefimok/nvidia-modsign-crt-${id}.der
+
+    # To enable wayland
+
+    ## vi /etc/dracut.conf.d/nvidia.conf
+    force_drivers+=" nvidia nvidia_modeset nvidia_uvm nvidia_drm "
+
+    ## vi /etc/modprobe.d/nvidia.conf
+    options nvidia_drm modeset=1 fbdev=1
+
+    ##
+
+    mv /usr/lib/udev/rules.d/61-gdm.rules /root/61-gdm.rules
+    dracut -f
+
     ```
 
 12. To fix purple'ish screen, enable OC and Fan control (I recommend to use GreenWithEnvy - gwe (installed using flatpak)) apply those changes to `/etc/X11/xorg.conf`:
