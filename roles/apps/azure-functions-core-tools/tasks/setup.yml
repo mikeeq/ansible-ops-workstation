@@ -1,0 +1,18 @@
+---
+- name: Get installed version of azure_functions_core_tools
+  become: true
+  become_user: "{{ user_name }}"
+  shell: /opt/azure_functions_core_tools/func --version
+  register: installed_azure_functions_core_tools_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of azure_functions_core_tools:"
+  debug:
+    var: installed_azure_functions_core_tools_version.stdout
+
+- include_tasks: get_latest_version.yml
+  when: azure_functions_core_tools_version is not defined
+
+- include_tasks: install.yml
+  when: installed_azure_functions_core_tools_version.stdout != azure_functions_core_tools_version

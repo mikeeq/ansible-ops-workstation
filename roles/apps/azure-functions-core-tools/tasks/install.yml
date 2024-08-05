@@ -1,0 +1,29 @@
+---
+- name: Directory for azure_functions_core_tools
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "/tmp/azure_functions_core_tools"
+    - "/opt/azure_functions_core_tools"
+
+- name: Download azure_functions_core_tools binary
+  get_url:
+    url: "https://github.com/Azure/azure-functions-core-tools/releases/download/{{ azure_functions_core_tools_version }}/Azure.Functions.Cli.linux-x64.{{ azure_functions_core_tools_version }}.zip"
+    dest: /tmp/azure_functions_core_tools/azure_functions_core_tools.zip
+
+- name: Unarchive a file that is already on the remote machine
+  unarchive:
+    src: /tmp/azure_functions_core_tools/azure_functions_core_tools.zip
+    dest: /opt/azure_functions_core_tools
+    remote_src: yes
+
+- name: Set executable permissions
+  file:
+    path: "/opt/azure_functions_core_tools/{{ item }}"
+    mode: 0755
+    owner: root
+    group: root
+  loop:
+    - func
+    - gozip
