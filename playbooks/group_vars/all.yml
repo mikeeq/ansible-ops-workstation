@@ -167,6 +167,7 @@ vscode_extensions:
   - eamodio.gitlens
   - hashicorp.terraform
   - hediet.vscode-drawio
+  - mhutchie.git-graph
   - ms-azure-devops.azure-pipelines
   - ms-azuretools.vscode-docker
   - ms-dotnettools.csharp
