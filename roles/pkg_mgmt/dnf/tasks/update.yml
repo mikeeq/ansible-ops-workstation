@@ -1,7 +1,12 @@
 ---
 - name: "[DNF] Update all packages"
-  dnf:
+  dnf5:
     name: "*"
     state: latest
+    update_cache: true
   tags:
     - update
+
+- name: Autoremove unneeded packages installed as dependencies
+  ansible.builtin.dnf5:
+    autoremove: yes

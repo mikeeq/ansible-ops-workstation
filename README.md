@@ -516,6 +516,14 @@ flatpak override com.valvesoftware.Steam --filesystem=${PATH_TO_FILESYSTEM}
 
 18. Terminator fails to open with an error `terminator:24:<module>:ModuleNotFoundError: No module named 'psutil'`, try reinstalling `dnf reinstall python3-psutil` to fix it
 
+19. Enable tabs scrolling in firefox:
+
+```
+about:config
+toolkit.tabbox.switchByScrolling
+# set to true
+```
+
 <!-- LICENSE -->
 ## License
 
