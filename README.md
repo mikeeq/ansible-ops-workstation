@@ -337,6 +337,7 @@ Contributions are what make the open source community such an amazing place to b
       - <https://www.if-not-true-then-false.com/2015/fedora-nvidia-guide/>
 
     ```bash
+    ### Install using .run installer (manually) ###
     # Install DKMS to automatically install Nvidia driver when updating kernel
     dnf install dkms kernel-devel kernel-headers gcc make acpid libglvnd-glx libglvnd-opengl libglvnd-devel pkgconfig vdpauinfo libva-vdpau-driver libva-utils
 
@@ -397,7 +398,21 @@ Contributions are what make the open source community such an amazing place to b
 
     bash NVIDIA-Linux-x86_64-550.107.02.run --module-signing-secret-key=/usr/share/uefimok/nvidia-modsign-key-${id}.key --module-signing-public-key=/usr/share/uefimok/nvidia-modsign-crt-${id}.der
 
-    # To enable wayland
+    ### Install using packages from CUDA rpm repository ###
+
+    # Check latest available rpm repo (fedora40 is not available) - https://developer.download.nvidia.com/compute/cuda/repos/
+    distro=fedora39
+
+    dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/$distro/x86_64/cuda-$distro.repo
+    dnf -y install dkms
+    dnf -y module install nvidia-driver:open-dkms
+    dnf -y install nvidia-container-toolkit
+
+    # Enroll MOK key if you're using SecureBoot
+    ## You can check by which key the kernel module is signed by, by executing: modinfo nvidia-drm, and then try to find it locally (i.e.: in dkms config file)
+    mokutil --import /var/lib/dkms/mok.pub
+
+    ### Enabling wayland
 
     ## vi /etc/dracut.conf.d/nvidia.conf
     force_drivers+=" nvidia nvidia_modeset nvidia_uvm nvidia_drm "
