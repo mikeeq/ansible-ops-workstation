@@ -33,12 +33,17 @@ home_assistant_custom_lovelace_plugins:
     entity_name: 'button-card.js'
     repo: https://github.com/custom-cards/button-card
     release: true
-    version: v4.1.2
+    # version: v4.1.2
   - name: 'vacuum-card'
     entity_name: 'vacuum-card.js'
     repo: https://github.com/denysdovhan/vacuum-card
     release: true
-    version: v2.9.2
+    # version: v2.9.2
+  - name: 'vacuum-card'
+    entity_name: 'vacuum-card.js'
+    repo: https://github.com/AlexxIT/hassio-addons
+    # release: true
+    # version: v2.9.2
 
 home_assistant:
   automations:
