@@ -21,6 +21,8 @@ home_assistant_custom_components:
     repo: https://github.com/twrecked/hass-virtual
   - name: tesla_custom
     repo: https://github.com/alandtse/tesla
+  - name: frigate
+    repo: https://github.com/blakeblackshear/frigate-hass-integration
   # - name: virtual
   #   repo: https://github.com/twrecked/hass-virtual
 
@@ -38,7 +40,13 @@ home_assistant_custom_lovelace_plugins:
     entity_name: 'vacuum-card.js'
     repo: https://github.com/denysdovhan/vacuum-card
     release: true
-    version: v2.9.2
+    version: v2.10.1
+  - name: 'frigate-hass-card'
+    entity_name: 'frigate-hass-card.zip'
+    repo: https://github.com/dermotduffy/frigate-hass-card
+    release: true
+    version: v5.2.0
+    zip_mode: true
 
 home_assistant:
   automations:

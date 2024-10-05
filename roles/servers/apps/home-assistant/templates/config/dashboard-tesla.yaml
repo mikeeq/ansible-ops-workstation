@@ -33,6 +33,14 @@ views:
           - entity: binary_sensor.door_state_garaz_brama
             name: Garaz Brama stan
             icon: mdi:garage-variant
+      - type: custom:frigate-card
+        cameras:
+          - camera_entity: camera.yi_garaz
+            live_provider: webrtc-card
+      - type: custom:frigate-card
+        cameras:
+          - camera_entity: camera.yi_kuchnia
+            live_provider: webrtc-card
       # - entity: sensor.th_temperature_ogrod
       #   type: custom:button-card
       #   name: Ogrod

@@ -8,6 +8,12 @@
     - "{{ install_path }}/config/www"
     - "{{ install_path }}/config/git"
 
+- name: Ensure install dir exists for home_assistant_custom_lovelace_plugins
+  file:
+    path: "{{ install_path }}/config/git/{{ item.name }}"
+    state: directory
+  loop: "{{ home_assistant_custom_lovelace_plugins }}"
+
 - name: "Pull custom components via git"
   git:
     repo: "{{ item.repo }}"
@@ -22,7 +28,7 @@
 # https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card/releases/download/v2.2.2/xiaomi-vacuum-map-card.js
 - name: "Pull custom components via release"
   get_url:
-    url: "{{ item.repo }}//releases/download/{{ item.version }}/{{ item.entity_name }}"
+    url: "{{ item.repo }}/releases/download/{{ item.version }}/{{ item.entity_name }}"
     dest: "{{ install_path }}/config/git/{{ item.name }}/{{ item.entity_name }}"
   when: item.release is defined and item.release == true
   with_items:
@@ -42,3 +48,12 @@
     dest: "{{ install_path }}/config/www/{{ item.entity_name }}"
     remote_src: true
   loop: "{{ home_assistant_custom_lovelace_plugins }}"
+  when: item.zip_mode is not defined or item.zip_mode == false
+
+- name: Unzip www
+  ansible.builtin.unarchive:
+    src: "{{ install_path }}/config/git/{{ item.name }}/{{ item.entity_name }}"
+    dest: "{{ install_path }}/config/www/"
+    remote_src: true
+  loop: "{{ home_assistant_custom_lovelace_plugins }}"
+  when: item.zip_mode is defined and item.zip_mode == true
