@@ -11,8 +11,8 @@
     # - name: Clean DNF
     #   shell: dnf clean all
 
-    - import_tasks: roles/pkg_mgmt/dnf/tasks/dnf5.yml
-    - import_tasks: roles/pkg_mgmt/dnf/tasks/update.yml
+    - import_tasks: ../roles/pkg_mgmt/dnf/tasks/dnf5.yml
+    - import_tasks: ../roles/pkg_mgmt/dnf/tasks/update.yml
 
     - name: Check if reboot required
       stat:
