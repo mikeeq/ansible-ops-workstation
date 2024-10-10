@@ -4,8 +4,8 @@ architecture_common_name: "amd64"
 
 # Flatpak is better for GUI applications
 flatpak_apps:
-  # - name: com.valvesoftware.Steam
-  #   remote: flathub
+  - name: com.valvesoftware.Steam
+    remote: flathub
   # - name: com.skype.Client
   #   remote: flathub
   # - name: org.signal.Signal
@@ -18,8 +18,15 @@ flatpak_apps:
     remote: flathub
   - name: com.discordapp.Discord
     remote: flathub
+  - name: com.mastermindzh.tidal-hifi
+    remote: flathub
+  - name: com.leinardi.gwe
+    remote: flathub
 
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins:
   - sniff
   - hns
+
+dnf_extra_pkgs:
+  - steam-devices

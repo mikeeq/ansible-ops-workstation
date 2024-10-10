@@ -17,6 +17,8 @@ plugins=(
   ansible
   fzf
   dnf
+  z
+  colored-man-pages
 {% if item != 'root' %}
   vscode
   terraform
@@ -29,7 +31,7 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 {% if item != 'root' %}
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:$PATH"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:/opt/azure_functions_core_tools:$PATH"
 {% endif %}
 
 # Extracting Dockerfile from image

@@ -59,7 +59,7 @@
   become_user: "{{ user_name }}"
   dconf:
     key: "/org/gnome/shell/favorite-apps"
-    value: "['google-chrome.desktop', 'firefox.desktop', 'terminator.desktop', 'code.desktop', 'com.discordapp.Discord.desktop', 'com.slack.Slack.desktop', 'com.skype.Client.desktop', 'keeweb.desktop', 'com.spotify.Client.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'org.gnome.tweaks.desktop', 'gnome-control-center.desktop']"
+    value: "['firefox.desktop', 'terminator.desktop', 'code.desktop', 'com.discordapp.Discord.desktop', 'com.slack.Slack.desktop', 'com.skype.Client.desktop', 'keeweb.desktop', 'com.spotify.Client.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'org.gnome.tweaks.desktop', 'gnome-control-center.desktop']"
     state: present
 
 # Alternate-tab is deprecated in Fedora 30
@@ -179,6 +179,23 @@
     key: "/org/gnome/shell/window-switcher/current-workspace-only"
     value: "false"
     state: present
+
+- name: "Disable workspaces only on primary screen"
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/mutter/workspaces-only-on-primary"
+    value: "false"
+    state: present
+
+- name: "Set color-scheme to dark"
+  become: true
+  become_user: "{{ user_name }}"
+  dconf:
+    key: "/org/gnome/desktop/interface/color-scheme"
+    value: "'prefer-dark'"
+    state: present
+
 
 # - name: "dash-to-dock position"
 #   become: true

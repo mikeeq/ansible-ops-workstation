@@ -79,6 +79,28 @@
         label: "{{ item.item.item.json.name }}"
       when: not item is skipped
 
+    - name: Generate schemas Gnome Shell extensions
+      become: true
+      become_user: "{{ user_name }}"
+      shell: glib-compile-schemas .
+      args:
+        chdir: ~/.local/share/gnome-shell/extensions/{{ item.item.item.json.uuid }}/schemas
+      loop: "{{ download_gnome_shell_extensions.results }}"
+      loop_control:
+        label: "{{ item.item.item.json.name }}"
+      when: not item is skipped
+      register: gnome_shell_extension_info
+
+    - name: Enable Gnome Shell extensions
+      become: true
+      become_user: "{{ user_name }}"
+      shell: gnome-extensions enable "{{ item.item.item.json.uuid }}"
+      loop: "{{ download_gnome_shell_extensions.results }}"
+      loop_control:
+        label: "{{ item.item.item.json.name }}"
+      when: not item is skipped
+      register: gnome_shell_extension_info
+
     # - name: Enable Gnome Shell extensions
     #   become: true
     #   become_user: "{{ user_name }}"

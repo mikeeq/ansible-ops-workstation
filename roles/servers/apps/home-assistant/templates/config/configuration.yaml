@@ -41,6 +41,8 @@ lovelace:
       type: module
     - url: /local/vacuum-card.js?ver=1
       type: module
+    - url: /local/dist/frigate-hass-card.js?ver=1
+      type: module
 
 # Text to speech
 tts:

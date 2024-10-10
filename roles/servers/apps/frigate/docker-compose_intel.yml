@@ -1,0 +1,37 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+# https://docs.frigate.video/installation
+# blue iris + deepstack, agentdvr
+---
+version: "3.9"
+services:
+  frigate:
+    container_name: frigate
+    privileged: true # this may not be necessary for all setups
+    restart: always
+    # https://hub.docker.com/r/blakeblackshear/frigate
+    # 0.10.1-amd64nvidia
+    image: blakeblackshear/frigate:0.10.1-amd64
+    shm_size: "64mb" # update for your cameras based on calculation above
+    devices:
+      # - /dev/bus/usb:/dev/bus/usb # passes the USB Coral, needs to be modified for other versions
+      # - /dev/apex_0:/dev/apex_0 # passes a PCIe Coral, follow driver instructions here https://coral.ai/docs/m2/get-started/#2a-on-linux
+      - /dev/dri/renderD128 # for intel hwaccel, needs to be updated for your hardware
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config.yml:/config/config.yml:ro
+      - /opt/frigate/storage:/media/frigate
+      - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+    ports:
+      - "5000:5000"
+      - "1935:1935" # RTMP feeds
+    environment:
+      FRIGATE_RTSP_PASSWORD: "password"
+      # iHD, i965
+      LIBVA_DRIVER_NAME: "iHD"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"

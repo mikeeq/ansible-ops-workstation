@@ -337,6 +337,7 @@ Contributions are what make the open source community such an amazing place to b
       - <https://www.if-not-true-then-false.com/2015/fedora-nvidia-guide/>
 
     ```bash
+    ### Install using .run installer (manually) ###
     # Install DKMS to automatically install Nvidia driver when updating kernel
     dnf install dkms kernel-devel kernel-headers gcc make acpid libglvnd-glx libglvnd-opengl libglvnd-devel pkgconfig vdpauinfo libva-vdpau-driver libva-utils
 
@@ -388,7 +389,45 @@ Contributions are what make the open source community such an amazing place to b
     # If you fail to boot to Fedora, you can edit boot entry in grub by clicking "e" in grub bootmenu and in line starting with "linux ..." add at the end "init 3" to boot in multi-user.target (without graphical interface)
 
     # If you are using Secure Boot, during installation of the NVIDIA drivers create new key pair (or use existing one), and if it's a new key pair then add them to UEFI key by executing
-    mokutil --import /usr/share/nvidia/nvidia-modsign-crt-${id}.der
+
+    mkdir -p /usr/share/uefimok/
+    cp -rfv /usr/share/nvidia/nvidia-modsign-crt-${id}.der /usr/share/uefimok/
+    cp -rfv /usr/share/nvidia/nvidia-modsign-key-${id}.key /usr/share/uefimok/
+
+    mokutil --import /usr/share/uefimok/nvidia-modsign-crt-${id}.der
+
+    bash NVIDIA-Linux-x86_64-550.107.02.run --module-signing-secret-key=/usr/share/uefimok/nvidia-modsign-key-${id}.key --module-signing-public-key=/usr/share/uefimok/nvidia-modsign-crt-${id}.der
+
+    ### Install using packages from CUDA rpm repository ###
+
+    # Check latest available rpm repo (fedora40 is not available) - https://developer.download.nvidia.com/compute/cuda/repos/
+    distro=fedora39
+
+    dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/$distro/x86_64/cuda-$distro.repo
+    dnf -y install dkms
+    dnf -y module install nvidia-driver:open-dkms
+    dnf -y install nvidia-container-toolkit
+
+    # Make sure you're running desktop in X11 mode, wayland is a bit laggy still
+    # xorg.conf can be generated from nvidia-settings
+
+    # Enroll MOK key if you're using SecureBoot
+    ## You can check by which key the kernel module is signed by, by executing: modinfo nvidia-drm, and then try to find it locally (i.e.: in dkms config file)
+    mokutil --import /var/lib/dkms/mok.pub
+
+    ### Enabling wayland
+
+    ## vi /etc/dracut.conf.d/nvidia.conf
+    force_drivers+=" nvidia nvidia_modeset nvidia_uvm nvidia_drm "
+
+    ## vi /etc/modprobe.d/nvidia.conf
+    options nvidia_drm modeset=1 fbdev=1
+
+    ##
+
+    mv /usr/lib/udev/rules.d/61-gdm.rules /root/61-gdm.rules
+    dracut -f
+
     ```
 
 12. To fix purple'ish screen, enable OC and Fan control (I recommend to use GreenWithEnvy - gwe (installed using flatpak)) apply those changes to `/etc/X11/xorg.conf`:
@@ -479,6 +518,18 @@ flatpak override com.valvesoftware.Steam --filesystem=${PATH_TO_FILESYSTEM}
 ```
 
 18. Terminator fails to open with an error `terminator:24:<module>:ModuleNotFoundError: No module named 'psutil'`, try reinstalling `dnf reinstall python3-psutil` to fix it
+
+19. Enable tabs scrolling in firefox:
+
+```
+### about:config
+
+# tabs mouse scrolling
+toolkit.tabbox.switchByScrolling = true
+
+# if google docs crashes, page jumps
+gfx.canvas.accelerated = false
+```
 
 <!-- LICENSE -->
 ## License

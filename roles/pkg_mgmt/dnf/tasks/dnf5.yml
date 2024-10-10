@@ -1,0 +1,23 @@
+---
+- name: Check dnf symlink target
+  stat:
+    path: /usr/bin/dnf
+  register: dnf_symlink
+
+# - debug:
+#     var: dnf_symlink
+
+- name: Install dnf5
+  dnf:
+    name: ["dnf5", "python3-libdnf5"]
+    state: present
+  # when: dnf_symlink.stat.lnk_target == "dnf-3"
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /usr/bin/dnf
+    dest: dnf5
+    owner: root
+    group: root
+    state: link
+  # when: dnf_symlink.stat.lnk_target == "dnf-3"
