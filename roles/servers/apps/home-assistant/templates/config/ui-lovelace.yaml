@@ -70,6 +70,30 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_battery_percentage_sypialnia_dol
                 name: Bateria
+          - entity: sensor.th_temperature_lazienka_dol
+            type: custom:multiple-entity-row
+            name: Lazienka Dol
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_lazienka_dol
+                name: Temperatura
+              - entity: sensor.th_humidity_lazienka_dol
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_lazienka_dol
+                name: Bateria
+          - entity: sensor.th_temperature_przedpokoj
+            type: custom:multiple-entity-row
+            name: Przedpokoj
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_temperature_przedpokoj
+                name: Temperatura
+              - entity: sensor.th_humidity_przedpokoj
+                name: Wilgotnosc
+              - entity: sensor.th_battery_percentage_przedpokoj
+                name: Bateria
           - type: section
             label: Gora
           - entity: sensor.th_temperature_pokoj_timi

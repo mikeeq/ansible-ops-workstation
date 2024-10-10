@@ -408,6 +408,9 @@ Contributions are what make the open source community such an amazing place to b
     dnf -y module install nvidia-driver:open-dkms
     dnf -y install nvidia-container-toolkit
 
+    # Make sure you're running desktop in X11 mode, wayland is a bit laggy still
+    # xorg.conf can be generated from nvidia-settings
+
     # Enroll MOK key if you're using SecureBoot
     ## You can check by which key the kernel module is signed by, by executing: modinfo nvidia-drm, and then try to find it locally (i.e.: in dkms config file)
     mokutil --import /var/lib/dkms/mok.pub
@@ -519,9 +522,13 @@ flatpak override com.valvesoftware.Steam --filesystem=${PATH_TO_FILESYSTEM}
 19. Enable tabs scrolling in firefox:
 
 ```
-about:config
-toolkit.tabbox.switchByScrolling
-# set to true
+### about:config
+
+# tabs mouse scrolling
+toolkit.tabbox.switchByScrolling = true
+
+# if google docs crashes, page jumps
+gfx.canvas.accelerated = false
 ```
 
 <!-- LICENSE -->

@@ -58,6 +58,7 @@ dnf_pkgs:
   - cargo
   - python3-argcomplete
   - python3-psutil
+  - steam-devices
 
 dnf_gui_pkgs:
   - clamtk

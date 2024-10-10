@@ -13,7 +13,7 @@
   roles:
     - pkg_mgmt/dnf
     - pkg_mgmt/flatpak
-    # - desktop/apps/google_chrome
+    - desktop/apps/google_chrome
     - desktop/apps/keeweb
     - apps/docker
     - apps/qemu
