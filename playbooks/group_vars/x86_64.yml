@@ -27,3 +27,6 @@ flatpak_apps:
 krew_plugins:
   - sniff
   - hns
+
+dnf_extra_pkgs:
+  - steam-devices

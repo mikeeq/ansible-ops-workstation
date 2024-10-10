@@ -58,7 +58,6 @@ dnf_pkgs:
   - cargo
   - python3-argcomplete
   - python3-psutil
-  - steam-devices
 
 dnf_gui_pkgs:
   - clamtk
@@ -84,6 +83,8 @@ dnf_gui_pkgs:
   - seahorse
   - vlc
   - wireshark
+
+dnf_extra_pkgs: []
 
 snap_apps: []
 

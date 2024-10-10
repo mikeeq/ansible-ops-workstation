@@ -10,6 +10,7 @@
     - "[{{ generic_pkgs }}]"
     - "[{{ dnf_pkgs }}]"
     - "[{{ dnf_gui_pkgs }}]"
+    - "[{{ dnf_extra_pkgs }}]"
 
 - import_tasks: update.yml
   tags:
