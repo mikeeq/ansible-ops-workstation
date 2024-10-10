@@ -1,18 +1,18 @@
 ---
-- name: Fedora on Clevo
-  ansible.builtin.import_playbook: fedora.yml
-  vars:
-    hosts_to_deploy: mikeeClevo
+# - name: Fedora on Clevo
+#   ansible.builtin.import_playbook: fedora.yml
+#   vars:
+#     hosts_to_deploy: mikeeClevo
 
 - name: Update all clevo vms and host
   hosts: clevo
   become: true
   tasks:
-    - name: Upgrade all packages
-      ansible.builtin.dnf:
-        name: "*"
-        state: latest
-        update_cache: true
+    # - name: Clean DNF
+    #   shell: dnf clean all
+
+    - import_tasks: roles/pkg_mgmt/dnf/tasks/dnf5.yml
+    - import_tasks: roles/pkg_mgmt/dnf/tasks/update.yml
 
     - name: Check if reboot required
       stat:
@@ -25,10 +25,6 @@
       when:
         - reboot_required_file.stat.exists == true
         - inventory_hostname != "mikeeClevo"
-
-    - name: Autoremove unneeded packages installed as dependencies
-      ansible.builtin.dnf:
-        autoremove: yes
 
 - name: Set variables on an imported playbook
   ansible.builtin.import_playbook: generic-core.yml
@@ -53,6 +49,23 @@
     - servers/network-static-dns
     - apps/docker
     - servers/apps/adguard-home
+
+- name: Provision GW1
+  hosts:
+    - gw1
+  become: true
+  roles:
+    - servers/network-static-dns
+    - apps/openvpn-client
+    - servers/apps/vpn-gw
+
+- name: Provision VPN1
+  hosts:
+    - vpn1
+  become: true
+  roles:
+    - servers/network-static-dns
+    - servers/apps/openvpn
 
 - name: Provision mikeeClevo
   hosts:

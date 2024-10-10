@@ -1,4 +1,6 @@
 // path .vscode/settings.json
+// sudo /bin/bash -c "echo \"$(whereis -b firefox | awk '{print $2}') -P WORK \\\"\\\$@\\\" \" > \"$(whereis -b firefox | awk '{print $2}')_WORK\""
+// sudo chmod +x $(whereis -b firefox | awk '{print $2}')_WORK
 {
   "terminal.integrated.defaultProfile.linux": "zshWORK_VAR",
   "terminal.integrated.profiles.linux" :{
@@ -23,5 +25,7 @@
       "/home/mikee/.work_profiles/WORK_VAR/.kube/config"
     ],
     "vs-kubernetes.kubeconfig": "/home/mikee/.work_profiles/WORK_VAR/.kube/config"
-  }
+  },
+  "ansible.python.interpreterPath": "/bin/python",
+  "workbench.externalBrowser": "firefox_WORK"
 }

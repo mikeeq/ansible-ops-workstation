@@ -21,3 +21,4 @@
     - apps/terraform
     - apps/terragrunt
     - apps/terraform-docs
+    - apps/azure-functions-core-tools

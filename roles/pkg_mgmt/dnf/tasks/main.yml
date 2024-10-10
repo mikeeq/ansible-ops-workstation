@@ -1,14 +1,16 @@
 ---
+- import_tasks: dnf5.yml
 - import_tasks: repos.yml
 
 - name: "[DNF] Install Apps"
-  dnf:
+  dnf5:
     name: "{{ item }}"
     state: present
   with_items:
     - "[{{ generic_pkgs }}]"
     - "[{{ dnf_pkgs }}]"
     - "[{{ dnf_gui_pkgs }}]"
+    - "[{{ dnf_extra_pkgs }}]"
 
 - import_tasks: update.yml
   tags:

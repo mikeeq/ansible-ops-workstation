@@ -84,6 +84,8 @@ dnf_gui_pkgs:
   - vlc
   - wireshark
 
+dnf_extra_pkgs: []
+
 snap_apps: []
 
 snap_classic_apps: []
@@ -167,6 +169,7 @@ vscode_extensions:
   - eamodio.gitlens
   - hashicorp.terraform
   - hediet.vscode-drawio
+  - mhutchie.git-graph
   - ms-azure-devops.azure-pipelines
   - ms-azuretools.vscode-docker
   - ms-dotnettools.csharp

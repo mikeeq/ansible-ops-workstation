@@ -20,5 +20,5 @@
   ansible.builtin.replace:
     path: /etc/yum.repos.d/docker-ce.repo
     regexp: '\$releasever'
-    replace: '36'
+    replace: '40'
   when: releasever_check.stdout == "rawhide"
