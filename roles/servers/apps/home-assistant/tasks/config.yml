@@ -12,8 +12,18 @@
     - "{{ install_path }}/config/mqtt/lights"
     - "{{ install_path }}/config/mqtt/switches"
 
-- name: Configure config
+- name: Configure config files
   copy:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../files/config/*
+    # - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/*"
+
+- name: Configure config templates
+  template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/"
     mode: 0664

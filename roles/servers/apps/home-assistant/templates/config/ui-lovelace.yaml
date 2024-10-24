@@ -583,22 +583,16 @@ views:
       - type: entities
         entities:
           - switch.virtual_ogrzewanie_pompy
-          - switch.virtual_ogrzewanie_dol_przedpokoj
-          - switch.virtual_ogrzewanie_dol_kuchnia
-          - switch.virtual_ogrzewanie_dol_lazienka
-          - switch.virtual_ogrzewanie_dol_salon
-          - switch.virtual_ogrzewanie_dol_sypialnia
-          - switch.virtual_ogrzewanie_gora_biuro_miki
-          - switch.virtual_ogrzewanie_gora_garderoba
-          - switch.virtual_ogrzewanie_gora_korytarz
-          - switch.virtual_ogrzewanie_gora_lazienka
-          - switch.virtual_ogrzewanie_gora_pokoj_julia
-          - switch.virtual_ogrzewanie_gora_sypialnia
-          - switch.virtual_ogrzewanie_gora_pokoj_timi
+          - switch.group_ogrzewanie_podlogowe
+          - type: section
+            label: Silowniki
+{% for i in home_assistant.climate %}
+          - switch.virtual_ogrzewanie_{{ i.name }}
+{% endfor %}
+{% for i in home_assistant.climate %}
       - type: thermostat
-        entity: climate.sypialnia_dol
-      - type: thermostat
-        entity: climate.kuchnia
+        entity: climate.{{ i.name }}
+{% endfor %}
       - type: entities
         title: Temperatury Zigbee
         entities:

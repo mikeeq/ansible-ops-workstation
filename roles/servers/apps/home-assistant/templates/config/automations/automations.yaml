@@ -48,8 +48,9 @@
   triggers:
     - trigger: state
       entity_id:
-        - switch.virtual_ogrzewanie_dol_kuchnia
-        - switch.virtual_ogrzewanie_dol_sypialnia
+{% for i in home_assistant.climate %}
+        - switch.virtual_ogrzewanie_{{ i.name }}
+{% endfor %}
       from: "off"
       to: "on"
   conditions: []
@@ -65,22 +66,21 @@
   triggers:
     - trigger: state
       entity_id:
-        - switch.virtual_ogrzewanie_dol_kuchnia
-        - switch.virtual_ogrzewanie_dol_sypialnia
+        - switch.group_ogrzewanie_podlogowe
       from: "on"
       to: "off"
   conditions: []
   actions:
-    - action: switch.turn_on
-      metadata: {}
-      data: {}
-      target:
-        entity_id: switch.virtual_ogrzewanie_dol_lazienka
-    - delay:
-        hours: 0
-        minutes: 1
-        seconds: 0
-        milliseconds: 0
+    # - action: switch.turn_on
+    #   metadata: {}
+    #   data: {}
+    #   target:
+    #     entity_id: switch.virtual_ogrzewanie_dol_lazienka
+    # - delay:
+    #     hours: 0
+    #     minutes: 1
+    #     seconds: 0
+    #     milliseconds: 0
     - action: switch.turn_off
       metadata: {}
       data: {}

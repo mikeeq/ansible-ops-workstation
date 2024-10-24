@@ -59,6 +59,31 @@ home_assistant:
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_brama_dwor_btn
 
+  climate:
+    # - name: garaz
+    - name: przedpokoj
+      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    # - name: lazienka_dol
+    #   switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    - name: salon
+      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    - name: kuchnia
+      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    - name: sypialnia_dol
+      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    - name: pokoj_julia
+      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    - name: serwerownia
+      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    - name: pokoj_timi
+      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    - name: biuro_miki
+      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    - name: sypialnia_gora
+      switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
+    - name: garderoba
+      switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
+
   mqtt:
     zigbee_coordinator_base_topic: "tasmota_10B490"
     sonoff:
