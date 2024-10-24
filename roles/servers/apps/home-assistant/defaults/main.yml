@@ -62,32 +62,32 @@ home_assistant:
   mqtt:
     zigbee_coordinator_base_topic: "tasmota_10B490"
     sonoff:
-      temp_humidity:
-        - name: sypialnia_dol
-        - name: kuchnia
-        - name: salon
-        - name: sypialnia_gora
-        - name: biuro_miki
-        - name: pokoj_timi
-        - name: pokoj_nad_garazem
-        - name: garderoba
-        - name: serwerownia
-        - name: ogrod
-        - name: garaz
-        - name: lazienka_dol
-        - name: przedpokoj
+      temp_humidity: []
+        # - name: sypialnia_dol
+        # - name: kuchnia
+        # - name: salon
+        # - name: sypialnia_gora
+        # - name: biuro_miki
+        # - name: pokoj_timi
+        # - name: pokoj_nad_garazem
+        # - name: garderoba
+        # - name: serwerownia
+        # - name: ogrod
+        # - name: garaz
+        # - name: lazienka_dol
+        # - name: przedpokoj
 
-      button:
-        - name: dol_1
-      door:
-        - name: garaz_brama
-        - name: dwor_brama
-      zbmini:
-        - name: sypialnia_gora
-      power_plug:
-        - name: salon
+      button: []
+        # - name: dol_1
+      door: []
+        # - name: garaz_brama
+        # - name: dwor_brama
+      zbmini: []
+        # - name: sypialnia_gora
+      power_plug: []
+        # - name: salon
     ikea:
-      button:
-        - name: kuchnia
-      tradfri_single_dimm:
-        - name: kuchnia_szafki
+      button: []
+        # - name: kuchnia
+      tradfri_single_dimm: []
+        # - name: kuchnia_szafki

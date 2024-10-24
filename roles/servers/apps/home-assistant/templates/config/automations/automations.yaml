@@ -11,7 +11,7 @@
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.gosund_switch_pompa_cyrkulacyjna
+      entity_id: switch.gosund_pompa_gosund_switch_pompa_cyrkulacyjna
   mode: single
 - alias: Wylacz cyrkulacje
   description: ''
@@ -25,7 +25,7 @@
   - service: switch.turn_off
     data: {}
     target:
-      entity_id: switch.gosund_switch_pompa_cyrkulacyjna
+      entity_id: switch.gosund_pompa_gosund_switch_pompa_cyrkulacyjna
   mode: single
 - alias: Click button to close dwor_brama
   description: ''
@@ -42,6 +42,50 @@
       data: {}
       target:
         entity_id: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+  mode: single
+- alias: ogrzewanie_wlacz
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id:
+        - switch.virtual_ogrzewanie_dol_kuchnia
+        - switch.virtual_ogrzewanie_dol_sypialnia
+      from: "off"
+      to: "on"
+  conditions: []
+  actions:
+    - action: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.virtual_ogrzewanie_pompy
+  mode: single
+- alias: ogrzewanie_wylacz
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id:
+        - switch.virtual_ogrzewanie_dol_kuchnia
+        - switch.virtual_ogrzewanie_dol_sypialnia
+      from: "on"
+      to: "off"
+  conditions: []
+  actions:
+    - action: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.virtual_ogrzewanie_dol_lazienka
+    - delay:
+        hours: 0
+        minutes: 1
+        seconds: 0
+        milliseconds: 0
+    - action: switch.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.virtual_ogrzewanie_pompy
   mode: single
 
 # - alias: Alert Brama

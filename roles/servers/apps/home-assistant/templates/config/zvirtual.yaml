@@ -1,0 +1,42 @@
+---
+version: 1
+devices:
+  ogrzewanie_pompy:
+    - platform: switch
+      name: ogrzewanie_pompy
+  ogrzewanie_dol_lazienka:
+    - platform: switch
+      name: ogrzewanie_dol_lazienka
+  ogrzewanie_dol_sypialnia:
+    - platform: switch
+      name: ogrzewanie_dol_sypialnia
+  ogrzewanie_dol_salon:
+    - platform: switch
+      name: ogrzewanie_dol_salon
+  ogrzewanie_dol_kuchnia:
+    - platform: switch
+      name: ogrzewanie_dol_kuchnia
+  ogrzewanie_dol_przedpokoj:
+    - platform: switch
+      name: ogrzewanie_dol_przedpokoj
+  ogrzewanie_gora_pokoj_julia:
+    - platform: switch
+      name: ogrzewanie_gora_pokoj_julia
+  ogrzewanie_gora_garderoba:
+    - platform: switch
+      name: ogrzewanie_gora_gaderoba
+  ogrzewanie_gora_sypialnia:
+    - platform: switch
+      name: ogrzewanie_gora_sypialnia
+  ogrzewanie_gora_biuro_miki:
+    - platform: switch
+      name: ogrzewanie_gora_biuro_miki
+  ogrzewanie_gora_lazienka:
+    - platform: switch
+      name: ogrzewanie_gora_lazienka
+  ogrzewanie_gora_pokoj_timi:
+    - platform: switch
+      name: ogrzewanie_gora_pokoj_timi
+  ogrzewanie_gora_pokoj_timi:
+    - platform: switch
+      name: ogrzewanie_gora_korytarz

@@ -15,10 +15,10 @@
   name: ogrzewanie_dol_kuchnia
 
 - platform: virtual
-  name: ogrzewanie_dol_korytarz
+  name: ogrzewanie_dol_przedpokoj
 
 - platform: virtual
-  name: ogrzewanie_gora_biuro_miki
+  name: ogrzewanie_gora_pokoj_julia
 
 - platform: virtual
   name: ogrzewanie_gora_garderoba
@@ -27,13 +27,29 @@
   name: ogrzewanie_gora_sypialnia
 
 - platform: virtual
-  name: ogrzewanie_gora_pokoj_nad_garazem
+  name: ogrzewanie_gora_biuro_miki
 
 - platform: virtual
   name: ogrzewanie_gora_lazienka
 
 - platform: virtual
-  name: ogrzewanie_gora_timi_pokoj
+  name: ogrzewanie_gora_pokoj_timi
 
 - platform: virtual
   name: ogrzewanie_gora_korytarz
+
+- platform: group
+  name: ogrzewanie_podlogowe
+  entities:
+    - switch.virtual_ogrzewanie_dol_lazienka
+    - switch.virtual_ogrzewanie_dol_sypialnia
+    - switch.virtual_ogrzewanie_dol_salon
+    - switch.virtual_ogrzewanie_dol_kuchnia
+    - switch.virtual_ogrzewanie_dol_przedpokoj
+    - switch.virtual_ogrzewanie_gora_pokoj_julia
+    - switch.virtual_ogrzewanie_gora_garderoba
+    - switch.virtual_ogrzewanie_gora_sypialnia
+    - switch.virtual_ogrzewanie_gora_biuro_miki
+    - switch.virtual_ogrzewanie_gora_lazienka
+    - switch.virtual_ogrzewanie_gora_pokoj_timi
+    - switch.virtual_ogrzewanie_gora_korytarz

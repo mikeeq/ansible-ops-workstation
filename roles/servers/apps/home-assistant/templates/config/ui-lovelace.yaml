@@ -8,165 +8,177 @@ views:
         entities:
           - type: section
             label: Inne
-          - entity: sensor.th_temperature_ogrod
+          - entity: sensor.th_ogrod_temperature
             type: custom:multiple-entity-row
             name: Ogrod
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_ogrod
+              - entity: sensor.th_ogrod_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_ogrod
+              - entity: sensor.th_ogrod_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_ogrod
+              - entity: sensor.th_ogrod_battery
                 name: Bateria
-          - entity: sensor.th_temperature_garaz
+          - entity: sensor.th_garaz_temperature
             type: custom:multiple-entity-row
             name: Garaz
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_garaz
+              - entity: sensor.th_garaz_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_garaz
+              - entity: sensor.th_garaz_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_garaz
+              - entity: sensor.th_garaz_battery
                 name: Bateria
           - type: section
             label: Dol
-          - entity: sensor.th_temperature_kuchnia
+          - entity: sensor.th_kuchnia_temperature
             type: custom:multiple-entity-row
             name: Kuchnia
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_kuchnia
+              - entity: sensor.th_kuchnia_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_kuchnia
+              - entity: sensor.th_kuchnia_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_kuchnia
+              - entity: sensor.th_kuchnia_battery
                 name: Bateria
-          - entity: sensor.th_temperature_salon
+          - entity: sensor.th_salon_temperature
             type: custom:multiple-entity-row
             name: Salon
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_salon
+              - entity: sensor.th_salon_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_salon
+              - entity: sensor.th_salon_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_salon
+              - entity: sensor.th_salon_battery
                 name: Bateria
-          - entity: sensor.th_temperature_sypialnia_dol
+          - entity: sensor.th_sypialnia_dol_temperature
             type: custom:multiple-entity-row
             name: Sypialnia Dol
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_sypialnia_dol
+              - entity: sensor.th_sypialnia_dol_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_sypialnia_dol
+              - entity: sensor.th_sypialnia_dol_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_sypialnia_dol
+              - entity: sensor.th_sypialnia_dol_battery
                 name: Bateria
-          - entity: sensor.th_temperature_lazienka_dol
+          - entity: sensor.th_lazienka_dol_temperature
             type: custom:multiple-entity-row
             name: Lazienka Dol
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_lazienka_dol
+              - entity: sensor.th_lazienka_dol_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_lazienka_dol
+              - entity: sensor.th_lazienka_dol_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_lazienka_dol
+              - entity: sensor.th_lazienka_dol_battery
                 name: Bateria
-          - entity: sensor.th_temperature_przedpokoj
+          - entity: sensor.th_przedpokoj_temperature
             type: custom:multiple-entity-row
             name: Przedpokoj
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_przedpokoj
+              - entity: sensor.th_przedpokoj_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_przedpokoj
+              - entity: sensor.th_przedpokoj_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_przedpokoj
+              - entity: sensor.th_przedpokoj_battery
                 name: Bateria
           - type: section
             label: Gora
-          - entity: sensor.th_temperature_pokoj_timi
+          - entity: sensor.th_pokoj_timi_temperature
             type: custom:multiple-entity-row
             name: Pokoj Timi
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_pokoj_timi
+              - entity: sensor.th_pokoj_timi_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_pokoj_timi
+              - entity: sensor.th_pokoj_timi_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_pokoj_timi
+              - entity: sensor.th_pokoj_timi_battery
                 name: Bateria
-          - entity: sensor.th_temperature_pokoj_nad_garazem
-            type: custom:multiple-entity-row
-            name: Pokoj nad garazem
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_temperature_pokoj_nad_garazem
-                name: Temperatura
-              - entity: sensor.th_humidity_pokoj_nad_garazem
-                name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_pokoj_nad_garazem
-                name: Bateria
-          - entity: sensor.th_temperature_sypialnia_gora
-            type: custom:multiple-entity-row
-            name: Sypialnia Gora
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_temperature_sypialnia_gora
-                name: Temperatura
-              - entity: sensor.th_humidity_sypialnia_gora
-                name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_sypialnia_gora
-                name: Bateria
-          - entity: sensor.th_temperature_garderoba
-            type: custom:multiple-entity-row
-            name: Garderoba
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_temperature_garderoba
-                name: Temperatura
-              - entity: sensor.th_humidity_garderoba
-                name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_garderoba
-                name: Bateria
-          - entity: sensor.th_temperature_serwerownia
-            type: custom:multiple-entity-row
-            name: Serwerownia
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_temperature_serwerownia
-                name: Temperatura
-              - entity: sensor.th_humidity_serwerownia
-                name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_serwerownia
-                name: Bateria
-          - entity: sensor.th_temperature_biuro_miki
+          # - entity: sensor.th_lazienka_gora_temperature
+          #   type: custom:multiple-entity-row
+          #   name: Pokoj Timi
+          #   show_state: false
+          #   secondary_info: last-changed
+          #   entities:
+          #     - entity: sensor.th_lazienka_gora_temperature
+          #       name: Temperatura
+          #     - entity: sensor.th_lazienka_gora_humidity
+          #       name: Wilgotnosc
+          #     - entity: sensor.th_lazienka_gora_battery
+          #       name: Bateria
+          - entity: sensor.th_biuro_miki_temperature
             type: custom:multiple-entity-row
             name: Biuro Miki
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_biuro_miki
+              - entity: sensor.th_biuro_miki_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_biuro_miki
+              - entity: sensor.th_biuro_miki_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_biuro_miki
+              - entity: sensor.th_biuro_miki_battery
+                name: Bateria
+          - entity: sensor.th_sypialnia_gora_temperature
+            type: custom:multiple-entity-row
+            name: Sypialnia Gora
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_sypialnia_gora_temperature
+                name: Temperatura
+              - entity: sensor.th_sypialnia_gora_humidity
+                name: Wilgotnosc
+              - entity: sensor.th_sypialnia_gora_battery
+                name: Bateria
+          - entity: sensor.th_garderoba_temperature
+            type: custom:multiple-entity-row
+            name: Garderoba
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_garderoba_temperature
+                name: Temperatura
+              - entity: sensor.th_garderoba_humidity
+                name: Wilgotnosc
+              - entity: sensor.th_garderoba_battery
+                name: Bateria
+          - entity: sensor.th_serwerownia_temperature
+            type: custom:multiple-entity-row
+            name: Serwerownia
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_serwerownia_temperature
+                name: Temperatura
+              - entity: sensor.th_serwerownia_humidity
+                name: Wilgotnosc
+              - entity: sensor.th_serwerownia_battery
+                name: Bateria
+          - entity: sensor.th_pokoj_julia_temperature
+            type: custom:multiple-entity-row
+            name: Pokoj Julia
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_pokoj_julia_temperature
+                name: Temperatura
+              - entity: sensor.th_pokoj_julia_humidity
+                name: Wilgotnosc
+              - entity: sensor.th_pokoj_julia_battery
                 name: Bateria
       - type: entities
         entities:
@@ -178,10 +190,10 @@ views:
           - entity: switch.sonoff_minir2_salon_kinkiety_minir2_swiatlo_salon_kinkiety
             name: Salon Kinkiety
             icon: mdi:wall-sconce
-          - entity: switch.spp_salon
+          - entity: switch.sp_sonoff_salon_switch
             name: Salon Lampa
             icon: mdi:floor-lamp-torchiere-variant
-          - entity: light.ikea_tradfri_kuchnia_szafki
+          - entity: light.ikea_led_kuchnia_light
             name: Kuchnia LED szafki
             icon: mdi:led-strip
           - entity: switch.sonoff_minir2_taras_minir2_swiatlo_taras
@@ -193,9 +205,12 @@ views:
             icon: mdi:ceiling-light
           - type: section
             label: Gora
-          - entity: switch.zbmini_swiatlo_sypialnia_gora
+          - entity: light.zbmini_sypialnia_gora_light
             name: Sypialnia Gora
             icon: mdi:ceiling-light
+          - entity: light.ikea_bulb_lampka_sypialnia_gora_light
+            name: Sypialnia Gora Lampka
+            icon: mdi:lamp
         title: Swiatla
         show_header_toggle: false
         state_color: true
@@ -274,13 +289,13 @@ views:
         title: SpeedTest
       - type: entities
         entities:
-          - entity: sensor.ikea_button_state_kuchnia
+          - entity: sensor.ikea_5b_kuchnia_battery
             type: custom:multiple-entity-row
             name: Ikea kuchnia
             show_state: false
             icon: mdi:gesture-tap-button
             entities:
-              - entity: sensor.ikea_button_battery_percentage_kuchnia
+              - entity: sensor.ikea_5b_kuchnia_battery
                 name: Battery
           - entity: sensor.button_state_dol_1
             type: custom:multiple-entity-row
@@ -319,9 +334,9 @@ views:
             toggle: true
             show_state: true
             entities:
-              - entity: sensor.door_battery_percentage_garaz_brama
+              - entity: sensor.door_brama_garaz_battery
                 name: Bateria
-              - entity: binary_sensor.door_state_garaz_brama
+              - entity: binary_sensor.door_brama_garaz_opening
                 name: Stan
           - entity: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
             name: Garaz Swiatlo
@@ -486,20 +501,20 @@ views:
     cards:
       - type: entities
         entities:
-          - vacuum.roborock_s5_max
-          - sensor.roborock_s5_max_battery
-          - sensor.roborock_s5_max_status
-          - entity: select.roborock_s5_max_mop_intensity
+          - vacuum.roborock_qrevo_master
+          - sensor.roborock_qrevo_master_battery
+          - sensor.roborock_qrevo_master_status
+          - entity: select.roborock_qrevo_master_mop_intensity
             name: Mop intensity
-          - binary_sensor.roborock_s5_max_mop_attached
-          - binary_sensor.roborock_s5_max_water_box_attached
-          - entity: sensor.roborock_s5_max_cleaning_time
+          - binary_sensor.roborock_qrevo_master_mop_attached
+          - binary_sensor.roborock_qrevo_master_water_box_attached
+          - entity: sensor.roborock_qrevo_master_cleaning_time
             name: Cleaning time
-          - entity: image.roborock_s5_max_dol
+          - entity: image.roborock_qrevo_master_dol
             name: Mapa dol
-          - entity: image.roborock_s5_max_gora
+          - entity: image.roborock_qrevo_master_gora
             name: Mapa gora
-        title: Roborock S5 Max
+        title: Roborock Qrevo Master
       - type: entities
         entities:
           - entity: sensor.nawilzacz_powietrza_humidity
@@ -568,7 +583,7 @@ views:
       - type: entities
         entities:
           - switch.virtual_ogrzewanie_pompy
-          - switch.virtual_ogrzewanie_dol_korytarz
+          - switch.virtual_ogrzewanie_dol_przedpokoj
           - switch.virtual_ogrzewanie_dol_kuchnia
           - switch.virtual_ogrzewanie_dol_lazienka
           - switch.virtual_ogrzewanie_dol_salon
@@ -577,9 +592,9 @@ views:
           - switch.virtual_ogrzewanie_gora_garderoba
           - switch.virtual_ogrzewanie_gora_korytarz
           - switch.virtual_ogrzewanie_gora_lazienka
-          - switch.virtual_ogrzewanie_gora_pokoj_nad_garazem
+          - switch.virtual_ogrzewanie_gora_pokoj_julia
           - switch.virtual_ogrzewanie_gora_sypialnia
-          - switch.virtual_ogrzewanie_gora_timi_pokoj
+          - switch.virtual_ogrzewanie_gora_pokoj_timi
       - type: thermostat
         entity: climate.sypialnia_dol
       - type: thermostat
@@ -591,11 +606,15 @@ views:
             type: custom:multiple-entity-row
             name: Kuchnia
             show_state: false
+            secondary_info: last-changed
             entities:
-              - entity: sensor.th_temperature_kuchnia
+              - entity: climate.kuchnia
+                name: Termostat
+                name: Termostat Stan
+              - entity: sensor.th_kuchnia_temperature
                 name: Temperatura
-              - entity: sensor.th_humidity_kuchnia
+              - entity: sensor.th_kuchnia_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_battery_percentage_kuchnia
+              - entity: sensor.th_kuchnia_battery
                 name: Bateria
 title: MikiDashboardYAML
