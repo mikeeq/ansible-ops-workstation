@@ -67,6 +67,18 @@ sensor: !include sensors.yaml
 template: !include template.yaml
 
 virtual:
+  yaml_config: true
 
 switch: !include switch.yaml
 climate: !include climate.yaml
+
+
+zha:
+  zigpy_config:
+    ota:
+      ikea_provider: true                       # Enable OTA update downloads for Trådfri devices
+      inovelli_provider: true                   # Enable OTA update downloads for INOVELLI devices
+      ledvance_provider: true                   # Enable OTA update downloads for LEDVANCE/OSRAM devices
+      salus_provider: true                      # Enable OTA update downloads for SALUS/Computime devices
+      sonoff_provider: true                     # Enable OTA update downloads for Sonoff (ITead) devices
+      thirdreality_provider: true               # Enable OTA update downloads for 3REALITY devices
