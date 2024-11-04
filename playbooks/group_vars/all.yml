@@ -113,7 +113,7 @@ pip_apps:
   #   virtualenv_enabled: false
   - name: azure-cli
     virtualenv_enabled: true
-    virtualenv_python: "python3.11"
+    # virtualenv_python: "python3.11"
   - name: ansible-lint
     virtualenv_enabled: true
   - name: yamllint

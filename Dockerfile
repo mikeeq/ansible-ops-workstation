@@ -1,4 +1,4 @@
-FROM fedora:40
+FROM fedora:41
 
 # ENV container docker
 ENV FEDORA_USERNAME=mikee
@@ -28,18 +28,18 @@ rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # https://pypi.org/project/pip/
-RUN pip3 install --no-cache-dir --upgrade pip==24.0 && \
+RUN pip3 install --no-cache-dir --upgrade pip==24.3.1 && \
     pip3 install --no-cache-dir \
       # https://pypi.org/project/ansible/
-      ansible==9.5.1 \
+      ansible==10.5.0 \
       # https://pypi.org/project/ansible-lint/
-      ansible-lint==24.2.3 \
+      ansible-lint==24.9.2 \
       # https://pypi.org/project/yamllint/
       yamllint==1.35.1 \
       # https://pypi.org/project/packaging/
-      packaging==24.0 \
+      packaging==24.1 \
       # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL==24.1.0
+      pyOpenSSL==24.2.1
 
 # Dive
 RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.tar.gz && \
