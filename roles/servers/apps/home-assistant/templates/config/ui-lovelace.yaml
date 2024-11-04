@@ -211,6 +211,9 @@ views:
           - entity: light.ikea_bulb_lampka_sypialnia_gora_light
             name: Sypialnia Gora Lampka
             icon: mdi:lamp
+          - entity: light.ikea_bulb_biuro_miki_light
+            name: Biuro Miki Lampka
+            icon: mdi:lamp
         title: Swiatla
         show_header_toggle: false
         state_color: true
