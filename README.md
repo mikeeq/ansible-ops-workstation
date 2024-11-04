@@ -187,7 +187,7 @@ Contributions are what make the open source community such an amazing place to b
    ```bash
    sudo -i
    apt-get install -y git python3-pip curl sudo
-   pip3 install ansible
+   pip3 install --break-system-packages ansible
    ```
 
 4. Clone repository
