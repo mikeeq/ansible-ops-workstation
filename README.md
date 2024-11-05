@@ -165,9 +165,9 @@ Contributions are what make the open source community such an amazing place to b
 1. Install
 
    - VSCode - <https://code.visualstudio.com/download>
-   - Ubuntu 22.04 WSL2
+   - Ubuntu 24.04 WSL2
      - <https://apps.microsoft.com/store/detail/windows-subsystem-for-linux/9P9TQF7MRM4R>
-     - <https://apps.microsoft.com/store/detail/ubuntu-22041-lts/9PN20MSR04DW?hl=pl-pl&gl=pl>
+     - <https://apps.microsoft.com/detail/9nz3klhxdjp5?hl=en-gb&gl=PL>
      - <https://docs.microsoft.com/en-us/windows/wsl/install>
    - Docker Desktop for Windows - <https://docs.docker.com/desktop/windows/install/>
    - Windows Terminal
