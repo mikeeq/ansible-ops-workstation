@@ -7,7 +7,7 @@
   ignore_errors: true
 
 - name: Remove old deps before installing docker
-  package:
+  dnf:
     name: "{{ pkgs }}"
     state: absent
   when: docker_check.rc != 0
@@ -36,7 +36,7 @@
   when: docker_repo_check.rc != 0
 
 - name: Install Docker
-  package:
+  dnf:
     name: "{{ pkgs }}"
     state: present
   vars:

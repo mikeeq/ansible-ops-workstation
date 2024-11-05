@@ -1,4 +1,9 @@
 ---
+- name: Remove all system-wide errors in pip
+  shell: rm -rfv /usr/lib/*/EXTERNALLY-MANAGED
+  register: pip_ext_managed
+  changed_when: pip_ext_managed.stdout != ""
+
 - name: Install PIP virtualenv
   pip:
     name: "virtualenv"
