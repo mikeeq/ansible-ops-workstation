@@ -2,7 +2,7 @@ FROM ubuntu:24.04
 
 # ENV container docker
 ENV UBUNTU_USERNAME=mikee
-ENV DEBIAN_FRONTEND=noninteractiv
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -12,6 +12,7 @@ RUN apt-get update \
     && apt-get clean all
 
 # https://pypi.org/project/pip/
+# rm -rfv /usr/lib/*/EXTERNALLY-MANAGED
 # RUN pip3 install --break-system-packages --no-cache-dir --upgrade pip==24.3.1 && \
 RUN pip3 install --break-system-packages --no-cache-dir \
       # https://pypi.org/project/ansible/

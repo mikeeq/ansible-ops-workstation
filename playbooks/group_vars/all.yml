@@ -103,8 +103,9 @@ flatpak_repos:
     url: https://flathub.org/repo/flathub.flatpakrepo
 
 pip_apps:
-  - name: pip
-    virtualenv_enabled: false
+  # fails on newer Ubuntu as it OS managed
+  # - name: pip
+  #   virtualenv_enabled: false
   - name: pyOpenSSL
     virtualenv_enabled: false
   - name: ansible

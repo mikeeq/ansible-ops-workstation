@@ -39,9 +39,9 @@ security:
     useScriptSecurity: false
 
 unclassified:
-  locale:
-    systemLocale: en
-    ignoreAcceptLanguage: true
+  # locale:
+  #   systemLocale: en
+  #   ignoreAcceptLanguage: true
   location:
     adminAddress: "mikee@jenkins.local"
 
