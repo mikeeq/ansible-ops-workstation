@@ -160,7 +160,8 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # https://github.com/gruntwork-io/terragrunt/releases/latest
 # terragrunt_version: 0.31.8
 # https://releases.hashicorp.com/vagrant
-# vagrant_version: 2.2.19
+# https://github.com/hashicorp/vagrant/issues/13527
+vagrant_version: 2.4.1
 # https://github.com/boz/kail/releases
 # kail_version: 0.16.1
 
