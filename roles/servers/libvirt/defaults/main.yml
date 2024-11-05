@@ -14,17 +14,11 @@ cloud_init_config_files:
 # https://cloudinit.readthedocs.io/en/latest/topics/instancedata.html
 # https://cloudinit.readthedocs.io/en/latest/topics/datasources/nocloud.html
 
-# cloud_image_url: "https://dl.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/aarch64/images/Fedora-Cloud-Base-35-1.2.aarch64.qcow2"
-# cloud_image_name: "Fedora-Cloud-Base-35-1.2.aarch64.qcow2"
-# cloud_image_checksum: "sha256:c71f2e6ce75b516d565e2c297ea9994c69b946cb3eaa0a4bbea400dbd6f59ae6."
-# https://download.fedoraproject.org/pub/fedora/linux/releases/39/Cloud/x86_64/images/
-# cloud_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/39/Cloud/x86_64/images/Fedora-Cloud-Base-39-1.5.x86_64.qcow2"
-# cloud_image_name: "Fedora-Cloud-Base-39-1.5.x86_64.qcow2"
-# cloud_image_checksum: "sha256:ab5be5058c5c839528a7d6373934e0ce5ad6c8f80bd71ed3390032027da52f37"
-cloud_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/40/Cloud/x86_64/images/Fedora-Cloud-Base-UEFI-UKI.x86_64-40-1.14.qcow2"
-cloud_image_name: "Fedora-Cloud-Base-UEFI-UKI.x86_64-40-1.14.qcow2"
-cloud_image_checksum: "sha256:e58fbd6c147c0eda6eca72491ddc74871c3c3db9b808dc4fcf0d313510c43d81"
-
+# https://mirroronet.pl/pub/mirrors/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-41-1.4.x86_64.qcow2
+# https://mirroronet.pl/pub/mirrors/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-UEFI-UKI-41-1.4.x86_64.qcow2
+cloud_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-UEFI-UKI-41-1.4.x86_64.qcow2"
+cloud_image_name: "Fedora-Cloud-Base-UEFI-UKI-41-1.4.x86_64.qcow2"
+cloud_image_checksum: "sha256:2a39a9c66d4c18f6541e0ca160beaceeb6b3f802e9f24affaf8292d679e0f1c2"
 
 libvirt_images_dir: "/var/lib/libvirt/images"
 

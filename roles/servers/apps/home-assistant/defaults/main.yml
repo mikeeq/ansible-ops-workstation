@@ -59,35 +59,60 @@ home_assistant:
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_brama_dwor_btn
 
+  climate:
+    # - name: garaz
+    - name: przedpokoj
+      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    # - name: lazienka_dol
+    #   switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    - name: salon
+      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    - name: kuchnia
+      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    - name: sypialnia_dol
+      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+    - name: pokoj_julia
+      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    - name: serwerownia
+      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    - name: pokoj_timi
+      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    - name: biuro_miki
+      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    - name: sypialnia_gora
+      switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
+    - name: garderoba
+      switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
+
   mqtt:
     zigbee_coordinator_base_topic: "tasmota_10B490"
     sonoff:
-      temp_humidity:
-        - name: sypialnia_dol
-        - name: kuchnia
-        - name: salon
-        - name: sypialnia_gora
-        - name: biuro_miki
-        - name: pokoj_timi
-        - name: pokoj_nad_garazem
-        - name: garderoba
-        - name: serwerownia
-        - name: ogrod
-        - name: garaz
-        - name: lazienka_dol
-        - name: przedpokoj
+      temp_humidity: []
+        # - name: sypialnia_dol
+        # - name: kuchnia
+        # - name: salon
+        # - name: sypialnia_gora
+        # - name: biuro_miki
+        # - name: pokoj_timi
+        # - name: pokoj_nad_garazem
+        # - name: garderoba
+        # - name: serwerownia
+        # - name: ogrod
+        # - name: garaz
+        # - name: lazienka_dol
+        # - name: przedpokoj
 
-      button:
-        - name: dol_1
-      door:
-        - name: garaz_brama
-        - name: dwor_brama
-      zbmini:
-        - name: sypialnia_gora
-      power_plug:
-        - name: salon
+      button: []
+        # - name: dol_1
+      door: []
+        # - name: garaz_brama
+        # - name: dwor_brama
+      zbmini: []
+        # - name: sypialnia_gora
+      power_plug: []
+        # - name: salon
     ikea:
-      button:
-        - name: kuchnia
-      tradfri_single_dimm:
-        - name: kuchnia_szafki
+      button: []
+        # - name: kuchnia
+      tradfri_single_dimm: []
+        # - name: kuchnia_szafki

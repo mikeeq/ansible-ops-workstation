@@ -53,8 +53,8 @@ dnf_pkgs:
   - setroubleshoot-server
   - ShellCheck
   - smartmontools
-  - python3.11
-  - python3.11-devel
+  - python3.12
+  - python3.12-devel
   - cargo
   - python3-argcomplete
   - python3-psutil
@@ -103,8 +103,9 @@ flatpak_repos:
     url: https://flathub.org/repo/flathub.flatpakrepo
 
 pip_apps:
-  - name: pip
-    virtualenv_enabled: false
+  # fails on newer Ubuntu as it OS managed
+  # - name: pip
+  #   virtualenv_enabled: false
   - name: pyOpenSSL
     virtualenv_enabled: false
   - name: ansible
@@ -113,7 +114,7 @@ pip_apps:
   #   virtualenv_enabled: false
   - name: azure-cli
     virtualenv_enabled: true
-    virtualenv_python: "python3.11"
+    # virtualenv_python: "python3.11"
   - name: ansible-lint
     virtualenv_enabled: true
   - name: yamllint
@@ -159,7 +160,8 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # https://github.com/gruntwork-io/terragrunt/releases/latest
 # terragrunt_version: 0.31.8
 # https://releases.hashicorp.com/vagrant
-# vagrant_version: 2.2.19
+# https://github.com/hashicorp/vagrant/issues/13527
+vagrant_version: 2.4.1
 # https://github.com/boz/kail/releases
 # kail_version: 0.16.1
 

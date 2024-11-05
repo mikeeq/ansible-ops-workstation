@@ -17,8 +17,8 @@ services:
     environment:
       # DISABLE_JEMALLOC: true
       TZ: 'Europe/Warsaw'
-    # devices:
-    #   - /dev/ttyUSB0:/dev/ttyUSB0
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
     ports:
       - '8123:8123'
     logging:
