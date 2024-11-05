@@ -531,6 +531,43 @@ toolkit.tabbox.switchByScrolling = true
 gfx.canvas.accelerated = false
 ```
 
+20. On Fedora 41 or newer, when connection Azure DevOps or GitHub over SSH fails with an error:
+
+```
+ssh_dispatch_run_fatal: Connection to 40.74.28.12 port 22: error in libcrypto
+```
+
+It needs to fixed by executing `update-crypto-policies --set LEGACY` and rebooting the machine.
+
+21. ssh-config for Azure DevOps and GitHub:
+
+```
+Host ssh.dev.azure.com
+  HostName ssh.dev.azure.com
+  User git
+  Port 22
+  IdentityFile ~/.ssh/id_rsa
+  IdentitiesOnly yes
+  PubkeyAcceptedKeyTypes=ssh-rsa
+  HostKeyAlgorithms=+ssh-rsa
+
+Host vs-ssh.visualstudio.com
+  HostName vs-ssh.visualstudio.com
+  User git
+  Port 22
+  IdentityFile ~/.ssh/id_rsa
+  IdentitiesOnly yes
+  PubkeyAcceptedKeyTypes=ssh-rsa
+  HostKeyAlgorithms=+ssh-rsa
+
+Host github.com
+  HostName github.com
+  User git
+  Port 22
+  IdentityFile ~/.ssh/id_rsa
+  IdentitiesOnly yes
+```
+
 <!-- LICENSE -->
 ## License
 
