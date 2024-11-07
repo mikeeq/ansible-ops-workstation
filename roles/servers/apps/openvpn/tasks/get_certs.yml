@@ -1,22 +1,29 @@
 ---
-# - file:
-#     path: "/tmp/certs_vpn"
-#     state: directory
-#   delegate_to: localhost
+- name: "Create {{ openvpn_pull_client_config_path }}"
+  file:
+    path: "{{ openvpn_pull_client_config_path }}"
+    state: directory
+  delegate_to: localhost
+  become: false
 
 - name: "Download client certs"
   fetch:
-    src: "/etc/openvpn/ssl/{{ item }}"
-    dest: "/tmp/certs_vpn/{{ item }}"
+    src: "{{ item.path }}/{{ item.name }}"
+    dest: "{{ openvpn_pull_client_config_path }}/{{ item.name }}"
     flat: true
   with_items:
-    - ca.crt
-    - client.crt
-    - client.pem
-    - tls.key
-  
+    - path: "{{ openvpn_ca_cert_path }}"
+      name: "ca.crt"
+    - path: "{{ openvpn_client_cert_path }}/{{ openvpn_pull_client_name }}"
+      name: "client.crt"
+    - path: "{{ openvpn_client_cert_path }}/{{ openvpn_pull_client_name }}"
+      name: "client.pem"
+    - path: "{{ openvpn_ssl_path }}"
+      name: "tls.key"
+
 - name: Add client openvpn config file
   template:
     src: client.conf.j2
-    dest: /tmp/certs_vpn/client.conf
+    dest: "{{ openvpn_pull_client_config_path }}/client.conf"
   delegate_to: localhost
+  become: false

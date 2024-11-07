@@ -8,11 +8,13 @@
 #   with_items:
 #     - epel-release
 
-- package:
-    name: "{{ item }}"
+- name: Installing OpenVPN pkgs
+  package:
+    name: "{{ pkgs }}"
     state: present
-  with_items:
-    - openvpn
-    - easy-rsa
-    - iptables-services
-    - iptables
+  vars:
+    pkgs:
+      - openvpn
+      - easy-rsa
+      - iptables-services
+      - iptables

@@ -1,7 +1,12 @@
 ---
-- include_tasks: install.yml
-# - include_tasks: certs_shell_easy-rsa.yml
-- include_tasks: certs_ansible_openssl.yml
-- include_tasks: server_config.yml
-- include_tasks: server_iptables.yml
+# - include_tasks: install.yml
+
+# # - include_tasks: certs_shell_easy-rsa.yml
+# - include_tasks: certs_ansible_openssl.yml
+
+# - include_tasks: server_config.yml
+# - include_tasks: server_iptables.yml
 - import_tasks: get_certs.yml
+
+# systemctl stop openvpn-server@server
+# less /var/log/openvpn.log
