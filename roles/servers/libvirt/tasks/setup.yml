@@ -22,3 +22,8 @@
   package:
     name: genisoimage
     state: present
+
+- name: "Install pip passlib"
+  pip:
+    name: passlib
+    state: present

@@ -165,9 +165,9 @@ Contributions are what make the open source community such an amazing place to b
 1. Install
 
    - VSCode - <https://code.visualstudio.com/download>
-   - Ubuntu 22.04 WSL2
+   - Ubuntu 24.04 WSL2
      - <https://apps.microsoft.com/store/detail/windows-subsystem-for-linux/9P9TQF7MRM4R>
-     - <https://apps.microsoft.com/store/detail/ubuntu-22041-lts/9PN20MSR04DW?hl=pl-pl&gl=pl>
+     - <https://apps.microsoft.com/detail/9nz3klhxdjp5?hl=en-gb&gl=PL>
      - <https://docs.microsoft.com/en-us/windows/wsl/install>
    - Docker Desktop for Windows - <https://docs.docker.com/desktop/windows/install/>
    - Windows Terminal
@@ -187,7 +187,7 @@ Contributions are what make the open source community such an amazing place to b
    ```bash
    sudo -i
    apt-get install -y git python3-pip curl sudo
-   pip3 install ansible
+   pip3 install --break-system-packages ansible
    ```
 
 4. Clone repository
@@ -529,6 +529,43 @@ toolkit.tabbox.switchByScrolling = true
 
 # if google docs crashes, page jumps
 gfx.canvas.accelerated = false
+```
+
+20. On Fedora 41 or newer, when connection Azure DevOps or GitHub over SSH fails with an error:
+
+```
+ssh_dispatch_run_fatal: Connection to 40.74.28.12 port 22: error in libcrypto
+```
+
+It needs to fixed by executing `update-crypto-policies --set LEGACY` and rebooting the machine.
+
+21. ssh-config for Azure DevOps and GitHub:
+
+```
+Host ssh.dev.azure.com
+  HostName ssh.dev.azure.com
+  User git
+  Port 22
+  IdentityFile ~/.ssh/id_rsa
+  IdentitiesOnly yes
+  PubkeyAcceptedKeyTypes=ssh-rsa
+  HostKeyAlgorithms=+ssh-rsa
+
+Host vs-ssh.visualstudio.com
+  HostName vs-ssh.visualstudio.com
+  User git
+  Port 22
+  IdentityFile ~/.ssh/id_rsa
+  IdentitiesOnly yes
+  PubkeyAcceptedKeyTypes=ssh-rsa
+  HostKeyAlgorithms=+ssh-rsa
+
+Host github.com
+  HostName github.com
+  User git
+  Port 22
+  IdentityFile ~/.ssh/id_rsa
+  IdentitiesOnly yes
 ```
 
 <!-- LICENSE -->

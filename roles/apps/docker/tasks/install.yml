@@ -6,24 +6,41 @@
   changed_when: docker_check.rc != 0
   ignore_errors: true
 
+# - name: Remove old deps before installing docker
+#   package:
+#     name: "{{ pkgs }}"
+#     state: absent
+#   when: docker_check.rc != 0
+#   vars:
+#     pkgs:
+#       - docker
+#       - docker-client
+#       - docker-client-latest
+#       - docker-common
+#       - docker-latest
+#       - docker-latest-logrotate
+#       - docker-logrotate
+#       - docker-selinux
+#       - docker-engine-selinux
+#       - docker-engine
+#       - podman-docker
+
 - name: Remove old deps before installing docker
-  package:
-    name: "{{ pkgs }}"
-    state: absent
+  shell: |
+    dnf -y remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-selinux \
+                  docker-engine-selinux \
+                  docker-engine
+  register: docker_inst_cleanup
   when: docker_check.rc != 0
-  vars:
-    pkgs:
-      - docker
-      - docker-client
-      - docker-client-latest
-      - docker-common
-      - docker-latest
-      - docker-latest-logrotate
-      - docker-logrotate
-      - docker-selinux
-      - docker-engine-selinux
-      - docker-engine
-      - podman-docker
+  # changed_when:
+
 
 - name: Check if docker-repo is installed
   shell: |
@@ -36,7 +53,7 @@
   when: docker_repo_check.rc != 0
 
 - name: Install Docker
-  package:
+  dnf:
     name: "{{ pkgs }}"
     state: present
   vars:
