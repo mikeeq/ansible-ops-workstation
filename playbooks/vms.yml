@@ -73,6 +73,7 @@
   roles:
     - servers/network-static-dns
     - servers/apps/openvpn
+    - servers/apps/vpn-gw
 
 - name: Provision mikeeClevo
   hosts:
