@@ -2,7 +2,8 @@
 openvpn_configs_path: "/etc/openvpn"
 
 openvpn_server_config_path: "{{ openvpn_configs_path }}/server"
-openvpn_server_port: 443
+# 995 - ssl pop3
+openvpn_server_port: 995
 
 openvpn_ssl_path: "{{ openvpn_configs_path }}/ssl"
 openvpn_ca_cert_path: "{{ openvpn_ssl_path }}/ca"

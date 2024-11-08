@@ -1,0 +1,5 @@
+---
+- name: restart_iptables
+  service:
+    name: iptables
+    state: restarted
