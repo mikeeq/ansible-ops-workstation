@@ -1,0 +1,56 @@
+---
+# dnf install -y iptables-services
+
+# sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+# sudo iptables -A FORWARD -i tun0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+# sudo iptables -A FORWARD -i eth0 -o tun0 -j ACCEPT
+
+# sudo iptables -t nat -A POSTROUTING -o nordlynx -j MASQUERADE
+# sudo iptables -A FORWARD -i nordlynx -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+# sudo iptables -A FORWARD -i eth0 -o nordlynx -j ACCEPT
+
+# echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+# iptables-save > /etc/sysconfig/iptables
+# systemctl enable iptables
+
+- name: Disable and stop firewalld
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  ignore_errors: true
+  loop:
+    - firewalld
+    - nftables
+
+- name: Install iptables-services
+  dnf:
+    name: "iptables-services"
+    state: present
+
+
+- name: Allow ip forwarding for tun network
+  lineinfile:
+    path: /etc/sysctl.conf
+    line: "{{ item }}"
+  loop:
+    - "net.ipv4.ip_forward=1"
+  register: sysctl_changes
+
+- name: Reload sysctl
+  shell: sysctl -p
+  when: sysctl_changes.changed
+
+- name: Configure iptables files
+  notify: restart_iptables
+  copy:
+    src: "files/iptables-vpn"
+    dest: "/etc/sysconfig/iptables"
+    mode: 0664
+    backup: true
+
+- name: Enable service iptables
+  systemd:
+    name: iptables
+    enabled: true
+    state: started

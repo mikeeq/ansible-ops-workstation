@@ -1,13 +1,13 @@
 # This file is used by Vagrantfile
 ---
 hosts:
-  - name: "fedora35"
+  - name: "fedora"
     # os: "generic/fedora35"
-    os: "alvistack/fedora-35"
-    hostname: "fedora35.srv"
+    os: "fedora/40-cloud-base"
+    hostname: "fedora.srv"
     ip:
       - "10.0.0.10"
     cpu: "2"
-    mem: "4096"
+    mem: "2048"
     port_forward: []
     hostname_alias: []

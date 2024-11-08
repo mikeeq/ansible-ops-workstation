@@ -26,6 +26,13 @@
         - reboot_required_file.stat.exists == true
         - inventory_hostname != "mikeeClevo"
 
+- name: Provision Clevo
+  hosts:
+    - clevo
+  become: true
+  roles:
+    - servers/bootstrap
+
 - name: Set variables on an imported playbook
   ansible.builtin.import_playbook: generic-core.yml
   vars:
@@ -49,6 +56,24 @@
     - servers/network-static-dns
     - apps/docker
     - servers/apps/adguard-home
+
+- name: Provision GW1
+  hosts:
+    - gw1
+  become: true
+  roles:
+    - servers/network-static-dns
+    - apps/openvpn-client
+    - servers/apps/vpn-gw
+
+- name: Provision VPN1
+  hosts:
+    - vpn1
+  become: true
+  roles:
+    - servers/network-static-dns
+    - servers/apps/openvpn
+    - servers/apps/vpn-gw
 
 - name: Provision mikeeClevo
   hosts:

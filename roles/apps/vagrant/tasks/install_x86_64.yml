@@ -25,10 +25,13 @@
 - include_tasks: get_latest_version.yml
   when: vagrant_version is not defined
 
+- debug:
+    var: vagrant_version
+
 # name: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant_{{ vagrant_version}}_x86_64.rpm"
 - name: Install vagrant from hashicorp repo
   dnf:
-    name: "https://releases.hashicorp.com/vagrant/{{ vagrant_version}}/vagrant-{{ vagrant_version }}-1.x86_64.rpm"
+    name: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant-{{ vagrant_version }}-1.x86_64.rpm"
     state: latest
     disable_gpg_check: true
   when: installed_vagrant_version.stdout != vagrant_version

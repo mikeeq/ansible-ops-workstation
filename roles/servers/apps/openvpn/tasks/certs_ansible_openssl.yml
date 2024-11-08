@@ -1,96 +1,25 @@
 ---
-- package:
+- name: Install python3-pip
+  package:
     name: python3-pip
     state: present
 
-- pip:
-    name: pyOpenSSL
+- name: Install ansible pip dependencies
+  pip:
+    name: "{{ pkgs }}"
     state: present
+  vars:
+    pkgs:
+      - pyOpenSSL
+      - packaging
 
-- file:
-    path: "{{ ssl_path }}"
+- name: Create directory for certs
+  file:
+    path: "{{ openvpn_ssl_path }}"
     state: directory
 
-- openssl_privatekey:
-    path: "{{ ssl_path }}/ca.pem"
-
-- openssl_csr:
-    path: "{{ ssl_path }}/ca.csr"
-    privatekey_path: "{{ ssl_path }}/ca.pem"
-    basic_constraints_critical: true
-    basic_constraints: CA:TRUE
-    key_usage_critical: true
-    key_usage:
-      - cRLSign
-      - digitalSignature
-      - keyCertSign
-    common_name: "{{ certs_path }}"
-
-- name: Generate CA a Self Signed OpenSSL certificate
-  openssl_certificate:
-    path: "{{ ssl_path }}/ca.crt"
-    privatekey_path: "{{ ssl_path }}/ca.pem"
-    csr_path: "{{ ssl_path }}/ca.csr"
-    provider: selfsigned
-
-- openssl_privatekey:
-    path: "{{ ssl_path }}/server.pem"
-
-- openssl_csr:
-    path: "{{ ssl_path }}/server.csr"
-    privatekey_path: "{{ ssl_path }}/server.pem"
-    basic_constraints_critical: true
-    basic_constraints: CA:FALSE
-    key_usage_critical: true
-    key_usage:
-      - nonRepudiation
-      - digitalSignature
-      - keyEncipherment
-      - keyAgreement
-    extended_key_usage_critical: true
-    extended_key_usage: serverAuth
-    common_name: "{{ certs_path }}"
-
-- name: Generate Server Self Signed OpenSSL certificate
-  openssl_certificate:
-    path: "{{ ssl_path }}/server.crt"
-    privatekey_path: "{{ ssl_path }}/server.pem"
-    csr_path: "{{ ssl_path }}/server.csr"
-    provider: ownca
-    ownca_path: "{{ ssl_path }}/ca.crt"
-    ownca_privatekey_path: "{{ ssl_path }}/ca.pem"
-
-
-- openssl_privatekey:
-    path: "{{ ssl_path }}/client.pem"
-
-- openssl_csr:
-    path: "{{ ssl_path }}/client.csr"
-    privatekey_path: "{{ ssl_path }}/client.pem"
-    basic_constraints_critical: true
-    basic_constraints: CA:FALSE
-    key_usage_critical: true
-    key_usage:
-      - nonRepudiation
-      - digitalSignature
-      - keyEncipherment
-    extended_key_usage_critical: true
-    extended_key_usage: clientAuth
-    common_name: "{{ certs_path }}"
-
-- name: Generate a Self Signed OpenSSL certificate
-  community.crypto.x509_certificate:
-    path: "{{ ssl_path }}/client.crt"
-    privatekey_path: "{{ ssl_path }}/client.pem"
-    csr_path: "{{ ssl_path }}/client.csr"
-    provider: ownca
-    ownca_path: "{{ ssl_path }}/ca.crt"
-    ownca_privatekey_path: "{{ ssl_path }}/ca.pem"
-
-- openssl_dhparam:
-    path: "{{ ssl_path }}/dhparams.pem"
-
-- name: Openssl TLS key_usage
-  shell: openvpn --genkey --secret {{ ssl_path }}/tls.key
-  args:
-    creates: "{{ ssl_path }}/tls.key"
+- import_tasks: "openssl/ca.yml"
+- import_tasks: "openssl/server.yml"
+- import_tasks: "openssl/server_extras.yml"
+- include_tasks: "openssl/client.yml"
+  loop: "{{ openvpn_clients }}"

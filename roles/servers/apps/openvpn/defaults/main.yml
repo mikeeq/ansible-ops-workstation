@@ -1,17 +1,38 @@
 ---
-ssl_path: "/etc/openvpn/ssl"
-easyrsa_path: "/usr/share/easy-rsa/3"
-pki_path: "/etc/openvpn/pki"
-certs_path: "{{ pki_path }}/issued"
-keys_path: "{{ pki_path }}/private"
+openvpn_configs_path: "/etc/openvpn"
 
-common_name: "vpn.example.com"
+openvpn_server_config_path: "{{ openvpn_configs_path }}/server"
+# 995 - ssl pop3
+openvpn_server_port: 995
 
-ca_path: "{{ pki_path }}/ca.crt"
-dh_path: "{{ pki_path }}/dh.pem"
+openvpn_ssl_path: "{{ openvpn_configs_path }}/ssl"
+openvpn_ca_cert_path: "{{ openvpn_ssl_path }}/ca"
+openvpn_client_cert_path: "{{ openvpn_ssl_path }}/client"
+openvpn_server_cert_path: "{{ openvpn_ssl_path }}/server"
+openvpn_certs_common_name: "vpn.example.com"
 
-server_crt_name: server
-server_crt_path: "{{ certs_path }}/{{ server_crt_name }}.crt"
+openvpn_clients:
+  - vagrant
+  - test
 
-client_crts:
-  - client
+openvpn_pull_client_name: "vagrant"
+openvpn_pull_client_config_path: "/tmp/certs_vpn"
+
+### Old
+# easyrsa_path: "/usr/share/easy-rsa/3"
+# pki_path: "/etc/openvpn/pki"
+# certs_path: "{{ pki_path }}/issued"
+# keys_path: "{{ pki_path }}/private"
+
+# common_name: "vpn.example.com"
+
+# ca_path: "{{ pki_path }}/ca.crt"
+# dh_path: "{{ pki_path }}/dh.pem"
+
+# server_crt_name: server
+# server_crt_path: "{{ certs_path }}/{{ server_crt_name }}.crt"
+
+# # client_crts:
+# #   - client
+
+# server_port: 443

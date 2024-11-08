@@ -1,5 +1,5 @@
 #change with your port
-port 443
+port {{ openvpn_server_port }}
 
 #You can use udp or tcp
 proto tcp
@@ -8,19 +8,30 @@ proto tcp
 dev tun
 
 #Certificate Configuration
-tls-auth {{ ssl_path }}/tls.key 0
+# tls-auth {{ openvpn_ssl_path }}/tls.key 0
+
+dh none
+ecdh-curve prime256v1
+tls-crypt {{ openvpn_ssl_path }}/tls.key 0
+auth SHA256
+cipher AES-128-GCM
+ncp-ciphers AES-128-GCM
+tls-server
+tls-version-min 1.2
+tls-cipher TLS-ECDHE-ECDSA-WITH-AES-128-GCM-SHA256
+
 
 #ca certificate
-ca {{ ssl_path }}/ca.crt
+ca {{ openvpn_ca_cert_path }}/ca.crt
 
 #Server Certificate
-cert {{ ssl_path }}/server.crt
+cert {{ openvpn_server_cert_path }}/server.crt
 
 #Server Key and keep this is secret
-key {{ ssl_path }}/server.pem
+key {{ openvpn_server_cert_path }}/server.pem
 
 #See the size a dh key in /etc/openvpn/keys/
-dh {{ ssl_path }}/dhparams.pem
+#dh {{ openvpn_ssl_path }}/dhparams.pem
 
 #Internal IP will get when already connect
 server 10.69.0.0 255.255.255.0

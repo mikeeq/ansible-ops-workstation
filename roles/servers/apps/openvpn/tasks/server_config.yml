@@ -1,12 +1,20 @@
 ---
-- template:
+- name: Create directory for SERVER config
+  file:
+    path: "{{ openvpn_server_config_path }}"
+    state: directory
+
+- name: Put server.conf
+  notify: restart_openvpn_server
+  template:
     src: server.conf.j2
-    dest: /etc/openvpn/server.conf
+    dest: "{{ openvpn_server_config_path }}/server.conf"
     # owner: bin
     # group: wheel
     # mode: 0644
 
-- service:
+- name: Start openvpn-server@server service
+  service:
     name: openvpn-server@server
     state: started
     enabled: true

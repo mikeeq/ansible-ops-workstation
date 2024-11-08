@@ -1,13 +1,26 @@
 client
-tls-client
 ca ca.crt
 cert client.crt
 key client.pem
-tls-auth tls.key 1
+
+tls-crypt tls.key 0
+auth SHA256
+auth-nocache
+cipher AES-128-GCM
+tls-client
+tls-version-min 1.2
+tls-cipher TLS-ECDHE-ECDSA-WITH-AES-128-GCM-SHA256
+
 proto tcp
-remote {{ common_name }} 443 tcp
+remote {{ openvpn_certs_common_name }} {{ openvpn_server_port }} tcp
 dev tun
 #topology subnet
 pull
+
+# verify-x509-name {{ openvpn_certs_common_name }} name
+
+persist-key
+persist-tun
+
 user nobody
 group nobody
