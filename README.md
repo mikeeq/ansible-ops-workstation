@@ -537,7 +537,7 @@ gfx.canvas.accelerated = false
 ssh_dispatch_run_fatal: Connection to 40.74.28.12 port 22: error in libcrypto
 ```
 
-It needs to fixed by executing `update-crypto-policies --set LEGACY` and rebooting the machine.
+It needs to be fixed by executing `update-crypto-policies --set LEGACY` (or creating your own custom crypto policy) and rebooting the machine.
 
 21. ssh-config for Azure DevOps and GitHub:
 
