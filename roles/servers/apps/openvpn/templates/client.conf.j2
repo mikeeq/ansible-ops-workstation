@@ -12,8 +12,8 @@ tls-version-min 1.2
 tls-cipher TLS-ECDHE-ECDSA-WITH-AES-128-GCM-SHA256
 
 proto tcp
-{# remote {{ openvpn_certs_common_name }} {{ openvpn_server_port }} tcp #}
-remote 10.0.0.43 {{ openvpn_server_port }} tcp
+remote {{ openvpn_certs_common_name }} {{ openvpn_server_port }} tcp
+{# remote 10.0.0.43 {{ openvpn_server_port }} tcp #}
 dev tun
 #topology subnet
 pull

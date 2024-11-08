@@ -33,7 +33,7 @@
 
 - name: Configure iptables files
   copy:
-    src: "files/iptables"
+    src: "files/iptables-vpn"
     dest: "/etc/sysconfig/iptables"
     mode: 0664
     backup: true

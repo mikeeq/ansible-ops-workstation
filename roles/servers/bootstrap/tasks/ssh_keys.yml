@@ -1,0 +1,12 @@
+---
+- name: Copy ssh pub key
+  template:
+    src: "{{ ssh_keys_path }}/servers/id_rsa.pub"
+    dest: "~/.ssh/authorized_keys"
+    mode: 0600
+    backup: true
+  become: true
+  become_user: "{{ item }}"
+  with_items:
+    - "{{ user_name }}"
+    # - root

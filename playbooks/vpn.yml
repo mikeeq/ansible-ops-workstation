@@ -2,9 +2,9 @@
 
 - name: Provision VPN1
   hosts:
-    - vagrant
+    - vpn1
   become: true
   roles:
-    # - servers/network-static-dns
+    - servers/network-static-dns
     - servers/apps/openvpn
     - servers/apps/vpn-gw
