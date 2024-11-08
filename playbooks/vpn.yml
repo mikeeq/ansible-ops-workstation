@@ -1,5 +1,4 @@
 ---
-
 - name: Provision VPN1
   hosts:
     - vpn1
