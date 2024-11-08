@@ -30,7 +30,7 @@ jjb_password: "{{ jenkins_users | selectattr('name','equalto',jjb_username) | ma
 jenkins_admin_username: "{{ jjb_username }}"
 jenkins_admin_password: "{{ jjb_password }}"
 
-jenkins_cleanup: true
+jenkins_cleanup: false
 jenkins_update: false
 
 jenkins_ssh_private_keys:
