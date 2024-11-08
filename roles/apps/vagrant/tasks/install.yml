@@ -15,7 +15,7 @@
   loop: "{{ vagrant_plugins_info }}"
   loop_control:
     label: "{{ item.name }}"
-  # when: item.version != item.latestVersion
+  when: item.version != item.latestVersion
   # register: vagrant_libvirt_output
   # changed_when: vagrant_libvirt_output.stdout_lines[2] is defined
 
