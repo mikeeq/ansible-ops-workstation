@@ -1,1 +1,18 @@
 ---
+- name: Add the user 'deploy'
+  ansible.builtin.user:
+    name: deploy
+    uid: 1999
+    groups: wheel
+    create_home: true
+    append: true
+    shell: /bin/zsh
+    password_lock: true
+
+- name: Make users passwordless for sudo in group wheel
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'

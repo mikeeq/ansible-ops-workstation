@@ -237,18 +237,6 @@ views:
             entities:
               - entity: sensor.gosund_monitory_energy_power
                 name: Zuzycie
-          - entity: switch.gosund_pompa_gosund_switch_pompa_cyrkulacyjna
-            type: custom:multiple-entity-row
-            name: Pompa Cyrkulacyjna
-            icon: mdi:thermometer-water
-            toggle: true
-            show_state: true
-            entities:
-              - entity: automation.wlacz_cyrkulacje
-                name: Auto
-                toggle: true
-              - entity: sensor.gosund_pompa_energy_power
-                name: Zuzycie
           - entity: switch.gosund_pc_gosund_switch_pc
             type: custom:multiple-entity-row
             name: PC
@@ -585,12 +573,32 @@ views:
     cards:
       - type: entities
         entities:
-          - switch.virtual_ogrzewanie_pompy
+          - type: section
+            label: Pompy
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+            name: Pompa Podlogowka
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+            name: Pompa Grzejniki
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_cyrkulacyjna
+            type: custom:multiple-entity-row
+            name: Pompa Cyrkulacyjna
+            icon: mdi:thermometer-water
+            toggle: true
+            show_state: true
+            entities:
+              - entity: automation.wlacz_cyrkulacje
+                name: Auto
+                toggle: true
+              # - entity: sensor.gosund_pompa_energy_power
+              #   name: Zuzycie
+          - type: section
+            label: Virtual
           - switch.group_ogrzewanie_podlogowe
           - type: section
             label: Silowniki
 {% for i in home_assistant.climate %}
-          - switch.virtual_ogrzewanie_{{ i.name }}
+          - entity: {{ i.switch }}
+            name: {{ i.name }}
 {% endfor %}
 {% for i in home_assistant.climate %}
       - type: thermostat

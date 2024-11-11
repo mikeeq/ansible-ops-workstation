@@ -2,12 +2,12 @@
 {% for i in home_assistant.climate %}
 - platform: generic_thermostat
   name: "{{ i.name }}"
-  # heater: "{{ i.switch }}"
-  heater: "switch.virtual_ogrzewanie_{{ i.name }}"
+  heater: "{{ i.switch }}"
+  # heater: "switch.virtual_ogrzewanie_{{ i.name }}"
   target_sensor: "sensor.th_{{ i.name }}_temperature"
   min_temp: 16
   max_temp: 24
-  target_temp: 20.0
+  # target_temp: 20.0
   initial_hvac_mode: heat
   cold_tolerance: 0.2
   hot_tolerance: 0.2

@@ -62,27 +62,27 @@ home_assistant:
   climate:
     # - name: garaz
     - name: przedpokoj
-      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
-    # - name: lazienka_dol
-    #   switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol2_sonoff_4chpror3_ogrzewanie_dol2_korytarz
+    - name: lazienka_dol
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_lazienka
     - name: salon
-      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_salon
     - name: kuchnia
-      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_kuchnia
     - name: sypialnia_dol
-      switch: switch.sonoff_4chpror3_podlogowkadol1_4chpror3_switch_przedpokoj
-    - name: pokoj_julia
-      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
-    - name: serwerownia
-      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
-    - name: pokoj_timi
-      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
-    - name: biuro_miki
-      switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
-    - name: sypialnia_gora
-      switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
-    - name: garderoba
-      switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_sypialnia
+    # - name: pokoj_julia
+    #   switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
+    # - name: serwerownia
+    #   switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    # - name: pokoj_timi
+    #   switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    # - name: biuro_miki
+    #   switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
+    # - name: sypialnia_gora
+    #   switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
+    # - name: garderoba
+    #   switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
 
   mqtt:
     zigbee_coordinator_base_topic: "tasmota_10B490"
