@@ -1,0 +1,143 @@
+- name: "piec_ciepla_woda_uzytkowa"
+  temperature_command_topic: "cmnd/tasmota_1AA4E8/OT_TWATER"
+  temperature_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+  temperature_state_template: "{% raw %}{{ value_json.OPENTHERM.DHWS }}"
+  current_temperature_topic: "tele/tasmota_1AA4E8/SENSOR"
+  current_temperature_template: "{% raw %}{{ value_json.OPENTHERM.TDHW }}"
+  modes:
+    - "off"
+    - "gas"
+  # mode_command_topic: "cmnd/tasmota_1AA4E8/OT_CH"
+  # mode_command_template: >
+  #   {% set values = { 'gas':'1', 'off':'0'} %}
+  #   {% set cmd = values[value] %}
+  #   {{ cmd }}
+  mode_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+  mode_state_template: >
+    {% raw %}{% if value_json.OPENTHERM.SLAVE.DHW == 1 %}
+      gas
+    {% raw %}{% else %}
+      off
+    {% endif %}{% endraw +%}
+  qos: 0
+  availability_topic: "tele/tasmota_1AA4E8/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  temperature_unit: C
+  # target_temperature: 55
+  min_temp: 30
+  max_temp: 65
+
+- name: "piec_woda_ogrzewanie"
+  temperature_command_topic: "cmnd/tasmota_1AA4E8/OT_TBOILER"
+  temperature_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+  temperature_state_template: "{% raw %}{{{ value_json.OPENTHERM.BTMP.ACT }}"
+  current_temperature_topic: "tele/tasmota_1AA4E8/SENSOR"
+  # current_temperature_template: "{{ value_json.OPENTHERM.TB }}"
+  current_temperature_template: "{% raw %}{{ value_json.OPENTHERM.OT33 }}"
+  modes:
+    - "off"
+    - "gas"
+  mode_command_topic: "cmnd/tasmota_1AA4E8/OT_CH"
+  # mode_command_template: >
+  #   {% if value == gas %}
+  #     1
+  #   {% else %}
+  #     0
+  #   {% endif %}
+  mode_command_template: >
+    {% set values = { 'gas':'1', 'off':'0'} %}
+    {% set cmd = values[value] %}
+    {% raw %}{{ cmd }}
+  mode_state_topic: "tele/tasmota_1AA4E8/sensor_ch"
+  # mode_state_template: "{{ value_json.OPENTHERM.SLAVE.CH }}"
+  mode_state_template: >
+    {% raw %}{% if value_json.ot_ch == 1 %}
+      gas
+    {% raw %}{% else %}
+      off
+    {% endif %}{% endraw +%}
+  # mode_state_template: >
+  #   {% raw %}{% if value_json.OPENTHERM.SLAVE.CH == 1 %}
+  #     gas
+  #   {% raw %}{% else %}
+  #     off
+  #   {% endif %}{% endraw +%}
+  qos: 0
+  availability_topic: "tele/tasmota_1AA4E8/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  temperature_unit: C
+  # target_temperature: 55
+  min_temp: 30
+  max_temp: 65
+
+# mqttx - gui
+
+# {
+#   "Time": "2024-11-14T12:16:43",
+#   "DS18B20": {
+#     "Id": "0622A116FC5E",
+#     "Temperature": 32.2
+#   },
+#   "OPENTHERM": {
+#     "conn": "BUSY",
+#     "settings": 3,
+#     "SLAVE": {
+#       "FAULT": 0,
+#       "CH": 1,
+#       "DHW": 0,
+#       "FL": 0,
+#       "COOL": 0,
+#       "CH2": 0,
+#       "DIAG": 0,
+#       "RAW": 1073742594
+#     },
+#     "BTMP": {
+#       "FAULT": 0,
+#       "REQ": 58.0,
+#       "ACT": 58.0
+#     },
+#     "HWTMP": {
+#       "REQ": 55.0,
+#       "ACT": 55.0
+#     },
+#     "ASFF": {
+#       "FC": 0,
+#       "OFC": 0
+#     },
+#     "FLM": 0.0,
+#     "TB": 42.0,
+#     "TDHW": 53.2,
+#     "DHWS": 55.0,
+#     "TMAX": 80.0,
+#     "OT10": {
+#       "lo": 0,
+#       "hi": 0
+#     },
+#     "OT12": {
+#       "lo": 0,
+#       "hi": 0
+#     },
+#     "OT15": {
+#       "lo": 34,
+#       "hi": 0
+#     },
+#     "OT33": 43,
+#     "OT116": 49331,
+#     "OT120": 7486
+#   },
+#   "TempUnit": "C"
+# }
+
+# Rule1
+# on system#boot do backlog TelePeriod 20;
+
+# Rule1
+#   ON Tele-Wifi#AP DO backlog ot_ch; publish tele/%topic%/sensor_ch {"ot_ch":"%value%"} ENDON
+  # ON Tele-Wifi#AP DO backlog ot_flags; var1 %value% ENDON
+  # ON Tele-Wifi#AP DO backlog ot_flags; publish tele/%topic%/sensor_flags {"ot_flags":[%value%]} ENDON
+
+# Rule1 1
+
+# Tele-Wifi#AP
