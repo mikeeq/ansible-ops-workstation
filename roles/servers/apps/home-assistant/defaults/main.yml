@@ -71,18 +71,21 @@ home_assistant:
       switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_kuchnia
     - name: sypialnia_dol
       switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_sypialnia
-    # - name: pokoj_julia
-    #   switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
-    # - name: serwerownia
-    #   switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
-    # - name: pokoj_timi
-    #   switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
-    # - name: biuro_miki
-    #   switch: switch.sonoff_4chpror3_podlogowkagora1_4chpror3_switch_przedpokoj
-    # - name: sypialnia_gora
-    #   switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
-    # - name: garderoba
-    #   switch: switch.sonoff_4chpror3_podlogowkagora2_4chpror3_switch_przedpokoj
+    - name: pokoj_julia
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
+    - name: biuro_miki
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_nad_garazem
+    - name: sypialnia_gora
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_sypialnia
+    - name: garderoba
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_garderoba
+    - name: lazienka_gora
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_lazienka
+    - name: pokoj_timi
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_pokoj_timi
+    - name: serwerownia
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_korytarz
+
 
   mqtt:
     zigbee_coordinator_base_topic: "tasmota_10B490"
