@@ -6,3 +6,29 @@ binary_sensor: !include_dir_merge_list mqtt/binary_sensors/
 light: !include_dir_merge_list mqtt/lights/
 
 switch: !include_dir_merge_list mqtt/switches/
+
+water_heater:
+  - platform: mqtt_water_heater
+    name: "piec_ciepla_woda_uzytkowa"
+    state_topic: "tele/boiler/SENSOR"
+    command_topic: "cmnd/boiler/OT_TWATER"
+    value_template: "{{ value_json.OPENTHERM.DHWS }}"
+    qos: 0
+    availability_topic: "tele/boiler/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    # target_temperature: 55
+    heater_min_temperature: 35
+    heater_max_temperature: 65
+  - platform: mqtt_water_heater
+    name: "piec_woda_ogrzewanie"
+    state_topic: "tele/boiler/SENSOR"
+    command_topic: "cmnd/boiler/OT_TBIOLER"
+    value_template: "{{ value_json.OPENTHERM.BTMP.ACT }}"
+    qos: 0
+    availability_topic: "tele/boiler/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    # target_temperature: 58
+    heater_min_temperature: 30
+    heater_max_temperature: 65
