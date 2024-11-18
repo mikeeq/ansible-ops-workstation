@@ -78,6 +78,15 @@
   with_fileglob:
     - ../templates/config/mqtt/switches/*
 
+- name: Configure config/mqtt/water_heater
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/mqtt/water_heater/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/mqtt/water_heater/*
+
 - name: Check that the .storage exists
   stat:
     path: "{{ install_path }}/config/.storage/onboarding"
