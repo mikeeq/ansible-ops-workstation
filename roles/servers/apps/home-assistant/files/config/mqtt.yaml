@@ -19,7 +19,7 @@ water_heater:
       - "gas"
     mode_command_topic: "cmnd/tasmota_1AA4E8/OT_CH"
     mode_command_template: >
-      {% set values = { 'gas':'CHOD,DHW', 'off':'CHOD'} %}
+      {% set values = { 'gas':'CH,DHW', 'off':'CH'} %}
       {% set cmd = values[value] %}
       {{ cmd }}
     mode_state_topic: "tele/tasmota_1AA4E8/SENSOR"
