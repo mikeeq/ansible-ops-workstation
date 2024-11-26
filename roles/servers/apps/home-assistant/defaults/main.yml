@@ -73,12 +73,12 @@ home_assistant:
       switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_sypialnia
     - name: pokoj_julia
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
-    - name: biuro_miki
-      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_nad_garazem
     - name: sypialnia_gora
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_sypialnia
     - name: garderoba
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_garderoba
+    - name: biuro_miki
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_nad_garazem
     - name: lazienka_gora
       switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_lazienka
     - name: pokoj_timi

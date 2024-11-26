@@ -6,6 +6,7 @@
   loop:
     - "{{ install_path }}/config"
     - "{{ install_path }}/config/automations"
+    - "{{ install_path }}/config/sensors"
     - "{{ install_path }}/config/.storage"
     - "{{ install_path }}/config/mqtt/binary_sensors"
     - "{{ install_path }}/config/mqtt/sensors"
@@ -41,6 +42,17 @@
   with_fileglob:
     - ../templates/config/automations/*
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/automations/*"
+
+- name: Configure config/sensors
+  template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/config/sensors/"
+    mode: 0664
+    backup: true
+  with_fileglob:
+    - ../templates/config/sensors/*
+    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/sensors/*"
+
 
 - name: Configure config/mqtt/sensors
   template:

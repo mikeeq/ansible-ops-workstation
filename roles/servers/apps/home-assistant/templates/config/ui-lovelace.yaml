@@ -571,8 +571,57 @@ views:
     path: ogrzewanie
     badges: []
     cards:
+      - type: history-graph
+        entities:
+          - name: Slave_FL
+            entity: sensor.opentherm_opentherm_slave_fl
+          - name: FLM
+            entity: sensor.opentherm_opentherm_flm
+          - name: TB
+            entity: sensor.opentherm_opentherm_tb
+          - name: OT33 (EXHAUST CH)
+            entity: sensor.opentherm_opentherm_ot33
+          - name: CH_TEMP
+            entity: sensor.opentherm_opentherm_btmp_req
+          - name: Slave_CH
+            entity: sensor.opentherm_opentherm_slave_ch
+          - name: State
+            entity: sensor.current_state_ch
+          - name: CH_STATE
+            entity: sensor.ot_ch
+        hours_to_show: 4
+        logarithmic_scale: false
+        max_y_axis: 100
+        min_y_axis: 0
+        fit_y_data: false
       - type: entities
         entities:
+          - entity: sensor.opentherm_opentherm_tb
+            type: custom:multiple-entity-row
+            name: Piec
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.opentherm_opentherm_flm
+                name: FLM
+              - entity: sensor.opentherm_opentherm_slave_fl
+                name: SLAVE FL
+              - entity: sensor.current_state_ch
+                name: State
+              - entity: sensor.opentherm_opentherm_slave_ch
+                name: CH
+              - entity: sensor.opentherm_opentherm_slave_dhw
+                name: DHW
+              - entity: sensor.opentherm_opentherm_tb
+                name: TB
+          - entity: water_heater.piec_woda_ogrzewanie
+            name: Ogrzewanie
+            icon: mdi:heating-coil
+            state_color: true
+          - entity: water_heater.piec_ciepla_woda_uzytkowa
+            name: CWU
+            icon: mdi:water-boiler
+            state_color: true
           - type: section
             label: Pompy
           - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
@@ -600,26 +649,33 @@ views:
           - entity: {{ i.switch }}
             name: {{ i.name }}
 {% endfor %}
-{% for i in home_assistant.climate %}
+{# {% for i in home_assistant.climate %}
       - type: thermostat
         entity: climate.{{ i.name }}
-{% endfor %}
+        features:
+          - type: climate-hvac-modes
+            hvac_modes:
+              - heat
+              - 'off'
+{% endfor %} #}
       - type: entities
-        title: Temperatury Zigbee
+        title: Termostaty
         entities:
-          - entity: climate.kuchnia
+{% for i in home_assistant.climate %}
+          - entity: climate.{{ i.name }}
             type: custom:multiple-entity-row
-            name: Kuchnia
+            name: {{ i.name }}
             show_state: false
-            secondary_info: last-changed
+            state_color: true
+            secondary_info: last-updated
             entities:
-              - entity: climate.kuchnia
-                name: Termostat
-                name: Termostat Stan
-              - entity: sensor.th_kuchnia_temperature
-                name: Temperatura
-              - entity: sensor.th_kuchnia_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_kuchnia_battery
-                name: Bateria
+              - entity: climate.{{ i.name }}
+                attribute: hvac_action
+                name: State
+              - entity: climate.{{ i.name }}
+                attribute: temperature
+                name: Target Temperature
+              - entity: sensor.th_{{ i.name }}_temperature
+                name: Current Temperature
+{% endfor %}
 title: MikiDashboardYAML
