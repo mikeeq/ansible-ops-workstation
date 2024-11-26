@@ -27,10 +27,10 @@ views:
         icon: mdi:lightbulb-fluorescent-tube
       - type: entities
         entities:
-          - entity: binary_sensor.door_state_dwor_brama
-            name: Dwor Brama stan
-            icon: mdi:gate
-          - entity: binary_sensor.door_state_garaz_brama
+          # - entity: binary_sensor.door_state_dwor_brama
+          #   name: Dwor Brama stan
+          #   icon: mdi:gate
+          - entity: binary_sensor.door_brama_garaz_opening
             name: Garaz Brama stan
             icon: mdi:garage-variant
       # - type: custom:frigate-card

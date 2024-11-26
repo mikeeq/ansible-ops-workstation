@@ -11,3 +11,14 @@
 #       {%- elif now().hour >= 19 and now().hour < 24 -%}
 #       https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&fdate={{ now().strftime('%Y%m%d') }}12&row=466&col=232&lang=pl
 #       {%- endif %}
+
+- sensor:
+  - name: current_state_ch
+    state: >
+      {% if states('sensor.opentherm_opentherm_slave_dhw') == "1" %}
+        Water
+      {% elif states('sensor.opentherm_opentherm_slave_ch') == "1" %}
+        CH
+      {% else %}
+        Idle
+      {% endif %}

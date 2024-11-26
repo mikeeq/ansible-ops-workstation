@@ -6,3 +6,63 @@ binary_sensor: !include_dir_merge_list mqtt/binary_sensors/
 light: !include_dir_merge_list mqtt/lights/
 
 switch: !include_dir_merge_list mqtt/switches/
+
+water_heater:
+  - name: "piec_ciepla_woda_uzytkowa"
+    temperature_command_topic: "cmnd/tasmota_1AA4E8/OT_TWATER"
+    temperature_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+    temperature_state_template: "{{ value_json.OPENTHERM.DHWS }}"
+    current_temperature_topic: "tele/tasmota_1AA4E8/SENSOR"
+    current_temperature_template: "{{ value_json.OPENTHERM.TDHW }}"
+    modes:
+      - "off"
+      - "gas"
+    mode_command_topic: "cmnd/tasmota_1AA4E8/OT_CH"
+    mode_command_template: >
+      {% set values = { 'gas':'CH,DHW', 'off':'CH'} %}
+      {% set cmd = values[value] %}
+      {{ cmd }}
+    mode_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+    mode_state_template: >
+      {% if states('sensor.ot_dhw') == "1" %}
+        gas
+      {% else %}
+        off
+      {% endif %}
+    qos: 0
+    availability_topic: "tele/tasmota_1AA4E8/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    temperature_unit: C
+    min_temp: 40
+    max_temp: 65
+  - name: "piec_woda_ogrzewanie"
+    temperature_command_topic: "cmnd/tasmota_1AA4E8/OT_TBOILER"
+    temperature_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+    temperature_state_template: "{{ value_json.OPENTHERM.BTMP.ACT }}"
+    current_temperature_topic: "tele/tasmota_1AA4E8/SENSOR"
+    current_temperature_template: "{{ value_json.OPENTHERM.OT33 }}"
+    modes:
+      - "off"
+      - "gas"
+    mode_command_topic: "cmnd/tasmota_1AA4E8/OT_CH"
+    mode_command_template: >
+      {% set values = { 'gas':'1', 'off':'0'} %}
+      {% set cmd = values[value] %}
+      {{ cmd }}
+    mode_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+    mode_state_template: >
+      {% if states('sensor.ot_ch') == "1" %}
+        gas
+      {% else %}
+        off
+      {% endif %}
+    qos: 0
+    availability_topic: "tele/tasmota_1AA4E8/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    temperature_unit: C
+    min_temp: 30
+    max_temp: 70
+
+# mqttx - gui

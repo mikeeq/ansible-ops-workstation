@@ -1,0 +1,75 @@
+{# - name: "piec_ciepla_woda_uzytkowa"
+  temperature_command_topic: "cmnd/tasmota_1AA4E8/OT_TWATER"
+  temperature_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+  temperature_state_template: "{% raw %}{{ value_json.OPENTHERM.DHWS }}"
+  current_temperature_topic: "tele/tasmota_1AA4E8/SENSOR"
+  current_temperature_template: "{% raw %}{{ value_json.OPENTHERM.TDHW }}"
+  modes:
+    - "off"
+    - "gas"
+  # mode_command_topic: "cmnd/tasmota_1AA4E8/OT_CH"
+  # mode_command_template: >
+  #   {% set values = { 'gas':'1', 'off':'0'} %}
+  #   {% set cmd = values[value] %}
+  #   {{ cmd }}
+  mode_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+  mode_state_template: >
+    {% raw %}{% if value_json.OPENTHERM.SLAVE.DHW == 1 %}
+      gas
+    {% raw %}{% else %}
+      off
+    {% endif %}{% endraw +%}
+  qos: 0
+  availability_topic: "tele/tasmota_1AA4E8/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  temperature_unit: C
+  # target_temperature: 55
+  min_temp: 30
+  max_temp: 65
+
+- name: "piec_woda_ogrzewanie"
+  temperature_command_topic: "cmnd/tasmota_1AA4E8/OT_TBOILER"
+  temperature_state_topic: "tele/tasmota_1AA4E8/SENSOR"
+  temperature_state_template: "{% raw %}{{{ value_json.OPENTHERM.BTMP.ACT }}"
+  current_temperature_topic: "tele/tasmota_1AA4E8/SENSOR"
+  # current_temperature_template: "{{ value_json.OPENTHERM.TB }}"
+  current_temperature_template: "{% raw %}{{ value_json.OPENTHERM.OT33 }}"
+  modes:
+    - "off"
+    - "gas"
+  mode_command_topic: "cmnd/tasmota_1AA4E8/OT_CH"
+  # mode_command_template: >
+  #   {% if value == gas %}
+  #     1
+  #   {% else %}
+  #     0
+  #   {% endif %}
+  mode_command_template: >
+    {% set values = { 'gas':'1', 'off':'0'} %}
+    {% set cmd = values[value] %}
+    {% raw %}{{ cmd }}
+  mode_state_topic: "tele/tasmota_1AA4E8/sensor_ch"
+  # mode_state_template: "{{ value_json.OPENTHERM.SLAVE.CH }}"
+  mode_state_template: >
+    {% raw %}{% if value_json.ot_ch == 1 %}
+      gas
+    {% raw %}{% else %}
+      off
+    {% endif %}{% endraw +%}
+  # mode_state_template: >
+  #   {% raw %}{% if value_json.OPENTHERM.SLAVE.CH == 1 %}
+  #     gas
+  #   {% raw %}{% else %}
+  #     off
+  #   {% endif %}{% endraw +%}
+  qos: 0
+  availability_topic: "tele/tasmota_1AA4E8/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  temperature_unit: C
+  # target_temperature: 55
+  min_temp: 30
+  max_temp: 65
+
+# mqttx - gui #}

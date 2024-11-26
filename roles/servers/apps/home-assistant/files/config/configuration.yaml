@@ -72,6 +72,8 @@ virtual:
 switch: !include switch.yaml
 climate: !include climate.yaml
 
+rest:
+  # scan_interval: 10
 
 zha:
   zigpy_config:

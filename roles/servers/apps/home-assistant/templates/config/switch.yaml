@@ -11,5 +11,5 @@
   name: group_ogrzewanie_podlogowe
   entities:
 {% for i in home_assistant.climate %}
-    - switch.virtual_ogrzewanie_{{ i.name }}
+    - "{{ i.switch }}"
 {% endfor %}
