@@ -13,3 +13,9 @@
 {% for i in home_assistant.climate %}
     - "{{ i.switch }}"
 {% endfor %}
+
+- platform: group
+  name: group_ogrzewanie_pokoj_timi
+  entities:
+    - switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_pokoj_timi
+    - switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_korytarz

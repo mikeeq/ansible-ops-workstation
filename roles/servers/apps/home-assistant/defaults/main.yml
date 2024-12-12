@@ -82,9 +82,12 @@ home_assistant:
     - name: lazienka_gora
       switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_lazienka
     - name: pokoj_timi
-      switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_pokoj_timi
-    - name: serwerownia
-      switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_korytarz
+      switch: switch.group_ogrzewanie_pokoj_timi
+
+    # - name: pokoj_timi
+    #   switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_pokoj_timi
+    # - name: serwerownia
+    #   switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_korytarz
 
 
   mqtt:

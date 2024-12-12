@@ -87,7 +87,7 @@
       enabled: false
     - delay:
         hours: 0
-        minutes: 5
+        minutes: 10
         seconds: 0
         milliseconds: 0
       enabled: true

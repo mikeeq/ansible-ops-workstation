@@ -108,18 +108,18 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_pokoj_timi_battery
                 name: Bateria
-          # - entity: sensor.th_lazienka_gora_temperature
-          #   type: custom:multiple-entity-row
-          #   name: Pokoj Timi
-          #   show_state: false
-          #   secondary_info: last-changed
-          #   entities:
-          #     - entity: sensor.th_lazienka_gora_temperature
-          #       name: Temperatura
-          #     - entity: sensor.th_lazienka_gora_humidity
-          #       name: Wilgotnosc
-          #     - entity: sensor.th_lazienka_gora_battery
-          #       name: Bateria
+          - entity: sensor.th_lazienka_gora_temperature
+            type: custom:multiple-entity-row
+            name: Pokoj Timi
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_lazienka_gora_temperature
+                name: Temperatura
+              - entity: sensor.th_lazienka_gora_humidity
+                name: Wilgotnosc
+              - entity: sensor.th_lazienka_gora_battery
+                name: Bateria
           - entity: sensor.th_biuro_miki_temperature
             type: custom:multiple-entity-row
             name: Biuro Miki
@@ -156,18 +156,18 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_garderoba_battery
                 name: Bateria
-          - entity: sensor.th_serwerownia_temperature
-            type: custom:multiple-entity-row
-            name: Serwerownia
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_serwerownia_temperature
-                name: Temperatura
-              - entity: sensor.th_serwerownia_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_serwerownia_battery
-                name: Bateria
+          # - entity: sensor.th_serwerownia_temperature
+          #   type: custom:multiple-entity-row
+          #   name: Serwerownia
+          #   show_state: false
+          #   secondary_info: last-changed
+          #   entities:
+          #     - entity: sensor.th_serwerownia_temperature
+          #       name: Temperatura
+          #     - entity: sensor.th_serwerownia_humidity
+          #       name: Wilgotnosc
+          #     - entity: sensor.th_serwerownia_battery
+          #       name: Bateria
           - entity: sensor.th_pokoj_julia_temperature
             type: custom:multiple-entity-row
             name: Pokoj Julia
