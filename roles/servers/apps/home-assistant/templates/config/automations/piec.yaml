@@ -1,0 +1,99 @@
+---
+- alias: piec_off
+  description: ""
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id:
+        - >-
+          switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+      from: "on"
+      to: "off"
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 15
+  conditions: []
+  actions:
+    - action: water_heater.set_operation_mode
+      metadata: {}
+      data:
+        operation_mode: "off"
+      target:
+        entity_id: water_heater.piec_woda_ogrzewanie
+    - action: water_heater.set_temperature
+      metadata: {}
+      data:
+        temperature: 35
+      target:
+        entity_id: water_heater.piec_woda_ogrzewanie
+- alias: piec_on
+  description: ""
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id:
+        - >-
+          switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+      from: "off"
+      to: "on"
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 15
+  conditions: []
+  actions:
+    - action: water_heater.set_operation_mode
+      metadata: {}
+      data:
+        operation_mode: "gas"
+      target:
+        entity_id: water_heater.piec_woda_ogrzewanie
+    - action: water_heater.set_temperature
+      metadata: {}
+      data:
+        temperature: 58
+      target:
+        entity_id: water_heater.piec_woda_ogrzewanie
+- alias: piec_palnik
+  description: ""
+  mode: single
+  triggers:
+    - trigger: numeric_state
+      entity_id:
+        - sensor.opentherm_opentherm_slave_fl
+      above: 0
+  conditions:
+    - condition: numeric_state
+      entity_id: sensor.opentherm_opentherm_slave_ch
+      above: 0
+  actions:
+    - action: water_heater.set_temperature
+      metadata: {}
+      data:
+        temperature: 60
+      target:
+        entity_id: water_heater.piec_woda_ogrzewanie
+    - wait_for_trigger:
+        - trigger: numeric_state
+          entity_id:
+            - sensor.opentherm_opentherm_flm
+          for:
+            hours: 0
+            minutes: 1
+            seconds: 0
+          above: 0
+      continue_on_timeout: false
+      enabled: false
+    - delay:
+        hours: 0
+        minutes: 10
+        seconds: 0
+        milliseconds: 0
+      enabled: true
+    - action: water_heater.set_temperature
+      metadata: {}
+      data:
+        temperature: 40
+      target:
+        entity_id: water_heater.piec_woda_ogrzewanie

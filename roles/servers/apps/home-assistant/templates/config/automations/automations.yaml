@@ -11,7 +11,7 @@
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.gosund_pompa_gosund_switch_pompa_cyrkulacyjna
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_cyrkulacyjna
   mode: single
 - alias: Wylacz cyrkulacje
   description: ''
@@ -25,7 +25,35 @@
   - service: switch.turn_off
     data: {}
     target:
-      entity_id: switch.gosund_pompa_gosund_switch_pompa_cyrkulacyjna
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_cyrkulacyjna
+  mode: single
+- alias: Wlacz Grzejniki
+  description: ''
+  trigger:
+  - platform: time
+    at: 06:30:00
+  - platform: time
+    at: '18:30:00'
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+  mode: single
+- alias: Wylacz Grzejniki
+  description: ''
+  trigger:
+  - platform: time
+    at: '07:00:00'
+  - platform: time
+    at: '19:00:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
   mode: single
 - alias: Click button to close dwor_brama
   description: ''
@@ -49,7 +77,7 @@
     - trigger: state
       entity_id:
 {% for i in home_assistant.climate %}
-        - switch.virtual_ogrzewanie_{{ i.name }}
+        - "{{ i.switch }}"
 {% endfor %}
       from: "off"
       to: "on"
@@ -59,7 +87,7 @@
       metadata: {}
       data: {}
       target:
-        entity_id: switch.virtual_ogrzewanie_pompy
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
   mode: single
 - alias: ogrzewanie_wylacz
   description: ""
@@ -85,7 +113,7 @@
       metadata: {}
       data: {}
       target:
-        entity_id: switch.virtual_ogrzewanie_pompy
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
   mode: single
 
 # - alias: Alert Brama
