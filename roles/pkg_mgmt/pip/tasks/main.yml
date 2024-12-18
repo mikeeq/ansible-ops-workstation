@@ -1,12 +1,20 @@
 ---
-- name: Remove all system-wide errors in pip
-  shell: rm -rfv /usr/lib/*/EXTERNALLY-MANAGED
-  register: pip_ext_managed
-  changed_when: pip_ext_managed.stdout != ""
+# - name: Remove all system-wide errors in pip
+#   shell: rm -rfv /usr/lib/*/EXTERNALLY-MANAGED
+#   register: pip_ext_managed
+#   changed_when: pip_ext_managed.stdout != ""
 
-- name: Install PIP virtualenv
+- name: Install PIP pkgs
   pip:
-    name: "virtualenv"
+    name: "{{ pip_pkgs_deps }}"
+    state: present
+  vars:
+    pip_pkgs_deps:
+      - virtualenv
+
+- name: Install pipx
+  package:
+    name: pipx
     state: present
 
 - name: Install PIP Apps globally
@@ -35,6 +43,29 @@
   with_items:
     - "{{ pip_apps }}"
   when: item.virtualenv_enabled
+
+- name: Install PIPx Apps globally
+  community.general.pipx:
+    name: "{{ item.name }}"
+    state: present
+    install_deps: true
+    global: true
+    python: "{{ item.python_version | default(omit) }}"
+  with_items:
+    - "{{ pipx_apps }}"
+
+- name: Install PIPx injected apps globally
+  community.general.pipx:
+    name: "{{ item.name }}"
+    state: inject
+    install_deps: true
+    global: true
+    python: "{{ item.python_version | default(omit) }}"
+    install_apps: true
+    inject_packages: "{{ item.inject_packages | default(omit) }}"
+  when: item.inject_packages is defined
+  with_items:
+    - "{{ pipx_apps }}"
 
 - name: Create a symbolic link
   file:

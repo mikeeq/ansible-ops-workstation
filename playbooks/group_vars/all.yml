@@ -58,6 +58,7 @@ dnf_pkgs:
   - cargo
   - python3-argcomplete
   - python3-psutil
+  - sqlite3
 
 dnf_gui_pkgs:
   - clamtk
@@ -102,29 +103,26 @@ flatpak_repos:
   - name: flathub
     url: https://flathub.org/repo/flathub.flatpakrepo
 
-pip_apps:
+pip_apps: []
   # fails on newer Ubuntu as it OS managed
   # - name: pip
   #   virtualenv_enabled: false
-  - name: pyOpenSSL
-    virtualenv_enabled: false
-  - name: ansible
-    virtualenv_enabled: false
+  # - name: pyOpenSSL
+  #   virtualenv_enabled: false
   # - name: argcomplete
   #   virtualenv_enabled: false
-  - name: azure-cli
-    virtualenv_enabled: true
-    # virtualenv_python: "python3.11"
-  - name: ansible-lint
-    virtualenv_enabled: true
-  - name: yamllint
-    virtualenv_enabled: false
   # - name: psutil
   #   virtualenv_enabled: false
-  - name: pywinrm
-    virtualenv_enabled: false
+
+pipx_apps:
+  - name: ansible
+    install_apps: true
+    inject_packages:
+      - pywinrm
+  - name: azure-cli
+  - name: ansible-lint
+  - name: yamllint
   - name: niet
-    virtualenv_enabled: true
 
 gnome_extension_owner: "{{ user_name }}"
 gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shell/extensions/"
