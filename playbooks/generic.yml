@@ -6,19 +6,19 @@
   hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
   roles:
-    - pkg_mgmt/pip
-    # - apps/keybase
-    - apps/kubectl
-    - apps/helm
-    - apps/stern
-    - apps/kail
-    - apps/hadolint
-    - apps/kubescore
-    - apps/istioctl
-    - apps/netcore_sdk
-    - apps/argocd
+    # - pkg_mgmt/pip
+    # # - apps/keybase
+    # - apps/kubectl
+    # - apps/helm
+    # - apps/stern
+    # - apps/kail
+    # - apps/hadolint
+    # - apps/kubescore
+    # - apps/istioctl
+    # - apps/netcore_sdk
+    # - apps/argocd
     - apps/aws-cli
-    - apps/terraform
-    - apps/terragrunt
-    - apps/terraform-docs
-    - apps/azure-functions-core-tools
+    # - apps/terraform
+    # - apps/terragrunt
+    # - apps/terraform-docs
+    # - apps/azure-functions-core-tools

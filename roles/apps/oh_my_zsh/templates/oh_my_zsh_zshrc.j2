@@ -1,6 +1,8 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -15,10 +17,13 @@ plugins=(
   zsh-syntax-highlighting
   docker
   ansible
-  fzf
   dnf
   z
   colored-man-pages
+  aws
+  fzf
+  fzf-tab
+  # zsh-completions
 {% if item != 'root' %}
   vscode
   terraform
@@ -31,7 +36,7 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 {% if item != 'root' %}
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:/opt/azure_functions_core_tools:$PATH"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:/opt/azure_functions_core_tools:$HOME/.local/bin:$PATH"
 {% endif %}
 
 # Extracting Dockerfile from image
@@ -71,7 +76,7 @@ export EDITOR=/usr/bin/vim
 
 autoload -U +X bashcompinit && bashcompinit
 {% if skip_azure_cli_autocompletion is not defined %}
-source /opt/virtualenv/azure-cli/bin/az.completion.sh
+source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
 {% endif %}
 
 alias git_root='cd $(git rev-parse --show-toplevel)'
@@ -89,3 +94,11 @@ WORK_PROFILES_PATH="$HOME/.work_profiles"
 if [[ -n $WORK_PROFILE ]]; then
   source $WORK_PROFILES_PATH/.zshrc
 fi
+
+{# source $HOME/.oh-my-zsh/custom/plugins/fzf-tab-completion/zsh/fzf-zsh-completion.sh
+# only aws command completion
+# zstyle ':completion:*:*:aws' fzf-search-display true
+# or for everything
+zstyle ':completion:*' fzf-search-display true #}
+
+autoload -U compinit && compinit //override comp
