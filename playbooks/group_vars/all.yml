@@ -115,12 +115,12 @@ pip_apps: []
   #   virtualenv_enabled: false
 
 pipx_apps:
+  - name: ansible-lint
   - name: ansible
     install_apps: true
     inject_packages:
       - pywinrm
   - name: azure-cli
-  - name: ansible-lint
   - name: yamllint
   - name: niet
 
