@@ -12,6 +12,18 @@ RUN apt-get update \
       sudo \
     && apt-get clean all
 
+### Workaround for old pipx package in Ubuntu 24.04 repos: https://github.com/pypa/pipx/issues/1481
+RUN pipx ensurepath \
+&& pipx install pipx \
+&& apt remove -y pipx
+
+RUN ~/.local/bin/pipx install pipx --global \
+&& pipx uninstall pipx
+
+RUN pipx ensurepath \
+&& pipx ensurepath --global
+###
+
 # https://pypi.org/project/pip/
 # rm -rfv /usr/lib/*/EXTERNALLY-MANAGED
 # RUN pip3 install --break-system-packages --no-cache-dir --upgrade pip==24.3.1 && \
@@ -23,6 +35,7 @@ RUN pipx install --global --force --include-deps \
       ansible-lint \
       # https://pypi.org/project/yamllint/
       yamllint
+
 
 RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME}
 
