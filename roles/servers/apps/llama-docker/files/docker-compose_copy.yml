@@ -1,8 +1,9 @@
 # https://github.com/open-webui/open-webui
-docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
+# docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 
 # docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 
 # openhermes2.5-mistral:7b-q4_K_M
 
 # https://github.com/danny-avila/LibreChat/tree/main
+---
