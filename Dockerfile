@@ -33,9 +33,11 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 # https://pypi.org/project/pip/
 RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/ansible/
-      ansible \
+      ansible
+RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/ansible-lint/
-      ansible-lint \
+      ansible-lint
+RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/yamllint/
       yamllint
 
