@@ -54,7 +54,7 @@
     install_deps: true
     global: true
     python: "{{ item.python_version | default(omit) }}"
-    force: true
+    # force: true
   with_items:
     - "{{ pipx_apps }}"
 
@@ -67,7 +67,7 @@
     python: "{{ item.python_version | default(omit) }}"
     install_apps: true
     inject_packages: "{{ item.inject_packages | default(omit) }}"
-    force: true
+    # force: true
   when: item.inject_packages is defined
   with_items:
     - "{{ pipx_apps }}"
