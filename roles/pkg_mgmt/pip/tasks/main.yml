@@ -47,7 +47,7 @@
 - name: Install PIPx Apps globally
   community.general.pipx:
     name: "{{ item.name }}"
-    state: present
+    state: install
     install_deps: true
     global: true
     python: "{{ item.python_version | default(omit) }}"

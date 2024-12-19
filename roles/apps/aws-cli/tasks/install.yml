@@ -13,3 +13,4 @@
     install_deps: true
     global: true
     python: "python3.12"
+    force: true

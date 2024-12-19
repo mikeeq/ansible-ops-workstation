@@ -21,6 +21,7 @@
   dnf:
     name: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.rpm"
     state: present
+    disable_gpg_check: true
   when:
     - ansible_distribution == "Fedora"
 
