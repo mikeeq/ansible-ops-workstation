@@ -5,3 +5,5 @@ vagrant_plugins:
 vagrant_embedded_plugins:
   - winrm
   - winrm-elevated
+
+vagrant_plugins_reinstall: false

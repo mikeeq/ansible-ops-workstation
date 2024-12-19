@@ -23,6 +23,8 @@ home_assistant_custom_components:
     repo: https://github.com/alandtse/tesla
   - name: frigate
     repo: https://github.com/blakeblackshear/frigate-hass-integration
+  - name: smart_thermostat
+    repo: https://github.com/ScratMan/HASmartThermostat
   # - name: virtual
   #   repo: https://github.com/twrecked/hass-virtual
 

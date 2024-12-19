@@ -11,4 +11,20 @@
   initial_hvac_mode: heat
   cold_tolerance: 0.2
   hot_tolerance: 0.2
+# - platform: smart_thermostat
+#   name: "{{ i.name }}"
+#   heater: "{{ i.switch }}"
+#   unique_id: "smart_thermostat_{{ i.name }}"
+#   target_sensor: "sensor.th_{{ i.name }}_temperature"
+#   min_temp: 14
+#   max_temp: 24
+#   ac_mode: False
+#   # target_temp: 19
+#   keep_alive:
+#     seconds: 60
+#   # away_temp: 14
+#   kp: 50
+#   ki: 0.01
+#   kd: 2000
+#   pwm: 00:15:00
 {% endfor %}

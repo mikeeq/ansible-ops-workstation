@@ -1,0 +1,19 @@
+---
+# profile: basic
+profile: null
+
+# enable_list:
+#   - yaml
+
+skip_list:
+  - role-name[path]
+  - yaml[line-length]
+#   - name
+#   - tags:formatting,yaml
+
+
+# To skip task from verifying
+# add comment # noqa: command-instead-of-module
+## or
+# tags:
+#     - skip_ansible_lint

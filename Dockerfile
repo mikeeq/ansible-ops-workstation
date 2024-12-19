@@ -14,7 +14,10 @@ RUN dnf clean all \
     && dnf install -y \
       python3-pip \
       systemd \
+      pipx \
       ShellCheck \
+      python3-argcomplete \
+      python3-psutil \
     && dnf clean all
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
@@ -27,19 +30,17 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
+# pipx install --global --include-deps --force --preinstall ansible-lint --preinstall pywinrm ansible
 # https://pypi.org/project/pip/
-RUN pip3 install --no-cache-dir --upgrade pip==24.3.1 && \
-    pip3 install --no-cache-dir \
-      # https://pypi.org/project/ansible/
-      ansible==10.5.0 \
+RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/ansible-lint/
-      ansible-lint==24.9.2 \
+      ansible-lint
+RUN pipx install --global --force --include-deps \
+      # https://pypi.org/project/ansible/
+      ansible
+RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/yamllint/
-      yamllint==1.35.1 \
-      # https://pypi.org/project/packaging/
-      packaging==24.1 \
-      # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL==24.2.1
+      yamllint
 
 # Dive
 RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.tar.gz && \

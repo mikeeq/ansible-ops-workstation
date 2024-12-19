@@ -8,23 +8,39 @@ RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
       python3-pip \
+      # pipx \
+      python3-venv \
       sudo \
     && apt-get clean all
+
+### Workaround for old pipx package in Ubuntu 24.04 repos: https://github.com/pypa/pipx/issues/1481
+# RUN pipx ensurepath \
+# && pipx install pipx \
+# && apt remove -y pipx
+
+# RUN ~/.local/bin/pipx install pipx --global \
+# && pipx uninstall pipx
+
+# RUN pipx ensurepath \
+# && pipx ensurepath --global
+RUN pip3 install --break-system-packages --no-cache-dir pipx
+###
 
 # https://pypi.org/project/pip/
 # rm -rfv /usr/lib/*/EXTERNALLY-MANAGED
 # RUN pip3 install --break-system-packages --no-cache-dir --upgrade pip==24.3.1 && \
-RUN pip3 install --break-system-packages --no-cache-dir \
-      # https://pypi.org/project/ansible/
-      ansible==10.5.0 \
+# https://pypi.org/project/pip/
+# pipx install --global --include-deps --force --preinstall ansible-lint --preinstall pywinrm ansible
+RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/ansible-lint/
-      ansible-lint==24.9.2 \
+      ansible-lint
+RUN pipx install --global --force --include-deps \
+      # https://pypi.org/project/ansible/
+      ansible
+RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/yamllint/
-      yamllint==1.35.1 \
-      # https://pypi.org/project/packaging/
-      packaging==24.1 \
-      # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL==24.2.1
+      yamllint
+
 
 RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME}
 

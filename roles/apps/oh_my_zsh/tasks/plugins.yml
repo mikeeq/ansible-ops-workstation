@@ -60,3 +60,36 @@
     url: "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
     dest: /usr/share/doc/fzf/examples/key-bindings.zsh
   when: ansible_distribution == "Ubuntu"
+
+- name: "Download zsh-completion"
+  become: true
+  become_user: "{{ item }}"
+  git:
+    repo: 'https://github.com/zsh-users/zsh-completions'
+    dest: "~/.oh-my-zsh/custom/plugins/zsh-completions"
+    update: true
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "Download fzf-tab-completion"
+  become: true
+  become_user: "{{ item }}"
+  git:
+    repo: 'https://github.com/lincheney/fzf-tab-completion.git'
+    dest: "~/.oh-my-zsh/custom/plugins/fzf-tab-completion"
+    update: true
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "Download fzf-tab"
+  become: true
+  become_user: "{{ item }}"
+  git:
+    repo: 'https://github.com/Aloxaf/fzf-tab'
+    dest: "~/.oh-my-zsh/custom/plugins/fzf-tab"
+    update: true
+  with_items:
+    - "{{ user_name }}"
+    - root

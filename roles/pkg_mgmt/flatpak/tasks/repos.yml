@@ -5,8 +5,8 @@
   changed_when: false
   ignore_errors: true
 
-- name: Add flatpak remotes to the system installation
-  flatpak_remote:
+- name: "Add flatpak remotes to the system installation - recreate"
+  community.general.flatpak_remote:
     name: "{{ item.name }}"
     state: absent
     flatpakrepo_url: "{{ item.url }}"
@@ -14,8 +14,8 @@
   with_items:
     - "{{ flatpak_repos }}"
 
-- name: Add flatpak remotes to the system installation
-  flatpak_remote:
+- name: "Add flatpak remotes to the system installation"
+  community.general.flatpak_remote:
     name: "{{ item.name }}"
     state: present
     flatpakrepo_url: "{{ item.url }}"

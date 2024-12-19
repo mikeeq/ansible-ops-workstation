@@ -30,3 +30,5 @@ krew_plugins:
 
 dnf_extra_pkgs:
   - steam-devices
+
+aws_cli_session_manager_plugin_architecture_common_name: "64bit"

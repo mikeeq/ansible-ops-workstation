@@ -16,3 +16,29 @@
 
 - include_tasks: install.yml
   when: installed_aws_cli_version.stdout != aws_cli_version
+
+- name: Install Session Manager plugin on Fedora
+  dnf:
+    name: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.rpm"
+    state: present
+    disable_gpg_check: true
+  when:
+    - ansible_distribution == "Fedora"
+
+- name: Install Session Manager plugin  on Ubuntu
+  apt:
+    deb: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.deb"
+    state: present
+  when:
+    - ansible_distribution == "Ubuntu"
+
+- name: Create a symbolic link for aws-cli
+  file:
+    src: "/opt/pipx/venvs/awscli/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    owner: root
+    group: root
+    state: link
+  loop:
+    - aws
+    - aws_completer

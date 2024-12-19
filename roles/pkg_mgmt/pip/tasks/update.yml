@@ -20,6 +20,21 @@
   tags:
     - update
 
+- name: Update PIPx apps
+  community.general.pipx:
+    name: "{{ item.name }}"
+    state: upgrade
+    install_deps: true
+    global: true
+    python: "{{ item.python_version | default(omit) }}"
+    install_apps: true
+    inject_packages: "{{ item.inject_packages | default(omit) }}"
+    include_injected: true
+  with_items:
+    - "{{ pipx_apps }}"
+  tags:
+    - update
+
 
 # TASK [pkg_mgmt/pip : Update virtualenv PIP apps] ******************************************************************
 # Monday 25 May 2020  11:15:24 +0200 (0:00:08.506)       0:01:05.474 ************
