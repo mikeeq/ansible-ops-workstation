@@ -16,6 +16,8 @@ RUN dnf clean all \
       systemd \
       pipx \
       ShellCheck \
+      python3-argcomplete \
+      python3-psutil \
     && dnf clean all
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
@@ -35,11 +37,7 @@ RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/ansible-lint/
       ansible-lint \
       # https://pypi.org/project/yamllint/
-      yamllint \
-      # https://pypi.org/project/packaging/
-      packaging \
-      # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL
+      yamllint
 
 # Dive
 RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.tar.gz && \

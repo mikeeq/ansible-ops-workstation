@@ -22,11 +22,7 @@ RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/ansible-lint/
       ansible-lint \
       # https://pypi.org/project/yamllint/
-      yamllint \
-      # https://pypi.org/project/packaging/
-      packaging \
-      # https://pypi.org/project/pyOpenSSL/
-      pyOpenSSL
+      yamllint
 
 RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME}
 
