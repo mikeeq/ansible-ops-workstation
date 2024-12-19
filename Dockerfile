@@ -30,6 +30,7 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
+# pipx install --global --include-deps --force --preinstall ansible-lint --preinstall pywinrm ansible
 # https://pypi.org/project/pip/
 RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/ansible-lint/

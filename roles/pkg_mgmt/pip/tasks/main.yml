@@ -16,6 +16,9 @@
   package:
     name: pipx
     state: present
+  when:
+    - ansible_distribution == "Fedora"
+
 
 - name: Install PIP Apps globally
   pip:

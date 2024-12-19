@@ -120,6 +120,7 @@ pipx_apps:
     install_apps: true
     inject_packages:
       - pywinrm
+      # - ansible-lint
   - name: azure-cli
   - name: yamllint
   - name: niet

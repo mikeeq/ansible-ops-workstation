@@ -28,6 +28,7 @@ RUN pipx ensurepath \
 # rm -rfv /usr/lib/*/EXTERNALLY-MANAGED
 # RUN pip3 install --break-system-packages --no-cache-dir --upgrade pip==24.3.1 && \
 # https://pypi.org/project/pip/
+# pipx install --global --include-deps --force --preinstall ansible-lint --preinstall pywinrm ansible
 RUN pipx install --global --force --include-deps \
       # https://pypi.org/project/ansible-lint/
       ansible-lint
