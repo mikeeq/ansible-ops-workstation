@@ -22,3 +22,7 @@
       {% else %}
         Idle
       {% endif %}
+
+  - name: open_meteo_temperature
+    state: >
+      {{ state_attr('weather.open_meteo', 'temperature') }}S

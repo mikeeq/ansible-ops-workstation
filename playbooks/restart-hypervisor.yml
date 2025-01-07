@@ -9,11 +9,12 @@
         state: present
 
     - name: Check if reboot required
-      shell: |
+      ansible.builtin.shell: |
         needs-restarting -r
       register: reboot_required
+      changed_when: reboot_required.rc != 0
 
     - name: Reboot if required
-      reboot:
+      ansible.builtin.reboot:
       when:
         - reboot_required.rc != 0

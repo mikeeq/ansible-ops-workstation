@@ -1,6 +1,6 @@
 ---
 - name: Get installed version
-  shell: packer --version
+  shell: packer --version | awk '{print $2}' | cut -d'v' -f2
   register: installed_packer_version
   changed_when: false
   ignore_errors: true

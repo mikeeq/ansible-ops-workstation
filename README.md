@@ -515,6 +515,16 @@ echo 2 > /sys/class/backlight/acpi_video0/brightness
 
 ```
 flatpak override com.valvesoftware.Steam --filesystem=${PATH_TO_FILESYSTEM}
+
+## If your games don't load/start and those are stored on NTFS
+# NTFS mount needs to be done as user
+# https://github.com/ValveSoftware/Proton/wiki/Using-a-NTFS-disk-with-Linux-and-Windows#editing-fstab
+
+## cat /etc/fstab
+/dev/nvme1n1p2 /mnt/dntfs auto uid=1000,gid=1000,rw,user,exec,umask=000 0 0
+
+### only worked after reboot, CLI commands with the same options passed didn't work (still NTFS was mounted as root), i.e.
+❯ mount.ntfs-3g -o uid=1000,gid=1000,dmask=0022,fmask=0133 /dev/nvme1n1p2 /mnt/dntfs
 ```
 
 18. Terminator fails to open with an error `terminator:24:<module>:ModuleNotFoundError: No module named 'psutil'`, try reinstalling `dnf reinstall python3-psutil` to fix it
