@@ -37,10 +37,11 @@
           switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
       from: "off"
       to: "on"
+      # Wait for mixer to fully open up, ARA661 (120s + delay from driver)
       for:
         hours: 0
-        minutes: 0
-        seconds: 15
+        minutes: 5
+        seconds: 0
   conditions: []
   actions:
     - action: water_heater.set_operation_mode
@@ -71,23 +72,34 @@
     - action: water_heater.set_temperature
       metadata: {}
       data:
-        temperature: 60
+        temperature: 58
       target:
         entity_id: water_heater.piec_woda_ogrzewanie
-    - wait_for_trigger:
-        - trigger: numeric_state
-          entity_id:
-            - sensor.opentherm_opentherm_flm
-          for:
-            hours: 0
-            minutes: 1
-            seconds: 0
-          above: 0
-      continue_on_timeout: false
-      enabled: false
+    # - wait_for_trigger:
+    #     - trigger: numeric_state
+    #       entity_id:
+    #         - sensor.opentherm_opentherm_flm
+    #       for:
+    #         hours: 0
+    #         minutes: 1
+    #         seconds: 0
+    #       above: 0
+    #   continue_on_timeout: false
+    #   enabled: false
+    # - wait_for_trigger:
+    #     - trigger: numeric_state
+    #       entity_id:
+    #         - sensor.opentherm_opentherm_slave_fl
+    #       for:
+    #         hours: 0
+    #         minutes: 5
+    #         seconds: 0
+    #       above: 0
+    #   continue_on_timeout: true
+    #   enabled: true
     - delay:
         hours: 0
-        minutes: 10
+        minutes: 7
         seconds: 0
         milliseconds: 0
       enabled: true

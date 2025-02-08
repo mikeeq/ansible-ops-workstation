@@ -1,0 +1,68 @@
+---
+- alias: ogrzewanie_wlacz
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id:
+{% for i in home_assistant.climate %}
+        - "{{ i.switch }}"
+{% endfor %}
+      from: "off"
+      to: "on"
+  conditions:
+    - condition: template
+      value_template: >-
+        {% raw -%}{{ [{%- endraw -%}{%- for i in home_assistant.climate -%}states('{{ i.switch }}'),{%- endfor -%}].count('on') >= 3 }}
+  actions:
+    # # Wait for mixer to fully open up, ARA661 (120s + delay from driver)
+    # - delay:
+    #     hours: 0
+    #     minutes: 5
+    #     seconds: 0
+    #     milliseconds: 0
+    - action: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+    - service: switch.turn_on
+      data: {}
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+  mode: single
+- alias: ogrzewanie_wylacz
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id:
+{% for i in home_assistant.climate %}
+        - "{{ i.switch }}"
+{% endfor %}
+      from: "on"
+      to: "off"
+  conditions:
+    - condition: template
+      value_template: >-
+        {% raw -%}{{ [{%- endraw -%}{%- for i in home_assistant.climate -%}states('{{ i.switch }}'),{%- endfor -%}].count('on') <= 2 }}
+  actions:
+    # - action: switch.turn_on
+    #   metadata: {}
+    #   data: {}
+    #   target:
+    #     entity_id: switch.virtual_ogrzewanie_dol_lazienka
+    # - delay:
+    #     hours: 0
+    #     minutes: 1
+    #     seconds: 0
+    #     milliseconds: 0
+    - action: switch.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+    - action: switch.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+  mode: single
