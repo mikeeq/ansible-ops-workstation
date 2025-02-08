@@ -25,10 +25,10 @@
       data: {}
       target:
         entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
-    - service: switch.turn_on
-      data: {}
-      target:
-        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+    # - service: switch.turn_on
+    #   data: {}
+    #   target:
+    #     entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
   mode: single
 - alias: ogrzewanie_wylacz
   description: ""
@@ -60,9 +60,9 @@
       data: {}
       target:
         entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
-    - action: switch.turn_off
-      metadata: {}
-      data: {}
-      target:
-        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+    # - action: switch.turn_off
+    #   metadata: {}
+    #   data: {}
+    #   target:
+    #     entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
   mode: single
