@@ -1,3 +1,5 @@
+# https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Fedora&target_version=41&target_type=rpm_network
+# dnf -y install cuda-toolkit-12-8  nvidia-open nvidia-container-toolkit
 # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation
 # nvidia-ctk runtime configure --runtime=docker
 # systemctl restart docker
