@@ -95,6 +95,11 @@ if [[ -n $WORK_PROFILE ]]; then
   source $WORK_PROFILES_PATH/.zshrc
 fi
 
+function aws-ctx() {
+  export AWS_PROFILE="$(aws configure list-profiles | fzf)"
+  echo "Switched to profile ""$AWS_PROFILE""."
+}
+
 {# source $HOME/.oh-my-zsh/custom/plugins/fzf-tab-completion/zsh/fzf-zsh-completion.sh
 # only aws command completion
 zstyle ':completion:*:*:aws' fzf-search-display true

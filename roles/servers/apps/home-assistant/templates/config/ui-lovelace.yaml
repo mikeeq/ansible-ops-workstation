@@ -541,16 +541,16 @@ views:
     path: kamery
     badges: []
     cards:
-      - type: picture-entity
-        entity: camera.yi_hack_a2_d8a470_cam
-      - type: picture-entity
-        entity: camera.yi_hack_a_cd2a17_cam
-      - show_state: true
-        show_name: true
-        camera_view: auto
-        type: picture-entity
-        entity: camera.yi_hack_a2_723336_cam
-        image: https://demo.home-assistant.io/stub_config/bedroom.png
+      # - type: picture-entity
+      #   entity: camera.yi_hack_a2_d8a470_cam
+      # - type: picture-entity
+      #   entity: camera.yi_hack_a_cd2a17_cam
+      # - show_state: true
+      #   show_name: true
+      #   camera_view: auto
+      #   type: picture-entity
+      #   entity: camera.yi_hack_a2_723336_cam
+      #   image: https://demo.home-assistant.io/stub_config/bedroom.png
       - type: entities
         entities:
           - entity: select.reolink_furtka_play_quick_reply_message
@@ -564,8 +564,32 @@ views:
           - entity: binary_sensor.reolink_furtka_visitor
             name: Visitor
         title: Reolink-Furtka
-      - type: picture-entity
-        entity: camera.reolink_furtka_fluent
+      # - type: picture-entity
+      #   entity: camera.reolink_furtka_fluent
+      - type: custom:frigate-card
+        cameras:
+          - camera_entity: camera.reolink_doorbell
+            live_provider: webrtc-card
+      - type: custom:frigate-card
+        cameras:
+          - camera_entity: camera.yi_garaz
+            live_provider: webrtc-card
+      - type: custom:frigate-card
+        cameras:
+          - camera_entity: camera.yi_kuchnia
+            live_provider: webrtc-card
+      - type: custom:frigate-card
+        cameras:
+          - camera_entity: camera.yi_drzwi
+            live_provider: webrtc-card
+      - type: custom:frigate-card
+        cameras:
+          - camera_entity: camera.yi_salon
+            live_provider: webrtc-card
+      - type: custom:frigate-card
+        cameras:
+          - camera_entity: camera.yi_sypialnia
+            live_provider: webrtc-card
   - theme: Backend-selected
     title: Ogrzewanie
     path: ogrzewanie

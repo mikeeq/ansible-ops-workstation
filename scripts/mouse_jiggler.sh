@@ -28,7 +28,7 @@ MOUSE_Y=581
 # Function to detect if the cursor has moved in the last 5 minutes
 check_cursor_idle() {
     idle_time=$(xprintidle)  # Requires xprintidle installed, returns idle time in milliseconds
-    if [ "$idle_time" -ge 300 ]; then  # 5 minutes = 300000 milliseconds
+    if [[ "$idle_time" -ge 300 ]]; then  # 5 minutes = 300000 milliseconds
         return 0  # Idle for 5 minutes
     else
         return 1  # Cursor moved in less than 5 minutes
