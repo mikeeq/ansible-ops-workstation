@@ -1,0 +1,57 @@
+---
+- alias: Wlacz cyrkulacje
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  - platform: time
+    at: '16:00:00'
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_cyrkulacyjna
+  mode: single
+- alias: Wylacz cyrkulacje
+  description: ''
+  trigger:
+  - platform: time
+    at: '10:00:00'
+  - platform: time
+    at: '21:00:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_cyrkulacyjna
+  mode: single
+- alias: Wlacz Grzejniki
+  description: ''
+  trigger:
+  - platform: time
+    at: 05:30:00
+  # - platform: time
+  #   at: '17:30:00'
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+  mode: single
+- alias: Wylacz Grzejniki
+  description: ''
+  trigger:
+  - platform: time
+    at: '06:00:00'
+  # - platform: time
+  #   at: '18:00:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+  mode: single

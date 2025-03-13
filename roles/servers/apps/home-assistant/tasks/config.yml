@@ -1,27 +1,27 @@
----
-- name: Ensure install dir exists
-  file:
-    path: "{{ item }}"
-    state: directory
-  loop:
-    - "{{ install_path }}/config"
-    - "{{ install_path }}/config/automations"
-    - "{{ install_path }}/config/sensors"
-    - "{{ install_path }}/config/.storage"
-    - "{{ install_path }}/config/mqtt/binary_sensors"
-    - "{{ install_path }}/config/mqtt/sensors"
-    - "{{ install_path }}/config/mqtt/lights"
-    - "{{ install_path }}/config/mqtt/switches"
+# ---
+# - name: Ensure install dir exists
+#   file:
+#     path: "{{ item }}"
+#     state: directory
+#   loop:
+#     - "{{ install_path }}/config"
+#     - "{{ install_path }}/config/automations"
+#     - "{{ install_path }}/config/sensors"
+#     - "{{ install_path }}/config/.storage"
+#     - "{{ install_path }}/config/mqtt/binary_sensors"
+#     - "{{ install_path }}/config/mqtt/sensors"
+#     - "{{ install_path }}/config/mqtt/lights"
+#     - "{{ install_path }}/config/mqtt/switches"
 
-- name: Configure config files
-  copy:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/"
-    mode: 0664
-    backup: true
-  with_fileglob:
-    - ../files/config/*
-    # - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/*"
+# - name: Configure config files
+#   copy:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/"
+#     mode: 0664
+#     backup: true
+#   with_fileglob:
+#     - ../files/config/*
+#     # - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/*"
 
 - name: Configure config templates
   template:
@@ -43,83 +43,83 @@
     - ../templates/config/automations/*
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/automations/*"
 
-- name: Configure config/sensors
-  template:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/sensors/"
-    mode: 0664
-    backup: true
-  with_fileglob:
-    - ../templates/config/sensors/*
-    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/sensors/*"
+# - name: Configure config/sensors
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/sensors/"
+#     mode: 0664
+#     backup: true
+#   with_fileglob:
+#     - ../templates/config/sensors/*
+#     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/sensors/*"
 
 
-- name: Configure config/mqtt/sensors
-  template:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/sensors/"
-    mode: 0664
-    backup: true
-  with_fileglob:
-    - ../templates/config/mqtt/sensors/*
+# - name: Configure config/mqtt/sensors
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/mqtt/sensors/"
+#     mode: 0664
+#     backup: true
+#   with_fileglob:
+#     - ../templates/config/mqtt/sensors/*
 
-- name: Configure config/mqtt/binary_sensors
-  template:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/binary_sensors/"
-    mode: 0664
-    backup: true
-  with_fileglob:
-    - ../templates/config/mqtt/binary_sensors/*
+# - name: Configure config/mqtt/binary_sensors
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/mqtt/binary_sensors/"
+#     mode: 0664
+#     backup: true
+#   with_fileglob:
+#     - ../templates/config/mqtt/binary_sensors/*
 
-- name: Configure config/mqtt/lights
-  template:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/lights/"
-    mode: 0664
-    backup: true
-  with_fileglob:
-    - ../templates/config/mqtt/lights/*
+# - name: Configure config/mqtt/lights
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/mqtt/lights/"
+#     mode: 0664
+#     backup: true
+#   with_fileglob:
+#     - ../templates/config/mqtt/lights/*
 
-- name: Configure config/mqtt/switches
-  template:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/switches/"
-    mode: 0664
-    backup: true
-  with_fileglob:
-    - ../templates/config/mqtt/switches/*
+# - name: Configure config/mqtt/switches
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/mqtt/switches/"
+#     mode: 0664
+#     backup: true
+#   with_fileglob:
+#     - ../templates/config/mqtt/switches/*
 
-- name: Configure config/mqtt/water_heater
-  template:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/water_heater/"
-    mode: 0664
-    backup: true
-  with_fileglob:
-    - ../templates/config/mqtt/water_heater/*
+# - name: Configure config/mqtt/water_heater
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/mqtt/water_heater/"
+#     mode: 0664
+#     backup: true
+#   with_fileglob:
+#     - ../templates/config/mqtt/water_heater/*
 
-- name: Check that the .storage exists
-  stat:
-    path: "{{ install_path }}/config/.storage/onboarding"
-  register: storage_result
+# - name: Check that the .storage exists
+#   stat:
+#     path: "{{ install_path }}/config/.storage/onboarding"
+#   register: storage_result
 
-- name: Configure .storage
-  copy:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/.storage"
-    mode: 0664
-    backup: true
-  when: not storage_result.stat.exists
-  with_fileglob:
-    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/.storage/*"
+# - name: Configure .storage
+#   copy:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/.storage"
+#     mode: 0664
+#     backup: true
+#   when: not storage_result.stat.exists
+#   with_fileglob:
+#     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/.storage/*"
 
-- name: Configure config init
-  copy:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/config/"
-    mode: 0664
-    backup: true
-    force: false
-  with_fileglob:
-    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config_init/*"
+# - name: Configure config init
+#   copy:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/config/"
+#     mode: 0664
+#     backup: true
+#     force: false
+#   with_fileglob:
+#     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config_init/*"
