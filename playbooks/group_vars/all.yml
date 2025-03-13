@@ -120,10 +120,12 @@ pipx_apps:
     install_apps: true
     inject_packages:
       - pywinrm
+      - passlib
       # - ansible-lint
   - name: azure-cli
   - name: yamllint
   - name: niet
+  - name: pre-commit
 
 gnome_extension_owner: "{{ user_name }}"
 gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shell/extensions/"
@@ -141,7 +143,7 @@ gnome_shell_extensions:
   # - 4144        # vertical-overview
   # - 945         # cpu-power-manager
   # - 307         # dash-to-dock
-  # - 1319        # GSConnect
+  - 1319        # GSConnect
   # - 120         # system-monitor
 
 gnome_extension_ids: "{{ gnome_shell_extensions }}"
