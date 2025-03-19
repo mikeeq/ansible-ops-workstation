@@ -84,6 +84,10 @@ dnf_gui_pkgs:
   - seahorse
   - vlc
   - wireshark
+  - k3b       # Disc burner
+  - v4l2loopback  # Required for OBS
+  - kmod-v4l2loopback  # Required for OBS
+  - corectrl    # GUI OC AMD Radeon
 
 dnf_extra_pkgs: []
 
