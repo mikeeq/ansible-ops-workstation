@@ -145,6 +145,7 @@ gnome_shell_extensions:
   # - 307         # dash-to-dock
   - 1319        # GSConnect
   # - 120         # system-monitor
+  - 1460        # Vitals
 
 gnome_extension_ids: "{{ gnome_shell_extensions }}"
 
