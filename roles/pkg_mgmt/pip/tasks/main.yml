@@ -70,9 +70,7 @@
     # force: true
   when: item.inject_packages is defined
   register: pipx_inject
-  changed_when:
-    - "'If you are attempting to install a library' in pipx_inject[item].stdout"
-    - pipx_inject[item].rc -= 0
+  ignore_errors: true
   with_items:
     - "{{ pipx_apps }}"
 
