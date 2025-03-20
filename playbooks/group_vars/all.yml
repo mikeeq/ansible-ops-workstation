@@ -32,7 +32,7 @@ generic_pkgs:
   - wget
 
 apt_pkgs:
-  - openjdk-11-jdk
+  - openjdk-21-jdk
   - python3-dev
   - shellcheck
 
@@ -43,7 +43,7 @@ dnf_pkgs:
   - flatpak
   - fuse-exfat
   - hunspell-pl
-  - java-17-openjdk
+  - java-21-openjdk
   - lm_sensors
   # - policycoreutils-python
   - python3-devel
