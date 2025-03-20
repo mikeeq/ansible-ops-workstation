@@ -169,5 +169,7 @@
     state: started
     scope: user
     enabled: true
+  tags:
+    - dont_run_in_docker
 
 # killall -3 gnome-shell
