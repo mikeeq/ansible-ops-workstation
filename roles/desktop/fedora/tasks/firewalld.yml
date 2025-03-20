@@ -3,7 +3,8 @@
   systemd:
     name: firewalld
     enabled: no
-  when: docker_tests_flag is not defined
+  tags:
+    - dont_run_in_docker
 
 - name: install iptables
   dnf:

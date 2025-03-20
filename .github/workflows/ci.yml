@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: "Runner storage cleanup"
-        run: ./.github/cleanup-runner.sh
+        run: sudo ./.github/cleanup-runner.sh
 
       - name: "Build fedora-systemd image..."
         run: docker build -t fedora_systemd:latest .
@@ -43,6 +43,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      - name: "Runner storage cleanup"
+        run: sudo ./.github/cleanup-runner.sh
 
       - name: "Build ubuntu image..."
         run: docker build -f Dockerfile-ubuntu -t ubuntu-aow:latest .
