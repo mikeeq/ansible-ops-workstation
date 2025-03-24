@@ -39,5 +39,9 @@ services:
       - "1935:1935" #RTMP feeds
       - "8555:8555/tcp" # WebRTC over tcp
       - "8555:8555/udp" # WebRTC over udp
-    # environment:
+    environment:
+      # - YOLO_MODELS=yolov7-320,yolov7x-640
+      - YOLO_MODELS=yolov7-320
+      - TRT_MODEL_PREP_DEVICE=0
+      # - USE_FP16=false
     #   FRIGATE_RTSP_PASSWORD: "pass"
