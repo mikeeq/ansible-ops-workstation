@@ -10,4 +10,5 @@
     # - debug:
     #     msg: "{{ user_name | password_hash('bcrypt', 1234567890123456789012) }}"
   roles:
-    - servers/apps/home-assistant
+    # - servers/apps/home-assistant
+    - servers/apps/frigate
