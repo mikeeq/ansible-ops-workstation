@@ -1,0 +1,71 @@
+---
+server4:
+  plugins:
+      # lease_time sets the default lease time for advertised leases
+      # - lease_time: <duration>
+      # The duration can be given in any format understood by go's
+      # "ParseDuration": https://golang.org/pkg/time/#ParseDuration
+      - lease_time: 3600s
+
+      # server_id advertises a DHCP Server Identifier, to help resolve
+      # situations where there are multiple DHCP servers on the network
+      # - server_id: <IP address>
+      # The IP address should be one address where this server is reachable
+      - server_id: 10.10.10.1
+
+      # dns advertises DNS resolvers usable by the clients on this network
+      # - dns: <IP address> <...IP addresses>
+      - dns: 8.8.8.8 8.8.4.4
+
+      # router is mandatory, and advertises the address of the default router
+      # for this network
+      # - router: <IP address>
+      - router: 192.168.1.1
+
+      # netmask advertises the network mask for the IPs assigned through this
+      # server
+      # - netmask: <network mask>
+      - netmask: 255.255.255.0
+
+      # range allocates leases within a range of IPs
+      # - range: <lease file> <start IP> <end IP> <lease duration>
+      # * the lease file is an initially empty file where the leases that are
+      # allocated to clients will be stored across server restarts
+      # * lease duration can be given in any format understood by go's
+      # "ParseDuration": https://golang.org/pkg/time/#ParseDuration
+      - range: leases.sqlite3 10.10.10.100 10.10.10.200 60s
+
+      # staticroute advertises additional routes the client should install in
+      # its routing table as described in RFC3442
+      # - staticroute: <destination>,<gateway> [<destination>,<gateway> ...]
+      # where destination should be in CIDR notation and gateway should be
+      # the IP address of the router through which the destination is reachable
+      # - staticroute: 10.20.20.0/24,10.10.10.1
+
+    # plugins:
+    #     # server_id is mandatory for RFC-compliant operation.
+    #     # - server_id: <DUID format> <LL address>
+    #     # The supported DUID formats are LL and LLT
+    #     - server_id: LL 00:de:ad:be:ef:00
+
+    #     # file serves leases defined in a static file, matching link-layer addresses to IPs
+    #     # - file: <file name> [autorefresh]
+    #     # The file format is one lease per line, "<hw address> <IPv6>"
+    #     # When the 'autorefresh' argument is given, the plugin will try to refresh
+    #     # the lease mapping during runtime whenever the lease file is updated.
+    #     - file: "leases.txt"
+
+    #     # dns adds information about available DNS resolvers to the responses
+    #     # - dns: <resolver IP> <... resolver IPs>
+    #     - dns: 2001:4860:4860::8888 2001:4860:4860::8844
+
+    #     # nbp can add information about the location of a network boot program
+    #     # - nbp: <NBP URL>
+    #     - nbp: "http://[2001:db8:a::1]/nbp"
+
+    #     # prefix provides prefix delegation.
+    #     # - prefix: <prefix> <allocation size>
+    #     # prefix is the prefix pool from which the allocations will be carved
+    #     # allocation size is the maximum size for prefixes that will be allocated to clients
+    #     # EG for allocating /64 or smaller prefixes within 2001:db8::/48 :
+    #     - prefix: 2001:db8::/48 64

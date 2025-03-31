@@ -30,6 +30,7 @@ generic_pkgs:
   - unzip
   - vim
   - wget
+  - nmap
 
 apt_pkgs:
   - openjdk-21-jdk
