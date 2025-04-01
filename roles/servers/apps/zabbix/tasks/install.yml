@@ -1,0 +1,69 @@
+---
+- name: Ensure install dir exists
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}"
+    - "{{ install_path }}/env_vars"
+    - "{{ install_path }}/env_vars/mysql_init"
+    # - "{{ install_path }}/config"
+
+- name: Download files
+  ansible.builtin.get_url:
+    url: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  loop:
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/docker-compose_v3_alpine_mysql_latest.yaml
+      dest: "{{ install_path }}/docker-compose.yaml"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/compose_databases.yaml
+      dest: "{{ install_path }}/compose_databases.yaml"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/compose_additional_components.yaml
+      dest: "{{ install_path }}/compose_additional_components.yaml"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/compose_zabbix_components.yaml
+      dest: "{{ install_path }}/compose_zabbix_components.yaml"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/.env
+      dest: "{{ install_path }}/.env"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/env_vars/.env_db_mysql
+      dest: "{{ install_path }}/env_vars/.env_db_mysql"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/env_vars/.env_web
+      dest: "{{ install_path }}/env_vars/.env_web"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/env_vars/.env_srv
+      dest: "{{ install_path }}/env_vars/.env_srv"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/env_vars/.MYSQL_USER
+      dest: "{{ install_path }}/env_vars/.MYSQL_USER"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/env_vars/.MYSQL_PASSWORD
+      dest: "{{ install_path }}/env_vars/.MYSQL_PASSWORD"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/env_vars/.MYSQL_ROOT_USER
+      dest: "{{ install_path }}/env_vars/.MYSQL_ROOT_USER"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/env_vars/.MYSQL_ROOT_PASSWORD
+      dest: "{{ install_path }}/env_vars/.MYSQL_ROOT_PASSWORD"
+    - src: https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/heads/7.2/env_vars/mysql_init/init_proxy_db.sql
+      dest: "{{ install_path }}/env_vars/mysql_init/init_proxy_db.sql"
+
+
+# - name: Configure docker-compose file
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ install_path }}/{{ item }}"
+#     mode: 0664
+#   loop:
+#     - docker-compose.yml
+    # - config/Corefile
+
+- import_tasks: config.yml
+
+- name: Pull Docker image using docker-compose
+  command: docker-compose pull
+  changed_when: pull_result.stderr_lines | length > 2
+  register: pull_result
+  args:
+    chdir: "{{ install_path }}"
+
+- name: Run using docker-compose
+  command: docker-compose up -d
+  changed_when: up_result.stderr_lines | length > 2
+  register: up_result
+  args:
+    chdir: "{{ install_path }}"

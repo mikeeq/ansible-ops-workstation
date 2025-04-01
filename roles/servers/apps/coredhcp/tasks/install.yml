@@ -14,7 +14,8 @@
     mode: 0664
   loop:
     - docker-compose.yml
-    - config/Corefile
+    - config/config.yaml
+    - config/file_leases.txt
 
 - import_tasks: config.yml
 
