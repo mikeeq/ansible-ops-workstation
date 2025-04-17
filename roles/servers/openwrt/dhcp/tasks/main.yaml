@@ -9,13 +9,11 @@
     owner: "root"
     group: "root"
     mode: "0600"
+  notify:
+    - reload_dnsmasq
 
-- name: Reload service dnsmasq, in all cases
-  community.general.openwrt_init:
-    name: dnsmasq
-    state: reloaded
-
+# Handles ipv6 related tasks
 - name: Reload service odhcpd, in all cases
   community.general.openwrt_init:
     name: odhcpd
-    state: reloaded
+    state: stopped
