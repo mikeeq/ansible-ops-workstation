@@ -20,12 +20,13 @@ config dhcp 'lan'
         option limit '240'
         option leasetime '12h'
         option dhcpv4 'server'
-        {# option dhcpv6 'server' #}
-        {# option ra 'server' #}
         list ra_flags 'managed-config'
         list ra_flags 'other-config'
+        list dhcp_option '6,8.8.8.8'
+        {# list dhcp_option '6,192.168.4.22' #}
+        {# option dhcpv6 'server' #}
+        {# option ra 'server' #}
         {# list dhcp_option '6,8.8.8.8,8.8.4.4' #}
-        list dhcp_option '6,192.168.4.22'
         {# list dhcp_option '3,192.168.4.5' #}
 
 config dhcp 'wan'
@@ -38,23 +39,20 @@ config odhcpd 'odhcpd'
         option leasetrigger '/usr/sbin/odhcpd-update'
         option loglevel '4'
 
+config tag 'private'
+        list dhcp_option '3,192.168.4.5'
+
 {% for i in dhcp %}
 config host
         option name '{{ i.hostname }}'
         option ip '{{ i.ip }}'
         list mac '{{ i.mac }}'
         option leasetime '12h'
-{% if i.private|default(false) %}
-        {# list dhcp_option '3,192.168.4.5' #}
-{% endif %}
 {% for y in i.tags|default() %}
         list tag '{{ y }}'
 {% endfor %}
 
 {% endfor %}
-
-config tag 'private'
-        list dhcp_option '3,192.168.4.5'
 
 {# config host
         option name 'device1'
