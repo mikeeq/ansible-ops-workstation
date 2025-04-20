@@ -16,4 +16,5 @@
 - name: Reload service odhcpd, in all cases
   community.general.openwrt_init:
     name: odhcpd
+    enabled: false
     state: stopped
