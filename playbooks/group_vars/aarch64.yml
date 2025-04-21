@@ -20,7 +20,7 @@ flatpak_apps:
   #   remote: flathub
 
 # https://github.com/ishantanu/awesome-kubectl-plugins
-krew_plugins:
-  - hns
+krew_plugins: []
+#   - hns
 
 aws_cli_session_manager_plugin_architecture_common_name: "arm64"
