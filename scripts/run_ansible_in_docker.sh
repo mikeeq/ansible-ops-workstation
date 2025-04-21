@@ -17,12 +17,12 @@ docker run \
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook --skip-tags dont_run_in_docker -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
+    ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
 
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook --skip-tags dont_run_in_docker -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
+    ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
 
 ansible_exitcode=$?
 
