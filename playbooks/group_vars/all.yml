@@ -60,6 +60,7 @@ dnf_pkgs:
   - python3-argcomplete
   - python3-psutil
   - sqlite3
+  - python3-dnf-plugin-versionlock
 
 dnf_gui_pkgs:
   - clamtk

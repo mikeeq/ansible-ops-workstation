@@ -1,0 +1,26 @@
+---
+# curl -L https://developer.download.nvidia.com/compute/cuda/repos/fedora41/x86_64/cuda-fedora41.repo -o /etc/yum.repos.d/cuda-fedora41.repo
+# - name: Import a key from a url
+#   ansible.builtin.rpm_key:
+#     state: present
+#     key: https://rpm.tuxedocomputers.com/fedora/41/0x54840598.pub.asc
+
+# - name: Setup tuxedo yum repo
+#   copy:
+#     src: tuxedo.repo
+#     dest: /etc/yum.repos.d/tuxedo.repo
+#     owner: "root"
+#     group: "root"
+#     mode: 0644
+
+# https://developer.download.nvidia.com/compute/cuda/12.8.1/local_installers/cuda_12.8.1_570.124.06_linux.run
+
+- name: Install nvidia pkgs
+  dnf:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - nvidia-container-toolkit
+      # - cuda-toolkit-12-8
+      # - nvidia-open
