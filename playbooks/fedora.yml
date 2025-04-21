@@ -2,29 +2,29 @@
 - name: Include a playbook for including arch specifc vars
   import_playbook: vars.yml
 
-- name: Fedora bootstrap
-  hosts:
-    - "{{ hosts_to_deploy | default('local') }}"
-    # - mikeeClevo
-  become: true
-  pre_tasks:
-    # - debug:
-    #     var: hostvars[inventory_hostname]
-  roles:
-    - pkg_mgmt/dnf
-    - pkg_mgmt/flatpak
-    - desktop/apps/google_chrome
-    - desktop/apps/keeweb
-    - apps/docker
-    - apps/qemu
-    - desktop/apps/terminator
-    - apps/vagrant
-    - apps/packer
-    - desktop/gnome
-    - desktop/apps/vscode
-    - desktop/apps/x11docker
-    - desktop/fedora
-    # - apps/nordvpn
+# - name: Fedora bootstrap
+#   hosts:
+#     - "{{ hosts_to_deploy | default('local') }}"
+#     # - mikeeClevo
+#   become: true
+#   pre_tasks:
+#     # - debug:
+#     #     var: hostvars[inventory_hostname]
+#   roles:
+#     - pkg_mgmt/dnf
+#     - pkg_mgmt/flatpak
+#     - desktop/apps/google_chrome
+#     - desktop/apps/keeweb
+#     - apps/docker
+#     - apps/qemu
+#     - desktop/apps/terminator
+#     - apps/vagrant
+#     - apps/packer
+#     - desktop/gnome
+#     - desktop/apps/vscode
+#     - desktop/apps/x11docker
+#     - desktop/fedora
+#     # - apps/nordvpn
 
 - name: Include a playbook for generic-core provisioning
   import_playbook: generic-core.yml

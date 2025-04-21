@@ -32,7 +32,7 @@ flatpak_apps:
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins:
   - sniff
-  - hns
+  # - hns
 
 dnf_extra_pkgs:
   - steam-devices
