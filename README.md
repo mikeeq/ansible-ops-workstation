@@ -595,6 +595,8 @@ cat /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/hwmon/hwmon2/power1_cap
 echo "r" > /sys/class/drm/card1/device/pp_od_clk_voltage
 ```
 
+23. Fedora update/upgrade fails
+
 <!-- LICENSE -->
 ## License
 
