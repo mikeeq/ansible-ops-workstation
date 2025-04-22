@@ -22,12 +22,10 @@ config dhcp 'lan'
         option dhcpv4 'server'
         list ra_flags 'managed-config'
         list ra_flags 'other-config'
-        list dhcp_option '6,8.8.8.8'
-        {# list dhcp_option '6,192.168.4.22' #}
+        list dhcp_option '6,{{ dhcp_dns_servers }}'
+        {# list dhcp_option '6,8.8.8.8' #}
         {# option dhcpv6 'server' #}
         {# option ra 'server' #}
-        {# list dhcp_option '6,8.8.8.8,8.8.4.4' #}
-        {# list dhcp_option '3,192.168.4.5' #}
 
 config dhcp 'wan'
         option interface 'wan'
@@ -39,8 +37,13 @@ config odhcpd 'odhcpd'
         option leasetrigger '/usr/sbin/odhcpd-update'
         option loglevel '4'
 
-config tag 'private'
-        list dhcp_option '3,192.168.4.5'
+{% for i in dhcp_tags %}
+config tag '{{ i.name }}'
+{% if i.private|default(false) %}
+        list dhcp_option '3,{{ dhcp_private_dns_server }}'
+{% endif %}
+
+{% endfor %}
 
 {% for i in dhcp %}
 config host

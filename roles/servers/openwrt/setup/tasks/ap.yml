@@ -1,0 +1,6 @@
+---
+- name: Disable service dnsmasq
+  community.general.openwrt_init:
+    name: dnsmasq
+    enabled: false
+    state: stopped

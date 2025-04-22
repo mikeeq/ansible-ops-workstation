@@ -9,12 +9,14 @@
     owner: "root"
     group: "root"
     mode: "0600"
-  notify:
-    - reload_dnsmasq
+  register: dhcp_flag
+  # notify:
+  #   - reload_dnsmasq
 
-# Handles ipv6 related tasks
-- name: Reload service odhcpd, in all cases
+- name: reload_dnsmasq
   community.general.openwrt_init:
-    name: odhcpd
-    enabled: false
-    state: stopped
+    name: dnsmasq
+    state: reloaded
+  when:
+    - dhcp_flag.changed
+    - openwrt_router_flag == true

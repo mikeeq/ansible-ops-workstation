@@ -1,8 +1,8 @@
 ---
 # TODO: /usr/lib/systemd/logind.conf HandleLidSwitch=suspend HandleLidSwitch=ignore
 # TODO: grub on raid1
-# TODO: adguard home
 # TODO: remote desktop gnome - new way password and auto login user
+# TODO: why openwrt in clevo group
 
 # # Clear old credentials
 # secret-tool clear xdg:schema org.gnome.RemoteDesktop.RdpCredentials
@@ -21,6 +21,21 @@
 # TODO: add openwrt update pkgs
 # TODO: add tasmota Update
 # TODO: add zabbix install
+
+# - hosts: clevo
+#   gather_facts: false
+#   tasks:
+#     # - name: Display all host groups
+#     #   debug:
+#     #     msg: "{{ groups.keys() }}"
+#     # - name: Display all host groups and their hosts
+#     #   debug:
+#     #     msg: "Group {{ item }} contains hosts: {{ groups[item] }}"
+#     #   loop: "{{ groups.keys() }}"
+#     - name: Show groups for a specific host
+#       debug:
+#         var: hostvars[inventory_hostname]['group_names']
+
 - name: Bootstrap host
   hosts: localhost
   become: false
@@ -41,7 +56,7 @@
     hosts_to_deploy: mikeeClevo
 
 - name: Update all clevo vms and host
-  hosts: clevo
+  hosts: clevo!openwrt_office
   become: true
   tasks:
     # - name: Clean DNF
@@ -64,7 +79,7 @@
 
 - name: Provision Clevo
   hosts:
-    - clevo
+    - clevo!openwrt_office
   become: true
   roles:
     - servers/bootstrap
@@ -143,7 +158,7 @@
     #     state: clean
 
 - name: Cleanup Docker
-  hosts: clevo:!gw1:!vpn1:!openwrt_office
+  hosts: clevo:!gw1:!vpn1
   become: true
   tasks:
     - name: Cleanup Docker

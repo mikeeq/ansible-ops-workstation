@@ -1,5 +1,0 @@
----
-- name: reload_dnsmasq
-  community.general.openwrt_init:
-    name: dnsmasq
-    state: reloaded
