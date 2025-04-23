@@ -1,0 +1,8 @@
+---
+- name: Install dependencies
+  community.general.opkg:
+    name: "{{ opkgs }}"
+    state: present
+  vars:
+    opkgs:
+      - luci-app-upnp

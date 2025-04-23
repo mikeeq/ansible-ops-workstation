@@ -23,7 +23,7 @@ detectors:
     device: 0 #This is the default, select the first GPU
 
 model:
-  path: /config/model_cache/tensorrt/8.5.3/yolov7-320.trt
+  path: /config/model_cache/tensorrt/yolov7-320.trt
   input_tensor: nchw
   input_pixel_format: rgb
   width: 320
@@ -52,12 +52,12 @@ objects:
     - bicycle
     - car
     - motorcycle
-    - bus
-    - bird
     - cat
     - dog
-    - cell phone
-    - bear
+    # - bus
+    # - bird
+    # - cell phone
+    # - bear
 
 #             person: 15
 #             bicycle: 15
@@ -399,7 +399,7 @@ version: 0.14
 go2rtc:
   streams:
     reolink_doorbell_restream:
-      - "ffmpeg:http://192.168.1.58/flv?port=1935&app=bcs&stream=channel0_main.bcs&user=admin&password=password#video=copy#audio=copy#audio=opus"
+      - "ffmpeg:http://192.168.1.58/flv?port=1935&app=bcs&stream=channel0_main.bcs&user=admin&password=password#video=copy#audio=copy#audio=opus#hardware"
       - rtsp://admin:password@192.168.1.58/Preview_01_sub
       # - "http://192.168.1.58/flv?port=1935&app=bcs&stream=channel0_main.bcs&user=admin&password=password#video=copy#audio=copy#audio=opus"
     reolink_doorbell_restream_sub:

@@ -16,12 +16,16 @@
   when:
     - services['firewalld.service'] is defined
     - services['firewalld.service'].status != "not-found"
+  tags:
+    - dont_run_in_docker
 
 - name: Start docker service
   ansible.builtin.service:
     name: docker
     state: started
     enabled: true
+  tags:
+    - dont_run_in_docker
 
 - name: Add the user to docker group
   user:

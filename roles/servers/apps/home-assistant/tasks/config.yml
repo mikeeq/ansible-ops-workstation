@@ -21,7 +21,6 @@
     backup: true
   with_fileglob:
     - ../files/config/*
-    # - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/*"
 
 - name: Configure config templates
   template:

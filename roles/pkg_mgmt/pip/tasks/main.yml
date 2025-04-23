@@ -69,31 +69,10 @@
     inject_packages: "{{ item.inject_packages | default(omit) }}"
     # force: true
   when: item.inject_packages is defined
+  register: pipx_inject
+  ignore_errors: true
   with_items:
     - "{{ pipx_apps }}"
-
-- name: Create a symbolic link
-  file:
-    src: "{{ virtualenv_install_path }}/{{ item.name }}/bin/{{ item.name }}"
-    dest: "/usr/local/bin/{{ item.name }}"
-    owner: root
-    group: root
-    state: link
-    force: true
-  with_items:
-    - "{{ pip_apps }}"
-  when: item.virtualenv_enabled and not item.name == "azure-cli"
-
-- name: Create a symbolic link for azure-cli
-  file:
-    src: "{{ virtualenv_install_path }}/{{ item.name }}/bin/az"
-    dest: "/usr/local/bin/az"
-    owner: root
-    group: root
-    state: link
-  with_items:
-    - "{{ pip_apps }}"
-  when: item.virtualenv_enabled and item.name == "azure-cli"
 
 - import_tasks: update.yml
   tags:

@@ -14,19 +14,25 @@ flatpak_apps:
     remote: flathub
   - name: com.slack.Slack
     remote: flathub
-  - name: com.github.debauchee.barrier
-    remote: flathub
+  # - name: com.github.debauchee.barrier
+  #   remote: flathub
   - name: com.discordapp.Discord
     remote: flathub
-  - name: com.mastermindzh.tidal-hifi
+  # - name: com.mastermindzh.tidal-hifi
+  #   remote: flathub
+  # - name: com.leinardi.gwe
+  #   remote: flathub
+  - name: org.openrgb.OpenRGB
     remote: flathub
-  - name: com.leinardi.gwe
+  - name: com.obsproject.Studio
+    remote: flathub
+  - name: io.github.input_leap.input-leap
     remote: flathub
 
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins:
   - sniff
-  - hns
+  # - hns
 
 dnf_extra_pkgs:
   - steam-devices

@@ -30,9 +30,10 @@ generic_pkgs:
   - unzip
   - vim
   - wget
+  - nmap
 
 apt_pkgs:
-  - openjdk-11-jdk
+  - openjdk-21-jdk
   - python3-dev
   - shellcheck
 
@@ -43,7 +44,7 @@ dnf_pkgs:
   - flatpak
   - fuse-exfat
   - hunspell-pl
-  - java-11-openjdk
+  - java-21-openjdk
   - lm_sensors
   # - policycoreutils-python
   - python3-devel
@@ -59,6 +60,8 @@ dnf_pkgs:
   - python3-argcomplete
   - python3-psutil
   - sqlite3
+  - python3-dnf-plugin-versionlock
+  - ncdu
 
 dnf_gui_pkgs:
   - clamtk
@@ -84,6 +87,10 @@ dnf_gui_pkgs:
   - seahorse
   - vlc
   - wireshark
+  - k3b       # Disc burner
+  - v4l2loopback  # Required for OBS
+  - kmod-v4l2loopback  # Required for OBS
+  - corectrl    # GUI OC AMD Radeon
 
 dnf_extra_pkgs: []
 
@@ -121,6 +128,7 @@ pipx_apps:
     inject_packages:
       - pywinrm
       - passlib
+      - bcrypt
       # - ansible-lint
   - name: azure-cli
   - name: yamllint
@@ -145,6 +153,7 @@ gnome_shell_extensions:
   # - 307         # dash-to-dock
   - 1319        # GSConnect
   # - 120         # system-monitor
+  - 1460        # Vitals
 
 gnome_extension_ids: "{{ gnome_shell_extensions }}"
 
@@ -187,7 +196,7 @@ vscode_extensions:
   - ms-toolsai.jupyter-renderers
   - ms-vscode-remote.remote-ssh
   - ms-vscode-remote.remote-ssh-edit
-  - ms-vscode.azure-account
+  # - ms-vscode.azure-account
   - redhat.ansible
   - redhat.vscode-commons
   - redhat.vscode-yaml

@@ -63,7 +63,7 @@ automation: !include_dir_merge_list automations/
 
 mqtt: !include mqtt.yaml
 multiscrape: !include multiscrape.yaml
-sensor: !include sensors.yaml
+sensor: !include_dir_merge_list  sensors/
 template: !include template.yaml
 
 virtual:

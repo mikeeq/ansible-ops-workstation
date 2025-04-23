@@ -1,0 +1,19 @@
+# https://docs.ansible.com/ansible/latest/collections/community/zabbix/index.html
+# https://assets.zabbix.com/files/events/2024/meetup_20240229/Zabbix_Meetup_290224_JY.pdf
+---
+# https://docs.ansible.com/ansible/latest/collections/community/zabbix/zabbix_host_module.html#ansible-collections-community-zabbix-zabbix-host-module-requirements
+- name: "Add/update hosts"
+  community.zabbix.zabbix_host:
+    host_name: "192.168.1.53"
+    # host_groups: "{{ group_names + ['Linux servers'] }}"
+    host_groups:
+      - 'Linux servers'
+    # link_templates: "{{ x_templates + ['Linux by Zabbix agent'] }}"
+    link_templates:
+      - 'Linux by Zabbix agent'
+    interfaces:
+      - type: agent
+        main: 1
+        useip: 1
+        ip: "192.168.1.53"
+    state: present

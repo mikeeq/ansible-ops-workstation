@@ -9,22 +9,15 @@ services:
     privileged: true
     network_mode: host
     restart: always
-
     image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
-
-    deploy:    # <------------- Add this section
+    deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-
-              count: 1 # number of GPUs
+              count: 1
               capabilities: [gpu]
-
-    shm_size: "256mb" # update for your cameras based on calculation volumes:
-
-#    devices:
-#      - /dev/dri/renderD128 # for intel hwaccel, needs to be updated for your hardware
+    shm_size: "256mb"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config.yml:/config/config.yml
@@ -39,5 +32,9 @@ services:
       - "1935:1935" #RTMP feeds
       - "8555:8555/tcp" # WebRTC over tcp
       - "8555:8555/udp" # WebRTC over udp
-    # environment:
-    #   FRIGATE_RTSP_PASSWORD: "pass"
+    environment:
+      # - YOLO_MODELS=yolov7-320,yolov7x-640
+      - YOLO_MODELS=yolov7-320
+      - TRT_MODEL_PREP_DEVICE=0
+      # - USE_FP16=false
+      # - FRIGATE_RTSP_PASSWORD="pass"

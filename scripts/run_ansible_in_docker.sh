@@ -17,15 +17,15 @@ docker run \
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook -e docker_tests_flag=true -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
+    ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
 
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook -e docker_tests_flag=true -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
+    ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
 
-livecd_exitcode=$?
+ansible_exitcode=$?
 
 docker stop ${DOCKER_IMAGE}
 
-exit $livecd_exitcode
+exit $ansible_exitcode

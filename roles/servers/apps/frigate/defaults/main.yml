@@ -1,0 +1,5 @@
+---
+install_path: "/opt/frigate"
+
+frigate_clean: false
+frigate_templates_path: templates

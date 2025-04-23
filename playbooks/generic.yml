@@ -22,4 +22,5 @@
     - apps/terragrunt
     - apps/terraform-docs
     - apps/tflint
+    - apps/trivy
     - apps/azure-functions-core-tools

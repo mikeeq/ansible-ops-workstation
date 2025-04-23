@@ -1,4 +1,41 @@
 ---
+# TODO: /usr/lib/systemd/logind.conf HandleLidSwitch=suspend HandleLidSwitch=ignore
+# TODO: grub on raid1
+# TODO: remote desktop gnome - new way password and auto login user
+# TODO: why openwrt in clevo group
+
+# # Clear old credentials
+# secret-tool clear xdg:schema org.gnome.RemoteDesktop.RdpCredentials
+
+# # Store new credentials
+# echo -n "{'username': 'myusername', 'password': 'mypassword'}" | secret-tool store --label "GNOME Remote Desktop RDP credentials" xdg:schema org.gnome.RemoteDesktop.RdpCredentials -b
+
+# # Verify credentials (optional)
+# secret-tool lookup xdg:schema org.gnome.RemoteDesktop.RdpCredentials
+
+# TODO: add kernel pkgs locking version based on flag
+# TODO: fix sysctl bridge entries in hypervisor playbook
+# TODO: add check if user deploy exists then switch ansible_user
+# TODO: add nvidia driver install
+# TODO: add adguard on openwrt
+# TODO: add openwrt update pkgs
+# TODO: add tasmota Update
+# TODO: add zabbix install
+
+# - hosts: clevo
+#   gather_facts: false
+#   tasks:
+#     # - name: Display all host groups
+#     #   debug:
+#     #     msg: "{{ groups.keys() }}"
+#     # - name: Display all host groups and their hosts
+#     #   debug:
+#     #     msg: "Group {{ item }} contains hosts: {{ groups[item] }}"
+#     #   loop: "{{ groups.keys() }}"
+#     - name: Show groups for a specific host
+#       debug:
+#         var: hostvars[inventory_hostname]['group_names']
+
 - name: Bootstrap host
   hosts: localhost
   become: false
@@ -19,7 +56,7 @@
     hosts_to_deploy: mikeeClevo
 
 - name: Update all clevo vms and host
-  hosts: clevo
+  hosts: clevo!openwrt_office
   become: true
   tasks:
     # - name: Clean DNF
@@ -42,7 +79,7 @@
 
 - name: Provision Clevo
   hosts:
-    - clevo
+    - clevo!openwrt_office
   become: true
   roles:
     - servers/bootstrap
@@ -94,9 +131,31 @@
     - mikeeClevo
   become: true
   roles:
+    - desktop/machines/clevo_p170sm/tuxedo
     - servers/apps/nginx
-    # - servers/apps/home-assistant
+    - servers/apps/home-assistant
     - servers/apps/jenkins
+    - servers/apps/frigate
+  tasks:
+    - name: Prevent multiple packages from being updated
+      community.general.dnf_versionlock:
+        name:
+          - kernel
+          - kernel-core
+          - kernel-devel
+          - kernel-devel-matched
+          - kernel-modules
+          - kernel-modules-core
+          - kernel-modules-extra
+          - kernel-tools
+          - kernel-tools-libs
+          - kmod-nvidia-open-dkms
+          - nvidia-driver
+          - nvidia-driver-cuda
+        state: present
+    # - name: Delete all entries in the locklist of versionlock
+    #   community.general.dnf_versionlock:
+    #     state: clean
 
 - name: Cleanup Docker
   hosts: clevo:!gw1:!vpn1

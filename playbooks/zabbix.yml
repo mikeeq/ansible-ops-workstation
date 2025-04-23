@@ -1,0 +1,28 @@
+---
+- name: Zabbix
+  hosts: "{{ hosts_to_deploy | default('local') }}"
+  # hosts: mikeeClevo
+  become: true
+  roles:
+    - servers/apps/zabbix
+
+# - hosts: local
+#   gather_facts: false
+#   vars:
+#     ansible_network_os: community.zabbix.zabbix
+#     ansible_connection: httpapi
+#     # ansible_user: "{{ x_zabbix_username }}"
+#   tasks:
+#     - delegate_to: "{{ x_zabbix_web_ip }}"
+#       block:
+#         - name: "Add/update hosts"
+#           community.zabbix.zabbix_host:
+#             host_name: "{{ inventory_hostname }}"
+#             host_groups: "{{ group_names + ['Linux servers'] }}"
+#             link_templates: "{{ x_templates + ['Linux by Zabbix agent'] }}"
+#             interfaces:
+#               - type: agent
+#                 main: 1
+#                 useip: 1
+#                 ip: "{{ ansible_host }}"
+#             state: present

@@ -578,6 +578,25 @@ Host github.com
   IdentitiesOnly yes
 ```
 
+22. AMD Radeon overdrive/overclocking:
+
+```
+dnf install hipblas rocminfo amd-gpu-firmware amd-ucode-firmware xorg-x11-drv-amdgpu amdsmi "rocm-*"
+
+grubby --args="amdgpu.ppfeaturemask=0xffffffff " --update-kernel=ALL
+cat /etc/modprobe.d/amd.conf
+
+options amdgpu ppfeaturemask=0xffffffff
+
+echo "s 1 2050" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+echo "294000000" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/hwmon/hwmon2/power1_cap
+cat /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+cat /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/hwmon/hwmon2/power1_cap
+echo "r" > /sys/class/drm/card1/device/pp_od_clk_voltage
+```
+
+23. Fedora update/upgrade fails
+
 <!-- LICENSE -->
 ## License
 
