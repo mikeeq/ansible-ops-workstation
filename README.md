@@ -581,7 +581,7 @@ Host github.com
 22. AMD Radeon overdrive/overclocking:
 
 ```
-dnf install hipblas rocminfo amd-gpu-firmware amd-ucode-firmware xorg-x11-drv-amdgpu amdsmi "rocm-*"
+dnf install hipblas rocminfo amd-gpu-firmware amd-ucode-firmware xorg-x11-drv-amdgpu amdsmi
 
 grubby --args="amdgpu.ppfeaturemask=0xffffffff " --update-kernel=ALL
 cat /etc/modprobe.d/amd.conf
@@ -596,6 +596,18 @@ echo "r" > /sys/class/drm/card1/device/pp_od_clk_voltage
 ```
 
 23. Fedora update/upgrade fails
+
+24. VScode in wayland
+
+```
+code --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto ~/git
+```
+
+25. Citrix
+
+```
+/opt/Citrix/ICAClient/wfica -icaroot /opt/Citrix/ICAClient /home/user/Downloads/citrix.ica
+```
 
 <!-- LICENSE -->
 ## License
