@@ -35,6 +35,24 @@ jobs:
       - name: "Run Ansible in Docker..."
         run: scripts/run_ansible_in_docker.sh
 
+  build-fedora-arm64:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-24.04-arm
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: "Runner storage cleanup"
+        run: sudo ./.github/cleanup-runner.sh
+
+      - name: "Build fedora-systemd image..."
+        run: docker build -t fedora_systemd:latest .
+
+      - name: "Run Ansible in Docker..."
+        run: scripts/run_ansible_in_docker.sh
+
   build-ubuntu:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
