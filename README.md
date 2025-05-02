@@ -609,6 +609,22 @@ code --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platfor
 /opt/Citrix/ICAClient/wfica -icaroot /opt/Citrix/ICAClient /home/user/Downloads/citrix.ica
 ```
 
+26. mdadm fix raid
+
+```
+# https://unix.stackexchange.com/questions/148062/mdadm-raid-doesnt-mount/149177
+
+cat /proc/mdstat
+
+# stop all mdraids
+mdadm --stop /dev/md12[567]
+
+# reassemble
+mdadm --assemble --scan --force -v
+
+cat /proc/mdstat
+```
+
 <!-- LICENSE -->
 ## License
 
