@@ -622,7 +622,14 @@ mdadm --stop /dev/md12[567]
 # reassemble
 mdadm --assemble --scan --force -v
 
-cat /proc/mdstat
+cat /proc/mdstattak
+```
+
+27. Image to text
+
+```
+dnf install tesseract
+tesseract Screenshot\ From\ 2025-05-05\ 11-50-36.png test.txt
 ```
 
 <!-- LICENSE -->
