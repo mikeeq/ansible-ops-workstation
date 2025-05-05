@@ -581,7 +581,7 @@ Host github.com
 22. AMD Radeon overdrive/overclocking:
 
 ```
-dnf install hipblas rocminfo amd-gpu-firmware amd-ucode-firmware xorg-x11-drv-amdgpu amdsmi "rocm-*"
+dnf install hipblas rocminfo amd-gpu-firmware amd-ucode-firmware xorg-x11-drv-amdgpu amdsmi
 
 grubby --args="amdgpu.ppfeaturemask=0xffffffff " --update-kernel=ALL
 cat /etc/modprobe.d/amd.conf
@@ -596,6 +596,41 @@ echo "r" > /sys/class/drm/card1/device/pp_od_clk_voltage
 ```
 
 23. Fedora update/upgrade fails
+
+24. VScode in wayland
+
+```
+code --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto ~/git
+```
+
+25. Citrix
+
+```
+/opt/Citrix/ICAClient/wfica -icaroot /opt/Citrix/ICAClient /home/user/Downloads/citrix.ica
+```
+
+26. mdadm fix raid
+
+```
+# https://unix.stackexchange.com/questions/148062/mdadm-raid-doesnt-mount/149177
+
+cat /proc/mdstat
+
+# stop all mdraids
+mdadm --stop /dev/md12[567]
+
+# reassemble
+mdadm --assemble --scan --force -v
+
+cat /proc/mdstattak
+```
+
+27. Image to text
+
+```
+dnf install tesseract
+tesseract Screenshot\ From\ 2025-05-05\ 11-50-36.png test.txt
+```
 
 <!-- LICENSE -->
 ## License

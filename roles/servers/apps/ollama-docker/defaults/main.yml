@@ -1,0 +1,5 @@
+---
+ollama_docker_install_path: "/opt/ollama-docker"
+
+ollama_docker_clean: false
+ollama_docker_templates_path: templates

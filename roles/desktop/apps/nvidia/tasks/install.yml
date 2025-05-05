@@ -3,12 +3,12 @@
 # - name: Import a key from a url
 #   ansible.builtin.rpm_key:
 #     state: present
-#     key: https://rpm.tuxedocomputers.com/fedora/41/0x54840598.pub.asc
+#     key: https://developer.download.nvidia.com/compute/cuda/repos/fedora41/x86_64/D42D0685.pub
 
-# - name: Setup tuxedo yum repo
+# - name: Setup cuda-fedora yum repo
 #   copy:
-#     src: tuxedo.repo
-#     dest: /etc/yum.repos.d/tuxedo.repo
+#     src: cuda-fedora41.repo
+#     dest: /etc/yum.repos.d/cuda-fedora41.repo
 #     owner: "root"
 #     group: "root"
 #     mode: 0644
