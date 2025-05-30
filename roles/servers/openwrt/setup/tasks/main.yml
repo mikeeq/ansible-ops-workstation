@@ -22,12 +22,12 @@
       - bash
       - fping
       - iputils-ping
+      - luci-app-dawn
+      - wpad-mbedtls
       - zabbix-agentd
       - zabbix-extra-network
       - zabbix-extra-wifi
       - zabbix-extra-mac80211
-      - wpad-mbedtls
-
 
 - name: Install extra dependencies
   community.general.opkg:
