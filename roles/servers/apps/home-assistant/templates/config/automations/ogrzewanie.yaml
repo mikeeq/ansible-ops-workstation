@@ -5,14 +5,14 @@
     - trigger: state
       entity_id:
 {% for i in home_assistant.climate %}
-        - "{{ i.switch }}"
+        - "switch.virtual_ogrzewanie_{{ i.name }}"
 {% endfor %}
       from: "off"
       to: "on"
   conditions:
     - condition: template
       value_template: >-
-        {% raw -%}{{ [{%- endraw -%}{%- for i in home_assistant.climate -%}states('{{ i.switch }}'),{%- endfor -%}].count('on') >= 3 }}
+        {% raw -%}{{ [{%- endraw -%}{%- for i in home_assistant.climate -%}states('switch.virtual_ogrzewanie_{{ i.name }}'),{%- endfor -%}].count('on') >= 3 }}
   actions:
     # # Wait for mixer to fully open up, ARA661 (120s + delay from driver)
     # - delay:
@@ -36,14 +36,14 @@
     - trigger: state
       entity_id:
 {% for i in home_assistant.climate %}
-        - "{{ i.switch }}"
+        - "switch.virtual_ogrzewanie_{{ i.name }}"
 {% endfor %}
       from: "on"
       to: "off"
   conditions:
     - condition: template
       value_template: >-
-        {% raw -%}{{ [{%- endraw -%}{%- for i in home_assistant.climate -%}states('{{ i.switch }}'),{%- endfor -%}].count('on') <= 2 }}
+        {% raw -%}{{ [{%- endraw -%}{%- for i in home_assistant.climate -%}states('switch.virtual_ogrzewanie_{{ i.name }}'),{%- endfor -%}].count('on') <= 2 }}
   actions:
     # - action: switch.turn_on
     #   metadata: {}

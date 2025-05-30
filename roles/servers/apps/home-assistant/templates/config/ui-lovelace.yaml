@@ -667,12 +667,6 @@ views:
           - type: section
             label: Virtual
           - switch.group_ogrzewanie_podlogowe
-          - type: section
-            label: Silowniki
-{% for i in home_assistant.climate %}
-          - entity: {{ i.switch }}
-            name: {{ i.name }}
-{% endfor %}
 {# {% for i in home_assistant.climate %}
       - type: thermostat
         entity: climate.{{ i.name }}
@@ -701,5 +695,19 @@ views:
                 name: Target Temperature
               - entity: sensor.th_{{ i.name }}_temperature
                 name: Current Temperature
+{% endfor %}
+      - type: entities
+        title: Silowniki
+        entities:
+{% for i in home_assistant.climate %}
+          - entity: {{ i.switch }}
+            name: {{ i.name }}
+{% endfor %}
+      - type: entities
+        title: Silowniki Virtualne
+        entities:
+{% for i in home_assistant.climate %}
+          - entity: switch.virtual_ogrzewanie_{{ i.name }}
+            name: {{ i.name }}
 {% endfor %}
 title: MikiDashboardYAML

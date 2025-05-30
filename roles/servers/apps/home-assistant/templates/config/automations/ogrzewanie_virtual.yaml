@@ -1,0 +1,75 @@
+---
+{% for i in home_assistant.climate %}
+- alias: ogrzewanie_virtual_wlacz1_{{ i.name }}
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id:
+        - "switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
+      from: "off"
+      to: "on"
+  conditions:
+    - condition: state
+      entity_id: "switch.virtual_ogrzewanie_{{ i.name }}"
+      state: "on"
+  actions:
+    - action: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id: "{{ i.switch }}"
+  mode: single
+- alias: ogrzewanie_virtual_wlacz2_{{ i.name }}
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id:
+        - "switch.virtual_ogrzewanie_{{ i.name }}"
+      from: "off"
+      to: "on"
+  conditions:
+    - condition: state
+      entity_id: "switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
+      state: "on"
+  actions:
+    - action: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id: "{{ i.switch }}"
+  mode: single
+- alias: ogrzewanie_virtual_wylacz1_{{ i.name }}
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id:
+        - "switch.virtual_ogrzewanie_{{ i.name }}"
+      from: "on"
+      to: "off"
+  conditions: []
+  actions:
+    - action: switch.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: "{{ i.switch }}"
+  mode: single
+{% endfor %}
+- alias: ogrzewanie_virtual_wylacz2_all
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id:
+        - "switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
+      from: "on"
+      to: "off"
+  conditions: []
+  actions:
+{% for i in home_assistant.climate %}
+    - action: switch.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: "{{ i.switch }}"
+{% endfor %}
+  mode: single
