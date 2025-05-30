@@ -1,0 +1,17 @@
+---
+- name: Stop container using docker-compose
+  command: docker-compose stop
+  changed_when: up_result.stderr_lines | length > 1
+  register: up_result
+  args:
+    chdir: "{{ ollama_docker_install_path }}"
+
+- name: Remove all volumes/containers using docker-compose
+  command: docker-compose rm -vf
+  args:
+    chdir: "{{ ollama_docker_install_path }}"
+
+- name: Ensure install_path dir is removed
+  file:
+    path: "{{ ollama_docker_install_path }}"
+    state: absent
