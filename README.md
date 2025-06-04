@@ -630,6 +630,16 @@ cat /proc/mdstattak
 ```
 dnf install tesseract
 tesseract Screenshot\ From\ 2025-05-05\ 11-50-36.png test.txt
+
+```
+
+28. Disable suspend on lid closed
+
+```
+cp -rfv /usr/lib/systemd/logind.conf /etc/systemd
+
+vi /etc/systemd/logind.conf
+# change the #HandleLidSwitch=suspend line in that file to HandleLidSwitch=ignore.
 ```
 
 <!-- LICENSE -->
