@@ -23,8 +23,8 @@ set -x
 # x:3864 y:581
 # Define mouse coordinates for the left click (example: x=500, y=300)
 MOUSE_X=3872
-MOUSE_Y_1=790
-MOUSE_Y_2=842
+MOUSE_Y_1=660
+MOUSE_Y_2=720
 
 get_idle_time_wayland() {
     dbus-send --print-reply --dest=org.gnome.Mutter.IdleMonitor \
@@ -69,7 +69,7 @@ while true; do
             # dotool
 
             # Wait for 1 second before switching to the next screen
-            sleep 1
+            sleep 10
 
             # Switch to screen 3
             # xdotool key --window $(xdotool getactivewindow) F2  # Example for switching to screen 3
