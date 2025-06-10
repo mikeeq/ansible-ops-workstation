@@ -4,6 +4,12 @@
 #     name: "*"
 #     update_cache: true
 
+# if opkg update fails set correct time in luci, system -> system configuration
+# # opkg update
+# Downloading https://downloads.openwrt.org/releases/24.10.1/targets/ramips/mt7621/packages/Packages.gz
+# SSL verify error: unknown error
+# *** Failed to download the package list from https://downloads.openwrt.org/releases/24.10.1/targets/ramips/mt7621/packages/Packages.gz
+
 - name: Remove unneeded dependencies
   community.general.opkg:
     name: "{{ opkgs }}"

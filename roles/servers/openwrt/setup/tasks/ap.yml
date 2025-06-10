@@ -4,3 +4,11 @@
     name: dnsmasq
     enabled: false
     state: stopped
+
+- name: Install dependencies
+  community.general.opkg:
+    name: "{{ opkgs }}"
+    state: present
+  vars:
+    opkgs:
+      - luci-proto-relay
