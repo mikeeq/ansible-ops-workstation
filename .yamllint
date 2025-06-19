@@ -6,3 +6,10 @@ rules:
   # truthy: disable
   document-start:
     level: error
+
+ignore:
+  - 'templates/'
+  - '*/templates/'
+  - '**/templates/'
+  - '**/templates/*'
+  - '**/templates/**'
