@@ -62,8 +62,8 @@
     # - name: Clean DNF
     #   shell: dnf clean all
 
-    - import_tasks: ../roles/pkg_mgmt/dnf/tasks/dnf5.yaml
-    - import_tasks: ../roles/pkg_mgmt/dnf/tasks/update.yaml
+    - ansible.builtin.import_tasks: ../roles/pkg_mgmt/dnf/tasks/dnf5.yaml
+    - ansible.builtin.import_tasks: ../roles/pkg_mgmt/dnf/tasks/update.yaml
 
     - name: Check if reboot required
       stat:

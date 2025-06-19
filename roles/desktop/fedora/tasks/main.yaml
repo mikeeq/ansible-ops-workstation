@@ -1,16 +1,16 @@
 ---
 ### Add user to nopasswd sudoers
-# - import_tasks: sudo.yaml
-# - import_tasks: hostname.yaml
+# - ansible.builtin.import_tasks: sudo.yaml
+# - ansible.builtin.import_tasks: hostname.yaml
 
 ### Basic fedora setup
-# - import_tasks: firewalld.yaml
-# - import_tasks: selinux.yaml
-- import_tasks: grub.yaml
-- import_tasks: nested_kvm.yaml
-- import_tasks: udev.yaml
-- import_tasks: wake_on_lan.yaml
-- import_tasks: disable_swap.yaml
+# - ansible.builtin.import_tasks: firewalld.yaml
+# - ansible.builtin.import_tasks: selinux.yaml
+- ansible.builtin.import_tasks: grub.yaml
+- ansible.builtin.import_tasks: nested_kvm.yaml
+- ansible.builtin.import_tasks: udev.yaml
+- ansible.builtin.import_tasks: wake_on_lan.yaml
+- ansible.builtin.import_tasks: disable_swap.yaml
 
 ### TODO:
 # Gnome scaling

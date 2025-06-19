@@ -17,7 +17,7 @@
     - config/config.yaml
     - config/file_leases.txt
 
-- import_tasks: config.yaml
+- ansible.builtin.import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

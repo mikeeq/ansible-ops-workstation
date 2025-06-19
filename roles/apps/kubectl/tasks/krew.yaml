@@ -25,4 +25,4 @@
 - ansible.builtin.include_tasks: krew/install.yaml
   when: installed_krew_version.stdout != krew_version
 
-- import_tasks: krew/plugins.yaml
+- ansible.builtin.import_tasks: krew/plugins.yaml

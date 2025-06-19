@@ -10,7 +10,7 @@
 #   when: docker_compose_result.rc != 0
 
 # https://www.zabbix.com/documentation/current/en/manual/installation/containers
-# - import_tasks: install.yaml
+# - ansible.builtin.import_tasks: install.yaml
 
 # curl --request POST --url 'http://192.168.4.10/api_jsonrpc.php' --header 'Content-Type: application/json-rpc' --data '{"jsonrpc":"2.0","method":"apiinfo.version","params":{},"id":1}'
 

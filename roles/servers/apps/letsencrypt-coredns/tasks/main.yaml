@@ -11,7 +11,7 @@
     name: cryptography
     state: present
 
-- import_tasks: account_key.yaml
+- ansible.builtin.import_tasks: account_key.yaml
 
 - name: "Create dir for certs - {{ certs_path }}"
   file:
@@ -34,4 +34,4 @@
   delegate_to: 127.0.0.1
   loop: "{{ certs | map(attribute='cn')}}"
 
-- import_tasks: copy_certs.yaml
+- ansible.builtin.import_tasks: copy_certs.yaml

@@ -12,4 +12,4 @@
 - ansible.builtin.include_tasks: cleanup.yaml
   when: frigate_clean
 
-- import_tasks: install.yaml
+- ansible.builtin.import_tasks: install.yaml

@@ -9,8 +9,8 @@
   args:
     creates: /snap
 
-- import_tasks: install.yaml
+- ansible.builtin.import_tasks: install.yaml
 
-- import_tasks: update.yaml
+- ansible.builtin.import_tasks: update.yaml
   tags:
     - update

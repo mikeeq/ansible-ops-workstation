@@ -6,7 +6,7 @@
 
 - ansible.builtin.include_tasks: "install_{{ ansible_architecture }}.yaml"
 
-- import_tasks: get_plugins_version.yaml
+- ansible.builtin.import_tasks: get_plugins_version.yaml
 
 - name: Install vagrant plugins
   become: true

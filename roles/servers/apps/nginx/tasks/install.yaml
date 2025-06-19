@@ -19,7 +19,7 @@
     - config/backend-not-found.html
   register: config_flag
 
-- import_tasks: config.yaml
+- ansible.builtin.import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

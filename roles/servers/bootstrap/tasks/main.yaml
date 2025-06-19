@@ -1,6 +1,6 @@
 ---
-- import_tasks: user.yaml
-- import_tasks: ssh_keys.yaml
+- ansible.builtin.import_tasks: user.yaml
+- ansible.builtin.import_tasks: ssh_keys.yaml
 
 - meta: flush_handlers
 # 206 - 1st dol

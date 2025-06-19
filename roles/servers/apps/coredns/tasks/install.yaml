@@ -16,7 +16,7 @@
     - docker-compose.yaml
     - config/Corefile
 
-- import_tasks: config.yaml
+- ansible.builtin.import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

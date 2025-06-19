@@ -1,6 +1,6 @@
 # Based on: https://github.com/DBarthe/ansible-libvirt-cloudinit
 ---
-- import_tasks: setup.yaml
+- ansible.builtin.import_tasks: setup.yaml
 
 - ansible.builtin.include_tasks: create_vm.yaml
   loop: "{{ vms }}"

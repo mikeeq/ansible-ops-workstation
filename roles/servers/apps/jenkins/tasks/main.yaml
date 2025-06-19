@@ -13,8 +13,8 @@
 - ansible.builtin.include_tasks: cleanup.yaml
   when: jenkins_cleanup
 
-- import_tasks: config.yaml
-- import_tasks: install-docker-compose.yaml
+- ansible.builtin.import_tasks: config.yaml
+- ansible.builtin.import_tasks: install-docker-compose.yaml
 
 # - name: Restart Jenkins using docker-compose
 #   command: docker-compose restart
@@ -46,9 +46,9 @@
   changed_when: casc.status == 200
 
 # Replaced by configuration-as-code
-# - import_tasks: users-add.yaml
-# - import_tasks: users-delete.yaml
+# - ansible.builtin.import_tasks: users-add.yaml
+# - ansible.builtin.import_tasks: users-delete.yaml
 
-- import_tasks: jjb.yaml
+- ansible.builtin.import_tasks: jjb.yaml
   tags:
     - jjb

@@ -26,4 +26,4 @@
     owner: root
     group: root
 
-- import_tasks: krew.yaml
+- ansible.builtin.import_tasks: krew.yaml

@@ -1,8 +1,8 @@
 ---
 # flatpak remote-add flathub https://flathub.org/repo/flathub.flatpakrepo
 # flatpak install flathub com.spotify.Client
-- import_tasks: repos.yaml
-- import_tasks: apps.yaml
+- ansible.builtin.import_tasks: repos.yaml
+- ansible.builtin.import_tasks: apps.yaml
 - ansible.builtin.include_tasks: update.yaml
   tags:
     - update
