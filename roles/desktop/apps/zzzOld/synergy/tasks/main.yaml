@@ -13,20 +13,20 @@
 #   get_url:
 #     url: "https://github.com/debauchee/barrier/releases/download/v2.1.0/barrier-2.1.0-linux.tar.bz2"
 #     dest: /tmp/barrier.tar.bz2
-#   when: barrier.stat.exists == False
+#   when: barrier.stat.exists == false
 
 # - name: Directory for barrier
 #   file:
 #     path: /tmp/barrier
 #     state: directory
-#   when: barrier.stat.exists == False
+#   when: barrier.stat.exists == false
 
 # - name: Unarchive a file that is already on the remote machine
 #   unarchive:
 #     src: /tmp/barrier.tar.bz2
 #     dest: /tmp/barrier
-#     remote_src: yes
-#   when: barrier.stat.exists == False
+#     remote_src: true
+#   when: barrier.stat.exists == false
 
 # - name: Set permissions on binaries
 #   file:
@@ -35,7 +35,7 @@
 #     group: root
 #     mode: 0755
 #     recurse: true
-#   when: barrier.stat.exists == False
+#   when: barrier.stat.exists == false
 
 # - name: Copy binaries and icons
 #   copy:
@@ -44,4 +44,4 @@
 #     owner: root
 #     group: root
 #     remote_src: true
-#   when: barrier.stat.exists == False
+#   when: barrier.stat.exists == false

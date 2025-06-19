@@ -16,7 +16,7 @@
   unarchive:
     src: /tmp/azure_functions_core_tools/azure_functions_core_tools.zip
     dest: /opt/azure_functions_core_tools
-    remote_src: yes
+    remote_src: true
 
 - name: Set executable permissions
   file:

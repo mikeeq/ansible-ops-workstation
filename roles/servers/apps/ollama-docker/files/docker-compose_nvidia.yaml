@@ -4,7 +4,7 @@
 # nvidia-ctk runtime configure --runtime=docker
 # systemctl restart docker
 # https://github.com/muka/ollama-docker/blob/main/docker-compose.yaml
-
+---
 version: "3.9"
 
 networks:
@@ -23,7 +23,7 @@ services:
           devices:
             - driver: nvidia
               count: 1
-              capabilities: [ gpu ]
+              capabilities: [gpu]
     volumes:
       - ./data/ollama:/root/.ollama
     ports:
@@ -105,7 +105,7 @@ services:
   #   command:
   #     - sh
   #     - -c # this is to evaluate the $REDIS_PASSWORD from the env
-  #     - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
+  #     - redis-server --appendonly true --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
   #   environment:
   #     REDIS_PASSWORD: SDsdgFsfm4lmf43lfnm34lkf
   #   volumes:

@@ -32,7 +32,7 @@
   unarchive:
     src: /tmp/terraform.zip
     dest: /usr/local/bin/
-    remote_src: yes
+    remote_src: true
   when: installed_terraform_version.stdout != terraform_version
 
 - name: Set permissions terraform

@@ -13,6 +13,7 @@
 #       {%- endif %}
 
 - sensor:
+# yamllint disable-line rule:indentation
   - name: current_state_ch
     state: >
       {% if states('sensor.opentherm_opentherm_slave_dhw') == "1" %}

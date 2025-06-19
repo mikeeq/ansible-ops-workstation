@@ -13,7 +13,7 @@
   unarchive:
     src: /tmp/stern/stern.tar.gz
     dest: /tmp/stern
-    remote_src: yes
+    remote_src: true
 
 - name: Copy stern
   copy:

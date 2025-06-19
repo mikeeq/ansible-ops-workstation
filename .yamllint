@@ -2,6 +2,7 @@
 extends: default
 rules:
   line-length: disable
+  comments-indentation: disable
   # truthy: disable
   document-start:
     level: error

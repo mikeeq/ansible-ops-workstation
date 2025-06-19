@@ -1,3 +1,4 @@
+---
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
@@ -19,7 +20,7 @@ lovelace:
   mode: yaml
   # Add yaml dashboards
   dashboards:
-    lovelace-generated: # Needs to contain a hyphen (-)
+    lovelace-generated:  # Needs to contain a hyphen (-)
       mode: yaml
       filename: notexist.yaml
       title: Generated

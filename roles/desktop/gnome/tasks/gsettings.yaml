@@ -1,12 +1,12 @@
 ---
 # Some graphical issues in firefox with black theme
-#- name: Black gnome theme
-#  become: true
-#  become_user: "{{ user_name }}"
-#  dconf:
-#    key: "/org/gnome/desktop/interface/gtk-theme"
-#    value: "'Adwaita-dark'"
-#    state: present
+# - name: Black gnome theme
+#   become: true
+#   become_user: "{{ user_name }}"
+#   dconf:
+#     key: "/org/gnome/desktop/interface/gtk-theme"
+#     value: "'Adwaita-dark'"
+#     state: present
 
 - name: Install dnf deps
   dnf:

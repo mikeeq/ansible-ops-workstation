@@ -13,7 +13,7 @@
   unarchive:
     src: /tmp/dive/dive.tar.gz
     dest: /tmp/dive
-    remote_src: yes
+    remote_src: true
 
 - name: Copy dive
   copy:

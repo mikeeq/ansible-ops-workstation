@@ -4,7 +4,7 @@
     src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
   with_nested:
     - "{{ certs | map(attribute='cn')}}"
-    - ['cert.key','cert.crt','cert.fullchain']
+    - ['cert.key', 'cert.crt', 'cert.fullchain']
   register: slurp_res
 
 - name: Make sure that path for certs exists on localhost

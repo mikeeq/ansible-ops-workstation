@@ -13,7 +13,7 @@
   unarchive:
     src: /tmp/trivy/trivy.tar.gz
     dest: /tmp/trivy
-    remote_src: yes
+    remote_src: true
 
 - name: Copy trivy
   copy:

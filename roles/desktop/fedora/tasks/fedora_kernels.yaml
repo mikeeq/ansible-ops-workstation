@@ -1,3 +1,3 @@
 ---
 # /etc/dnf/dnf.conf
-#installonly_limit=2    #set kernel count
+# installonly_limit=2    #set kernel count

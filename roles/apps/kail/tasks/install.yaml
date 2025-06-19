@@ -13,7 +13,7 @@
   unarchive:
     src: /tmp/kail/kail.tar.gz
     dest: /tmp/kail
-    remote_src: yes
+    remote_src: true
 
 - name: Copy kail
   copy:

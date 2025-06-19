@@ -9,4 +9,4 @@
 
 - name: Autoremove unneeded packages installed as dependencies
   ansible.builtin.dnf5:
-    autoremove: yes
+    autoremove: true

@@ -9,7 +9,7 @@
   become_user: "{{ user_name }}"
   shell: gnome-shell --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'
   register: parse_gnome_shell_version
-  changed_when: no
+  changed_when: false
 
 - set_fact:
     gnome_shell_version: '{{ parse_gnome_shell_version.stdout }}'
@@ -19,7 +19,7 @@
   become_user: "{{ user_name }}"
   uri:
     url: https://extensions.gnome.org/extension-info/?pk={{ item }}&shell_version={{ gnome_shell_version }}
-    return_content: yes
+    return_content: true
   loop: '{{ gnome_extension_ids }}'
   register: gnome_shell_extension_info
 
@@ -30,7 +30,7 @@
     state: directory
     suffix: ".gnome_extension_download"
   register: gnome_extension_download_dir
-  changed_when: no
+  changed_when: false
 
 - block:
     - name: Check for Gnome Shell extensions already installed
@@ -52,7 +52,7 @@
       loop: "{{ st_existing_extensions.results }}"
       loop_control:
         label: "{{ item.item.json.name }}"
-      when: item.stat.exists == False
+      when: item.stat.exists == false
       register: download_gnome_shell_extensions
 
     - name: Create install directories
@@ -115,4 +115,4 @@
       file:
         path: "{{ gnome_extension_download_dir.path }}"
         state: absent
-      changed_when: no
+      changed_when: false

@@ -13,7 +13,7 @@
   unarchive:
     src: /tmp/kubescore/kubescore.tar.gz
     dest: /tmp/kubescore
-    remote_src: yes
+    remote_src: true
 
 - name: Copy kubescore
   copy:

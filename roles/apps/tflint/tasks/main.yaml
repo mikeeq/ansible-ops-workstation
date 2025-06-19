@@ -31,7 +31,7 @@
   unarchive:
     src: /tmp/tflint.zip
     dest: /usr/local/bin/
-    remote_src: yes
+    remote_src: true
   when: installed_tflint_version.stdout != tflint_version
 
 - name: Set permissions tflint

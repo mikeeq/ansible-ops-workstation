@@ -13,7 +13,7 @@
   unarchive:
     src: /tmp/helm.tar.gz
     dest: /tmp/helm
-    remote_src: yes
+    remote_src: true
 
 - name: Copy helm and tiller
   copy:

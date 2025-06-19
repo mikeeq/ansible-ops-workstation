@@ -15,7 +15,7 @@
   unarchive:
     src: /tmp/packer/packer.zip
     dest: /tmp/packer
-    remote_src: yes
+    remote_src: true
 
 - name: Copy packer
   copy:

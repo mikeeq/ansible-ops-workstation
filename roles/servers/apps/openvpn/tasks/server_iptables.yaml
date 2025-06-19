@@ -9,7 +9,7 @@
     jump: REDIRECT
     to_ports: 8600
     comment: Redirect web traffic to port 8600
-  become: yes
+  become: true
 
 - iptables:
     table: filter
@@ -22,7 +22,7 @@
     out_interface: eth1
     comment: Openvpn forward
     action: insert
-  become: yes
+  become: true
 
 # -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 - iptables:
@@ -34,7 +34,7 @@
     ctstate: ESTABLISHED,RELATED
     comment: Openvpn forward2
     action: insert
-  become: yes
+  become: true
 
 - iptables:
     table: filter
@@ -46,7 +46,7 @@
     destination_port: 443
     comment: Openvpn entry
     action: insert
-  become: yes
+  become: true
 
 - iptables:
     table: filter
@@ -58,7 +58,7 @@
     destination_port: 80
     comment: sshd port
     action: insert
-  become: yes
+  become: true
 
 - iptables:
     table: filter
@@ -69,7 +69,7 @@
     # ctstate: NEW
     destination_port: 22
     state: absent
-  become: yes
+  become: true
 
 - iptables:
     table: nat
@@ -78,7 +78,7 @@
     source: 10.69.0.0/24
     out_interface: eth1
     comment: Openvpn
-  become: yes
+  become: true
 
 # - shell: iptables --delete INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
 # - shell: iptables-save > /etc/sysconfig/iptables

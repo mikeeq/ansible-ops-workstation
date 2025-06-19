@@ -13,7 +13,7 @@
   unarchive:
     src: /tmp/istioctl/istioctl.tar.gz
     dest: /tmp/istioctl
-    remote_src: yes
+    remote_src: true
 
 - name: Copy istioctl
   copy:

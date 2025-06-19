@@ -21,13 +21,13 @@
   shell: |
     virt-customize \
     -a {{ image_path }} \
-    --run-command 'echo -e "DEVICE=eth0\nONBOOT=yes\nBOOTPROTO=dhcp" > /etc/sysconfig/network-scripts/ifcfg-eth0'
+    --run-command 'echo -e "DEVICE=eth0\nONBOOT=true\nBOOTPROTO=dhcp" > /etc/sysconfig/network-scripts/ifcfg-eth0'
 
 - name: Enable SSH password auth
   shell: |
     virt-customize \
     -a {{ image_path }} \
-    --edit /etc/ssh/sshd_config:'s/#PasswordAuthentication yes/PasswordAuthentication yes/g'
+    --edit /etc/ssh/sshd_config:'s/#PasswordAuthentication true/PasswordAuthentication true/g'
 
 - name: Set root password
   shell: |
@@ -73,7 +73,7 @@
     -a {{ image_path }} \
     --run-command 'echo > /var/log/wtmp ; echo > /var/log/btmp ; echo > /var/log/lastlog ; echo > /root/.bash_history '
 
-# for int in $(netstat -i | grep eth | awk '{print $1}'); do echo -e "DEVICE=$int\nONBOOT=yes\nBOOTPROTO=dhcp" > /etc/sysconfig/network-scripts/ifcfg-$int ; done
+# for int in $(netstat -i | grep eth | awk '{print $1}'); do echo -e "DEVICE=$int\nONBOOT=true\nBOOTPROTO=dhcp" > /etc/sysconfig/network-scripts/ifcfg-$int ; done
 - name: Copy image
   copy:
     src: "{{ image_path }}"

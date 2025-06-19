@@ -30,7 +30,7 @@ model:
   height: 320
 
 record:
-  enabled: True
+  enabled: true
   retain:
     days: 3
     mode: all
@@ -167,7 +167,7 @@ birdseye:
 #       # Optional: desired fps for your camera for the input with the detect role (default: shown below)
 #       # NOTE: Recommended value of 5. Ideally, try and reduce your FPS on the camera.
 #       fps: 10
-#       # Optional: enables detection for the camera (default: True)
+#       # Optional: enables detection for the camera (default: true)
 #       # This value can be set via MQTT and will be updated in startup based on retained value
 #       enabled: true
 #       # Optional: Number of frames without a detection before frigate considers an object to be gone. (default: 5x the frame rate)
@@ -268,7 +268,7 @@ birdseye:
 #       # Optional: desired fps for your camera for the input with the detect role (default: shown below)
 #       # NOTE: Recommended value of 5. Ideally, try and reduce your FPS on the camera.
 #       fps: 6
-#       # Optional: enables detection for the camera (default: True)
+#       # Optional: enables detection for the camera (default: true)
 #       # This value can be set via MQTT and will be updated in startup based on retained value
 #       enabled: true
 #       # Optional: Number of frames without a detection before frigate considers an object to be gone. (default: 5x the frame rate)
@@ -368,7 +368,7 @@ birdseye:
 #       # Optional: desired fps for your camera for the input with the detect role (default: shown below)
 #       # NOTE: Recommended value of 5. Ideally, try and reduce your FPS on the camera.
 #       fps: 6
-#       # Optional: enables detection for the camera (default: True)
+#       # Optional: enables detection for the camera (default: true)
 #       # This value can be set via MQTT and will be updated in startup based on retained value
 #       enabled: true
 #       # Optional: Number of frames without a detection before frigate considers an object to be gone. (default: 5x the frame rate)

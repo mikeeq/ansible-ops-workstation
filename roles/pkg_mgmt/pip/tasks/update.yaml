@@ -38,5 +38,5 @@
 
 # TASK [pkg_mgmt/pip : Update virtualenv PIP apps] ******************************************************************
 # Monday 25 May 2020  11:15:24 +0200 (0:00:08.506)       0:01:05.474 ************
-# skipping: [localhost] => (item={'name': 'ansible', 'virtualenv_enabled': False})
-# failed: [localhost] (item={'name': 'azure-cli', 'virtualenv_enabled': True}) => {"ansible_loop_var": "item", "changed": false, "cmd": ["/opt/azure-cli/bin/pip3", "install", "-U", "azure-cli"], "item": {"name": "azure-cli", "virtualenv_enabled": true}, "msg": "\n:stderr: Traceback (most recent call last):\n  File \"/opt/azure-cli/bin/pip3\", line 5, in <module>\n    from pip._internal.cli.main import main\nModuleNotFoundError: No module named 'pip'\n"}
+# skipping: [localhost] => (item={'name': 'ansible', 'virtualenv_enabled': false})
+# failed: [localhost] (item={'name': 'azure-cli', 'virtualenv_enabled': true}) => {"ansible_loop_var": "item", "changed": false, "cmd": ["/opt/azure-cli/bin/pip3", "install", "-U", "azure-cli"], "item": {"name": "azure-cli", "virtualenv_enabled": true}, "msg": "\n:stderr: Traceback (most recent call last):\n  File \"/opt/azure-cli/bin/pip3\", line 5, in <module>\n    from pip._internal.cli.main import main\nModuleNotFoundError: No module named 'pip'\n"}
