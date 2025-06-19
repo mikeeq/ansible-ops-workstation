@@ -176,6 +176,11 @@ terraform_version: 1.11.3
 # kail_version: 0.16.1
 
 vscode_extensions:
+  - ms-vscode.powershell
+  - ms-vscode-remote.remote-containers
+  - ms-azuretools.vscode-azure-github-copilot
+  - github.copilot
+  - github.copilot-chat
   - bbenoist.vagrant
   - davidanson.vscode-markdownlint
   - eamodio.gitlens
