@@ -9,8 +9,8 @@
   debug:
     var: installed_helm_version.stdout
 
-- include_tasks: get_latest_version.yaml
+- ansible.builtin.include_tasks: get_latest_version.yaml
   when: helm_version is not defined
 
-- include_tasks: install.yaml
+- ansible.builtin.include_tasks: install.yaml
   when: installed_helm_version.stdout != helm_version

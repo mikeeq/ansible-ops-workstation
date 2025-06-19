@@ -9,7 +9,7 @@
   debug:
     var: installed_kubectl_version.stdout
 
-- include_tasks: get_latest_version.yaml
+- ansible.builtin.include_tasks: get_latest_version.yaml
   when: kubectl_version is not defined
 
 - name: Download kubectl

@@ -40,7 +40,7 @@
   when: le_challenge.changed == false
 
 - name: Create DNS records
-  include_tasks: "{{ dns_task_path }}"
+  ansible.builtin.include_tasks: "{{ dns_task_path }}"
   loop: "{{ le_challenge.challenge_data | dict2items }}"
   when: le_challenge is changed
   vars:
@@ -98,7 +98,7 @@
   when: le_challenge.changed
 
 - name: Delete DNS records
-  include_tasks: "{{ dns_task_path }}"
+  ansible.builtin.include_tasks: "{{ dns_task_path }}"
   loop: "{{ le_challenge.challenge_data | dict2items }}"
   when: le_challenge.changed
   vars:

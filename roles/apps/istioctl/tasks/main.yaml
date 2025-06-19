@@ -11,8 +11,8 @@
   debug:
     var: installed_istioctl_version.stdout
 
-- include_tasks: get_latest_version.yaml
+- ansible.builtin.include_tasks: get_latest_version.yaml
   when: istioctl_version is not defined
 
-- include_tasks: install.yaml
+- ansible.builtin.include_tasks: install.yaml
   when: installed_istioctl_version.stdout != istioctl_version

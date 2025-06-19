@@ -18,7 +18,7 @@
 
 # TODO: add stat to check if docker-compose file exists before running cleanup
 
-# - include_tasks: cleanup.yaml
+# - ansible.builtin.include_tasks: cleanup.yaml
 #   when: home_assistant_clean
 
 - import_tasks: custom.yaml

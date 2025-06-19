@@ -10,7 +10,7 @@
     msg: "docker-compose is not found! You need to install it first."
   when: docker_compose_result.rc != 0
 
-- include_tasks: cleanup.yaml
+- ansible.builtin.include_tasks: cleanup.yaml
   when: jenkins_cleanup
 
 - import_tasks: config.yaml
@@ -23,7 +23,7 @@
 #   when: jenkins_config_file.changed
 
 - name: Wait for jenkins to be fully up
-  include_tasks: api-token.yaml
+  ansible.builtin.include_tasks: api-token.yaml
   vars:
     jenkins_crumb_admin_username: "{{ jenkins_admin_username }}"
     jenkins_crumb_admin_password: "{{ jenkins_admin_password }}"

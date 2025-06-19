@@ -11,10 +11,10 @@
   debug:
     var: installed_aws_cli_version.stdout
 
-- include_tasks: get_latest_version.yaml
+- ansible.builtin.include_tasks: get_latest_version.yaml
   when: aws_cli_version is not defined
 
-- include_tasks: install.yaml
+- ansible.builtin.include_tasks: install.yaml
   when: installed_aws_cli_version.stdout != aws_cli_version
 
 - name: Install Session Manager plugin on Fedora

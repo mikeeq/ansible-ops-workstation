@@ -3,6 +3,6 @@
 # flatpak install flathub com.spotify.Client
 - import_tasks: repos.yaml
 - import_tasks: apps.yaml
-- include_tasks: update.yaml
+- ansible.builtin.include_tasks: update.yaml
   tags:
     - update

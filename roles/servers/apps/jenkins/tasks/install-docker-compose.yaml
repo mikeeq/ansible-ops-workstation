@@ -29,7 +29,7 @@
   ignore_errors: true
   changed_when: false
 
-- include_tasks: update.yaml
+- ansible.builtin.include_tasks: update.yaml
   when: docker_image_exists.rc != 0 or jenkins_update
 
 - name: Run Jenkins using docker-compose

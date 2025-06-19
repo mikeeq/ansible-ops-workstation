@@ -1,8 +1,8 @@
 ---
-- include_tasks: dnf.yaml
+- ansible.builtin.include_tasks: dnf.yaml
   when: ansible_distribution == "Fedora"
 
-- include_tasks: apt.yaml
+- ansible.builtin.include_tasks: apt.yaml
   when: ansible_distribution == "Ubuntu"
 
 - name: Install VCS

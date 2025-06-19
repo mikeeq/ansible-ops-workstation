@@ -45,10 +45,10 @@ repos:
     hooks:
       - id: gitleaks
 
-  # - repo: https://github.com/ansible/ansible-lint
-  #   rev: v25.6.1
-  #   hooks:
-  #     - id: ansible-lint
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v25.6.1
+    hooks:
+      - id: ansible-lint
 
   # - repo: https://github.com/koalaman/shellcheck-precommit
   #   rev: v0.10.0

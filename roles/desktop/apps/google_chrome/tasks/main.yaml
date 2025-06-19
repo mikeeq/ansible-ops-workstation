@@ -1,2 +1,2 @@
 ---
-- include_tasks: "install_{{ ansible_architecture }}.yaml"
+- ansible.builtin.include_tasks: "install_{{ ansible_architecture }}.yaml"

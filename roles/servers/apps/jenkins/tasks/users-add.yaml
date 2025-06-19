@@ -26,7 +26,7 @@
     jenkins_used_admin_password: "{{ jenkins_admin_password }}"
   when: jenkins_admin_account_removed_flag.stat.exists
 
-- include_tasks: api-token.yaml
+- ansible.builtin.include_tasks: api-token.yaml
   vars:
     jenkins_crumb_admin_username: "{{ jenkins_used_admin_username }}"
     jenkins_crumb_admin_password: "{{ jenkins_used_admin_password }}"

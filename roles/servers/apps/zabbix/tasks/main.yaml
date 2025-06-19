@@ -16,7 +16,7 @@
 
 # https://github.com/BGmot/zabbix-module-hosts-tree
 
-- include_tasks: config.yaml
+- ansible.builtin.include_tasks: config.yaml
   vars:
     ansible_user: Admin
     ansible_httpapi_pass: zabbix

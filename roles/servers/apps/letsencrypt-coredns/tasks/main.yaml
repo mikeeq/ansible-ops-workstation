@@ -19,7 +19,7 @@
     state: directory
 
 - name: Generate cert
-  include_tasks: cert.yaml
+  ansible.builtin.include_tasks: cert.yaml
   loop: "{{ certs }}"
   loop_control:
     loop_var: cert

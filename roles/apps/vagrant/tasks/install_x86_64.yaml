@@ -22,7 +22,7 @@
   debug:
     var: installed_vagrant_version.stdout
 
-- include_tasks: get_latest_version.yaml
+- ansible.builtin.include_tasks: get_latest_version.yaml
   when: vagrant_version is not defined
 
 - debug:

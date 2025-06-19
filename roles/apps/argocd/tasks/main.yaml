@@ -11,8 +11,8 @@
   debug:
     var: installed_argocd_version.stdout
 
-- include_tasks: get_latest_version.yaml
+- ansible.builtin.include_tasks: get_latest_version.yaml
   when: argocd_version is not defined
 
-- include_tasks: install.yaml
+- ansible.builtin.include_tasks: install.yaml
   when: installed_argocd_version.stdout != argocd_version

@@ -11,8 +11,8 @@
   debug:
     var: installed_ctop_version.stdout
 
-- include_tasks: get_latest_version.yaml
+- ansible.builtin.include_tasks: get_latest_version.yaml
   when: ctop_version is not defined
 
-- include_tasks: install.yaml
+- ansible.builtin.include_tasks: install.yaml
   when: installed_ctop_version.stdout != ctop_version

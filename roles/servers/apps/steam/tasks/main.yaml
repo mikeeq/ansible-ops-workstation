@@ -4,8 +4,8 @@
   become_user: "{{ user_name }}"
   shell: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock
 
-- include_tasks: start.yaml
+- ansible.builtin.include_tasks: start.yaml
   when: steam_action == "start"
 
-- include_tasks: stop.yaml
+- ansible.builtin.include_tasks: stop.yaml
   when: steam_action == "stop"
