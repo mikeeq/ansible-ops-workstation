@@ -7,4 +7,3 @@
 
 - name: Download deps
   shell: yum update -y; yum install -y libvirt libguestfs-tools virt-manager; systemctl start libvirtd;
-
