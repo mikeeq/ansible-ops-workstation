@@ -1,4 +1,4 @@
 ---
-- import_tasks: install.yml
-- import_tasks: plugins.yml
-- import_tasks: config.yml
+- import_tasks: install.yaml
+- import_tasks: plugins.yaml
+- import_tasks: config.yaml

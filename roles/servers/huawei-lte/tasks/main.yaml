@@ -12,11 +12,11 @@
   loop:
     - xmltodict
 
-- import_tasks: login.yml
+- import_tasks: login.yaml
 
-# - import_tasks: get-net-mode.yml
-# - import_tasks: device-status.yml
-# - import_tasks: traffic-status.yml
+# - import_tasks: get-net-mode.yaml
+# - import_tasks: device-status.yaml
+# - import_tasks: traffic-status.yaml
 
 - include_tasks: "{{ huawei_dynamic_task }}"
   when: huawei_dynamic_task is defined

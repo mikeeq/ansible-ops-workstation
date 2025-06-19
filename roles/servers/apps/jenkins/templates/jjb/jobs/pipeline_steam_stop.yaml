@@ -63,5 +63,5 @@
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yml steam-stop.yml
+                      ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yaml steam-stop.yaml
                     """

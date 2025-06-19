@@ -11,8 +11,8 @@
   debug:
     var: installed_azure_functions_core_tools_version.stdout
 
-- include_tasks: get_latest_version.yml
+- include_tasks: get_latest_version.yaml
   when: azure_functions_core_tools_version is not defined
 
-- include_tasks: install.yml
+- include_tasks: install.yaml
   when: installed_azure_functions_core_tools_version.stdout != azure_functions_core_tools_version

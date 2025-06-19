@@ -17,7 +17,7 @@
     dest: "{{ jenkins_install_path }}/{{ item }}"
     mode: 0664
   loop:
-    - docker-compose.yml
+    - docker-compose.yaml
     - Dockerfile
 
 # TODO: Add jenkins user to local machine
@@ -29,7 +29,7 @@
   ignore_errors: true
   changed_when: false
 
-- include_tasks: update.yml
+- include_tasks: update.yaml
   when: docker_image_exists.rc != 0 or jenkins_update
 
 - name: Run Jenkins using docker-compose

@@ -14,12 +14,12 @@
     mode: 0664
     backup: true
   loop:
-    - docker-compose.yml
+    - docker-compose.yaml
     - config/nginx.conf
     - config/backend-not-found.html
   register: config_flag
 
-- import_tasks: config.yml
+- import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

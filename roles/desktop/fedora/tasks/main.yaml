@@ -1,16 +1,16 @@
 ---
 ### Add user to nopasswd sudoers
-# - import_tasks: sudo.yml
-# - import_tasks: hostname.yml
+# - import_tasks: sudo.yaml
+# - import_tasks: hostname.yaml
 
 ### Basic fedora setup
-# - import_tasks: firewalld.yml
-# - import_tasks: selinux.yml
-- import_tasks: grub.yml
-- import_tasks: nested_kvm.yml
-- import_tasks: udev.yml
-- import_tasks: wake_on_lan.yml
-- import_tasks: disable_swap.yml
+# - import_tasks: firewalld.yaml
+# - import_tasks: selinux.yaml
+- import_tasks: grub.yaml
+- import_tasks: nested_kvm.yaml
+- import_tasks: udev.yaml
+- import_tasks: wake_on_lan.yaml
+- import_tasks: disable_swap.yaml
 
 ### TODO:
 # Gnome scaling

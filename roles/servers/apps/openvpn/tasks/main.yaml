@@ -1,13 +1,13 @@
 ---
-- import_tasks: install.yml
+- import_tasks: install.yaml
 
-# - import_tasks: certs_shell_easy-rsa.yml
-- import_tasks: certs_ansible_openssl.yml
+# - import_tasks: certs_shell_easy-rsa.yaml
+- import_tasks: certs_ansible_openssl.yaml
 
-- import_tasks: server_config.yml
-- import_tasks: get_certs.yml
-- import_tasks: selinux.yml
+- import_tasks: server_config.yaml
+- import_tasks: get_certs.yaml
+- import_tasks: selinux.yaml
 
-# - import_tasks: server_iptables.yml
+# - import_tasks: server_iptables.yaml
 # systemctl stop openvpn-server@server
 # less /var/log/openvpn.log

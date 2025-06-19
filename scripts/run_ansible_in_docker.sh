@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DOCKER_IMAGE=${DOCKER_IMAGE:-fedora_systemd}
-ANSIBLE_PLAYBOOK=${ANSIBLE_PLAYBOOK:-fedora.yml}
+ANSIBLE_PLAYBOOK=${ANSIBLE_PLAYBOOK:-fedora.yaml}
 docker run \
   --name ${DOCKER_IMAGE} \
   -d \
@@ -17,12 +17,12 @@ docker run \
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
+    ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yaml ${ANSIBLE_PLAYBOOK}"
 
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yml ${ANSIBLE_PLAYBOOK}"
+    ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yaml ${ANSIBLE_PLAYBOOK}"
 
 ansible_exitcode=$?
 

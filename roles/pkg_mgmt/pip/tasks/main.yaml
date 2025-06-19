@@ -74,6 +74,6 @@
   with_items:
     - "{{ pipx_apps }}"
 
-- import_tasks: update.yml
+- import_tasks: update.yaml
   tags:
     - update

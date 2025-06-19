@@ -18,10 +18,10 @@
 
 # TODO: add stat to check if docker-compose file exists before running cleanup
 
-# - include_tasks: cleanup.yml
+# - include_tasks: cleanup.yaml
 #   when: home_assistant_clean
 
-- import_tasks: custom.yml
-- import_tasks: config.yml
-- import_tasks: config_mosquitto.yml
-- import_tasks: install.yml
+- import_tasks: custom.yaml
+- import_tasks: config.yaml
+- import_tasks: config_mosquitto.yaml
+- import_tasks: install.yaml

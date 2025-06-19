@@ -24,7 +24,7 @@
           quickFilterEnabled: true
       - string:
           name: "INVENTORY_PATH"
-          default: "../../ansible-ops-private/inventory/hosts.yml"
+          default: "../../ansible-ops-private/inventory/hosts.yaml"
           trim: true
           description: "Ansible Inventory"
       # TODO: Consider switching to
@@ -32,7 +32,7 @@
       # https://stackoverflow.com/questions/66049517/populate-choice-parameter-in-jenkinsfile-with-list-of-folders-in-scm-repository
       - string:
           name: "PLAYBOOK_NAME"
-          default: "huawei-lte-setband-800+1800+2100.yml"
+          default: "huawei-lte-setband-800+1800+2100.yaml"
           trim: true
           description: "Playbook"
       - string:

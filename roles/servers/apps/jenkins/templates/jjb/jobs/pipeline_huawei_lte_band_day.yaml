@@ -87,7 +87,7 @@
 #                   - |
 #                     sh """#!/bin/bash
 #                       cd ansible-ops-workstation/playbooks
-#                       ansible-playbook -e huawei_lteband=$params.HUAWEI_LTE_BAND -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-setband.yml
+#                       ansible-playbook -e huawei_lteband=$params.HUAWEI_LTE_BAND -i ../../ansible-ops-private/inventory/hosts.yaml huawei-lte-setband.yaml
 #                     """
 #           - stage: "Ansible SQM disable"
 #             steps:
@@ -95,5 +95,5 @@
 #                   - |
 #                     sh """#!/bin/bash
 #                       cd ansible-ops-workstation/playbooks
-#                       ansible-playbook -e dynamic_sqm_enabled=$params.DYNAMIC_SQM_ENABLED -i ../../ansible-ops-private/inventory/hosts.yml openwrt-sqm.yml
+#                       ansible-playbook -e dynamic_sqm_enabled=$params.DYNAMIC_SQM_ENABLED -i ../../ansible-ops-private/inventory/hosts.yaml openwrt-sqm.yaml
 #                     """

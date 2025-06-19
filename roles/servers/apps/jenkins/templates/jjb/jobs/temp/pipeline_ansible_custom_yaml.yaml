@@ -1,7 +1,7 @@
 ---
 # https://www.jenkins.io/doc/book/pipeline/syntax/
 # https://plugins.jenkins.io/pipeline-as-yaml/
-# https://github.com/jenkinsci/pipeline-as-yaml-plugin/blob/master/src/test/resources/pipeline/pipelineAllinOne.yml
+# https://github.com/jenkinsci/pipeline-as-yaml-plugin/blob/master/src/test/resources/pipeline/pipelineAllinOne.yaml
 
 - job:
     name: test_pipeline_yaml
@@ -79,5 +79,5 @@
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yml huawei-lte-restart.yml
+                      ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yaml huawei-lte-restart.yaml
                     """

@@ -11,8 +11,8 @@
   debug:
     var: installed_kubescore_version.stdout
 
-- include_tasks: get_latest_version.yml
+- include_tasks: get_latest_version.yaml
   when: kubescore_version is not defined
 
-- include_tasks: install.yml
+- include_tasks: install.yaml
   when: installed_kubescore_version.stdout != kubescore_version

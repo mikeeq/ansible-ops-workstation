@@ -57,7 +57,7 @@ repos:
   - repo: local
     hooks:
       - id: convert-yml-to-yaml
-        name: Convert .yml files to .yaml
+        name: Convert .yaml files to .yaml
         entry: scripts/convert_yml_to_yaml.sh
         language: system
-        files: \.yml$
+        files: \.yaml$

@@ -10,13 +10,13 @@
 #   when: docker_compose_result.rc != 0
 
 # https://www.zabbix.com/documentation/current/en/manual/installation/containers
-# - import_tasks: install.yml
+# - import_tasks: install.yaml
 
 # curl --request POST --url 'http://192.168.4.10/api_jsonrpc.php' --header 'Content-Type: application/json-rpc' --data '{"jsonrpc":"2.0","method":"apiinfo.version","params":{},"id":1}'
 
 # https://github.com/BGmot/zabbix-module-hosts-tree
 
-- include_tasks: config.yml
+- include_tasks: config.yaml
   vars:
     ansible_user: Admin
     ansible_httpapi_pass: zabbix

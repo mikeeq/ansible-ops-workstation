@@ -9,8 +9,8 @@
   args:
     creates: /snap
 
-- import_tasks: install.yml
+- import_tasks: install.yaml
 
-- import_tasks: update.yml
+- import_tasks: update.yaml
   tags:
     - update

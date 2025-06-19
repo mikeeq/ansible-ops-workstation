@@ -64,5 +64,5 @@
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -e hosts_to_deploy=mikeeClevo -t jjb -i ../../ansible-ops-private/inventory/hosts.yml jenkins.yml
+                      ansible-playbook -e hosts_to_deploy=mikeeClevo -t jjb -i ../../ansible-ops-private/inventory/hosts.yaml jenkins.yaml
                     """

@@ -15,7 +15,7 @@
     mode: 0664
     backup: true
   loop:
-    - docker-compose.yml
+    - docker-compose.yaml
 
 - name: Configure confdir/AdGuardHome.yaml file
   template:
@@ -26,7 +26,7 @@
   loop:
     - confdir/AdGuardHome.yaml
 
-# - import_tasks: config.yml
+# - import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

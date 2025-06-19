@@ -10,7 +10,7 @@
   debug:
     var: installed_terragrunt_version.stdout
 
-- include_tasks: get_latest_version.yml
+- include_tasks: get_latest_version.yaml
   when: terragrunt_version is not defined
 
 - name: Download terragrunt

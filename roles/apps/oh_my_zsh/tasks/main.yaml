@@ -29,9 +29,9 @@
     - "{{ user_name }}"
     - root
 
-- import_tasks: plugins.yml
-- import_tasks: work.yml
+- import_tasks: plugins.yaml
+- import_tasks: work.yaml
 
-- import_tasks: update.yml
+- import_tasks: update.yaml
   tags:
     - update

@@ -20,7 +20,7 @@ services:
     shm_size: "256mb"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./config.yml:/config/config.yml
+      - ./config.yaml:/config/config.yaml
       - ./frigate:/media/frigate
       - ./frigatedb:/db
       - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear

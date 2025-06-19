@@ -52,7 +52,7 @@
   </p>
 </p>
 
-[![CI](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yml/badge.svg)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yml)
+[![CI](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml/badge.svg)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml)
 
 [![CircleCI](https://circleci.com/gh/mikeeq/ansible-ops-workstation.svg?style=svg)](https://circleci.com/gh/mikeeq/ansible-ops-workstation)
 
@@ -129,17 +129,17 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-3. Change `user_name` in `playbooks/group_vars/all.yml` to your Fedora username and run Ansible
+3. Change `user_name` in `playbooks/group_vars/all.yaml` to your Fedora username and run Ansible
 
    ```bash
    # Go to repository directory
    cd ansible-ops-workstation/playbooks
 
-   # Edit playbooks/group_vars/all.yml, change user_name
-   vi group_vars/all.yml
+   # Edit playbooks/group_vars/all.yaml, change user_name
+   vi group_vars/all.yaml
 
    # Run Ansible
-   ansible-playbook -i ../inventory/hosts.yml fedora.yml -K
+   ansible-playbook -i ../inventory/hosts.yaml fedora.yaml -K
    ```
 
 4. Reboot your machine to apply all changes
@@ -201,17 +201,17 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-5. Change `user_name` in `playbooks/group_vars/all.yml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yml#L2)) and run Ansible
+5. Change `user_name` in `playbooks/group_vars/all.yaml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L2)) and run Ansible
 
    ```bash
    # Go to repository directory
    cd ansible-ops-workstation/playbooks
 
-   # Edit playbooks/group_vars/all.yml, change user_name
-   vi group_vars/all.yml
+   # Edit playbooks/group_vars/all.yaml, change user_name
+   vi group_vars/all.yaml
 
    # Run Ansible
-   ansible-playbook -i ../inventory/hosts.yml wsl-ubuntu.yml -K
+   ansible-playbook -i ../inventory/hosts.yaml wsl-ubuntu.yaml -K
    ```
 
 6. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
@@ -224,7 +224,7 @@ Contributions are what make the open source community such an amazing place to b
 
    - and paste it here - `C:/Users/${WINDOWS_USER_NAME}/AppData/Roaming/Code/User/settings.json`
 
-9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
+9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
 
    ```bash
    code --install-extension ${EXTENSION_NAME}

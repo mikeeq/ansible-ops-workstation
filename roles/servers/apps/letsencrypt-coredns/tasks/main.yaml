@@ -11,7 +11,7 @@
     name: cryptography
     state: present
 
-- import_tasks: account_key.yml
+- import_tasks: account_key.yaml
 
 - name: "Create dir for certs - {{ certs_path }}"
   file:
@@ -19,12 +19,12 @@
     state: directory
 
 - name: Generate cert
-  include_tasks: cert.yml
+  include_tasks: cert.yaml
   loop: "{{ certs }}"
   loop_control:
     loop_var: cert
   vars:
-    dns_task_path: dns_coredns.yml
+    dns_task_path: dns_coredns.yaml
     domain_name: "{{ cert.domain_name }}"
 
 - name: Create directories for certs
@@ -34,4 +34,4 @@
   delegate_to: 127.0.0.1
   loop: "{{ certs | map(attribute='cn')}}"
 
-- import_tasks: copy_certs.yml
+- import_tasks: copy_certs.yaml

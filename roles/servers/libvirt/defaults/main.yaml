@@ -3,11 +3,11 @@ cloud_init_src_dir: "/var/lib/libvirt/cloud_init_config"
 cloud_init_iso_dir: "/var/lib/libvirt/cloud_init_iso"
 
 cloud_init_config_files:
-  - src: user-data.yml.j2
+  - src: user-data.yaml.j2
     dest: user-data
-  - src: network-config.yml.j2
+  - src: network-config.yaml.j2
     dest: network-config
-  - src: meta-data.yml.j2
+  - src: meta-data.yaml.j2
     dest: meta-data
 
 # https://cloudinit.readthedocs.io/en/latest/topics/modules.html

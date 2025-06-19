@@ -1,5 +1,5 @@
 ---
-# https://github.com/flyoverhead/ansible-openwrt/blob/main/roles/dhcp/tasks/dhcp.yml
+# https://github.com/flyoverhead/ansible-openwrt/blob/main/roles/dhcp/tasks/dhcp.yaml
 # https://github.com/gekmihesg/ansible-openwrt/blob/master/library/uci.py
 
 - name: Configure dhcp config

@@ -19,12 +19,12 @@
   shell: git config --global --add protocol.file.allow always
   when: flatpak_fix.rc != 0
 
-- name: Fix synergy.yml
-  shell: echo -e 'build-options:\n  build-args:\n    - "--share=network"' >> synergy.yml
+- name: Fix synergy.yaml
+  shell: echo -e 'build-options:\n  build-args:\n    - "--share=network"' >> synergy.yaml
   args:
     chdir: /opt/synergy/synergy-core/flatpak
 
 - name: Build flatpak
-  shell: flatpak-builder --install --force-clean build synergy.yml
+  shell: flatpak-builder --install --force-clean build synergy.yaml
   args:
     chdir: /opt/synergy/synergy-core/flatpak

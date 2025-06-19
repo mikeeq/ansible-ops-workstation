@@ -13,11 +13,11 @@
     dest: "{{ install_path }}/{{ item }}"
     mode: 0664
   loop:
-    - docker-compose.yml
+    - docker-compose.yaml
     - config/config.yaml
     - config/file_leases.txt
 
-- import_tasks: config.yml
+- import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

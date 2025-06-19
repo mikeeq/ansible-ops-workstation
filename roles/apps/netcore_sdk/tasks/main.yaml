@@ -1,5 +1,5 @@
 ---
-- include_tasks: apt.yml
+- include_tasks: apt.yaml
   when: ansible_distribution == "Ubuntu"
 
 - name: netcore sdk

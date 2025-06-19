@@ -18,8 +18,8 @@
     path: "{{ openvpn_ssl_path }}"
     state: directory
 
-- import_tasks: "openssl/ca.yml"
-- import_tasks: "openssl/server.yml"
-- import_tasks: "openssl/server_extras.yml"
-- include_tasks: "openssl/client.yml"
+- import_tasks: "openssl/ca.yaml"
+- import_tasks: "openssl/server.yaml"
+- import_tasks: "openssl/server_extras.yaml"
+- include_tasks: "openssl/client.yaml"
   loop: "{{ openvpn_clients }}"

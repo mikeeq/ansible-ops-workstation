@@ -23,10 +23,10 @@
           default: 'main'
       - string:
           name: INVENTORY
-          default: 'prod.yml'
+          default: 'prod.yaml'
       - string:
           name: PLAYBOOK
-          default: 'playbook_main.yml'
+          default: 'playbook_main.yaml'
       - string:
           name: EXTRA_PARAMETERS
           default: ''

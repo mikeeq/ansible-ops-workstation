@@ -51,7 +51,7 @@
         mode: 0600
 
 - name: Fedora on Clevo
-  ansible.builtin.import_playbook: fedora.yml
+  ansible.builtin.import_playbook: fedora.yaml
   vars:
     hosts_to_deploy: mikeeClevo
 
@@ -62,8 +62,8 @@
     # - name: Clean DNF
     #   shell: dnf clean all
 
-    - import_tasks: ../roles/pkg_mgmt/dnf/tasks/dnf5.yml
-    - import_tasks: ../roles/pkg_mgmt/dnf/tasks/update.yml
+    - import_tasks: ../roles/pkg_mgmt/dnf/tasks/dnf5.yaml
+    - import_tasks: ../roles/pkg_mgmt/dnf/tasks/update.yaml
 
     - name: Check if reboot required
       stat:
@@ -85,7 +85,7 @@
     - servers/bootstrap
 
 - name: Set variables on an imported playbook
-  ansible.builtin.import_playbook: generic-core.yml
+  ansible.builtin.import_playbook: generic-core.yaml
   vars:
     hosts_to_deploy: vms
 

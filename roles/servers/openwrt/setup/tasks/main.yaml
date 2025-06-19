@@ -43,15 +43,15 @@
 # https://docs.ansible.com/ansible/latest/collections/community/general/openwrt_init_module.html
 # https://docs.ansible.com/ansible/latest/collections/community/general/opkg_module.html
 
-- import_tasks: dhcp.yml
+- import_tasks: dhcp.yaml
 
-- import_tasks: ap.yml
+- import_tasks: ap.yaml
   when: openwrt_router_flag == false
 
-- import_tasks: router.yml
+- import_tasks: router.yaml
   when: openwrt_router_flag == true
 
-- import_tasks: config.yml
+- import_tasks: config.yaml
 
 # - name: Extract string before dash from hostname
 #   debug:

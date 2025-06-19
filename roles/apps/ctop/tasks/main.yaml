@@ -11,8 +11,8 @@
   debug:
     var: installed_ctop_version.stdout
 
-- include_tasks: get_latest_version.yml
+- include_tasks: get_latest_version.yaml
   when: ctop_version is not defined
 
-- include_tasks: install.yml
+- include_tasks: install.yaml
   when: installed_ctop_version.stdout != ctop_version

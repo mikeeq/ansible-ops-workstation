@@ -55,7 +55,7 @@ jobs:
       - name: Build ubuntu image...
         run: docker build -f Dockerfile-ubuntu -t ubuntu-aow:latest .
       - name: Run Ansible in Docker...
-        run: ANSIBLE_PLAYBOOK=wsl-ubuntu.yml DOCKER_IMAGE=ubuntu-aow scripts/run_ansible_in_docker.sh
+        run: ANSIBLE_PLAYBOOK=wsl-ubuntu.yaml DOCKER_IMAGE=ubuntu-aow scripts/run_ansible_in_docker.sh
 
       # - name: "YamlLint"
       #   run: |

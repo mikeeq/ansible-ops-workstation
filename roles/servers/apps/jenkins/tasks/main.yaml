@@ -10,11 +10,11 @@
     msg: "docker-compose is not found! You need to install it first."
   when: docker_compose_result.rc != 0
 
-- include_tasks: cleanup.yml
+- include_tasks: cleanup.yaml
   when: jenkins_cleanup
 
-- import_tasks: config.yml
-- import_tasks: install-docker-compose.yml
+- import_tasks: config.yaml
+- import_tasks: install-docker-compose.yaml
 
 # - name: Restart Jenkins using docker-compose
 #   command: docker-compose restart
@@ -23,7 +23,7 @@
 #   when: jenkins_config_file.changed
 
 - name: Wait for jenkins to be fully up
-  include_tasks: api-token.yml
+  include_tasks: api-token.yaml
   vars:
     jenkins_crumb_admin_username: "{{ jenkins_admin_username }}"
     jenkins_crumb_admin_password: "{{ jenkins_admin_password }}"
@@ -46,9 +46,9 @@
   changed_when: casc.status == 200
 
 # Replaced by configuration-as-code
-# - import_tasks: users-add.yml
-# - import_tasks: users-delete.yml
+# - import_tasks: users-add.yaml
+# - import_tasks: users-delete.yaml
 
-- import_tasks: jjb.yml
+- import_tasks: jjb.yaml
   tags:
     - jjb

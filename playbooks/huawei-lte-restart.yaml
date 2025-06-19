@@ -6,4 +6,4 @@
   roles:
     - servers/huawei-lte
   vars:
-    huawei_dynamic_task: "restart.yml"
+    huawei_dynamic_task: "restart.yaml"

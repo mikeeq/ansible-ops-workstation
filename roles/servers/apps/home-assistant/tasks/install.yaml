@@ -13,7 +13,7 @@
     mode: 0664
     backup: true
   loop:
-    - docker-compose.yml
+    - docker-compose.yaml
 
 - name: Pull Docker image using docker-compose
   command: docker-compose pull

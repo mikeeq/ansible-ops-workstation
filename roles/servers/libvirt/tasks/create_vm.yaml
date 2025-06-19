@@ -21,10 +21,10 @@
     mode: 0600
   register: vm_config
 
-- include_tasks: cloud-init.yml
+- include_tasks: cloud-init.yaml
   when: vm_config.changed or vm_force_recreation == true or vm_force_cloud_init_recreation == true
 
-- include_tasks: destroy_vm.yml
+- include_tasks: destroy_vm.yaml
   when: vm_force_recreation == true
 
 - name: Check if storage exists
