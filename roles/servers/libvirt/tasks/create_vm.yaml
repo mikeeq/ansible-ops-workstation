@@ -116,4 +116,4 @@
   virt:
     name: "{{ vm.name }}"
     state: running
-    autostart: yes
+    autostart: true

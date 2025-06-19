@@ -1,6 +1,7 @@
 ---
 cloud_init_src_dir: "/var/lib/libvirt/cloud_init_config"
 cloud_init_iso_dir: "/var/lib/libvirt/cloud_init_iso"
+
 cloud_init_config_files:
   - src: user-data.yml.j2
     dest: user-data

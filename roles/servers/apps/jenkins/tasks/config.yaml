@@ -30,7 +30,7 @@
     mode: 0600
   loop: "{{ jenkins_ssh_private_keys }}"
   loop_control:
-     label: "{{ item.name }}"
+    label: "{{ item.name }}"
 
 - name: Ensure secrets in jenkins_home dir exists
   file:

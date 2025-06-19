@@ -34,7 +34,7 @@
     url: '{{ jenkins_url }}/configuration-as-code/reload'
     user: "{{ jenkins_admin_username }}"
     password: "{{ jenkins_admin_password }}"
-    force_basic_auth: yes
+    force_basic_auth: true
     follow_redirects: all
     return_content: true
     headers:

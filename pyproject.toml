@@ -1,0 +1,10 @@
+# pyproject.toml
+# https://lyz-code.github.io/yamlfix/#configuration-options
+
+[tool.yamlfix]
+allow_duplicate_keys = true
+line_length = 80
+none_representation = "null"
+sequence_style = "keep_style"
+section_whitelines = 1
+quote_representation = "\""

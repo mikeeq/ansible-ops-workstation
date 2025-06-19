@@ -2,7 +2,7 @@
 - name: disable firewalld
   systemd:
     name: firewalld
-    enabled: no
+    enabled: false
   tags:
     - dont_run_in_docker
 

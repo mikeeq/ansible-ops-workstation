@@ -15,4 +15,4 @@
 
 - name: Refresh apt repos
   apt:
-    update_cache: yes
+    update_cache: true

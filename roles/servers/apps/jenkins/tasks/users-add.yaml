@@ -37,7 +37,7 @@
     url: '{{ jenkins_url }}/securityRealm/createAccountByAdmin'
     user: "{{ jenkins_used_admin_username }}"
     password: "{{ jenkins_used_admin_password }}"
-    force_basic_auth: yes
+    force_basic_auth: true
     follow_redirects: all
     headers:
       Jenkins-Crumb: '{{ crumb.content.split(":")[1] }}'

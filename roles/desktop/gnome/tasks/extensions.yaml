@@ -8,7 +8,7 @@
   gnome_shell_extension:
     id: "{{ item }}"
     gnome_extension_path: "{{ gnome_extension_path }}"
-  become: yes
+  become: true
   become_user: "{{ gnome_extension_owner }}"
   with_items: "{{ gnome_shell_extensions }}"
   # notify: reload gnome-shell

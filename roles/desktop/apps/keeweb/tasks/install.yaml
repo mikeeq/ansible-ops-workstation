@@ -42,7 +42,7 @@
   unarchive:
     src: /tmp/keeweb.zip
     dest: /opt/keeweb/
-    remote_src: yes
+    remote_src: true
   when: installed_version.stdout != version_tag.stdout
 
 - name: Add gnome icon

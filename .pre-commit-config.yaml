@@ -4,17 +4,17 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-        args: [--markdown-linebreak-ext=md]
+        args:
+          - --markdown-linebreak-ext=md
       - id: end-of-file-fixer
       - id: check-yaml
-        exclude: '(^|/)templates/.*\.ya?ml$|^roles/servers/apps/home-assistant/files/config/.*\.ya?ml$'
+        exclude: (^|/)templates/.*\.ya?ml$|^roles/servers/apps/home-assistant/files/config/.*\.ya?ml$
       - id: check-added-large-files
       - id: check-case-conflict
       - id: check-merge-conflict
       - id: detect-private-key
         exclude: roles/apps/openvpn-client/files/client.ovpn
       - id: check-executables-have-shebangs
-
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.37.1
     hooks:
@@ -23,9 +23,10 @@ repos:
         description: This hook runs yamllint.
         entry: yamllint
         language: python
-        types: [file, yaml]
+        types:
+          - file
+          - yaml
         # exclude: '(^|/)templates/.*\.ya?ml$'
-
   - repo: https://github.com/lyz-code/yamlfix
     rev: 1.16.1
     hooks:
@@ -34,9 +35,11 @@ repos:
         entry: yamlfix
         language: python
         language_version: python3
-        types: [yaml]
-        exclude: '(^|/)templates/.*\.ya?ml$'
-
+        types:
+          - yaml
+        exclude: (^|/)templates/.*\.ya?ml$
+        args:
+          - -c .yamlfix.toml
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.27.2
     hooks:
@@ -51,7 +54,6 @@ repos:
   #   rev: v0.10.0
   #   hooks:
   #     - id: shellcheck
-
   - repo: local
     hooks:
       - id: convert-yml-to-yaml

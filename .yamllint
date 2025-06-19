@@ -1,14 +1,12 @@
 ---
 extends: default
-
 rules:
   line-length: disable
   # truthy: disable
   document-start:
     level: error
-
 ignore:
-  - 'templates/'
+  - templates/
   - '*/templates/'
   - '**/templates/'
   - '**/templates/*'
