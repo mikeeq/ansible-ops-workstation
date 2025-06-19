@@ -27,19 +27,19 @@ repos:
           - file
           - yaml
         # exclude: '(^|/)templates/.*\.ya?ml$'
-  - repo: https://github.com/lyz-code/yamlfix
-    rev: 1.16.1
-    hooks:
-      - id: yamlfix
-        name: yamlfix
-        entry: yamlfix
-        language: python
-        language_version: python3
-        types:
-          - yaml
-        exclude: (^|/)templates/.*\.ya?ml$
-        args:
-          - -c .yamlfix.toml
+  # - repo: https://github.com/lyz-code/yamlfix
+  #   rev: 1.16.1
+  #   hooks:
+  #     - id: yamlfix
+  #       name: yamlfix
+  #       entry: yamlfix
+  #       language: python
+  #       language_version: python3
+  #       types:
+  #         - yaml
+  #       exclude: (^|/)templates/.*\.ya?ml$
+  #       args:
+  #         - -c .yamlfix.toml
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.27.2
     hooks:
