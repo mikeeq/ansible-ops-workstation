@@ -9,7 +9,7 @@
 - name: Enable RDP
   become: true
   become_user: "{{ user_name }}"
-  dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/remote-desktop/rdp/enable"
     value: "true"
     state: present
@@ -17,7 +17,7 @@
 - name: Choose screen-share-mode
   become: true
   become_user: "{{ user_name }}"
-  dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/remote-desktop/rdp/screen-share-mode"
     value: "'{{ gnome_rd_type }}'"
     state: present
@@ -25,7 +25,7 @@
 - name: Choose view-only
   become: true
   become_user: "{{ user_name }}"
-  dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/remote-desktop/rdp/view-only"
     value: "false"
     state: present
@@ -75,7 +75,7 @@
 - name: Generate a Self Signed OpenSSL certificate
   become: true
   become_user: "{{ user_name }}"
-  openssl_certificate:
+  community.crypto.x509_certificate:
     path: ~/.config/remote-desktop/tls.crt
     privatekey_path: ~/.config/remote-desktop/tls.key
     csr_path: ~/.config/remote-desktop/tls.csr
@@ -147,7 +147,7 @@
 - name: RDP TLS cert path
   become: true
   become_user: "{{ user_name }}"
-  dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/remote-desktop/rdp/tls-cert"
     value: "'/home/{{ user_name }}/.config/remote-desktop/tls.crt'"
     state: present
@@ -155,7 +155,7 @@
 - name: RDP TLS key path
   become: true
   become_user: "{{ user_name }}"
-  dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/remote-desktop/rdp/tls-key"
     value: "'/home/{{ user_name }}/.config/remote-desktop/tls.key'"
     state: present

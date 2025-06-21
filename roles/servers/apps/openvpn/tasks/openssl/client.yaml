@@ -5,11 +5,11 @@
     state: directory
 
 - name: Generating CLIENT private key
-  openssl_privatekey:
+  community.crypto.openssl_privatekey:
     path: "{{ openvpn_client_cert_path }}/{{ item }}/client.pem"
 
 - name: Generating CLIENT CSR
-  openssl_csr:
+  community.crypto.openssl_csr:
     path: "{{ openvpn_client_cert_path }}/{{ item }}/client.csr"
     privatekey_path: "{{ openvpn_client_cert_path }}/{{ item }}/client.pem"
     basic_constraints_critical: true

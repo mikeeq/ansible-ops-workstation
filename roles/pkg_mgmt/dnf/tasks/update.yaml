@@ -1,6 +1,6 @@
 ---
 - name: "[DNF] Update all packages"
-  dnf5:
+  ansible.builtin.dnf5:
     name: "*"
     state: latest
     update_cache: true

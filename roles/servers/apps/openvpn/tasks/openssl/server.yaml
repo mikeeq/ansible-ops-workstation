@@ -5,11 +5,11 @@
     state: directory
 
 - name: Generating SERVER private key
-  openssl_privatekey:
+  community.crypto.openssl_privatekey:
     path: "{{ openvpn_server_cert_path }}/server.pem"
 
 - name: Generating SERVER CSR
-  openssl_csr:
+  community.crypto.openssl_csr:
     path: "{{ openvpn_server_cert_path }}/server.csr"
     privatekey_path: "{{ openvpn_server_cert_path }}/server.pem"
     basic_constraints_critical: true
@@ -25,7 +25,7 @@
     common_name: "{{ openvpn_certs_common_name }}"
 
 - name: Generate SERVER certificate
-  openssl_certificate:
+  community.crypto.openssl_certificate:
     path: "{{ openvpn_server_cert_path }}/server.crt"
     privatekey_path: "{{ openvpn_server_cert_path }}/server.pem"
     csr_path: "{{ openvpn_server_cert_path }}/server.csr"

@@ -1,13 +1,13 @@
 ---
 - name: Generate dhparam
-  openssl_dhparam:
+  community.crypto.openssl_dhparam:
     path: "{{ openvpn_ssl_path }}/dhparams.pem"
     # size: 1024
     size: 2048
 
 # - name: Generate dhparam
 #   delegate_to: 127.0.0.1
-#   openssl_dhparam:
+#   community.crypto.openssl_dhparam:
 #     path: "/tmp/dhparams.pem"
 
 # - name: Copy dhparam

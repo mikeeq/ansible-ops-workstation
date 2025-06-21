@@ -3,7 +3,7 @@
 - ansible.builtin.import_tasks: repos.yaml
 
 - name: "[DNF] Install Apps"
-  dnf5:
+  ansible.builtin.dnf5:
     name: "{{ item }}"
     state: present
   with_items:

@@ -1,6 +1,6 @@
 ---
 - name: Install flatpak apps
-  flatpak:
+  community.general.flatpak:
     name: "{{ item.name }}"
     state: present
     remote: "{{ item.remote }}"

@@ -72,7 +72,7 @@
 
     # TODO: Fix reboot on Clevo
     - name: Reboot if required
-      reboot:
+      ansible.builtin.reboot:
       when:
         - reboot_required_file.stat.exists == true
         - inventory_hostname != "mikeeClevo"

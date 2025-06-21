@@ -1,0 +1,8 @@
+---
+collections:
+  # https://github.com/ansible-collections/community.general/releases
+  - name: community.general
+    version: 11.0.0
+  # https://github.com/ansible-collections/community.crypto/releases
+  - name: community.crypto
+    version: 2.26.3
