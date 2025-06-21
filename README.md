@@ -52,7 +52,7 @@
   </p>
 </p>
 
-[![CI](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yml/badge.svg)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yml)
+[![CI](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml/badge.svg)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml)
 
 [![CircleCI](https://circleci.com/gh/mikeeq/ansible-ops-workstation.svg?style=svg)](https://circleci.com/gh/mikeeq/ansible-ops-workstation)
 
@@ -129,17 +129,17 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-3. Change `user_name` in `playbooks/group_vars/all.yml` to your Fedora username and run Ansible
+3. Change `user_name` in `playbooks/group_vars/all.yaml` to your Fedora username and run Ansible
 
    ```bash
    # Go to repository directory
    cd ansible-ops-workstation/playbooks
 
-   # Edit playbooks/group_vars/all.yml, change user_name
-   vi group_vars/all.yml
+   # Edit playbooks/group_vars/all.yaml, change user_name
+   vi group_vars/all.yaml
 
    # Run Ansible
-   ansible-playbook -i ../inventory/hosts.yml fedora.yml -K
+   ansible-playbook -i ../inventory/hosts.yaml fedora.yaml -K
    ```
 
 4. Reboot your machine to apply all changes
@@ -201,17 +201,17 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-5. Change `user_name` in `playbooks/group_vars/all.yml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yml#L2)) and run Ansible
+5. Change `user_name` in `playbooks/group_vars/all.yaml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L2)) and run Ansible
 
    ```bash
    # Go to repository directory
    cd ansible-ops-workstation/playbooks
 
-   # Edit playbooks/group_vars/all.yml, change user_name
-   vi group_vars/all.yml
+   # Edit playbooks/group_vars/all.yaml, change user_name
+   vi group_vars/all.yaml
 
    # Run Ansible
-   ansible-playbook -i ../inventory/hosts.yml wsl-ubuntu.yml -K
+   ansible-playbook -i ../inventory/hosts.yaml wsl-ubuntu.yaml -K
    ```
 
 6. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
@@ -224,7 +224,7 @@ Contributions are what make the open source community such an amazing place to b
 
    - and paste it here - `C:/Users/${WINDOWS_USER_NAME}/AppData/Roaming/Code/User/settings.json`
 
-9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
+9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
 
    ```bash
    code --install-extension ${EXTENSION_NAME}
@@ -597,6 +597,16 @@ echo "r" > /sys/class/drm/card1/device/pp_od_clk_voltage
 
 23. Fedora update/upgrade fails
 
+```
+sudo dnf system-upgrade log --number=-1
+
+Mar 11 00:02:38 spud dnf-3[3922]: error: Verifying a signature using certificate E8F23996F23218640CB44CBE75CF5AC418B8E74C (Fedora (39) <fedora-39-primary@fedoraproject.org>):
+Mar 11 00:02:38 spud dnf-3[3922]:   Signature bbe9 created at Thu Mar 14 23:19:58 2024 invalid: signature is not alive
+Mar 11 00:02:38 spud dnf-3[3922]:       because: Not live until 2024-03-14T23:14:58Z
+
+sudo touch /usr/lib/clock-epoch
+```
+
 24. VScode in wayland
 
 ```
@@ -622,7 +632,7 @@ mdadm --stop /dev/md12[567]
 # reassemble
 mdadm --assemble --scan --force -v
 
-cat /proc/mdstattak
+cat /proc/mdstat
 ```
 
 27. Image to text
@@ -630,6 +640,13 @@ cat /proc/mdstattak
 ```
 dnf install tesseract
 tesseract Screenshot\ From\ 2025-05-05\ 11-50-36.png test.txt
+```
+
+28. Azure DevOps HTTP auth
+
+```
+export accessToken=$(az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv)
+alias git="git -c http.extraheader=\"AUTHORIZATION: bearer $accessToken\""
 ```
 
 <!-- LICENSE -->

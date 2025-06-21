@@ -1,3 +1,0 @@
----
-# Vagrant is not available for arm64 linux.
-- include_tasks: install.yml

@@ -15,7 +15,7 @@
       minutes: 0
       seconds: {{ i.inching_seconds | default(0) }}
       milliseconds: 200
-  - service: switch.turn_off
+  - ansible.builtin.service: switch.turn_off
     data: {}
     target:
       entity_id: {{ i.entity_id }}

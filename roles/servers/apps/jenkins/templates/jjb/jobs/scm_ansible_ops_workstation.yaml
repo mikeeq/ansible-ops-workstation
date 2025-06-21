@@ -1,0 +1,13 @@
+---
+- scm:
+    name: ansible_ops_workstation
+    scm:
+      - ansible.builtin.git:
+          url: git@github.com:mikeeq/ansible-ops-workstation.git
+          basedir: ansible_ops_workstation
+          branches:
+            - '*/$BRANCH_ANSIBLE_OPS_WORKSTATION'
+          skip-tag: true
+          wipe-workspace: true
+          browser: githubweb
+          browser-url: https://github.com/mikeeq/ansible-ops-workstation

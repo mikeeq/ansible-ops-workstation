@@ -1,7 +1,0 @@
----
-- import_tasks: deps.yml
-# Unstable...
-# - import_tasks: camera.yml
-- import_tasks: keyboard.yml
-- import_tasks: dracut.yml
-- import_tasks: suspend.yml

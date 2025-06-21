@@ -1,0 +1,37 @@
+---
+# dnf install libxslt-devel libxml2-devel libvirt-devel libguestfs-tools-c ruby-devel gcc
+# dnf -y install qemu libvirt libvirt-devel ruby-devel gcc qemu-kvm
+- name: DNF install qemu-libvirt
+  ansible.builtin.dnf:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - bridge-utils
+      - libvirt-client
+      # - libvirt-python
+      - libvirt-devel
+      - libvirt
+      - qemu
+      - qemu-kvm
+      - qemu-img
+      - ruby-devel
+      - gcc
+      - libxslt-devel
+      - libxml2-devel
+      - libguestfs-tools-c
+      - virt-manager
+      - virt-install
+      - virt-viewer
+      - 'cockpit*'
+
+- name: Add user to libvirt group
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    groups: libvirt
+    append: true
+
+- name: Enable service libvirtd
+  ansible.builtin.systemd:
+    name: libvirtd
+    enabled: true

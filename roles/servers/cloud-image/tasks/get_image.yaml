@@ -1,0 +1,9 @@
+---
+- name: Download centos image
+  ansible.builtin.get_url:
+    url: "{{ centos_qcow2_url }}"
+    dest: "{{ image_path }}"
+    mode: "0640"
+
+- name: Download deps
+  ansible.builtin.shell: yum update -y; yum install -y libvirt libguestfs-tools virt-manager; systemctl start libvirtd;

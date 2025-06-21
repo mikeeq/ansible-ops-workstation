@@ -1,0 +1,23 @@
+---
+- name: Install openvpn
+  ansible.builtin.dnf:
+    name: "openvpn"
+    state: present
+
+- name: Configure ovpn client files
+  ansible.builtin.template:
+    src: "{{ ovpn_client_templates_path }}/{{ item.src }}"
+    dest: "/etc/openvpn/client/{{ item.dest }}"
+    mode: "0664"
+    backup: true
+  loop:
+    - src: client.ovpn
+      dest: client.conf
+    - src: pass.txt
+      dest: pass.txt
+
+- name: Enable service openvpn-client@client.service
+  ansible.builtin.systemd:
+    name: openvpn-client@client.service
+    enabled: true
+    state: started

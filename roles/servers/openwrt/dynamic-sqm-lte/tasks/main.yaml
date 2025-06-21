@@ -1,0 +1,63 @@
+---
+# https://github.com/lynxthecat/cake-autorate
+- name: Install dependencies
+  ansible.builtin.package:
+    name: "{{ sqm_opkgs }}"
+    state: present
+  vars:
+    sqm_opkgs:
+      - bash
+      - fping
+      - iputils-ping
+      - luci-app-sqm
+
+# TODO: Add update mechanism
+# cat cake-autorate/cake-autorate.sh | grep -i 'version=' | cut -d'"' -f2 | awk '{print $1}'
+- name: Install cake-autorate
+  ansible.builtin.shell: |
+    wget -O /tmp/cake-autorate_setup.sh https://raw.githubusercontent.com/lynxthecat/CAKE-autorate/master/setup.sh
+    sh /tmp/cake-autorate_setup.sh
+  args:
+    creates: /root/cake-autorate/cake-autorate.sh
+
+- name: Configure dynamic SQM config
+  ansible.builtin.template:
+    src: "cake-autorate_config.sh"
+    dest: "/root/cake-autorate/cake-autorate_config.primary.sh"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: Set vars to enable SQM
+  ansible.builtin.set_fact:
+    cake_service: "start"
+    sqm_enabled: "1"
+  when: dynamic_sqm_enabled == "true"
+
+- name: Set vars to disable SQM
+  ansible.builtin.set_fact:
+    cake_service: "stop"
+    sqm_enabled: "0"
+  when: dynamic_sqm_enabled == "false"
+
+- name: Change config SQM
+  ansible.builtin.lineinfile:
+    regexp: 'option\senabled'
+    # \s{8}option\senabled\s.\d.
+    line: "        option enabled '{{ sqm_enabled }}'"
+    path: /etc/config/sqm
+  register: sqm_config
+
+- name: Restart SQM service
+  ansible.builtin.shell: service sqm restart
+  when: sqm_config.changed
+
+- name: Check Dynamic SQM service status
+  ansible.builtin.shell: service cake-autorate status
+  register: dynamic_sqm_status
+  changed_when: false
+  failed_when: false
+
+- name: "Change Dynamic SQM ansible.builtin.service: {{ cake_service }}"
+  ansible.builtin.shell: service cake-autorate {{ cake_service }}
+  when: (dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (dynamic_sqm_status.stdout == "inactive" and cake_service == "start")

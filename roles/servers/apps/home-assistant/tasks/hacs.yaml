@@ -1,0 +1,5 @@
+---
+# custom_components/hacs/
+- name: Install HACS
+  ansible.builtin.shell: |
+    docker-compose exec homeassistant /bin/bash -c "wget -O - https://get.hacs.xyz | bash -"

@@ -1,0 +1,100 @@
+---
+- job:
+    name: Huawei LTE band 800+1800+2100+2600
+    project-type: pipeline
+    sandbox: true
+    # triggers:
+    #   - timed: '0 23 * * *'
+    parameters:
+      - string:
+          name: "BRANCH_ANSIBLE_OPS_WORKSTATION"
+          default: "main"
+          trim: true
+          description: "Branch name repo: ansible-ops-workstation"
+      - string:
+          name: "BRANCH_ANSIBLE_OPS_PRIVATE"
+          default: "main"
+          trim: true
+          description: "Branch name repo: ansible-ops-private"
+      - bool:
+          name: DYNAMIC_SQM_ENABLED
+          default: false
+          description: "Enable dynamic SQM on OpenWRT"
+      - bool:
+          name: LOCAL_REPO_RUN
+          default: false
+          description: "Run from local copy of the repo, disable checkout"
+      - choice:
+          name: HUAWEI_LTE_BAND
+          choices:
+            - "80045"
+            - "80005"
+            - "7FFFFFFFFFFFFFFF"
+            - "5"
+            - "80000"
+            - "4"
+            - "1"
+          description: "LTE Band: 800+1800+2100+2600, 800+1800+2100, all, 1800+2100, 800, 1800, 2100"
+    dsl-yaml: |
+      pipeline:
+        agent:
+          any:
+        options:
+          - ansiColor('xterm')
+          - disableConcurrentBuilds()
+          - skipDefaultCheckout()
+        stages:
+          - stage: "Checkout ansible-ops-workstation"
+            when:
+              expression:
+                - "params.LOCAL_REPO_RUN == false"
+            steps:
+              script:
+                - dir: "'ansible-ops-workstation'"
+                  script:
+                    - >-
+                      git(
+                        url: "git@github.com:mikeeq/ansible-ops-workstation.git",
+                        branch: "$params.BRANCH_ANSIBLE_OPS_WORKSTATION"
+                      )
+          - stage: "Checkout ansible-ops-private"
+            when:
+              expression:
+                - "params.LOCAL_REPO_RUN == false"
+            steps:
+              script:
+                - dir: "'ansible-ops-private'"
+                  script:
+                    - >-
+                      git(
+                        url: "git@github.com:mikeeq/ansible-ops-private.git",
+                        branch: "$params.BRANCH_ANSIBLE_OPS_PRIVATE"
+                      )
+          - stage: "Unlock git-crypt"
+            steps:
+              script:
+                - dir: "'ansible-ops-private'"
+                  script:
+                    - |
+                      sh """#!/bin/bash
+                        id
+                        pwd
+                        ls
+                        git-crypt unlock ~jenkins/secrets/git_crypt_key
+                      """
+          - stage: "Ansible LTE Band set"
+            steps:
+              script:
+                  - |
+                    sh """#!/bin/bash
+                      cd ansible-ops-workstation/playbooks
+                      ansible-playbook -e huawei_lteband=$params.HUAWEI_LTE_BAND -i ../../ansible-ops-private/inventory/hosts.yaml huawei-lte-setband.yaml
+                    """
+          - stage: "Ansible SQM disable"
+            steps:
+              script:
+                  - |
+                    sh """#!/bin/bash
+                      cd ansible-ops-workstation/playbooks
+                      ansible-playbook -e dynamic_sqm_enabled=$params.DYNAMIC_SQM_ENABLED -i ../../ansible-ops-private/inventory/hosts.yaml openwrt-sqm.yaml
+                    """

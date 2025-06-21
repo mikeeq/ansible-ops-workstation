@@ -1,0 +1,18 @@
+---
+- name: Get installed version
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: trivy version | awk '{print $3}' | cut -f2 -d'v'
+  register: installed_trivy_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of trivy:"
+  ansible.builtin.debug:
+    var: installed_trivy_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: trivy_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when: installed_trivy_version.stdout != trivy_version

@@ -1,0 +1,29 @@
+---
+- name: Get installed version
+  ansible.builtin.shell: kubectl version --short --client=true | grep -i client | cut -d'v' -f2
+  register: installed_kubectl_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of kubectl:"
+  ansible.builtin.debug:
+    var: installed_kubectl_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: kubectl_version is not defined
+
+- name: Download kubectl
+  ansible.builtin.get_url:
+    url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/{{ architecture_common_name }}/kubectl"
+    dest: /usr/local/bin/kubectl
+    force: true
+  when: installed_kubectl_version.stdout != kubectl_version
+
+- name: Set permissions kubectl
+  ansible.builtin.file:
+    path: /usr/local/bin/kubectl
+    mode: "0755"
+    owner: root
+    group: root
+
+- ansible.builtin.import_tasks: krew.yaml

@@ -1,0 +1,25 @@
+---
+- name: Directory for dive
+  ansible.builtin.file:
+    path: /tmp/dive
+    state: directory
+
+- name: Download dive binary
+  ansible.builtin.get_url:
+    url: "https://github.com/wagoodman/dive/releases/download/v{{ dive_version }}/dive_{{ dive_version }}_linux_{{ architecture_common_name }}.tar.gz"
+    dest: /tmp/dive/dive.tar.gz
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/dive/dive.tar.gz
+    dest: /tmp/dive
+    remote_src: true
+
+- name: Copy dive
+  ansible.builtin.copy:
+    src: "/tmp/dive/dive"
+    dest: "/usr/local/bin/dive"
+    remote_src: true
+    mode: "0755"
+    owner: root
+    group: root

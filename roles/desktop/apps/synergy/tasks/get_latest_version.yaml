@@ -1,0 +1,17 @@
+---
+- name: Get latest version synergy
+  # ansible.builtin.shell: basename $(curl -Is https://github.com/symless/synergy-core/releases/latest | grep -i 'location:' | awk '{print $2}')
+  # ansible.builtin.shell: curl -Ls https://github.com/symless/synergy-core/releases | grep -i 'a href' | grep -i tag | grep -i releases | cut -d">" -f3 | cut -d"<" -f1 | head -n1
+  ansible.builtin.shell: |
+    tag=$(curl -Ls https://github.com/symless/synergy-core/releases | grep -i 'a href' | grep -i tag | grep -i releases | cut -d">" -f3 | cut -d"<" -f1 | head -n1)
+    basename $(curl -Ls https://github.com/symless/synergy-core/tree/${tag} | grep -i 400 | grep -i tree | grep -i href | cut -d'"' -f6) | cut -c1-8
+  register: version
+  changed_when: false
+
+- name: "Latest version of synergy:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of synergy"
+  ansible.builtin.set_fact:
+    synergy_version: "{{ version.stdout }}"

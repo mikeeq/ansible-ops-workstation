@@ -1,0 +1,18 @@
+---
+- name: Get installed version of ctop
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: ctop -v | cut -d' ' -f3 | cut -d',' -f1
+  register: installed_ctop_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of ctop:"
+  ansible.builtin.debug:
+    var: installed_ctop_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: ctop_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when: installed_ctop_version.stdout != ctop_version

@@ -1,0 +1,13 @@
+---
+- name: Get latest version of x11docker
+  ansible.builtin.shell: curl -Is https://github.com/mviereck/x11docker/releases/latest | grep -i 'location:' | cut -f8 -d'/' | cut -f1 -d'"' | cut -d'v' -f2
+  register: version
+  changed_when: false
+
+- name: "Latest version of x11docker:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of x11docker"
+  ansible.builtin.set_fact:
+    x11docker_version: "{{ version.stdout }}"

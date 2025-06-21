@@ -1,0 +1,7 @@
+---
+- name: Allow OpenVPN to listen on custom TCP port
+  community.general.seport:
+    ports: "{{ openvpn_server_port }}"
+    proto: tcp
+    setype: openvpn_port_t
+    state: present

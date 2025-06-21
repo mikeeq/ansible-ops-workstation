@@ -1,0 +1,17 @@
+---
+- name: Set record variables
+  ansible.builtin.set_fact:
+    record_full: "{{ item.value['dns-01'].record }}"
+    record_without_acme: "{{ item.value['dns-01'].record | regex_replace('_acme-challenge.') }}"
+    record_without_domain: "{{ item.value['dns-01'].record | regex_replace('.' + domain_name) }}"
+
+# TODO: add caa record
+# name: "{{ record_without_acme }}"
+# content: "0 issue 'letsencrypt.org'"
+
+- name: "Create LE challenge TXT record - {{ record_state }} - {{ record_full }}"
+  ansible.builtin.lineinfile:
+    path: "/opt/coredns/config/{{ coredns_zone_filename }}"
+    regexp: "^{{ record_without_domain }}"
+    state: "{{ record_state }}"
+    line: "{{ record_without_domain }} IN TXT {{ item.value['dns-01'].resource_value }}"

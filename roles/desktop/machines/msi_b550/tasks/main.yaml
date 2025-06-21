@@ -1,0 +1,49 @@
+---
+# https://gitlab.com/coolercontrol/coolercontrol
+- name: "Install coolercontrol deps"
+  ansible.builtin.dnf:
+    name: "{{ deps }}"
+    state: present
+  vars:
+    deps:
+      - make
+      - automake
+      - gcc
+      - gcc-c++
+      - kernel-devel
+      - kernel-headers
+      - dkms
+
+- name: Install coolercontrol repo
+  ansible.builtin.shell: |
+    curl -1sLf 'https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/setup.rpm.sh' | sudo -E bash
+  args:
+    creates: /etc/yum.repos.d/coolercontrol-coolercontrol.repo
+
+- name: "Install coolercontrol"
+  ansible.builtin.dnf:
+    name: "coolercontrol"
+    state: present
+    update_cache: true
+
+- name: Enable and start coolercontrold
+  ansible.builtin.service:
+    name: coolercontrold
+    state: started
+    enabled: true
+
+# Tested on MSI B550 Tomahawk
+# https://github.com/Fred78290/nct6687d
+- name: "Install b550 hwmon kernel module"
+  ansible.builtin.git:
+    repo: 'https://github.com/Fred78290/nct6687d'
+    dest: "/opt/nct6687d"
+    update: true
+  register: update_nct6687d
+
+- name: Install nct6687d kernel module using dkms
+  ansible.builtin.shell: |
+    make dkms/install
+  args:
+    chdir: /opt/nct6687d
+  when: update_nct6687d.changed

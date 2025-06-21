@@ -1,0 +1,87 @@
+---
+- name: Old interface names
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --edit /etc/default/grub:'s/GRUB_CMDLINE_LINUX="console=tty0 crashkernel=auto console=ttyS0,115200"/GRUB_CMDLINE_LINUX="console=tty0 crashkernel={{ kdump_mem }} console=ttyS0,115200 net.ifnames=0 biosdevname=0"/g'
+
+- name: Change boot grub config
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --run-command 'grub2-mkconfig -o /boot/grub2/grub.cfg'
+
+- name: Disable selinux
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --edit /etc/selinux/config:'s/SELINUX=enforcing/SELINUX=disabled/g'
+
+- name: Set DHCP and ONBOOT eth0
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --run-command 'echo -e "DEVICE=eth0\nONBOOT=true\nBOOTPROTO=dhcp" > /etc/sysconfig/network-scripts/ifcfg-eth0'
+
+- name: Enable SSH password auth
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --edit /etc/ssh/sshd_config:'s/#PasswordAuthentication true/PasswordAuthentication true/g'
+
+- name: Set root password
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --root-password password:{{ image_root_password }}
+
+# - name: Disable firewalld
+#   ansible.builtin.shell: |
+#     virt-customize \
+#     -a {{ image_path }} \
+#     --run-command 'systemctl disable firewalld'
+
+# --run-command 'systemctl disable firewalld && systemctl mask firewalld'
+
+- name: Remove cloud-init
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --run-command 'yum remove -y cloud-init'
+
+- name: Install basic tools
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --run-command 'yum update -y && yum install -y iptables-services net-tools vim'
+
+- name: Enable iptables
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --run-command 'systemctl enable iptables'
+
+- name: Disable kdump
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --run-command 'systemctl disable kdump'
+
+- name: Clear login history and root history
+  ansible.builtin.shell: |
+    virt-customize \
+    -a {{ image_path }} \
+    --run-command 'echo > /var/log/wtmp ; echo > /var/log/btmp ; echo > /var/log/lastlog ; echo > /root/.bash_history '
+
+# for int in $(netstat -i | grep eth | awk '{print $1}'); do echo -e "DEVICE=$int\nONBOOT=true\nBOOTPROTO=dhcp" > /etc/sysconfig/network-scripts/ifcfg-$int ; done
+- name: Copy image
+  ansible.builtin.copy:
+    src: "{{ image_path }}"
+    dest: "{{ base_image_path }}"
+    remote_src: true
+
+- name: Copy image with date
+  ansible.builtin.copy:
+    src: "{{ image_path }}"
+    dest: "{{ base_image_path }}.{{ ansible_date_time.date }}"
+    remote_src: true

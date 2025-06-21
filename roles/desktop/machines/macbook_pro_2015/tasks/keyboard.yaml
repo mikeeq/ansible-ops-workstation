@@ -1,0 +1,33 @@
+---
+- name: Download keyboard module
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.git:
+    repo: 'https://github.com/free5lot/hid-apple-patched.git'
+    dest: "{{ git_modules_path }}/hid-apple-patched"
+
+- name: DKMS add
+  ansible.builtin.shell: dkms add .
+  args:
+    chdir: "{{ git_modules_path }}/hid-apple-patched"
+    creates: /usr/src/hid-apple-1.0
+  register: camera_add
+
+- name: DKMS build
+  ansible.builtin.shell: dkms build hid-apple/1.0
+  args:
+    chdir: "{{ git_modules_path }}/hid-apple-patched"
+  when: camera_add.changed
+
+- name: DKMS install
+  ansible.builtin.shell: dkms install hid-apple/1.0
+  args:
+    chdir: "{{ git_modules_path }}/hid-apple-patched"
+  when: camera_add.changed
+
+- name: copy hid_apple config
+  ansible.builtin.copy:
+    src: hid_apple.conf
+    dest: /etc/modprobe.d/hid_apple.conf
+
+# sudo modprobe -r hid_apple; sudo modprobe hid_apple

@@ -1,0 +1,26 @@
+---
+- name: Directory for VScode config
+  ansible.builtin.file:
+    path: "~{{ user_name }}/.config/Code/User"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: Install vscode user config
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "~/.config/Code/User/{{ item }}"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: "0664"
+    backup: true
+  loop:
+    - settings.json
+    - keybindings.json
+
+- name: Enable better file watch in VScode by changing amount of concurrent open files in kernel params
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.conf
+    line: 'fs.inotify.max_user_watches=524288'

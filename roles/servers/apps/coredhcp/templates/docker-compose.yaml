@@ -1,0 +1,27 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+---
+version: '3.8'
+services:
+  coredhcp:
+    # image: coredhcp/coredhcp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: coredhcp
+    restart: always # other option: always - if you want persistent through host reboots
+    privileged: true
+    expose:
+      - 67:67
+      - 547:547
+    ports:
+      - 67:67
+      - 547:547
+    volumes:
+      - ./config:/etc/coredhcp/
+    ansible.builtin.command: ["--conf", "/etc/coredhcp/config.yaml"]
+    # ansible.builtin.command: bash
+    # entrypoint: []
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "250m"

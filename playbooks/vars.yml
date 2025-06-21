@@ -1,7 +1,0 @@
----
-- name: Include architecture specifc group_vars
-  hosts:
-    - "{{ hosts_to_deploy | default('local') }}"
-  become: true
-  pre_tasks:
-    - include_vars: group_vars/{{ ansible_architecture }}.yml

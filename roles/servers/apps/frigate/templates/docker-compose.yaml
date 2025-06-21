@@ -1,0 +1,40 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+# https://docs.frigate.video/installation
+# blue iris + deepstack, agentdvr
+---
+version: "3.9"
+services:
+  frigate:
+    container_name: frigate
+    privileged: true
+    network_mode: host
+    restart: always
+    image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    shm_size: "256mb"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config.yaml:/config/config.yaml
+      - ./frigate:/media/frigate
+      - ./frigatedb:/db
+      - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+    ports:
+      - "5000:5000"
+      - "1935:1935" #RTMP feeds
+      - "8555:8555/tcp" # WebRTC over tcp
+      - "8555:8555/udp" # WebRTC over udp
+    environment:
+      # - YOLO_MODELS=yolov7-320,yolov7x-640
+      - YOLO_MODELS=yolov7-320
+      - TRT_MODEL_PREP_DEVICE=0
+      # - USE_FP16=false
+      # - FRIGATE_RTSP_PASSWORD="pass"

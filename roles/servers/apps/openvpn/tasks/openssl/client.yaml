@@ -1,0 +1,36 @@
+---
+- name: Create directory for CLIENT certs
+  ansible.builtin.file:
+    path: "{{ openvpn_client_cert_path }}/{{ item }}"
+    state: directory
+
+- name: Generating CLIENT private key
+  community.crypto.openssl_privatekey:
+    path: "{{ openvpn_client_cert_path }}/{{ item }}/client.pem"
+
+- name: Generating CLIENT CSR
+  community.crypto.openssl_csr:
+    path: "{{ openvpn_client_cert_path }}/{{ item }}/client.csr"
+    privatekey_path: "{{ openvpn_client_cert_path }}/{{ item }}/client.pem"
+    basic_constraints_critical: true
+    basic_constraints: CA:FALSE
+    key_usage_critical: true
+    key_usage:
+      - nonRepudiation
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage_critical: true
+    extended_key_usage: clientAuth
+    common_name: "{{ openvpn_certs_common_name }}"
+    subject_alt_name:
+      - "DNS: {{ item }}.{{ openvpn_certs_common_name }}"
+
+
+- name: Generate CLIENT certificate
+  community.crypto.x509_certificate:
+    path: "{{ openvpn_client_cert_path }}/{{ item }}/client.crt"
+    privatekey_path: "{{ openvpn_client_cert_path }}/{{ item }}/client.pem"
+    csr_path: "{{ openvpn_client_cert_path }}/{{ item }}/client.csr"
+    provider: ownca
+    ownca_path: "{{ openvpn_ca_cert_path }}/ca.crt"
+    ownca_privatekey_path: "{{ openvpn_ca_cert_path }}/ca.pem"

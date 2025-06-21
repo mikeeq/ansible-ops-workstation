@@ -1,0 +1,214 @@
+---
+# Some graphical issues in firefox with black theme
+# - name: Black gnome theme
+#   become: true
+#   become_user: "{{ user_name }}"
+#   community.general.dconf:
+#     key: "/org/gnome/desktop/interface/gtk-theme"
+#     value: "'Adwaita-dark'"
+#     state: present
+
+- name: Install dnf deps
+  ansible.builtin.dnf:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - sudo
+      - gcc
+      - redhat-rpm-config
+      - python3-devel
+      - git
+      - dconf
+      - dbus-daemon
+
+- name: Install python deps
+  ansible.builtin.pip:
+    name: psutil
+    state: present
+
+- name: Screenshot
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    # org.gnome.shell.keybindings screenshot ['<Shift>Print']
+    key: "/org/gnome/shell/keybindings/screenshot"
+    value: "['<Primary><Shift>numbersign']"
+    state: present
+
+- name: Screenshot area
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    # org.gnome.shell.keybindings show-screenshot-ui ['Print']
+    key: "/org/gnome/shell/keybindings/show-screenshot-ui"
+    value: "['<Primary><Shift>4']"
+    state: present
+
+- name: Screenshot window
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    # org.gnome.shell.keybindings screenshot-window ['<Alt>Print']
+    key: "/org/gnome/shell/keybindings/screenshot-window"
+    value: "['<Primary><Shift>percent']"
+    state: present
+
+- name: favorite-apps
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/favorite-apps"
+    value: "['org.mozilla.firefox.desktop', 'google-chrome.desktop', 'terminator.desktop', 'code.desktop', 'com.discordapp.Discord.desktop', 'com.slack.Slack.desktop', 'keeweb.desktop', 'com.spotify.Client.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'org.gnome.tweaks.desktop', 'org.gnome.Settings.desktop']"
+    state: present
+
+# Alternate-tab is deprecated in Fedora 30
+# Use built-in feature -  https://blogs.gnome.org/fmuellner/2018/10/11/the-future-of-alternatetab-and-why-you-need-not-worry/
+- name: Switch-windows alt-tab
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/keybindings/switch-windows"
+    value: "['<Super>Tab', '<Alt>Tab']"
+    state: present
+
+- name: Switch-windows-backward alt-shift-tab
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/keybindings/switch-windows-backward"
+    value: "['<Shift><Super>Tab', '<Shift><Alt>Tab']"
+    state: present
+
+- name: Switch-applications disable
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/keybindings/switch-applications"
+    value: "['']"
+    state: present
+
+- name: Switch-applications-backward disable
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward"
+    value: "['']"
+    state: present
+
+# org.gnome.desktop.a11y always-show-universal-access-status true
+- name: Enable universal access
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/a11y/always-show-universal-access-status"
+    value: "true"
+    state: present
+
+- name: enabled-extensions
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/enabled-extensions"
+    value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326', 'gnome-extension-brightness@bruno.englert.gitlab.com', 'sound-output-device-chooser@kgshank.net', 'blur-my-shell@aunetx', 'display-brightness-ddcutil@themightydeity.github.com', 'gsconnect@andyholmes.github.io', 'Vitals@CoreCoding.com']"
+    state: present
+
+# "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326']"
+# value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'cpupower@mko-sl.de', 'gTile@vibou']"
+
+- name: show date
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/clock-show-date"
+    value: "true"
+    state: present
+
+- name: remove emoji shortcut
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/freedesktop/ibus/panel/emoji/hotkey"
+    value: "['']"
+    state: present
+
+- name: remove emoji shortcut fedora31
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/desktop/ibus/panel/emoji/hotkey"
+    value: "['']"
+    state: present
+
+- name: "alt-tab all desktops (workstations)"
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/window-switcher/current-workspace-only"
+    value: "false"
+    state: present
+
+- name: "Disable gnome software allow updates"
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/software/allow-updates"
+    value: "false"
+    state: present
+
+- name: "Disable gnome software download-updates"
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/software/download-updates"
+    value: "false"
+    state: present
+
+- name: "Disable gnome software download-updates-notify"
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/software/download-updates-notify"
+    value: "false"
+    state: present
+
+- name: "Disable gnome main workspace switch only"
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/window-switcher/current-workspace-only"
+    value: "false"
+    state: present
+
+- name: "Disable workspaces only on primary screen"
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/mutter/workspaces-only-on-primary"
+    value: "false"
+    state: present
+
+- name: "Set color-scheme to dark"
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/color-scheme"
+    value: "'prefer-dark'"
+    state: present
+
+
+# - name: "dash-to-dock position"
+#   become: true
+#   become_user: "{{ user_name }}"
+#   community.general.dconf:
+#     key: "/org/gnome/shell/extensions/dash-to-dock/dock-position"
+#     value: "'BOTTOM'"
+#     state: present
+
+# - name: "dash-to-dock preffered primary monitor"
+#   become: true
+#   become_user: "{{ user_name }}"
+#   community.general.dconf:
+#     key: "/org/gnome/shell/extensions/dash-to-dock/preferred-monitor"
+#     value: "0"
+#     state: present

@@ -1,0 +1,13 @@
+---
+- name: Get latest version kubescore
+  ansible.builtin.shell: curl -Is https://github.com/zegl/kube-score/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
+  register: version
+  changed_when: false
+
+- name: "Latest version of kubescore:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of kubescore"
+  ansible.builtin.set_fact:
+    kubescore_version: "{{ version.stdout }}"

@@ -1,0 +1,12 @@
+---
+- name: Adding modules to initramfs
+  ansible.builtin.lineinfile:
+    path: /etc/dracut.conf
+    line: 'add_drivers+="hid_apple"'
+  register: dracut_conf
+
+    # line: 'add_drivers+="hid_apple facetimehd"'
+
+- name: Rebuild initramfs
+  ansible.builtin.shell: dracut -fv
+  when: dracut_conf.changed

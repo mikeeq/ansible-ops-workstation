@@ -1,0 +1,25 @@
+---
+- name: Directory for istioctl
+  ansible.builtin.file:
+    path: /tmp/istioctl
+    state: directory
+
+- name: Download istioctl binary
+  ansible.builtin.get_url:
+    url: "https://github.com/istio/istio/releases/download/{{ istioctl_version }}/istioctl-{{ istioctl_version }}-linux-{{ architecture_common_name }}.tar.gz"
+    dest: /tmp/istioctl/istioctl.tar.gz
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/istioctl/istioctl.tar.gz
+    dest: /tmp/istioctl
+    remote_src: true
+
+- name: Copy istioctl
+  ansible.builtin.copy:
+    src: "/tmp/istioctl/istioctl"
+    dest: "/usr/local/bin/istioctl"
+    remote_src: true
+    mode: "0755"
+    owner: root
+    group: root

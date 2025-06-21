@@ -1,0 +1,3 @@
+---
+# Vagrant is not available for arm64 linux.
+- ansible.builtin.include_tasks: install.yaml

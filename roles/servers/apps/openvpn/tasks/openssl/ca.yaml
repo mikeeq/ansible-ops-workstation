@@ -1,0 +1,29 @@
+---
+- name: Create directory for CA certs
+  ansible.builtin.file:
+    path: "{{ openvpn_ca_cert_path }}"
+    state: directory
+
+- name: Generating CA private key
+  community.crypto.openssl_privatekey:
+    path: "{{ openvpn_ca_cert_path }}/ca.pem"
+
+- name: Generating CA CSR
+  community.crypto.openssl_csr:
+    path: "{{ openvpn_ca_cert_path }}/ca.csr"
+    privatekey_path: "{{ openvpn_ca_cert_path }}/ca.pem"
+    basic_constraints_critical: true
+    basic_constraints: CA:TRUE
+    key_usage_critical: true
+    key_usage:
+      - cRLSign
+      - digitalSignature
+      - keyCertSign
+    common_name: "{{ openvpn_certs_common_name }}"
+
+- name: Generate CA a Self Signed OpenSSL certificate
+  community.crypto.x509_certificate:
+    path: "{{ openvpn_ca_cert_path }}/ca.crt"
+    privatekey_path: "{{ openvpn_ca_cert_path }}/ca.pem"
+    csr_path: "{{ openvpn_ca_cert_path }}/ca.csr"
+    provider: selfsigned

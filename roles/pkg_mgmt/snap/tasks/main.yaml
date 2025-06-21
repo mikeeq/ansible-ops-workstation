@@ -1,0 +1,16 @@
+---
+- name: Snap install
+  ansible.builtin.dnf:
+    name: "snapd"
+    state: present
+
+- name: Snap symlink for classic apps
+  ansible.builtin.shell: ln -s /var/lib/snapd/snap /snap
+  args:
+    creates: /snap
+
+- ansible.builtin.import_tasks: install.yaml
+
+- ansible.builtin.import_tasks: update.yaml
+  tags:
+    - update

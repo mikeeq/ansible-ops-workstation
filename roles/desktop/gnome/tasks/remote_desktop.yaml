@@ -1,0 +1,175 @@
+---
+# https://gitlab.gnome.org/-/snippets/1778#note_1310610
+# https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353
+- name: Install gnome-remote-desktop
+  ansible.builtin.dnf:
+    name: "gnome-remote-desktop"
+    state: present
+
+- name: Enable RDP
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/enable"
+    value: "true"
+    state: present
+
+- name: Choose screen-share-mode
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/screen-share-mode"
+    value: "'{{ gnome_rd_type }}'"
+    state: present
+
+- name: Choose view-only
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/view-only"
+    value: "false"
+    state: present
+
+- name: Add keyring-unlock script
+  ansible.builtin.copy:
+    content: |
+      #!/usr/bin/env bash
+
+      echo >&2 "===]> Info: killall gnome-keyring-daemon..."
+      killall gnome-keyring-daemon
+
+      echo >&2 "===]> Info: Unlocking gnome-keyring..."
+      echo
+      read -rsp "Password: " pass
+      echo -n "$pass" | gnome-keyring-daemon --unlock
+      unset pass
+
+      echo
+      echo >&2 "===]> Info: Restarting gnome-remote-desktop..."
+      systemctl --user restart gnome-remote-desktop
+    dest: /usr/local/bin/keyring-unlock
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Make sure directory for tls cert exists
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.file:
+    path: ~/.config/remote-desktop
+    state: directory
+
+- name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
+  become: true
+  become_user: "{{ user_name }}"
+  community.crypto.openssl_privatekey:
+    path: ~/.config/remote-desktop/tls.key
+
+- name: Generate an OpenSSL Certificate Signing Request
+  become: true
+  become_user: "{{ user_name }}"
+  community.crypto.openssl_csr:
+    path: ~/.config/remote-desktop/tls.csr
+    privatekey_path: ~/.config/remote-desktop/tls.key
+
+- name: Generate a Self Signed OpenSSL certificate
+  become: true
+  become_user: "{{ user_name }}"
+  community.crypto.x509_certificate:
+    path: ~/.config/remote-desktop/tls.crt
+    privatekey_path: ~/.config/remote-desktop/tls.key
+    csr_path: ~/.config/remote-desktop/tls.csr
+    provider: selfsigned
+
+- name: Download grd_rdp_credentials.c
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.get_url:
+    url: https://gitlab.gnome.org/-/snippets/1778/raw/master/grd_rdp_credentials.c
+    dest: "/home/{{ user_name }}/.config/remote-desktop/grd_rdp_credentials.c"
+    mode: "0640"
+  register: grd_rdp_credentials_download
+
+- name: Install dependencies
+  ansible.builtin.package:
+    name: libsecret-devel
+    state: present
+
+- name: Compile RDP credentials script
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: gcc grd_rdp_credentials.c `pkg-config --libs --cflags libsecret-1` -o grd_rdp_credentials
+  args:
+    chdir: ~/.config/remote-desktop
+  when: grd_rdp_credentials_download.changed
+
+- name: Decrypt password
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: openssl enc -aes-256-cbc -pbkdf2 -salt -d -in rdp_credentials -k '{{ rdp_username }}:{{ rdp_password }}'
+  ignore_errors: true
+  changed_when: false
+  args:
+    chdir: ~/.config/remote-desktop
+  register: rdp_current_creds
+
+# - name: Unlock keyring
+#   become: true
+#   become_user: "{{ user_name }}"
+#   ansible.builtin.shell: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock
+#   when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
+
+# - name: Unlock keyring
+#   become: true
+#   become_user: "{{ user_name }}"
+#   ansible.builtin.raw: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock && sleep 30
+#   args:
+#     executable: /bin/bash
+#   when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
+
+# keyring needs to be unlocked for that to work
+- name: Generate RDP credentials
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: ./grd_rdp_credentials {{ rdp_username }} {{ rdp_password }}
+  args:
+    chdir: ~/.config/remote-desktop
+  when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
+
+- name: Encrypt password
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: echo -n 'ok' | openssl enc -aes-256-cbc -pbkdf2 -salt -out rdp_credentials -k '{{ rdp_username }}:{{ rdp_password }}'
+  args:
+    chdir: ~/.config/remote-desktop
+  when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
+
+- name: RDP TLS cert path
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/tls-cert"
+    value: "'/home/{{ user_name }}/.config/remote-desktop/tls.crt'"
+    state: present
+
+- name: RDP TLS key path
+  become: true
+  become_user: "{{ user_name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/remote-desktop/rdp/tls-key"
+    value: "'/home/{{ user_name }}/.config/remote-desktop/tls.key'"
+    state: present
+
+- name: Run gnome-remote-desktop.service
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: gnome-remote-desktop
+    state: started
+    scope: user
+    enabled: true
+  tags:
+    - dont_run_in_docker
+
+# killall -3 gnome-shell

@@ -1,0 +1,28 @@
+# ➜ kubectl plugin list
+# The following compatible plugins are available:
+# /home/mikee/.krew/bin/kubectl-krew
+# /home/mikee/.krew/bin/kubectl-sniff
+---
+- name: Upgrade krew
+  ansible.builtin.include_tasks: krew/update.yaml
+  when: krew_version is not defined
+
+- name: Get installed version
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: ~/.krew/bin/kubectl-krew version | grep GitTag | awk '{print $2}' | cut -d'v' -f2
+  register: installed_krew_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of krew:"
+  ansible.builtin.debug:
+    var: installed_krew_version.stdout
+
+- ansible.builtin.include_tasks: krew/get_latest_version.yaml
+  when: krew_version is not defined
+
+- ansible.builtin.include_tasks: krew/install.yaml
+  when: installed_krew_version.stdout != krew_version
+
+- ansible.builtin.import_tasks: krew/plugins.yaml

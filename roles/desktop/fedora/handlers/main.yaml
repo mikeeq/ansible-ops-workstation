@@ -1,0 +1,3 @@
+---
+- name: save_grub_config
+  ansible.builtin.shell: grub2-mkconfig -o /boot/grub2/grub.cfg

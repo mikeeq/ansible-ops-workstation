@@ -1,5 +1,0 @@
----
-- name: restart_docker_compose
-  command: docker-compose restart
-  args:
-    chdir: "{{ install_path }}"

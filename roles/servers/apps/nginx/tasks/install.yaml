@@ -1,0 +1,42 @@
+---
+- name: Ensure install dir exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}"
+    - "{{ install_path }}/config"
+
+- name: Configure docker-compose file
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/{{ item }}"
+    mode: "0664"
+    backup: true
+  loop:
+    - docker-compose.yaml
+    - config/nginx.conf
+    - config/backend-not-found.html
+  register: config_flag
+
+- ansible.builtin.import_tasks: config.yaml
+
+- name: Pull Docker image using docker-compose
+  ansible.builtin.command: docker-compose pull
+  changed_when: pull_result.stderr_lines | length > 2
+  register: pull_result
+  args:
+    chdir: "{{ install_path }}"
+
+- name: Run using docker-compose
+  ansible.builtin.shell: docker-compose up -d 2>&1
+  changed_when: '"Started" in up_result.stdout'
+  register: up_result
+  args:
+    chdir: "{{ install_path }}"
+
+- name: Restart using docker-compose
+  ansible.builtin.command: docker-compose restart
+  args:
+    chdir: "{{ install_path }}"
+  when: cert_flag.changed or config_flag.changed

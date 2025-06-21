@@ -1,0 +1,16 @@
+---
+- name: Copy turbo_boost_off systemd unit
+  ansible.builtin.copy:
+    src: "turbo_boost_off.service"
+    dest: "/etc/systemd/system/turbo-boost-off.service"
+    mode: "0600"
+
+- name: Force systemd to reload configs
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Enable and start turbo-boost-off
+  ansible.builtin.service:
+    name: turbo-boost-off.service
+    enabled: true
+    state: started

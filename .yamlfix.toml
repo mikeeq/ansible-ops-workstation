@@ -1,0 +1,10 @@
+allow_duplicate_keys = false
+line_length = 300
+none_representation = ""
+sequence_style = "block_style"
+section_whitelines = 1
+comments_whitelines = 1
+whitelines = 1
+quote_representation = '"'
+# quote_basic_values = true
+preserve_quotes = true

@@ -1,0 +1,13 @@
+---
+- name: Create cloud-init config
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ cloud_init_src_dir }}/{{ vm.name }}/{{ item.dest }}"
+  loop: "{{ cloud_init_config_files }}"
+
+- name: Create CD-ROM ISO with cloud-init config
+  ansible.builtin.shell: |
+    genisoimage -output {{ vm_cloud_init_path }} \
+      -volid cidata \
+      -joliet \
+      -r {% for item in cloud_init_config_files %} {{ cloud_init_src_dir }}/{{ vm.name }}/{{ item.dest }} {% endfor %} &>> "{{ cloud_init_src_dir }}/{{ vm.name }}/logs"

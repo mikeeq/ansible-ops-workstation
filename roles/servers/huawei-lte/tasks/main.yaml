@@ -1,0 +1,22 @@
+# https://kierkowski.com/huawei-e8278-e3372-zabawa-z-api-i-zmiana-czestotliwosci-oraz-trybu-pracy/
+# https://eko.one.pl/forum/viewtopic.php?id=14653
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/uri_module.html
+# https://github.com/HSPDev/Huawei-E5180-API
+# http://forum.jdtech.pl/Watek-hilink-api-dla-urzadzen-huawei
+---
+- name: Install dependencies
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    state: present
+  ignore_errors: true
+  loop:
+    - xmltodict
+
+- ansible.builtin.import_tasks: login.yaml
+
+# - ansible.builtin.import_tasks: get-net-mode.yaml
+# - ansible.builtin.import_tasks: device-status.yaml
+# - ansible.builtin.import_tasks: traffic-status.yaml
+
+- ansible.builtin.include_tasks: "{{ huawei_dynamic_task }}"
+  when: huawei_dynamic_task is defined

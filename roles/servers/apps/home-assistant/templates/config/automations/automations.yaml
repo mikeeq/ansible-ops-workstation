@@ -9,7 +9,7 @@
       to: "on"
   condition: []
   action:
-    - service: switch.toggle
+    - ansible.builtin.service: switch.toggle
       metadata: {}
       data: {}
       target:
@@ -26,7 +26,7 @@
 #     to: Opened
 #   condition: []
 #   action:
-#   - service: notify.mobile_app_oneplus8t_miki
+#   - ansible.builtin.service: notify.mobile_app_oneplus8t_miki
 #     data:
 #       message: Brama Garazowa Otwarta!
 #   mode: single
@@ -61,7 +61,7 @@
 #     device_id: c59b48db54c2d56c6cfcf49a0e98bdf3
 #     entity_id: switch.taras_swiatlo
 #     domain: switch
-#   - service: light.turn_off
+#   - ansible.builtin.service: light.turn_off
 #     data: {}
 #     target:
 #       entity_id: light.kuchnia_led_szafki

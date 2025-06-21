@@ -1,0 +1,7 @@
+---
+- name: "[FLATPAK] Update all packages"
+  ansible.builtin.shell: flatpak update -y
+  register: flatpak_upd_output
+  changed_when: "'Nothing to do.' not in flatpak_upd_output.stdout"
+  tags:
+    - update

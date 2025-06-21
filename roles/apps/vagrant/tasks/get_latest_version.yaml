@@ -1,0 +1,13 @@
+---
+- name: Get latest version
+  ansible.builtin.shell: curl -Ls https://releases.hashicorp.com/vagrant/ | grep vagrant | cut -d'_' -f2 | cut -d'<' -f1 | head -n1
+  register: version
+  changed_when: false
+
+- name: "Latest version of vagrant:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of vagrant"
+  ansible.builtin.set_fact:
+    vagrant_version: "{{ version.stdout }}"

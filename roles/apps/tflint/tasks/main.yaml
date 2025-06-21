@@ -1,0 +1,42 @@
+---
+- name: Install dependencies
+  ansible.builtin.package:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - unzip
+      - tar
+
+- name: Get installed version
+  ansible.builtin.shell: tflint --version | head -n 1 | awk '{print $3}'
+  register: installed_tflint_version
+  changed_when: false
+  ignore_errors: true
+- name: "Installed version of tflint:"
+
+  ansible.builtin.debug:
+    var: installed_tflint_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: tflint_version is not defined
+
+- name: Download tflint
+  ansible.builtin.get_url:
+    url: "https://github.com/terraform-linters/tflint/releases/download/v{{ tflint_version }}/tflint_linux_{{ architecture_common_name }}.zip"
+    dest: /tmp/tflint.zip
+  when: installed_tflint_version.stdout != tflint_version
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/tflint.zip
+    dest: /usr/local/bin/
+    remote_src: true
+  when: installed_tflint_version.stdout != tflint_version
+
+- name: Set permissions tflint
+  ansible.builtin.file:
+    path: /usr/local/bin/tflint
+    mode: "0755"
+    owner: root
+    group: root

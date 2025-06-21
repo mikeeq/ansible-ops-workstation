@@ -1,0 +1,23 @@
+---
+- name: Install dependencies
+  ansible.builtin.package:
+    name: "xorg-x11-server-Xephyr"
+    state: present
+
+- name: Get installed version
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: x11docker --version
+  register: installed_x11docker_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of x11docker:"
+  ansible.builtin.debug:
+    var: installed_x11docker_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: x11docker_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when: installed_x11docker_version.stdout != x11docker_version

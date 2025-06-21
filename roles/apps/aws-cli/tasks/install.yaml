@@ -1,0 +1,16 @@
+---
+# - name: Install PIP aws-cli in virtualenv
+#   ansible.builtin.pip:
+#     name: "https://github.com/aws/aws-cli/archive/refs/tags/{{ aws_cli_version }}.tar.gz"
+#     state: present
+#     virtualenv: "{{ virtualenv_install_path }}/aws-cli"
+#     virtualenv_python: "python3.12"
+
+- name: Install PIPx aws-cli
+  community.general.pipx:
+    name: "https://github.com/aws/aws-cli/archive/refs/tags/{{ aws_cli_version }}.tar.gz"
+    state: present
+    install_deps: true
+    global: true
+    python: "python3.12"
+    force: true

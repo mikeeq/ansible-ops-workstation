@@ -1,9 +1,0 @@
----
-- name: Install microsoft repo on Ubuntu
-  apt:
-    deb: "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
-    state: present
-
-- name: Refresh apt repos
-  apt:
-    update_cache: yes

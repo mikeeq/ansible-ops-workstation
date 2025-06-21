@@ -1,0 +1,48 @@
+---
+# https://github.com/muka/ollama-docker/blob/main/docker-compose.yaml
+
+version: "3.9"
+
+networks:
+  ollama:
+
+services:
+  ollama:
+    image: ollama/ollama:rocm
+    networks:
+      - ollama
+    volumes:
+      - ./data/ollama:/root/.ollama
+    ports:
+      - 11434:11434
+    devices:
+      - /dev/dri
+      - /dev/kfd
+    security_opt:
+      - "seccomp:unconfined"
+    group_add:
+      - video
+    # environment:
+    #   - 'HSA_OVERRIDE_GFX_VERSION=9.0.0'
+  ollama-webui:
+    # image: ghcr.io/ollama-webui/ollama-webui:main
+    image: ghcr.io/open-webui/open-webui
+    volumes:
+      - ./data/ollama-webui:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - 3002:8080
+    environment:
+      - 'OLLAMA_API_BASE_URL=http://ollama:11434/api'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - ollama
+
+# https://github.com/ollama/ollama/issues/3877
+# Environment="ROCBLAS_TENSILE_LIBPATH=/usr/lib64/rocm/gfx9/lib/rocblas/library/"
+# Environment="HSA_OVERRIDE_GFX_VERSION=9.0.0"
+
+# https://github.com/vorburger/vorburger.ch-Notes/blob/develop/ml/ollama1.md
+# dnf install hipblas rocminfo amd-gpu-firmware amd-ucode-firmware xorg-x11-drv-amdgpu amdsmi "rocm-*"

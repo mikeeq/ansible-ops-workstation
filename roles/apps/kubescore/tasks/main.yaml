@@ -1,0 +1,18 @@
+---
+- name: "Get installed version of kubescore"
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: kube-score version --help | awk '{print $3}' | cut -d',' -f1
+  register: installed_kubescore_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of kubescore:"
+  ansible.builtin.debug:
+    var: installed_kubescore_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: kubescore_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when: installed_kubescore_version.stdout != kubescore_version

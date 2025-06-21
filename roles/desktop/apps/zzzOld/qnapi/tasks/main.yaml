@@ -1,0 +1,55 @@
+---
+# TODO
+- name: Get installed version
+  ansible.builtin.shell: cat /opt/qnapi/version.tag
+  register: installed_version
+  changed_when: false
+  ignore_errors: true
+
+- name: 'Installed version of keeweb:'
+  ansible.builtin.debug:
+    var: installed_version.stdout
+
+- name: Directory for qnapi
+  ansible.builtin.file:
+    path: /opt/qnapi
+    state: directory
+
+- name: Get latest version
+  ansible.builtin.shell: curl -Is https://github.com/QNapi/qnapi/releases/latest | grep -i 'location:' | cut -d'"' -f2 | cut -d'/' -f8
+  register: version_tag
+  changed_when: version_tag.stdout != installed_version.stdout
+
+- name: "Latest version of qnapi"
+  ansible.builtin.debug:
+    var: version_tag.stdout
+
+# https://github.com/QNapi/qnapi/releases/download/0.2.3/qnapi-0.2.3.tar.gz
+- name: Download .zip
+  ansible.builtin.get_url:
+    url: "https://github.com/QNapi/qnapi/releases/download/{{ version_tag.stdout }}/qnapi-{{ version_tag.stdout }}.tar.gz"
+    dest: /tmp/qnapi.zip
+  when: installed_version.stdout != version_tag.stdout
+
+- name: Remove old KeeWeb
+  ansible.builtin.file:
+    path: /opt/qnapi/*
+    state: absent
+  when: installed_version.stdout != version_tag.stdout
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/qnapi.zip
+    dest: /opt/qnapi/
+    remote_src: true
+  when: installed_version.stdout != version_tag.stdout
+
+# - name: Add gnome icon
+#   ansible.builtin.copy:
+#     src: keeweb.desktop
+#     dest: /usr/share/applications/keeweb.desktop
+#     remote_src: true
+
+- name: Add version file
+  ansible.builtin.shell: echo '{{ version_tag.stdout }}' > /opt/qnapi/version.tag
+  when: installed_version.stdout != version_tag.stdout

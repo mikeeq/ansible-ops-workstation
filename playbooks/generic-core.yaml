@@ -1,0 +1,12 @@
+---
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: vars.yaml
+
+- name: Generic Core bootstrap
+  hosts: "{{ hosts_to_deploy | default('local') }}"
+  become: true
+  roles:
+    - apps/ctop
+    - apps/oh_my_zsh
+    - apps/dive
+    - apps/docker-compose

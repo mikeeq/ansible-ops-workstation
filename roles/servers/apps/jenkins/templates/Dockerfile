@@ -90,7 +90,7 @@ USER jenkins
 # https://plugins.jenkins.io/ws-cleanup/
 # https://plugins.jenkins.io/configuration-as-code/
 
-# RUN jenkins-plugin-cli --plugins "workflow-aggregator:590.v6a_d052e5a_a_b_5 rebuild:1.34 ansicolor:1.0.2 git:4.14.3 linenumbers:1.3 multiple-scms:0.8 pipeline-as-yaml:0.16-rc ws-cleanup:0.44"
+# RUN jenkins-plugin-cli --plugins "workflow-aggregator:590.v6a_d052e5a_a_b_5 rebuild:1.34 ansicolor:1.0.2 ansible.builtin.git:4.14.3 linenumbers:1.3 multiple-scms:0.8 pipeline-as-yaml:0.16-rc ws-cleanup:0.44"
 
 # linenumbers plugin fails to print json output in ansible, it's merging multiple lines as one
 # cloudbees-folder

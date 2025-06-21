@@ -1,0 +1,42 @@
+---
+- name: Update global PIP Apps
+  ansible.builtin.pip:
+    name: "{{ item.name }}"
+    state: latest
+  with_items:
+    - "{{ pip_apps }}"
+  when: not item.virtualenv_enabled
+  tags:
+    - update
+
+- name: Update virtualenv PIP apps
+  ansible.builtin.pip:
+    name: "{{ item.name }}"
+    state: latest
+    virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
+  when: item.virtualenv_enabled
+  with_items:
+    - "{{ pip_apps }}"
+  tags:
+    - update
+
+- name: Update PIPx apps
+  community.general.pipx:
+    name: "{{ item.name }}"
+    state: upgrade
+    install_deps: true
+    global: true
+    python: "{{ item.python_version | default(omit) }}"
+    install_apps: true
+    inject_packages: "{{ item.inject_packages | default(omit) }}"
+    include_injected: true
+  with_items:
+    - "{{ pipx_apps }}"
+  tags:
+    - update
+
+
+# TASK [pkg_mgmt/pip : Update virtualenv PIP apps] ******************************************************************
+# Monday 25 May 2020  11:15:24 +0200 (0:00:08.506)       0:01:05.474 ************
+# skipping: [localhost] => (item={'name': 'ansible', 'virtualenv_enabled': false})
+# failed: [localhost] (item={'name': 'azure-cli', 'virtualenv_enabled': true}) => {"ansible_loop_var": "item", "changed": false, "cmd": ["/opt/azure-cli/bin/pip3", "install", "-U", "azure-cli"], "item": {"name": "azure-cli", "virtualenv_enabled": true}, "msg": "\n:stderr: Traceback (most recent call last):\n  File \"/opt/azure-cli/bin/pip3\", line 5, in <module>\n    from pip._internal.cli.main import main\nModuleNotFoundError: No module named 'pip'\n"}

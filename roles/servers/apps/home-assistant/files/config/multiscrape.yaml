@@ -29,8 +29,8 @@
   form_submit:
     resource: "https://mojlicznik.energa-operator.pl/dp/UserLogin.do"
     select: "form#loginForm"
-    submit_once: True
-    resubmit_on_error: True
+    submit_once: true
+    resubmit_on_error: true
     input:
       j_username: !secret energa_username
       j_password: !secret energa_password

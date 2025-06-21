@@ -1,0 +1,21 @@
+---
+# ~/.local/share/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version
+# /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version | grep -i synergy-core | awk '{print $2}' | cut -d'-' -f1
+- name: Get installed version of synergy
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version | grep -i synergy-core | awk '{print $2}' | cut -d'-' -f3 | cut -d',' -f1
+  register: installed_synergy_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of synergy:"
+  ansible.builtin.debug:
+    var: installed_synergy_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: synergy_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when:
+    - installed_synergy_version.stdout != synergy_version

@@ -1,0 +1,3 @@
+---
+- ansible.builtin.import_tasks: get_image.yaml
+- ansible.builtin.import_tasks: grub.yaml
