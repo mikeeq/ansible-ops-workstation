@@ -6,7 +6,7 @@
 #     key: https://developer.download.nvidia.com/compute/cuda/repos/fedora41/x86_64/D42D0685.pub
 
 # - name: Setup cuda-fedora yum repo
-#   copy:
+#   ansible.builtin.copy:
 #     src: cuda-fedora41.repo
 #     dest: /etc/yum.repos.d/cuda-fedora41.repo
 #     owner: "root"
@@ -16,7 +16,7 @@
 # https://developer.download.nvidia.com/compute/cuda/12.8.1/local_installers/cuda_12.8.1_570.124.06_linux.run
 
 - name: Install nvidia pkgs
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ pkgs }}"
     state: present
   vars:

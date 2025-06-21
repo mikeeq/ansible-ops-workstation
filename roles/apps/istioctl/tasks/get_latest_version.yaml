@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of istioctl"
-  set_fact:
+  ansible.builtin.set_fact:
     istioctl_version: "{{ version.stdout }}"

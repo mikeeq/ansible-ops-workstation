@@ -1,7 +1,7 @@
 ---
 # https://gitlab.com/coolercontrol/coolercontrol
 - name: "Install coolercontrol deps"
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ deps }}"
     state: present
   vars:
@@ -21,7 +21,7 @@
     creates: /etc/yum.repos.d/coolercontrol-coolercontrol.repo
 
 - name: "Install coolercontrol"
-  dnf:
+  ansible.builtin.dnf:
     name: "coolercontrol"
     state: present
     update_cache: true

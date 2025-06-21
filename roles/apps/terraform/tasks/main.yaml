@@ -1,7 +1,7 @@
 ---
 # terraform_0.11.7_linux_amd64.zip
 - name: Install dependencies
-  package:
+  ansible.builtin.package:
     name: "{{ pkgs }}"
     state: present
   vars:
@@ -23,13 +23,13 @@
   when: terraform_version is not defined
 
 - name: Download terraform
-  get_url:
+  ansible.builtin.get_url:
     url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_{{ architecture_common_name }}.zip"
     dest: /tmp/terraform.zip
   when: installed_terraform_version.stdout != terraform_version
 
 - name: Unarchive a file that is already on the remote machine
-  unarchive:
+  ansible.builtin.unarchive:
     src: /tmp/terraform.zip
     dest: /usr/local/bin/
     remote_src: true

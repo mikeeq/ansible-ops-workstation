@@ -13,7 +13,7 @@
   when: kubectl_version is not defined
 
 - name: Download kubectl
-  get_url:
+  ansible.builtin.get_url:
     url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/{{ architecture_common_name }}/kubectl"
     dest: /usr/local/bin/kubectl
     force: true

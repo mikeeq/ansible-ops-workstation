@@ -17,7 +17,7 @@
     line: dns=none
 
 - name: Set resolv.conf
-  copy:
+  ansible.builtin.copy:
     content: |
       nameserver 1.1.1.1
       nameserver 8.8.8.8

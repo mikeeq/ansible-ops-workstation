@@ -30,7 +30,7 @@
 
 # name: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant_{{ vagrant_version}}_x86_64.rpm"
 - name: Install vagrant from hashicorp repo
-  dnf:
+  ansible.builtin.dnf:
     name: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant-{{ vagrant_version }}-1.x86_64.rpm"
     state: latest
     disable_gpg_check: true

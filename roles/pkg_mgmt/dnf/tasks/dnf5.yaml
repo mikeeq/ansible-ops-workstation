@@ -13,7 +13,7 @@
   register: python3_libdnf5_installed
 
 - name: Install dnf5
-  dnf:
+  ansible.builtin.dnf:
     name: ["dnf5"]
     state: present
   when: dnf_symlink.stat.lnk_target == "dnf-3"

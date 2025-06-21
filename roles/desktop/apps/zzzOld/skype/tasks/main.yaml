@@ -1,5 +1,5 @@
 ---
 # - name: Install skype
-#   dnf:
+#   ansible.builtin.dnf:
 #     name: "https://go.skype.com/skypeforlinux-64.rpm"
 #     state: present

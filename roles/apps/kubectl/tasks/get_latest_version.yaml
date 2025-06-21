@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of kubectl"
-  set_fact:
+  ansible.builtin.set_fact:
     kubectl_version: "{{ version.stdout }}"

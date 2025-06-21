@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of krew"
-  set_fact:
+  ansible.builtin.set_fact:
     krew_version: "{{ version.stdout }}"

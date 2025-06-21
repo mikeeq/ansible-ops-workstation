@@ -1,6 +1,6 @@
 ---
 - name: SSH user set var
-  set_fact:
+  ansible.builtin.set_fact:
     # jenkins_ssh_uid: "{{ jenkins_uid }}"
     # jenkins_ssh_gid: "{{ jenkins_gid }}"
     jenkins_ssh_uid: "root"
@@ -22,7 +22,7 @@
     mode: 0600
 
 - name: Copy private SSH keys
-  copy:
+  ansible.builtin.copy:
     content: "{{ item.value }}"
     dest: "{{ jenkins_ssh_path }}/{{ item.name }}"
     owner: "{{ jenkins_ssh_uid }}"
@@ -40,7 +40,7 @@
     state: directory
 
 - name: Copy git-crypt key
-  copy:
+  ansible.builtin.copy:
     content: "{{ jenkins_git_crypt_key | b64decode }}"
     dest: "{{ jenkins_home }}/secrets/git_crypt_key"
     owner: "{{ jenkins_uid }}"

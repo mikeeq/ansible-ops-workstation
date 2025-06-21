@@ -13,5 +13,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of synergy"
-  set_fact:
+  ansible.builtin.set_fact:
     synergy_version: "{{ version.stdout }}"

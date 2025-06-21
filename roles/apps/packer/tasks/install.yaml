@@ -7,18 +7,18 @@
 # https://releases.hashicorp.com/packer/1.8.6/packer_1.8.6_linux_amd64.zip
 
 - name: Download packer
-  get_url:
+  ansible.builtin.get_url:
     url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_{{ architecture_common_name }}.zip"
     dest: /tmp/packer/packer.zip
 
 - name: Unarchive a file that is already on the remote machine
-  unarchive:
+  ansible.builtin.unarchive:
     src: /tmp/packer/packer.zip
     dest: /tmp/packer
     remote_src: true
 
 - name: Copy packer
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/packer/packer"
     dest: "/usr/local/bin/packer"
     remote_src: true

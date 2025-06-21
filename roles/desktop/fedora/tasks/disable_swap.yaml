@@ -1,5 +1,5 @@
 ---
 # - name: "Disable SWAP by removing zram-generator-defaults.rpm"
-#   dnf:
+#   ansible.builtin.dnf:
 #     name: "zram-generator-defaults"
 #     state: absent

@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of terraform_docs"
-  set_fact:
+  ansible.builtin.set_fact:
     terraform_docs_version: "{{ version.stdout }}"

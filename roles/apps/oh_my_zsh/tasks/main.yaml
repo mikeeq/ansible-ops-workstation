@@ -1,6 +1,6 @@
 ---
 - name: oh-my-zsh deps
-  package:
+  ansible.builtin.package:
     name: "{{ pkgs }}"
     state: present
   vars:

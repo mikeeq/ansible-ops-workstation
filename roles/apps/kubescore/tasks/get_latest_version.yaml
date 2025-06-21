@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of kubescore"
-  set_fact:
+  ansible.builtin.set_fact:
     kubescore_version: "{{ version.stdout }}"

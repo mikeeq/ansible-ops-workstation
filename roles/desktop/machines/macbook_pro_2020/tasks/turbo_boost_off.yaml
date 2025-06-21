@@ -1,6 +1,6 @@
 ---
 - name: Copy turbo_boost_off systemd unit
-  copy:
+  ansible.builtin.copy:
     src: "turbo_boost_off.service"
     dest: "/etc/systemd/system/turbo-boost-off.service"
     mode: 0644

@@ -5,11 +5,11 @@
     state: directory
 
 - name: Download rpm
-  get_url:
+  ansible.builtin.get_url:
     url: "https://updates.getmailspring.com/download?platform=linuxRpm"
     dest: "{{ rpms_dwnl_path }}/mailspring.rpm"
 
 - name: Install mailspring
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ rpms_dwnl_path }}/mailspring.rpm"
     state: present

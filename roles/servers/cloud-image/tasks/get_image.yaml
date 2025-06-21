@@ -1,6 +1,6 @@
 ---
 - name: Download centos image
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ centos_qcow2_url }}"
     dest: "{{ image_path }}"
     mode: 0640

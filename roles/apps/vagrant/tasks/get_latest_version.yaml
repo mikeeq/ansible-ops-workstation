@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of vagrant"
-  set_fact:
+  ansible.builtin.set_fact:
     vagrant_version: "{{ version.stdout }}"

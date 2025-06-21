@@ -1,7 +1,7 @@
 ---
 # https://github.com/lynxthecat/cake-autorate
 - name: Install dependencies
-  package:
+  ansible.builtin.package:
     name: "{{ sqm_opkgs }}"
     state: present
   vars:
@@ -29,13 +29,13 @@
     mode: "0755"
 
 - name: Set vars to enable SQM
-  set_fact:
+  ansible.builtin.set_fact:
     cake_service: "start"
     sqm_enabled: "1"
   when: dynamic_sqm_enabled == "true"
 
 - name: Set vars to disable SQM
-  set_fact:
+  ansible.builtin.set_fact:
     cake_service: "stop"
     sqm_enabled: "0"
   when: dynamic_sqm_enabled == "false"

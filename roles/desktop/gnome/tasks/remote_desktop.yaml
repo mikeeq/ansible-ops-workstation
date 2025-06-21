@@ -2,7 +2,7 @@
 # https://gitlab.gnome.org/-/snippets/1778#note_1310610
 # https://discussion.fedoraproject.org/t/after-upgrading-to-fedora-38-cannot-connect-to-computer-using-remote-desktop/82353
 - name: Install gnome-remote-desktop
-  dnf:
+  ansible.builtin.dnf:
     name: "gnome-remote-desktop"
     state: present
 
@@ -31,7 +31,7 @@
     state: present
 
 - name: Add keyring-unlock script
-  copy:
+  ansible.builtin.copy:
     content: |
       #!/usr/bin/env bash
 
@@ -91,7 +91,7 @@
   register: grd_rdp_credentials_download
 
 - name: Install dependencies
-  package:
+  ansible.builtin.package:
     name: libsecret-devel
     state: present
 

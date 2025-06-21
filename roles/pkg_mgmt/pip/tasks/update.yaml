@@ -1,6 +1,6 @@
 ---
 - name: Update global PIP Apps
-  pip:
+  ansible.builtin.pip:
     name: "{{ item.name }}"
     state: latest
   with_items:
@@ -10,7 +10,7 @@
     - update
 
 - name: Update virtualenv PIP apps
-  pip:
+  ansible.builtin.pip:
     name: "{{ item.name }}"
     state: latest
     virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"

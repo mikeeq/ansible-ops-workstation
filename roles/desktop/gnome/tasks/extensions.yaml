@@ -1,6 +1,6 @@
 ---
 - name: Install gnome-shell
-  package:
+  ansible.builtin.package:
     name: gnome-shell
     state: present
 

@@ -1,6 +1,6 @@
 ---
 - name: copy hid_apple config
-  copy:
+  ansible.builtin.copy:
     src: hid_apple.conf
     dest: /etc/modprobe.d/hid_apple.conf
     mode: 0644

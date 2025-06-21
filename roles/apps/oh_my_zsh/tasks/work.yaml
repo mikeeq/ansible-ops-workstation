@@ -7,7 +7,7 @@
     group: "{{ user_name }}"
 
 - name: "Add zshrc for work profiles"
-  copy:
+  ansible.builtin.copy:
     src: templates/work.zshrc.j2
     dest: "~{{ user_name }}/.work_profiles/.zshrc"
     owner: "{{ user_name }}"

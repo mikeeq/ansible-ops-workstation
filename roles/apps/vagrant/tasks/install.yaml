@@ -1,6 +1,6 @@
 ---
 - name: Install deps
-  dnf:
+  ansible.builtin.dnf:
     name: libxcrypt-compat
     state: present
 

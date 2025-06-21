@@ -5,18 +5,18 @@
     state: directory
 
 - name: Download terraform_docs binary
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/terraform-docs/terraform-docs/releases/download/v{{ terraform_docs_version }}/terraform-docs-v{{ terraform_docs_version }}-linux-{{ architecture_common_name }}.tar.gz"
     dest: /tmp/terraform_docs/terraform_docs.tar.gz
 
 - name: Unarchive a file that is already on the remote machine
-  unarchive:
+  ansible.builtin.unarchive:
     src: /tmp/terraform_docs/terraform_docs.tar.gz
     dest: /tmp/terraform_docs
     remote_src: true
 
 - name: Copy terraform_docs
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/terraform_docs/terraform-docs"
     dest: "/usr/local/bin/terraform-docs"
     remote_src: true

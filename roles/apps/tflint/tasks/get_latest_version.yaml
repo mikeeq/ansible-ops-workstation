@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of tflint"
-  set_fact:
+  ansible.builtin.set_fact:
     tflint_version: "{{ version.stdout }}"

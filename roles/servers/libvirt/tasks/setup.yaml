@@ -10,7 +10,7 @@
     - "{{ cloud_init_iso_dir }}"
 
 - name: "Download {{ cloud_image_name }}"
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ cloud_image_url }}"
     dest: "{{ libvirt_images_dir }}/{{ cloud_image_name }}"
     mode: '0600'
@@ -19,11 +19,11 @@
     checksum: "{{ cloud_image_checksum }}"
 
 - name: "Install genisoimage"
-  package:
+  ansible.builtin.package:
     name: genisoimage
     state: present
 
 - name: "Install pip passlib"
-  pip:
+  ansible.builtin.pip:
     name: passlib
     state: present

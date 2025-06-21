@@ -5,7 +5,7 @@
     creates: /etc/yum.repos.d/sublime-text.repo
 
 - name: Install latest sublime-text
-  dnf:
+  ansible.builtin.dnf:
     name: "sublime-text"
     state: present
 
@@ -32,14 +32,14 @@
 - name: Download packagecontrol
   become: true
   become_user: "{{ user_name }}"
-  get_url:
+  ansible.builtin.get_url:
     url: "https://packagecontrol.io/Package%20Control.sublime-package"
     dest: '~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package'
 
 - name: Add sublime preferences
   become: true
   become_user: "{{ user_name }}"
-  copy:
+  ansible.builtin.copy:
     src: Preferences.sublime-settings
     dest: ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
     remote_src: true
@@ -47,7 +47,7 @@
 - name: Add package control preferences
   become: true
   become_user: "{{ user_name }}"
-  copy:
+  ansible.builtin.copy:
     src: Package Control.sublime-settings
     dest: ~/.config/sublime-text-3/Packages/User/Package Control.sublime-settings
     remote_src: true
@@ -55,7 +55,7 @@
 - name: Add applysyntax preferences
   become: true
   become_user: "{{ user_name }}"
-  copy:
+  ansible.builtin.copy:
     src: ApplySyntax.sublime-settings
     dest: ~/.config/sublime-text-3/Packages/User/ApplySyntax.sublime-settings
     remote_src: true

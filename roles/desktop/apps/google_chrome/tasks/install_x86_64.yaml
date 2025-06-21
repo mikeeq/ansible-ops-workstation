@@ -1,6 +1,6 @@
 ---
 - name: Setup google-chrome yum repo
-  copy:
+  ansible.builtin.copy:
     src: google-chrome.repo
     dest: /etc/yum.repos.d/google-chrome.repo
     owner: "root"
@@ -8,6 +8,6 @@
     mode: 0644
 
 - name: Install chrome
-  dnf:
+  ansible.builtin.dnf:
     name: "google-chrome-stable"
     state: present

@@ -10,7 +10,7 @@
   ignore_errors: true
 
 - name: Install keybase on Fedora
-  dnf:
+  ansible.builtin.dnf:
     name: "https://prerelease.keybase.io/keybase_{{ package_name }}.rpm"
     state: present
     disable_gpg_check: true

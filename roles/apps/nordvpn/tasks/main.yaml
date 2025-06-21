@@ -6,19 +6,19 @@
   ignore_errors: true
 
 - name: Install NordVPN repo
-  dnf:
+  ansible.builtin.dnf:
     name: "https://repo.nordvpn.com/yum/nordvpn/centos/noarch/Packages/n/nordvpn-release-1.0.0-1.noarch.rpm"
     state: present
     disable_gpg_check: true
   when: repo_exists.rc != 0
 
 - name: Update cache if repo added
-  dnf:
+  ansible.builtin.dnf:
     update_cache: true
   when: repo_exists.rc != 0
 
 - name: Install NordVPN
-  dnf:
+  ansible.builtin.dnf:
     name: "nordvpn"
     state: present
 

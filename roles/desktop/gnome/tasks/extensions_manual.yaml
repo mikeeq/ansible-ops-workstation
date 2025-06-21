@@ -1,6 +1,6 @@
 ---
 - name: Install gnome-shell
-  package:
+  ansible.builtin.package:
     name: gnome-shell
     state: present
 
@@ -11,7 +11,7 @@
   register: parse_gnome_shell_version
   changed_when: false
 
-- set_fact:
+- ansible.builtin.set_fact:
     gnome_shell_version: '{{ parse_gnome_shell_version.stdout }}'
 
 - name: Get Gnome Shell extension info
@@ -46,7 +46,7 @@
     - name: Download Gnome Shell extensions
       become: true
       become_user: "{{ user_name }}"
-      get_url:
+      ansible.builtin.get_url:
         url: https://extensions.gnome.org{{ item.item.json.download_url }}
         dest: "{{ gnome_extension_download_dir.path }}/{{ item.item.json.uuid }}.zip"
       loop: "{{ st_existing_extensions.results }}"
@@ -70,7 +70,7 @@
     - name: Install Gnome Shell extensions
       become: true
       become_user: "{{ user_name }}"
-      unarchive:
+      ansible.builtin.unarchive:
         src: "{{ item.dest }}"
         dest: ~/.local/share/gnome-shell/extensions/{{ item.item.item.json.uuid }}
         remote_src: true

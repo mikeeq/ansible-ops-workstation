@@ -1,6 +1,6 @@
 ---
 - name: Install openvpn
-  dnf:
+  ansible.builtin.dnf:
     name: "openvpn"
     state: present
 

@@ -24,7 +24,7 @@
   register: jenkins_deleted_users
 
 - name: Add status if admin account was removed
-  set_fact:
+  ansible.builtin.set_fact:
     admin_account_status: "{{ jenkins_deleted_users.results | selectattr('item','equalto','admin') | map(attribute='status') | join }}"
 
 - name: Remove temp admin password
@@ -34,7 +34,7 @@
   when: admin_account_status == "200"
 
 - name: Add flag that admin account is removed
-  copy:
+  ansible.builtin.copy:
     dest: "{{ jenkins_home }}/secrets/adminAccountRemoved"
     content: "removed"
   when: admin_account_status == "200"

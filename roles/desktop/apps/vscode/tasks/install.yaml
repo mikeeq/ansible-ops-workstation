@@ -6,6 +6,6 @@
   when: ansible_distribution == "Ubuntu"
 
 - name: Install VCS
-  package:
+  ansible.builtin.package:
     name: code
     state: present

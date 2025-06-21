@@ -10,7 +10,7 @@
     return_content: true
   register: dhcp_status
 
-- set_fact:
+- ansible.builtin.set_fact:
     dhcp_config: "{{ dhcp_status.content }}"
 
 - name: "Display var 'dhcp_config.static_leases'"
@@ -22,12 +22,12 @@
     var: dhcp
 
 - name: "Create empty tables 'dhcp_to_create' and 'dhcp_to_delete'"
-  set_fact:
+  ansible.builtin.set_fact:
     dhcp_to_create: []
     dhcp_to_delete: []
 
 - name: "Create var 'dhcp_to_create'"
-  set_fact:
+  ansible.builtin.set_fact:
     dhcp_to_create: >-
       {{ dhcp_to_create + entry }}
   when: old_entry_ip != item.ip or old_entry_hostname != item.hostname
@@ -49,7 +49,7 @@
     var: dhcp_to_create
 
 - name: "Create var 'dhcp_to_delete'"
-  set_fact:
+  ansible.builtin.set_fact:
     dhcp_to_delete: "{{ dhcp_to_delete + entry }}"
   when:
     - (new_entry_ip != item.ip and new_entry_ip != 'N/A') or (new_entry_hostname != item.hostname and new_entry_hostname != 'N/A') or (new_entry_ip == 'N/A' and new_entry_hostname == 'N/A')

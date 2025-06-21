@@ -14,7 +14,7 @@
   when: terragrunt_version is not defined
 
 - name: Download terragrunt
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/gruntwork-io/terragrunt/releases/download/v{{ terragrunt_version }}/terragrunt_linux_{{ architecture_common_name }}"
     dest: /usr/local/bin/terragrunt
     mode: 0755

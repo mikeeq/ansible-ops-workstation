@@ -6,7 +6,7 @@
     keyring: /etc/apt/trusted.gpg.d/packages.microsoft.gpg
 
 - name: Add Visual Studio code repository to apt
-  copy:
+  ansible.builtin.copy:
     src: vscode.list
     dest: /etc/apt/sources.list.d/vscode.list
     owner: root

@@ -33,7 +33,7 @@
     - root
 
 - name: "p10k config"
-  copy:
+  ansible.builtin.copy:
     src: templates/p10k.zsh.j2
     dest: "~{{ item }}/.p10k.zsh"
     owner: "{{ item }}"
@@ -56,7 +56,7 @@
 
 # Fixing apt-get fzf package
 - name: Download fzf key-bindings
-  get_url:
+  ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
     dest: /usr/share/doc/fzf/examples/key-bindings.zsh
   when: ansible_distribution == "Ubuntu"

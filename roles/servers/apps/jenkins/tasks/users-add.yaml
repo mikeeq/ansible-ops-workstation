@@ -15,13 +15,13 @@
   when: jenkins_admin_account_removed_flag.stat.exists == false
 
 - name: Set admin vars - if initial user exists
-  set_fact:
+  ansible.builtin.set_fact:
     jenkins_used_admin_username: "admin"
     jenkins_used_admin_password: "{{ admin_auth_token.stdout }}"
   when: jenkins_admin_account_removed_flag.stat.exists == false
 
 - name: Set admin vars - if initial user is removed
-  set_fact:
+  ansible.builtin.set_fact:
     jenkins_used_admin_username: "{{ jenkins_admin_username }}"
     jenkins_used_admin_password: "{{ jenkins_admin_password }}"
   when: jenkins_admin_account_removed_flag.stat.exists

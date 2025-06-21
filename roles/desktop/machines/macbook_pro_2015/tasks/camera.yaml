@@ -7,7 +7,7 @@
     dest: "{{ git_modules_path }}/bcwc_pcie"
 
 # - name: copy dkms config
-#   copy:
+#   ansible.builtin.copy:
 #     src: dkms_camera.conf
 #     dest: /tmp/bcwc_pcie/dkms.conf
 
@@ -48,7 +48,7 @@
 #     state: absent
 
 - name: copy dkms config
-  copy:
+  ansible.builtin.copy:
     src: facetimehd.conf
     dest: /etc/modules-load.d/facetimehd.conf
 

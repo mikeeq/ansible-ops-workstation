@@ -1,5 +1,5 @@
 ---
-- set_fact:
+- ansible.builtin.set_fact:
     check_cpu: >-
       {%- if ansible_processor | regex_search('Intel') -%}
         Intel

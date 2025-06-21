@@ -1,7 +1,7 @@
 ---
 # erp ready/power saving option needs to be disabled in bios
 - name: Create wol systemd service
-  copy:
+  ansible.builtin.copy:
     content: |
       [Unit]
       Description=Wake-on-LAN for %i

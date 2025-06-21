@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of x11docker"
-  set_fact:
+  ansible.builtin.set_fact:
     x11docker_version: "{{ version.stdout }}"

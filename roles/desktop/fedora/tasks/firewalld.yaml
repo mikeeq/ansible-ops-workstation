@@ -7,7 +7,7 @@
     - dont_run_in_docker
 
 - name: install iptables
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ pkgs }}"
     state: present
   vars:

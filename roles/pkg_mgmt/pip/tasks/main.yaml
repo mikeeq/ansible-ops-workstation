@@ -5,7 +5,7 @@
   changed_when: pip_ext_managed.stdout != ""
 
 - name: Install PIP pkgs
-  pip:
+  ansible.builtin.pip:
     name: "{{ pip_pkgs_deps }}"
     state: present
   vars:
@@ -13,7 +13,7 @@
       - virtualenv
 
 - name: Install pipx
-  package:
+  ansible.builtin.package:
     name: pipx
     state: present
   when:
@@ -21,7 +21,7 @@
 
 
 - name: Install PIP Apps globally
-  pip:
+  ansible.builtin.pip:
     name: "{{ item.name }}"
     state: present
   with_items:
@@ -29,7 +29,7 @@
   when: not item.virtualenv_enabled
 
 # - name: Uninstall PIP Apps in virtualenv
-#   pip:
+#   ansible.builtin.pip:
 #     name: "{{ item.name }}"
 #     state: absent
 #     virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
@@ -38,7 +38,7 @@
 #   when: item.virtualenv_enabled
 
 - name: Install PIP Apps in virtualenv
-  pip:
+  ansible.builtin.pip:
     name: "{{ item.name }}"
     state: present
     virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"

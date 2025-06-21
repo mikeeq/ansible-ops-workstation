@@ -5,12 +5,12 @@
 #   register: barrier
 
 # - name: Install deps
-#   package:
+#   ansible.builtin.package:
 #     name: avahi-compat-libdns_sd.x86_64
 #     state: present
 
 # - name: Download barrier
-#   get_url:
+#   ansible.builtin.get_url:
 #     url: "https://github.com/debauchee/barrier/releases/download/v2.1.0/barrier-2.1.0-linux.tar.bz2"
 #     dest: /tmp/barrier.tar.bz2
 #   when: barrier.stat.exists == false
@@ -22,7 +22,7 @@
 #   when: barrier.stat.exists == false
 
 # - name: Unarchive a file that is already on the remote machine
-#   unarchive:
+#   ansible.builtin.unarchive:
 #     src: /tmp/barrier.tar.bz2
 #     dest: /tmp/barrier
 #     remote_src: true
@@ -38,7 +38,7 @@
 #   when: barrier.stat.exists == false
 
 # - name: Copy binaries and icons
-#   copy:
+#   ansible.builtin.copy:
 #     src: /tmp/barrier/barrier-2.1.0-Linux/
 #     dest: /usr/
 #     owner: root

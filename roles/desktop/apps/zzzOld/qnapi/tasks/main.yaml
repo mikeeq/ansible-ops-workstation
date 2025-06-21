@@ -26,7 +26,7 @@
 
 # https://github.com/QNapi/qnapi/releases/download/0.2.3/qnapi-0.2.3.tar.gz
 - name: Download .zip
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/QNapi/qnapi/releases/download/{{ version_tag.stdout }}/qnapi-{{ version_tag.stdout }}.tar.gz"
     dest: /tmp/qnapi.zip
   when: installed_version.stdout != version_tag.stdout
@@ -38,14 +38,14 @@
   when: installed_version.stdout != version_tag.stdout
 
 - name: Unarchive a file that is already on the remote machine
-  unarchive:
+  ansible.builtin.unarchive:
     src: /tmp/qnapi.zip
     dest: /opt/qnapi/
     remote_src: true
   when: installed_version.stdout != version_tag.stdout
 
 # - name: Add gnome icon
-#   copy:
+#   ansible.builtin.copy:
 #     src: keeweb.desktop
 #     dest: /usr/share/applications/keeweb.desktop
 #     remote_src: true

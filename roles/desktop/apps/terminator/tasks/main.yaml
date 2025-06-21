@@ -8,7 +8,7 @@
     group: "{{ user_name }}"
 
 - name: Terminator install
-  dnf:
+  ansible.builtin.dnf:
     name: "terminator"
     state: present
 
@@ -37,7 +37,7 @@
     group: "{{ user_name }}"
 
 - name: "Download Font - MesloLGS_NF_Regular"
-  get_url:
+  ansible.builtin.get_url:
     url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf'
     dest: "~{{ user_name }}/.local/share/fonts/MesloLGS_NF_Regular.ttf"
     mode: '0664'
@@ -60,7 +60,7 @@
     group: "{{ user_name }}"
 
 - name: Terminator config
-  copy:
+  ansible.builtin.copy:
     src: terminator_config
     dest: "~{{ user_name }}/.config/terminator/config"
     mode: 0664

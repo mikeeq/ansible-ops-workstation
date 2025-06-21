@@ -5,7 +5,7 @@
 # http://forum.jdtech.pl/Watek-hilink-api-dla-urzadzen-huawei
 ---
 - name: Install dependencies
-  pip:
+  ansible.builtin.pip:
     name: "{{ item }}"
     state: present
   ignore_errors: true

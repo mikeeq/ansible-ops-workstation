@@ -1,6 +1,6 @@
 ---
 - name: Install dkms
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ pkgs }}"
     state: latest
   vars:

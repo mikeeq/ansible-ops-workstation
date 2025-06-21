@@ -18,7 +18,7 @@
   when: installed_aws_cli_version.stdout != aws_cli_version
 
 - name: Install Session Manager plugin on Fedora
-  dnf:
+  ansible.builtin.dnf:
     name: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.rpm"
     state: present
     disable_gpg_check: true

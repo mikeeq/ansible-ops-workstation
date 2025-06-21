@@ -24,7 +24,7 @@
     - nftables
 
 - name: Install iptables-services
-  dnf:
+  ansible.builtin.dnf:
     name: "iptables-services"
     state: present
 
@@ -43,7 +43,7 @@
 
 - name: Configure iptables files
   notify: restart_iptables
-  copy:
+  ansible.builtin.copy:
     src: "files/iptables-vpn"
     dest: "/etc/sysconfig/iptables"
     mode: 0664

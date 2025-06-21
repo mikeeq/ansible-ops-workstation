@@ -1,6 +1,6 @@
 ---
 - name: Install dependencies
-  package:
+  ansible.builtin.package:
     name: "xorg-x11-server-Xephyr"
     state: present
 

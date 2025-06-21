@@ -1,6 +1,6 @@
 ---
 # - name: Install Docker deps
-#   package:
+#   ansible.builtin.package:
 #     name: "dnf-plugins-core"
 #     state: present
 
@@ -11,7 +11,7 @@
 #     https://download.docker.com/linux/fedora/docker-ce.repo
 
 - name: Download docker-ce.repo archive
-  get_url:
+  ansible.builtin.get_url:
     url: "https://download.docker.com/linux/fedora/docker-ce.repo"
     dest: "/etc/yum.repos.d/docker-ce.repo"
     mode: 644

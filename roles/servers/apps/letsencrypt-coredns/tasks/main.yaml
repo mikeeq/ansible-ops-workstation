@@ -2,12 +2,12 @@
 # https://docs.ansible.com/ansible/latest/collections/community/crypto/acme_certificate_module.html
 
 - name: Install dependencies
-  package:
+  ansible.builtin.package:
     name: python3-pip
     state: present
 
 - name: Install pip dependencies
-  pip:
+  ansible.builtin.pip:
     name: cryptography
     state: present
 

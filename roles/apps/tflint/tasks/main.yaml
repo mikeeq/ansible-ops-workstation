@@ -1,6 +1,6 @@
 ---
 - name: Install dependencies
-  package:
+  ansible.builtin.package:
     name: "{{ pkgs }}"
     state: present
   vars:
@@ -22,13 +22,13 @@
   when: tflint_version is not defined
 
 - name: Download tflint
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/terraform-linters/tflint/releases/download/v{{ tflint_version }}/tflint_linux_{{ architecture_common_name }}.zip"
     dest: /tmp/tflint.zip
   when: installed_tflint_version.stdout != tflint_version
 
 - name: Unarchive a file that is already on the remote machine
-  unarchive:
+  ansible.builtin.unarchive:
     src: /tmp/tflint.zip
     dest: /usr/local/bin/
     remote_src: true

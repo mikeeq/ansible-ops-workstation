@@ -15,7 +15,7 @@
   delegate_to: 127.0.0.1
 
 - name: Copy certs to localhost
-  ansible.builtin.copy:
+  ansible.builtin.copy::
     content: "{{ item.content | b64decode }}"
     dest: "{{ item.source }}"
     owner: root

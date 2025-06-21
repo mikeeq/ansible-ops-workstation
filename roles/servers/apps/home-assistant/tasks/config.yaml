@@ -14,7 +14,7 @@
     - "{{ install_path }}/config/mqtt/switches"
 
 - name: Configure config files
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/"
     mode: 0664
@@ -104,7 +104,7 @@
   register: storage_result
 
 - name: Configure .storage
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/.storage"
     mode: 0664
@@ -114,7 +114,7 @@
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/.storage/*"
 
 - name: Configure config init
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/"
     mode: 0664

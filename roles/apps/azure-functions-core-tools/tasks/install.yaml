@@ -8,12 +8,12 @@
     - "/opt/azure_functions_core_tools"
 
 - name: Download azure_functions_core_tools binary
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/Azure/azure-functions-core-tools/releases/download/{{ azure_functions_core_tools_version }}/Azure.Functions.Cli.linux-x64.{{ azure_functions_core_tools_version }}.zip"
     dest: /tmp/azure_functions_core_tools/azure_functions_core_tools.zip
 
 - name: Unarchive a file that is already on the remote machine
-  unarchive:
+  ansible.builtin.unarchive:
     src: /tmp/azure_functions_core_tools/azure_functions_core_tools.zip
     dest: /opt/azure_functions_core_tools
     remote_src: true

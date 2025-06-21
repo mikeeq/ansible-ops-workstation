@@ -2,7 +2,7 @@
 # dnf install libxslt-devel libxml2-devel libvirt-devel libguestfs-tools-c ruby-devel gcc
 # dnf -y install qemu libvirt libvirt-devel ruby-devel gcc qemu-kvm
 - name: DNF install qemu-libvirt
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ pkgs }}"
     state: present
   vars:

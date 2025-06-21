@@ -5,7 +5,7 @@
     key: https://packages.microsoft.com/keys/microsoft.asc
 
 - name: Azure-cli repo
-  copy:
+  ansible.builtin.copy:
     content: |
       [azure-cli]
       name=Azure CLI
@@ -17,6 +17,6 @@
     mode: 0644
 
 - name: Azure-cli
-  package:
+  ansible.builtin.package:
     name: "azure-cli"
     state: present

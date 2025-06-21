@@ -1,11 +1,11 @@
 ---
 - name: Install python3-pip
-  package:
+  ansible.builtin.package:
     name: python3-pip
     state: present
 
 - name: Install ansible pip dependencies
-  pip:
+  ansible.builtin.pip:
     name: "{{ pkgs }}"
     state: present
   vars:

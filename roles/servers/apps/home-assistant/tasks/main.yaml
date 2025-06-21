@@ -11,7 +11,7 @@
 
 - name: Ensure passlib is installed
   delegate_to: localhost
-  pip:
+  ansible.builtin.pip:
     name:
       - passlib
     state: present

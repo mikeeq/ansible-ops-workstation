@@ -7,7 +7,7 @@
     - "{{ install_path }}/mosquitto/config"
 
 - name: Configure config
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ install_path }}/mosquitto/config"
     mode: 0664

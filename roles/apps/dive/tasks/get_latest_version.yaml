@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of dive"
-  set_fact:
+  ansible.builtin.set_fact:
     dive_version: "{{ version.stdout }}"

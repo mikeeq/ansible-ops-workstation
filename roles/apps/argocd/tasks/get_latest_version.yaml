@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of argocd"
-  set_fact:
+  ansible.builtin.set_fact:
     argocd_version: "{{ version.stdout }}"

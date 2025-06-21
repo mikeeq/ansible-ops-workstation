@@ -1,6 +1,6 @@
 ---
 - name: Snap install
-  dnf:
+  ansible.builtin.dnf:
     name: "snapd"
     state: present
 

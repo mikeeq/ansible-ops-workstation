@@ -1,6 +1,6 @@
 ---
 - name: Refresh opkg repos on OpenWRT
-  raw: |
+  ansible.builtin.raw: |
     opkg update
   register: opkg_update
   # changed_when: '"Updated" in opkg_update.stdout'
@@ -8,7 +8,7 @@
   failed_when: '"Updated" not in opkg_update.stdout'
 
 - name: Install Ansible dependencies on OpenWRT
-  raw: |
+  ansible.builtin.raw: |
     opkg install {{ opkgs | join(' ') }}
   vars:
     opkgs:

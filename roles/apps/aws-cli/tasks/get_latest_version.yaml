@@ -9,5 +9,5 @@
     var: version.stdout
 
 - name: "Set fact with latest version of aws_cli"
-  set_fact:
+  ansible.builtin.set_fact:
     aws_cli_version: "{{ version.stdout }}"

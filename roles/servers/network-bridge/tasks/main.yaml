@@ -1,6 +1,6 @@
 ---
 # - name: parse interfaces
-#   set_fact:
+#   ansible.builtin.set_fact:
 #     nic_name: "{{ item }}"
 #     nic_ip: "{{ hostvars[inventory_hostname][item_name]['ipv4']['address'] }}"
 #   when:
@@ -19,11 +19,11 @@
 #     var: nic_name
 
 - name: Set var nic_name
-  set_fact:
+  ansible.builtin.set_fact:
     nic_name: "{{ baremetal_lan_interface }}"
 
 - name: Set vars bridge_name and bridge_slave_name
-  set_fact:
+  ansible.builtin.set_fact:
     bridge_name: "br-vm-{{ nic_name }}"
     bridge_slave_name: "br-vm-slave-{{ nic_name }}"
 

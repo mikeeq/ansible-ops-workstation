@@ -9,6 +9,6 @@
     var: version.stdout
 
 - name: Install VNC-Viewer
-  dnf:
+  ansible.builtin.dnf:
     name: "https://www.realvnc.com/download/file/viewer.files/VNC-Viewer-{{ version.stdout }}-Linux-x64.rpm"
     state: present

@@ -27,7 +27,7 @@
 
 # https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card/releases/download/v2.2.2/xiaomi-vacuum-map-card.js
 - name: "Pull custom components via release"
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ item.repo }}/releases/download/{{ item.version }}/{{ item.entity_name }}"
     dest: "{{ install_path }}/config/git/{{ item.name }}/{{ item.entity_name }}"
   when: item.release is defined and item.release == true
@@ -43,7 +43,7 @@
   loop: "{{ home_assistant_custom_components }}"
 
 - name: Copy www
-  copy:
+  ansible.builtin.copy:
     src: "{{ install_path }}/config/git/{{ item.name }}/{{ item.entity_name }}"
     dest: "{{ install_path }}/config/www/{{ item.entity_name }}"
     remote_src: true

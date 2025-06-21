@@ -1,6 +1,6 @@
 ---
 - name: Set vars
-  set_fact:
+  ansible.builtin.set_fact:
     vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
 
 - name: Destroy the domain with XML specification

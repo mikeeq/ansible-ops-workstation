@@ -9,7 +9,7 @@
 #     state: present
 
 - name: Install dnf deps
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ pkgs }}"
     state: present
   vars:
@@ -23,7 +23,7 @@
       - dbus-daemon
 
 - name: Install python deps
-  pip:
+  ansible.builtin.pip:
     name: psutil
     state: present
 

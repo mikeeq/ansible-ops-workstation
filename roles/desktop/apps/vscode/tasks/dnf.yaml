@@ -5,7 +5,7 @@
     key: https://packages.microsoft.com/keys/microsoft.asc
 
 - name: Add Visual Studio code repository to yum/dnf
-  copy:
+  ansible.builtin.copy:
     src: vscode.repo
     dest: /etc/yum.repos.d/vscode.repo
     owner: root

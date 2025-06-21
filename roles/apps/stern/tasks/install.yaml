@@ -5,18 +5,18 @@
     state: directory
 
 - name: Download stern
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/stern/stern/releases/download/v{{ stern_version }}/stern_{{ stern_version }}_linux_{{ architecture_common_name }}.tar.gz"
     dest: /tmp/stern/stern.tar.gz
 
 - name: Unarchive a file that is already on the remote machine
-  unarchive:
+  ansible.builtin.unarchive:
     src: /tmp/stern/stern.tar.gz
     dest: /tmp/stern
     remote_src: true
 
 - name: Copy stern
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/stern/stern"
     dest: "/usr/local/bin/stern"
     remote_src: true

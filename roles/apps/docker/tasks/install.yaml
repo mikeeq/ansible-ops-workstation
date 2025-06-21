@@ -7,7 +7,7 @@
   ignore_errors: true
 
 # - name: Remove old deps before installing docker
-#   package:
+#   ansible.builtin.package:
 #     name: "{{ pkgs }}"
 #     state: absent
 #   when: docker_check.rc != 0
@@ -53,7 +53,7 @@
   when: docker_repo_check.rc != 0
 
 - name: Install Docker
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ pkgs }}"
     state: present
   vars:

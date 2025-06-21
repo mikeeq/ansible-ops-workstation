@@ -3,7 +3,7 @@
 #   ansible.builtin.shell: cat /proc/acpi/wakeup | grep enabled | grep S3 | awk '{print $1,$4}'
 #   register: acpi_wakeup
 
-# - set_fact:
+# - ansible.builtin.set_fact:
 #     acpi_wakeup_device: "{{ acpi_wakeup.stdout.split(' ') }}"
 
 # - name: Disable ACPI S3 wakeup on XHC1
@@ -16,7 +16,7 @@
 #       SUBSYSTEM=="pci", KERNEL=="0000:00:14.0", ATTR{device}=="0x9c31" RUN+="/bin/sh -c '/bin/echo disabled > /sys$env{DEVPATH}/power/wakeup'"
 
 - name: Copy suspend-fix systemd unit
-  copy:
+  ansible.builtin.copy:
     src: "suspend-fix.service"
     dest: "/etc/systemd/system/suspend-fix.service"
     mode: 0755

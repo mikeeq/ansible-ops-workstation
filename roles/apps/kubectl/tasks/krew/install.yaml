@@ -5,17 +5,17 @@
     state: directory
 
 - name: Download krew binary
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/kubernetes-sigs/krew/releases/download/v{{ krew_version }}/krew-linux_{{ architecture_common_name }}.tar.gz"
     dest: /tmp/krew/krew.tar.gz
 
 - name: Download krew config
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/kubernetes-sigs/krew/releases/download/v{{ krew_version }}/krew.yaml"
     dest: /tmp/krew/krew.yaml
 
 - name: Unarchive a file that is already on the remote machine
-  unarchive:
+  ansible.builtin.unarchive:
     src: /tmp/krew/krew.tar.gz
     dest: /tmp/krew
     remote_src: true

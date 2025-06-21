@@ -11,7 +11,7 @@
 #     path: "/tmp/dhparams.pem"
 
 # - name: Copy dhparam
-#   copy:
+#   ansible.builtin.copy:
 #     src: "/tmp/dhparams.pem"
 #     dest: "{{ ssl_path }}/dhparams.pem"
 

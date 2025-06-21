@@ -1,6 +1,6 @@
 ---
 - name: Set vars
-  set_fact:
+  ansible.builtin.set_fact:
     vm_config_path: "{{ libvirt_images_dir }}/{{ vm.name }}.xml"
     vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
     vm_cloud_init_path: "{{ cloud_init_iso_dir }}/{{ vm.name }}.iso"
@@ -33,7 +33,7 @@
   register: qcow_check
 
 - name: Clone template storage
-  copy:
+  ansible.builtin.copy:
     remote_src: true
     src: "{{ libvirt_images_dir }}/{{ cloud_image_name }}"
     dest: "{{ vm_disk_path }}"

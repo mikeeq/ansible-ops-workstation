@@ -1,6 +1,6 @@
 ---
 - name: Install Dependencies
-  package:
+  ansible.builtin.package:
     name: bind-utils
     state: present
 
@@ -14,7 +14,7 @@
     chdir: "{{ install_path }}/config"
 
 - name: Create vars
-  set_fact:
+  ansible.builtin.set_fact:
     current_serial_number: >-
       {%- if current_serial_number_res.stdout == '' -%}
         {{ lookup('pipe','date +%Y%m%d') }}01

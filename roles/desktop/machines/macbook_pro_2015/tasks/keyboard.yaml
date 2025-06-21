@@ -26,7 +26,7 @@
   when: camera_add.changed
 
 - name: copy hid_apple config
-  copy:
+  ansible.builtin.copy:
     src: hid_apple.conf
     dest: /etc/modprobe.d/hid_apple.conf
 

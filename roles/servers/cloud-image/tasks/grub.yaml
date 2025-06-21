@@ -75,13 +75,13 @@
 
 # for int in $(netstat -i | grep eth | awk '{print $1}'); do echo -e "DEVICE=$int\nONBOOT=true\nBOOTPROTO=dhcp" > /etc/sysconfig/network-scripts/ifcfg-$int ; done
 - name: Copy image
-  copy:
+  ansible.builtin.copy:
     src: "{{ image_path }}"
     dest: "{{ base_image_path }}"
     remote_src: true
 
 - name: Copy image with date
-  copy:
+  ansible.builtin.copy:
     src: "{{ image_path }}"
     dest: "{{ base_image_path }}.{{ ansible_date_time.date }}"
     remote_src: true

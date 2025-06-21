@@ -9,7 +9,7 @@
 - name: Install vscode user config
   become: true
   become_user: "{{ user_name }}"
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "~/.config/Code/User/{{ item }}"
     owner: "{{ user_name }}"
