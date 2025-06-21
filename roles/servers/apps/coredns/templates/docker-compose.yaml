@@ -14,7 +14,7 @@ services:
       - '53:53/udp'
     volumes:
       - './config:/etc/coredns'
-    command: ["-conf", "/etc/coredns/Corefile"]
+    ansible.builtin.command: ["-conf", "/etc/coredns/Corefile"]
     logging:
       driver: "json-file"
       options:

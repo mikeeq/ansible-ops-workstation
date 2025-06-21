@@ -68,7 +68,7 @@
 - name: Check VM state
   virt:
     name: "{{ vm.name }}"
-    command: status
+    ansible.builtin.command: status
   register: vm_state
   ignore_errors: true
   failed_when: false
@@ -94,7 +94,7 @@
   virt:
     name: "{{ vm.name }}"
     flags: "nvram"
-    command: undefine
+    ansible.builtin.command: undefine
   when: (vm_config.changed or vm_force_recreation == true) and vm_state.exception is not defined
 
 - name: Wait for undefine of the VM
@@ -108,7 +108,7 @@
 
 - name: Define the domain with XML specification
   virt:
-    command: define
+    ansible.builtin.command: define
     xml: "{{ lookup('template', 'vm.xml.j2') }}"
   register: vm_config
 

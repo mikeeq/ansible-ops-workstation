@@ -104,7 +104,7 @@
     # - name: Enable Gnome Shell extensions
     #   become: true
     #   become_user: "{{ user_name }}"
-    #   command: gnome-shell-extension-tool --enable-extension {{ item.item.item.json.uuid }}
+    #   ansible.builtin.command: gnome-shell-extension-tool --enable-extension {{ item.item.item.json.uuid }}
     #   register: enable_gnome_shell_extensions
     #   loop: "{{ download_gnome_shell_extensions.results }}"
     #   loop_control:

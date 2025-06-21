@@ -33,7 +33,7 @@
   when: docker_image_exists.rc != 0 or jenkins_update
 
 - name: Run Jenkins using docker-compose
-  command: docker-compose up -d
+  ansible.builtin.command: docker-compose up -d
   changed_when: up_result.stderr_lines | length > 1
   register: up_result
   args:

@@ -6,7 +6,7 @@
 - name: Destroy the domain with XML specification
   virt:
     name: "{{ vm.name }}"
-    command: destroy
+    ansible.builtin.command: destroy
   ignore_errors: true
 
 - name: Remove storage

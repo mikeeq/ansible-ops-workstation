@@ -23,7 +23,7 @@
 
 # - name: "Build-ca"
 #   expect:
-#     command: /usr/share/easy-rsa/3/easyrsa build-ca
+#     ansible.builtin.command: /usr/share/easy-rsa/3/easyrsa build-ca
 #     responses:
 #       (?i)PEM pass phrase: "MySekretPa$$word"
 

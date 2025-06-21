@@ -1,5 +1,5 @@
 ---
 - name: reload gnome-shell
-  command: killall -HUP gnome-shell
+  ansible.builtin.command: killall -HUP gnome-shell
   become: true
   become_user: "{{ gnome_extension_owner }}"

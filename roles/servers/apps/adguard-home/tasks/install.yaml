@@ -29,20 +29,20 @@
 # - ansible.builtin.import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
-  command: docker-compose pull
+  ansible.builtin.command: docker-compose pull
   changed_when: pull_result.stderr_lines | length > 2
   register: pull_result
   args:
     chdir: "{{ install_path }}"
 
 - name: Run using docker-compose
-  command: docker-compose up -d
+  ansible.builtin.command: docker-compose up -d
   changed_when: up_result.stderr_lines | length > 2
   register: up_result
   args:
     chdir: "{{ install_path }}"
 
 # - name: Restart using docker-compose
-#   command: docker-compose restart
+#   ansible.builtin.command: docker-compose restart
 #   args:
 #     chdir: "{{ install_path }}"

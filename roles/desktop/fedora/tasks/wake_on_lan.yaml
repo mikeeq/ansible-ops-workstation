@@ -18,7 +18,7 @@
   register: wol_reg
 
 # - name: Reload systemd
-#   command: systemctl daemon-reload
+#   ansible.builtin.command: systemctl daemon-reload
 #   when: wol_reg.changed
 
 - name: Just force systemd to reread configs (2.4 and above)

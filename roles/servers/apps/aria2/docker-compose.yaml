@@ -39,7 +39,7 @@ services:
   AriaNg:
     container_name: ariang
     image: p3terx/ariang
-    command: --port 6880
+    ansible.builtin.command: --port 6880
     # network_mode: host
     # network_mode: bridge
     ports:

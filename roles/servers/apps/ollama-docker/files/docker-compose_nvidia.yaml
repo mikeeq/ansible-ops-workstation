@@ -51,7 +51,7 @@ services:
   #     - ollama
   #   volumes:
   #     - ./config/litellm/config.yaml:/app/config.yaml
-  #   command:
+  #   ansible.builtin.command:
   #     [
   #       "--config",
   #       "/app/config.yaml",
@@ -77,7 +77,7 @@ services:
   #     - ollama
   #   # volumes:
   #   #   - ./config/litellm/config.yaml:/app/config.yaml
-  #   # command:
+  #   # ansible.builtin.command:
   #   #   [
   #   #     "--config",
   #   #     "/app/config.yaml",
@@ -102,7 +102,7 @@ services:
 
   # redis:
   #   image: redis:7-alpine
-  #   command:
+  #   ansible.builtin.command:
   #     - sh
   #     - -c # this is to evaluate the $REDIS_PASSWORD from the env
   #     - redis-server --appendonly true --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
