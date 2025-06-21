@@ -8,7 +8,7 @@
   ignore_errors: true
 
 - name: "Installed version of azure_functions_core_tools:"
-  debug:
+  ansible.builtin.debug:
     var: installed_azure_functions_core_tools_version.stdout
 
 - ansible.builtin.include_tasks: get_latest_version.yaml

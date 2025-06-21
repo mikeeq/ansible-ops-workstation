@@ -15,5 +15,5 @@
     traffic_status_request_yaml: "{{ traffic_status_request.content | ansible.utils.from_xml }}"
 
 - name: Show traffic_status_request response content in YAML
-  debug:
+  ansible.builtin.debug:
     var: traffic_status_request_yaml.response

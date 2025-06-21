@@ -22,7 +22,7 @@
     mode: 0755
 
 - name: just force systemd to reread configs (2.4 and above)
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: Enable and start suspend-fix

@@ -8,7 +8,7 @@
   ignore_errors: true
 
 - name: "Installed version of ctop:"
-  debug:
+  ansible.builtin.debug:
     var: installed_ctop_version.stdout
 
 - ansible.builtin.include_tasks: get_latest_version.yaml

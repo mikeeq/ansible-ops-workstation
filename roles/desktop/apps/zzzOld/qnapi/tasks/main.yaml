@@ -7,7 +7,7 @@
   ignore_errors: true
 
 - name: 'Installed version of keeweb:'
-  debug:
+  ansible.builtin.debug:
     var: installed_version.stdout
 
 - name: Directory for qnapi
@@ -21,7 +21,7 @@
   changed_when: version_tag.stdout != installed_version.stdout
 
 - name: "Latest version of qnapi"
-  debug:
+  ansible.builtin.debug:
     var: version_tag.stdout
 
 # https://github.com/QNapi/qnapi/releases/download/0.2.3/qnapi-0.2.3.tar.gz

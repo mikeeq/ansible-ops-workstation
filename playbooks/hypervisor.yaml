@@ -3,7 +3,7 @@
   hosts: mikeeClevo
   become: true
   pre_tasks:
-    # - debug:
+    # - ansible.builtin.debug:
     #     var: hostvars[inventory_hostname]
   roles:
     - servers/network-static-dns

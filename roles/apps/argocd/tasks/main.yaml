@@ -8,7 +8,7 @@
   ignore_errors: true
 
 - name: "Installed version of argocd:"
-  debug:
+  ansible.builtin.debug:
     var: installed_argocd_version.stdout
 
 - ansible.builtin.include_tasks: get_latest_version.yaml

@@ -38,5 +38,5 @@
   args:
     chdir: "{{ jenkins_install_path }}"
 
-- debug:
+- ansible.builtin.debug:
     var: jenkins_jjb_run

@@ -9,7 +9,7 @@
   ignore_errors: true
 
 - name: 'Installed version of keeweb:'
-  debug:
+  ansible.builtin.debug:
     var: installed_version.stdout
 
 - name: Directory for KeeWeb
@@ -23,7 +23,7 @@
   changed_when: version_tag.stdout != installed_version.stdout
 
 - name: "Latest version of keeweb:"
-  debug:
+  ansible.builtin.debug:
     var: version_tag.stdout
 
 - name: Download .zip

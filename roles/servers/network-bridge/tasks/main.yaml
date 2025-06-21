@@ -11,11 +11,11 @@
 #   vars:
 #     item_name: "ansible_{{ item }}"
 
-# - debug:
+# - ansible.builtin.debug:
 #     var: ansible_interfaces
 
 # - name: print result
-#   debug:
+#   ansible.builtin.debug:
 #     var: nic_name
 
 - name: Set var nic_name

@@ -14,11 +14,11 @@
     dhcp_config: "{{ dhcp_status.content }}"
 
 - name: "Display var 'dhcp_config.static_leases'"
-  debug:
+  ansible.builtin.debug:
     var: dhcp_config.static_leases
 
 - name: "Display var 'dhcp'"
-  debug:
+  ansible.builtin.debug:
     var: dhcp
 
 - name: "Create empty tables 'dhcp_to_create' and 'dhcp_to_delete'"
@@ -45,7 +45,7 @@
   loop: "{{ dhcp }}"
 
 - name: "Print the 'dhcp_to_create' var"
-  debug:
+  ansible.builtin.debug:
     var: dhcp_to_create
 
 - name: "Create var 'dhcp_to_delete'"
@@ -67,7 +67,7 @@
   loop: "{{ dhcp_config.static_leases }}"
 
 - name: "Print the 'dhcp_to_delete' var"
-  debug:
+  ansible.builtin.debug:
     var: dhcp_to_delete
 
 # POST

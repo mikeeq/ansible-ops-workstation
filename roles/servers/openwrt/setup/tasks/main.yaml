@@ -54,5 +54,5 @@
 - ansible.builtin.import_tasks: config.yaml
 
 # - name: Extract string before dash from hostname
-#   debug:
+#   ansible.builtin.debug:
 #     msg: "{{ inventory_hostname.split('_')[1] }}"

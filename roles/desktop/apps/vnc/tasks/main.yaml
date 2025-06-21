@@ -5,7 +5,7 @@
   changed_when: false
 
 - name: "Latest version of VNC-Viewer:"
-  debug:
+  ansible.builtin.debug:
     var: version.stdout
 
 - name: Install VNC-Viewer

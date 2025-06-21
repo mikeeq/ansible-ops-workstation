@@ -6,7 +6,7 @@
   hosts: localhost
   become: true
   # pre_tasks:
-  #   - debug:
+  #   - ansible.builtin.debug:
   #       var: hostvars[inventory_hostname]
   roles:
     - desktop/machines/wsl

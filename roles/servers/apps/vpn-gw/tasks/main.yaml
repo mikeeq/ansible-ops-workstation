@@ -50,7 +50,7 @@
     backup: true
 
 - name: Enable service iptables
-  systemd:
+  ansible.builtin.systemd:
     name: iptables
     enabled: true
     state: started

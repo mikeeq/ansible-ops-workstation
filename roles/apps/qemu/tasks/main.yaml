@@ -32,6 +32,6 @@
     append: true
 
 - name: Enable service libvirtd
-  systemd:
+  ansible.builtin.systemd:
     name: libvirtd
     enabled: true

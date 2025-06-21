@@ -5,9 +5,9 @@
     - mikeeClevo
   become: true
   pre_tasks:
-    # - debug:
+    # - ansible.builtin.debug:
     #     var: hostvars[inventory_hostname]
-    # - debug:
+    # - ansible.builtin.debug:
     #     msg: "{{ user_name | password_hash('bcrypt', 1234567890123456789012) }}"
   roles:
     - servers/apps/home-assistant

@@ -15,7 +15,7 @@
     device_status_request_yaml: "{{ device_status_request.content | ansible.utils.from_xml }}"
 
 - name: Show device_status_request response content in YAML
-  debug:
+  ansible.builtin.debug:
     var: device_status_request_yaml.response
 
 # Uwagi:

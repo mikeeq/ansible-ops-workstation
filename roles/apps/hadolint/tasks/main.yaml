@@ -10,7 +10,7 @@
 - ansible.builtin.include_vars: "{{ ansible_architecture }}.yaml"
 
 - name: "Installed version of hadolint:"
-  debug:
+  ansible.builtin.debug:
     var: installed_hadolint_version.stdout
 
 - ansible.builtin.include_tasks: get_latest_version.yaml

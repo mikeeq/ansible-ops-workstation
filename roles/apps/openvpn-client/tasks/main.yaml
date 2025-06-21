@@ -17,7 +17,7 @@
       dest: pass.txt
 
 - name: Enable service openvpn-client@client.service
-  systemd:
+  ansible.builtin.systemd:
     name: openvpn-client@client.service
     enabled: true
     state: started

@@ -4,7 +4,7 @@
     path: /usr/bin/dnf
   register: dnf_symlink
 
-# - debug:
+# - ansible.builtin.debug:
 #     var: dnf_symlink
 
 - name: Bootstrap a host without python3-libdnf5 installed

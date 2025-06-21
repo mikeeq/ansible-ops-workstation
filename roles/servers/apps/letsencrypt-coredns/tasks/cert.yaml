@@ -32,10 +32,10 @@
     remaining_days: "{{ letsencrypt_days }}"
   register: le_challenge
 
-- debug:
+- ansible.builtin.debug:
     var: le_challenge
 
-- debug:
+- ansible.builtin.debug:
     msg: "Certificate is still valid for: {{ le_challenge.cert_days }} days"
   when: le_challenge.changed == false
 

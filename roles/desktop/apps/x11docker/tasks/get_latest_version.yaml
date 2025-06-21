@@ -5,7 +5,7 @@
   changed_when: false
 
 - name: "Latest version of x11docker:"
-  debug:
+  ansible.builtin.debug:
     var: version.stdout
 
 - name: "Set fact with latest version of x11docker"

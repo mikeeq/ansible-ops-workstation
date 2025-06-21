@@ -73,7 +73,7 @@
   ignore_errors: true
   failed_when: false
 
-# - debug:
+# - ansible.builtin.debug:
 #     var: vm_state
 
 - name: Shutdown if config changed and already running

@@ -15,5 +15,5 @@
     get_net_mode_yaml: "{{ get_net_mode_request.content | ansible.utils.from_xml }}"
 
 - name: Show get_net_mode_request response content in YAML
-  debug:
+  ansible.builtin.debug:
     var: get_net_mode_yaml.response

@@ -8,7 +8,7 @@
     # - mikeeClevo
   become: true
   pre_tasks:
-    # - debug:
+    # - ansible.builtin.debug:
     #     var: hostvars[inventory_hostname]
     # https://github.com/geerlingguy/docker-fedora41-ansible/issues/2
     - name: TEMP | Fix due to PAM error in some upstream images

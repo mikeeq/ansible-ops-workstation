@@ -26,14 +26,14 @@
 #   gather_facts: false
 #   tasks:
 #     # - name: Display all host groups
-#     #   debug:
+#     #   ansible.builtin.debug:
 #     #     msg: "{{ groups.keys() }}"
 #     # - name: Display all host groups and their hosts
-#     #   debug:
+#     #   ansible.builtin.debug:
 #     #     msg: "Group {{ item }} contains hosts: {{ groups[item] }}"
 #     #   loop: "{{ groups.keys() }}"
 #     - name: Show groups for a specific host
-#       debug:
+#       ansible.builtin.debug:
 #         var: hostvars[inventory_hostname]['group_names']
 
 - name: Bootstrap host

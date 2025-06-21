@@ -6,7 +6,7 @@
     mode: 0644
 
 - name: Force systemd to reload configs
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: Enable and start turbo-boost-off
