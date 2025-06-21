@@ -28,8 +28,8 @@
     bridge_slave_name: "br-vm-slave-{{ nic_name }}"
 
 - name: check active connection
-  # shell: nmcli con show --active | grep -i ethernet | grep -w {{ nic_name }} | awk '{print $1}' | head -n1
-  shell: nmcli -t -f NAME,TYPE,DEVICE c show --active | grep -v {{ bridge_slave_name }} | grep -w {{ nic_name }} | grep -i ethernet | cut -d':' -f1
+  # ansible.builtin.shell: nmcli con show --active | grep -i ethernet | grep -w {{ nic_name }} | awk '{print $1}' | head -n1
+  ansible.builtin.shell: nmcli -t -f NAME,TYPE,DEVICE c show --active | grep -v {{ bridge_slave_name }} | grep -w {{ nic_name }} | grep -i ethernet | cut -d':' -f1
   register: nmcli_active
   changed_when: false
 
@@ -68,7 +68,7 @@
   register: sysctl_changes
 
 - name: Reload sysctl
-  shell: sysctl -p
+  ansible.builtin.shell: sysctl -p
   when: sysctl_changes.changed
 
 - name: Disable previous connection

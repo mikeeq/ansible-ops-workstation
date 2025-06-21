@@ -1,6 +1,6 @@
 ---
 - name: "[Vagrant] Update all plugins"
-  shell: vagrant plugin update
+  ansible.builtin.shell: vagrant plugin update
   become: true
   become_user: "{{ user_name }}"
   register: vagrant_upd_output

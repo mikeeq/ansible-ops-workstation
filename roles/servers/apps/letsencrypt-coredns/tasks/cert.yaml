@@ -47,13 +47,13 @@
     record_state: present
 
 - name: Reload CoreDNS
-  shell: docker-compose restart
+  ansible.builtin.shell: docker-compose restart
   args:
     chdir: /opt/coredns
   when: le_challenge.changed
 
 - name: Check if DNS records propagated
-  shell: dig @127.0.0.1 -i txt {{ item.value['dns-01'].record }} | grep -w -- "{{ item.value['dns-01'].resource_value }}"
+  ansible.builtin.shell: dig @127.0.0.1 -i txt {{ item.value['dns-01'].record }} | grep -w -- "{{ item.value['dns-01'].resource_value }}"
   loop: "{{ le_challenge.challenge_data | dict2items }}"
   retries: 5
   changed_when: false
@@ -105,7 +105,7 @@
     record_state: absent
 
 - name: Reload CoreDNS
-  shell: docker-compose restart
+  ansible.builtin.shell: docker-compose restart
   args:
     chdir: /opt/coredns
   when: le_challenge.changed

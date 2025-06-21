@@ -16,6 +16,6 @@
 #     dest: "{{ ssl_path }}/dhparams.pem"
 
 - name: Generate OpenSSL TLS
-  shell: openvpn --genkey --secret {{ openvpn_ssl_path }}/tls.key
+  ansible.builtin.shell: openvpn --genkey --secret {{ openvpn_ssl_path }}/tls.key
   args:
     creates: "{{ openvpn_ssl_path }}/tls.key"

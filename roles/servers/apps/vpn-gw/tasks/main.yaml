@@ -38,7 +38,7 @@
   register: sysctl_changes
 
 - name: Reload sysctl
-  shell: sysctl -p
+  ansible.builtin.shell: sysctl -p
   when: sysctl_changes.changed
 
 - name: Configure iptables files

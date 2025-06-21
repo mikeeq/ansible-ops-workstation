@@ -60,7 +60,7 @@
   become: true
   tasks:
     # - name: Clean DNF
-    #   shell: dnf clean all
+    #   ansible.builtin.shell: dnf clean all
 
     - ansible.builtin.import_tasks: ../roles/pkg_mgmt/dnf/tasks/dnf5.yaml
     - ansible.builtin.import_tasks: ../roles/pkg_mgmt/dnf/tasks/update.yaml
@@ -163,4 +163,4 @@
   become: true
   tasks:
     - name: Cleanup Docker
-      shell: docker system prune -f --volumes
+      ansible.builtin.shell: docker system prune -f --volumes

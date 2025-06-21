@@ -2,7 +2,7 @@
 - name: Get installed version of aws-cli
   become: true
   become_user: "{{ user_name }}"
-  shell: aws --version | cut -d "/" -f2 | awk '{print $1}'
+  ansible.builtin.shell: aws --version | cut -d "/" -f2 | awk '{print $1}'
   register: installed_aws_cli_version
   changed_when: false
   ignore_errors: true

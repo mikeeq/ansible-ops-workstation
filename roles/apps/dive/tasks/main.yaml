@@ -2,7 +2,7 @@
 - name: Get installed version of dive
   become: true
   become_user: "{{ user_name }}"
-  shell: dive version | awk '{print $2}'
+  ansible.builtin.shell: dive version | awk '{print $2}'
   register: installed_dive_version
   changed_when: false
   ignore_errors: true

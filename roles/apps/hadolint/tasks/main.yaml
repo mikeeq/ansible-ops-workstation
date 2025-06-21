@@ -2,7 +2,7 @@
 - name: Get installed version of hadolint
   become: true
   become_user: "{{ user_name }}"
-  shell: hadolint -v | awk '{print $4}' | cut -d'-' -f1 | cut -d'v' -f2
+  ansible.builtin.shell: hadolint -v | awk '{print $4}' | cut -d'-' -f1 | cut -d'v' -f2
   register: installed_hadolint_version
   changed_when: false
   ignore_errors: true

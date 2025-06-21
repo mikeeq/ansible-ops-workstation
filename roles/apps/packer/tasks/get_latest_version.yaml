@@ -1,6 +1,6 @@
 ---
 - name: Get latest version
-  shell: curl -Ls https://releases.hashicorp.com/packer/ | grep packer | grep -v alpha | grep -v beta | cut -d'_' -f2 | cut -d'<' -f1 | head -n1
+  ansible.builtin.shell: curl -Ls https://releases.hashicorp.com/packer/ | grep packer | grep -v alpha | grep -v beta | cut -d'_' -f2 | cut -d'<' -f1 | head -n1
   register: version
   changed_when: false
 

@@ -1,6 +1,6 @@
 ---
 - name: Run Steam and battle.net
-  shell: |
+  ansible.builtin.shell: |
     if ps -ef | grep -v grep | grep -w "Battle.net.exe"; then
       echo "Steam is already running"
     else
@@ -27,7 +27,7 @@
   retries: 30
 
 - name: Run Steam and Epic Games Launcher
-  shell: |
+  ansible.builtin.shell: |
     if ps -ef | grep -v grep | grep -i "epic"; then
       echo "Steam is already running"
     else

@@ -1247,7 +1247,7 @@
 
   # Hide haskell version if it doesn't come from one of these sources.
   #
-  #   shell:  version is set by STACK_YAML
+  #   ansible.builtin.shell:  version is set by STACK_YAML
   #   local:  version is set by stack.yaml up the directory tree
   #   global: version is set by the implicit global project (~/.stack/global-project/stack.yaml)
   typeset -g POWERLEVEL9K_HASKELL_STACK_SOURCES=(shell local)

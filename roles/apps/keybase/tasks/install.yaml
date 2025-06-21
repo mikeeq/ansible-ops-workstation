@@ -27,7 +27,7 @@
     - ansible_distribution == "Ubuntu"
 
 - name: Run keybase
-  shell: run_keybase
+  ansible.builtin.shell: run_keybase
   args:
     creates: /keybase
 

@@ -30,7 +30,7 @@
   register: jenkins_jjb_copy
 
 - name: Run jjb in Docker image
-  shell: |
+  ansible.builtin.shell: |
     docker-compose exec jenkins /bin/bash -c "cd /var/jenkins_home/jjb && jenkins-jobs --conf ./config.ini update -r ./jobs/"
   changed_when: '"updated" in jenkins_jjb_run.stderr'
   register: jenkins_jjb_run

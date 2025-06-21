@@ -2,7 +2,7 @@
 - name: Get installed version of argocd
   become: true
   become_user: "{{ user_name }}"
-  shell: argocd version --client --short | awk '{print $2}' | cut -d'+' -f1 | cut -d'v' -f2
+  ansible.builtin.shell: argocd version --client --short | awk '{print $2}' | cut -d'+' -f1 | cut -d'v' -f2
   register: installed_argocd_version
   changed_when: false
   ignore_errors: true

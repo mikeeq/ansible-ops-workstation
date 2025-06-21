@@ -1,13 +1,13 @@
 ---
 - name: Install Snap Apps
-  shell: snap install {{ item }}
+  ansible.builtin.shell: snap install {{ item }}
   register: snap_output
   with_items:
     - "{{ snap_apps }}"
   changed_when: '"installed" in snap_output.stdout'
 
 - name: Install Snap Classic Apps
-  shell: snap install {{ item }} --classic
+  ansible.builtin.shell: snap install {{ item }} --classic
   register: snap_classic_output
   with_items:
     - "{{ snap_classic_apps }}"

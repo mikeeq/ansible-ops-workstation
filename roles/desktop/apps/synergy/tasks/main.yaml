@@ -4,7 +4,7 @@
 - name: Get installed version of synergy
   become: true
   become_user: "{{ user_name }}"
-  shell: /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version | grep -i synergy-core | awk '{print $2}' | cut -d'-' -f3 | cut -d',' -f1
+  ansible.builtin.shell: /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version | grep -i synergy-core | awk '{print $2}' | cut -d'-' -f3 | cut -d',' -f1
   register: installed_synergy_version
   changed_when: false
   ignore_errors: true

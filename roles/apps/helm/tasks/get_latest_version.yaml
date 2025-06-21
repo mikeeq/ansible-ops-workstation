@@ -1,6 +1,6 @@
 ---
 - name: Get latest version
-  shell: curl -Is https://github.com/helm/helm/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
+  ansible.builtin.shell: curl -Is https://github.com/helm/helm/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
   register: version
   changed_when: false
 

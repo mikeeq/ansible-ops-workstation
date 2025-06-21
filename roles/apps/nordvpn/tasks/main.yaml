@@ -1,6 +1,6 @@
 ---
 - name: Check if NordVPN repo is installed
-  shell: dnf repolist | grep -iq nordvpn
+  ansible.builtin.shell: dnf repolist | grep -iq nordvpn
   register: repo_exists
   changed_when: repo_exists.rc != 0
   ignore_errors: true

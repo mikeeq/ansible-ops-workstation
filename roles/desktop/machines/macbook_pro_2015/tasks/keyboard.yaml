@@ -7,20 +7,20 @@
     dest: "{{ git_modules_path }}/hid-apple-patched"
 
 - name: DKMS add
-  shell: dkms add .
+  ansible.builtin.shell: dkms add .
   args:
     chdir: "{{ git_modules_path }}/hid-apple-patched"
     creates: /usr/src/hid-apple-1.0
   register: camera_add
 
 - name: DKMS build
-  shell: dkms build hid-apple/1.0
+  ansible.builtin.shell: dkms build hid-apple/1.0
   args:
     chdir: "{{ git_modules_path }}/hid-apple-patched"
   when: camera_add.changed
 
 - name: DKMS install
-  shell: dkms install hid-apple/1.0
+  ansible.builtin.shell: dkms install hid-apple/1.0
   args:
     chdir: "{{ git_modules_path }}/hid-apple-patched"
   when: camera_add.changed

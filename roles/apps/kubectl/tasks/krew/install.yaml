@@ -40,7 +40,7 @@
 - name: Install krew
   become: true
   become_user: "{{ user_name }}"
-  shell: |
+  ansible.builtin.shell: |
     ./krew-"$(uname | tr '[:upper:]' '[:lower:]')_{{ architecture_common_name }}" install krew
   args:
     chdir: /tmp/krew

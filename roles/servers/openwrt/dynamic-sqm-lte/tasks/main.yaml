@@ -14,7 +14,7 @@
 # TODO: Add update mechanism
 # cat cake-autorate/cake-autorate.sh | grep -i 'version=' | cut -d'"' -f2 | awk '{print $1}'
 - name: Install cake-autorate
-  shell: |
+  ansible.builtin.shell: |
     wget -O /tmp/cake-autorate_setup.sh https://raw.githubusercontent.com/lynxthecat/CAKE-autorate/master/setup.sh
     sh /tmp/cake-autorate_setup.sh
   args:
@@ -49,15 +49,15 @@
   register: sqm_config
 
 - name: Restart SQM service
-  shell: service sqm restart
+  ansible.builtin.shell: service sqm restart
   when: sqm_config.changed
 
 - name: Check Dynamic SQM service status
-  shell: service cake-autorate status
+  ansible.builtin.shell: service cake-autorate status
   register: dynamic_sqm_status
   changed_when: false
   failed_when: false
 
 - name: "Change Dynamic SQM service: {{ cake_service }}"
-  shell: service cake-autorate {{ cake_service }}
+  ansible.builtin.shell: service cake-autorate {{ cake_service }}
   when: (dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (dynamic_sqm_status.stdout == "inactive" and cake_service == "start")

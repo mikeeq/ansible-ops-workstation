@@ -1,6 +1,6 @@
 ---
 - name: Get installed version
-  shell: helm version -c | cut -d'v' -f3 | cut -f1 -d'"'
+  ansible.builtin.shell: helm version -c | cut -d'v' -f3 | cut -f1 -d'"'
   register: installed_helm_version
   changed_when: false
   ignore_errors: true

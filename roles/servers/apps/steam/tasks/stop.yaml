@@ -1,6 +1,6 @@
 ---
 - name: Stop Steam
-  shell: |
+  ansible.builtin.shell: |
     if ps -ef | grep -v grep | grep -i "steam"; then
       echo "Killing Steam"
       flatpak kill com.valvesoftware.Steam

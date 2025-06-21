@@ -1,7 +1,7 @@
 ---
 # TODO
 - name: Get installed version
-  shell: cat /opt/qnapi/version.tag
+  ansible.builtin.shell: cat /opt/qnapi/version.tag
   register: installed_version
   changed_when: false
   ignore_errors: true
@@ -16,7 +16,7 @@
     state: directory
 
 - name: Get latest version
-  shell: curl -Is https://github.com/QNapi/qnapi/releases/latest | grep -i 'location:' | cut -d'"' -f2 | cut -d'/' -f8
+  ansible.builtin.shell: curl -Is https://github.com/QNapi/qnapi/releases/latest | grep -i 'location:' | cut -d'"' -f2 | cut -d'/' -f8
   register: version_tag
   changed_when: version_tag.stdout != installed_version.stdout
 
@@ -51,5 +51,5 @@
 #     remote_src: true
 
 - name: Add version file
-  shell: echo '{{ version_tag.stdout }}' > /opt/qnapi/version.tag
+  ansible.builtin.shell: echo '{{ version_tag.stdout }}' > /opt/qnapi/version.tag
   when: installed_version.stdout != version_tag.stdout

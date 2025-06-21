@@ -15,7 +15,7 @@
       - dkms
 
 - name: Install coolercontrol repo
-  shell: |
+  ansible.builtin.shell: |
     curl -1sLf 'https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/setup.rpm.sh' | sudo -E bash
   args:
     creates: /etc/yum.repos.d/coolercontrol-coolercontrol.repo
@@ -42,7 +42,7 @@
   register: update_nct6687d
 
 - name: Install nct6687d kernel module using dkms
-  shell: |
+  ansible.builtin.shell: |
     make dkms/install
   args:
     chdir: /opt/nct6687d

@@ -12,32 +12,32 @@
 #     dest: /tmp/bcwc_pcie/dkms.conf
 
 - name: Extract firmware
-  shell: make
+  ansible.builtin.shell: make
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie/firmware"
     creates: /usr/lib/firmware/facetimehd/firmware.bin
 
 - name: Install facetimehd firmware
-  shell: make install
+  ansible.builtin.shell: make install
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie/firmware"
     creates: /usr/lib/firmware/facetimehd/firmware.bin
 
 - name: DKMS add
-  shell: dkms add .
+  ansible.builtin.shell: dkms add .
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
     creates: /usr/src/facetimehd-0.1
   register: keyboard_add
 
 - name: DKMS build
-  shell: dkms build facetimehd/0.1
+  ansible.builtin.shell: dkms build facetimehd/0.1
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
   when: keyboard_add.changed
 
 - name: DKMS install
-  shell: dkms install facetimehd/0.1
+  ansible.builtin.shell: dkms install facetimehd/0.1
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
   when: keyboard_add.changed

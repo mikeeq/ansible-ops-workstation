@@ -3,7 +3,7 @@
 # https://github.com/keeweb/keeweb/releases/download/v1.6.3/KeeWeb-1.6.3.linux.x64.zip
 
 - name: Get installed version
-  shell: cat /opt/keeweb/version.tag
+  ansible.builtin.shell: cat /opt/keeweb/version.tag
   register: installed_version
   changed_when: false
   ignore_errors: true
@@ -18,7 +18,7 @@
     state: directory
 
 - name: Get latest version
-  shell: curl -Is "https://github.com/keeweb/keeweb/releases/latest" | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
+  ansible.builtin.shell: curl -Is "https://github.com/keeweb/keeweb/releases/latest" | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
   register: version_tag
   changed_when: version_tag.stdout != installed_version.stdout
 
@@ -51,5 +51,5 @@
     dest: /usr/share/applications/keeweb.desktop
 
 - name: Add version file
-  shell: echo '{{ version_tag.stdout }}' > /opt/keeweb/version.tag
+  ansible.builtin.shell: echo '{{ version_tag.stdout }}' > /opt/keeweb/version.tag
   when: installed_version.stdout != version_tag.stdout

@@ -1,6 +1,6 @@
 ---
 - name: Get latest version istioctl
-  shell: curl -Is https://github.com/istio/istio/releases/latest  | grep -i 'location:' | cut -f8 -d'/' | cut -d'"' -f1
+  ansible.builtin.shell: curl -Is https://github.com/istio/istio/releases/latest  | grep -i 'location:' | cut -f8 -d'/' | cut -d'"' -f1
   register: version
   changed_when: false
 

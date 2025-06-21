@@ -80,6 +80,6 @@
     comment: Openvpn
   become: true
 
-# - shell: iptables --delete INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
-# - shell: iptables-save > /etc/sysconfig/iptables
+# - ansible.builtin.shell: iptables --delete INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+# - ansible.builtin.shell: iptables-save > /etc/sysconfig/iptables
 # iptables -t nat -A POSTROUTING -s 10.69.0.24 -o eth0 -j MASQUERADE

@@ -1,6 +1,6 @@
 ---
 - name: Get latest version of x11docker
-  shell: curl -Is https://github.com/mviereck/x11docker/releases/latest | grep -i 'location:' | cut -f8 -d'/' | cut -f1 -d'"' | cut -d'v' -f2
+  ansible.builtin.shell: curl -Is https://github.com/mviereck/x11docker/releases/latest | grep -i 'location:' | cut -f8 -d'/' | cut -f1 -d'"' | cut -d'v' -f2
   register: version
   changed_when: false
 

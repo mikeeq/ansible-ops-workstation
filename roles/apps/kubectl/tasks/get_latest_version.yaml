@@ -1,6 +1,6 @@
 ---
 - name: Get latest version of kubectl
-  shell: curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt | cut -d'v' -f2
+  ansible.builtin.shell: curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt | cut -d'v' -f2
   register: version
   changed_when: false
 

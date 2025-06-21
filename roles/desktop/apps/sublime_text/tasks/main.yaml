@@ -1,6 +1,6 @@
 ---
 - name: Sublime repo
-  shell: dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+  ansible.builtin.shell: dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
   args:
     creates: /etc/yum.repos.d/sublime-text.repo
 

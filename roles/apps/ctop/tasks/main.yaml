@@ -2,7 +2,7 @@
 - name: Get installed version of ctop
   become: true
   become_user: "{{ user_name }}"
-  shell: ctop -v | cut -d' ' -f3 | cut -d',' -f1
+  ansible.builtin.shell: ctop -v | cut -d' ' -f3 | cut -d',' -f1
   register: installed_ctop_version
   changed_when: false
   ignore_errors: true

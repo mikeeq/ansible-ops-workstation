@@ -8,5 +8,5 @@
     # line: 'add_drivers+="hid_apple facetimehd"'
 
 - name: Rebuild initramfs
-  shell: dracut -fv
+  ansible.builtin.shell: dracut -fv
   when: dracut_conf.changed

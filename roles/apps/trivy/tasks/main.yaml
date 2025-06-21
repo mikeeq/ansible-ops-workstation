@@ -2,7 +2,7 @@
 - name: Get installed version
   become: true
   become_user: "{{ user_name }}"
-  shell: trivy version | awk '{print $3}' | cut -f2 -d'v'
+  ansible.builtin.shell: trivy version | awk '{print $3}' | cut -f2 -d'v'
   register: installed_trivy_version
   changed_when: false
   ignore_errors: true

@@ -5,7 +5,7 @@
     state: present
 
 - name: Snap symlink for classic apps
-  shell: ln -s /var/lib/snapd/snap /snap
+  ansible.builtin.shell: ln -s /var/lib/snapd/snap /snap
   args:
     creates: /snap
 

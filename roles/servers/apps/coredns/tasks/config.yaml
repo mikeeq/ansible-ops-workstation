@@ -5,7 +5,7 @@
     state: present
 
 - name: Find current serial number
-  shell: echo -n $(cat {{ coredns_zone_filename }} | grep -w '; serial' | cut -d';' -f1)
+  ansible.builtin.shell: echo -n $(cat {{ coredns_zone_filename }} | grep -w '; serial' | cut -d';' -f1)
   register: current_serial_number_res
   failed_when: current_serial_number_res.stdout == ""
   changed_when: false

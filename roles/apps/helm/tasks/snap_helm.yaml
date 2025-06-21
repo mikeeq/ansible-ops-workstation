@@ -2,7 +2,7 @@
 - name: Create directory structure
   become: true
   become_user: "{{ user_name }}"
-  shell: helm list
+  ansible.builtin.shell: helm list
   ignore_errors: true
   args:
     creates: "~{{ user_name }}/snap/helm/common/kube"

@@ -9,5 +9,5 @@
 # sudo modprobe -r hid_apple; sudo modprobe hid_apple
 
 - name: Rebuild initramfs
-  shell: dracut -fv
+  ansible.builtin.shell: dracut -fv
   when: hid_apple.changed

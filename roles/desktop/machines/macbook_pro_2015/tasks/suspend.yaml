@@ -1,6 +1,6 @@
 ---
 # - name: Get acpi wakeup devices
-#   shell: cat /proc/acpi/wakeup | grep enabled | grep S3 | awk '{print $1,$4}'
+#   ansible.builtin.shell: cat /proc/acpi/wakeup | grep enabled | grep S3 | awk '{print $1,$4}'
 #   register: acpi_wakeup
 
 # - set_fact:

@@ -10,7 +10,7 @@
       - tar
 
 - name: Get installed version
-  shell: terraform version | head -n 1 | grep v | cut -d'v' -f2
+  ansible.builtin.shell: terraform version | head -n 1 | grep v | cut -d'v' -f2
   register: installed_terraform_version
   changed_when: false
   ignore_errors: true

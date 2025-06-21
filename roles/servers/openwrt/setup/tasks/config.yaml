@@ -10,7 +10,7 @@
   register: config_change
 
 - name: refresh config
-  shell: uci commit
+  ansible.builtin.shell: uci commit
   when: config_change.changed
 
 # Handles ipv6 related tasks

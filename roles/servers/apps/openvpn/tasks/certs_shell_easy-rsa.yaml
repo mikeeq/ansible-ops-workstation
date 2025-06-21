@@ -14,7 +14,7 @@
 
 
 - name: "Init pki"
-  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} init-pki"
+  ansible.builtin.shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} init-pki"
   # register: google_chrome_repo
   # changed_when: google_chrome_repo.rc != 0
   ignore_errors: true
@@ -29,7 +29,7 @@
 
 
 - name: "Build-ca"
-  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-ca nopass"
+  ansible.builtin.shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-ca nopass"
   args:
     creates: "{{ ca_path }}"
 
@@ -37,21 +37,21 @@
 # build-server-full server nopass
 
 - name: "Build Server key and cert"
-  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-server-full {{ server_crt_name }} nopass"
+  ansible.builtin.shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-server-full {{ server_crt_name }} nopass"
   args:
     creates: "{{ server_crt_path }}"
 
 # ./build-dh
 
 - name: "Build a Diffie-Hellman key exchange"
-  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} gen-dh"
+  ansible.builtin.shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} gen-dh"
   args:
     creates: "{{ dh_path }}"
 
 # ./build-key client
 
 - name: "Build client cert"
-  shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-client-full {{ item }} nopass"
+  ansible.builtin.shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-client-full {{ item }} nopass"
   args:
     creates: "{{ pki_path }}/issued/{{ item }}.crt"
   with_items:

@@ -10,7 +10,7 @@
 - name: Get installed version
   become: true
   become_user: "{{ user_name }}"
-  shell: ~/.krew/bin/kubectl-krew version | grep GitTag | awk '{print $2}' | cut -d'v' -f2
+  ansible.builtin.shell: ~/.krew/bin/kubectl-krew version | grep GitTag | awk '{print $2}' | cut -d'v' -f2
   register: installed_krew_version
   changed_when: false
   ignore_errors: true

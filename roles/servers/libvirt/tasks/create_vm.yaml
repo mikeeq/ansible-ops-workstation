@@ -49,7 +49,7 @@
 # qemu-img resize disk.qcow2 30G
 
 # - name: Extend disk image
-#   shell: |
+#   ansible.builtin.shell: |
 #     virsh --connect qemu:///system vol-resize "{{ vm_disk_path }}" "{{ vm.disk_size }}"
 #     /sbin/xfs_growfs "{{ vm_disk_path }}"
 #   when: vm_force_recreation == true or qcow_check.stat.exists == false
@@ -60,7 +60,7 @@
 
 # virt-filesystems --long -h --all -a olddisk.qcow2
 - name: Create disk image and resize
-  shell: |
+  ansible.builtin.shell: |
     qemu-img create -f qcow2 -o preallocation=metadata {{ vm_disk_path }} {{ vm.disk_size }}
     virt-resize --expand /dev/sda3 "{{ libvirt_images_dir }}/{{ cloud_image_name }}" {{ vm_disk_path }}
   when: vm_force_recreation == true or qcow_check.stat.exists == false
@@ -83,7 +83,7 @@
   when: vm_state.exception is not defined and ((vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true)
 
 - name: Wait for shutdown of the VM
-  shell: virsh list | grep -w "{{ vm.name }}"
+  ansible.builtin.shell: virsh list | grep -w "{{ vm.name }}"
   register: shutdown_res
   failed_when: shutdown_res.rc == 0 or shutdown_res.rc >= 2
   retries: 10
@@ -98,7 +98,7 @@
   when: (vm_config.changed or vm_force_recreation == true) and vm_state.exception is not defined
 
 - name: Wait for undefine of the VM
-  shell: virsh list --all | grep -w "{{ vm.name }}"
+  ansible.builtin.shell: virsh list --all | grep -w "{{ vm.name }}"
   failed_when: undefine_res.rc == 0 or undefine_res.rc >= 2
   register: undefine_res
   retries: 10

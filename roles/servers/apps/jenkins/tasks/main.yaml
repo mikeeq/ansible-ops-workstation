@@ -1,6 +1,6 @@
 ---
 - name: Check docker-compose executable is present
-  shell: "which docker-compose"
+  ansible.builtin.shell: "which docker-compose"
   register: docker_compose_result
   ignore_errors: true
   changed_when: false

@@ -23,7 +23,7 @@
 # TODO: Add jenkins user to local machine
 
 - name: Check if docker image is present
-  shell: |
+  ansible.builtin.shell: |
     docker images --format {% raw %}'table {{.ID}}\t{{.Repository}}:{{.Tag}}\t{{.Size}}'{% endraw %} | grep -q {{ jenkins_image_name }}
   register: docker_image_exists
   ignore_errors: true

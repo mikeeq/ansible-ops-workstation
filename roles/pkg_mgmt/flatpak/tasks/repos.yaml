@@ -1,6 +1,6 @@
 ---
 - name: Check if flathub remote needs to be recreated
-  shell: flatpak remotes | grep -i flathub | grep -i filter
+  ansible.builtin.shell: flatpak remotes | grep -i flathub | grep -i filter
   register: flathub_recreate
   changed_when: false
   ignore_errors: true

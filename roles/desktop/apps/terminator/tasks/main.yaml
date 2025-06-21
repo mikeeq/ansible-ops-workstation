@@ -24,7 +24,7 @@
 # - name: Install Fonts
 #   become: true
 #   become_user: "{{ user_name }}"
-#   shell: "{{ git_modules_path }}/fonts/install.sh"
+#   ansible.builtin.shell: "{{ git_modules_path }}/fonts/install.sh"
 #   args:
 #     creates: ~/.local/share/fonts/ter-powerline-x12b.pcf.gz
 
@@ -48,7 +48,7 @@
 - name: Refresh Fonts
   become: true
   become_user: "{{ user_name }}"
-  shell: "fc-cache -f -v"
+  ansible.builtin.shell: "fc-cache -f -v"
   when: font_download.changed
 
 - name: Directory for terminator config

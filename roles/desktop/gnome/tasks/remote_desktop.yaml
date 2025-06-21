@@ -98,7 +98,7 @@
 - name: Compile RDP credentials script
   become: true
   become_user: "{{ user_name }}"
-  shell: gcc grd_rdp_credentials.c `pkg-config --libs --cflags libsecret-1` -o grd_rdp_credentials
+  ansible.builtin.shell: gcc grd_rdp_credentials.c `pkg-config --libs --cflags libsecret-1` -o grd_rdp_credentials
   args:
     chdir: ~/.config/remote-desktop
   when: grd_rdp_credentials_download.changed
@@ -106,7 +106,7 @@
 - name: Decrypt password
   become: true
   become_user: "{{ user_name }}"
-  shell: openssl enc -aes-256-cbc -pbkdf2 -salt -d -in rdp_credentials -k '{{ rdp_username }}:{{ rdp_password }}'
+  ansible.builtin.shell: openssl enc -aes-256-cbc -pbkdf2 -salt -d -in rdp_credentials -k '{{ rdp_username }}:{{ rdp_password }}'
   ignore_errors: true
   changed_when: false
   args:
@@ -116,7 +116,7 @@
 # - name: Unlock keyring
 #   become: true
 #   become_user: "{{ user_name }}"
-#   shell: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock
+#   ansible.builtin.shell: echo -n '{{ ansible_become_pass }}' | /usr/local/bin/keyring-unlock
 #   when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
 
 # - name: Unlock keyring
@@ -131,7 +131,7 @@
 - name: Generate RDP credentials
   become: true
   become_user: "{{ user_name }}"
-  shell: ./grd_rdp_credentials {{ rdp_username }} {{ rdp_password }}
+  ansible.builtin.shell: ./grd_rdp_credentials {{ rdp_username }} {{ rdp_password }}
   args:
     chdir: ~/.config/remote-desktop
   when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')
@@ -139,7 +139,7 @@
 - name: Encrypt password
   become: true
   become_user: "{{ user_name }}"
-  shell: echo -n 'ok' | openssl enc -aes-256-cbc -pbkdf2 -salt -out rdp_credentials -k '{{ rdp_username }}:{{ rdp_password }}'
+  ansible.builtin.shell: echo -n 'ok' | openssl enc -aes-256-cbc -pbkdf2 -salt -out rdp_credentials -k '{{ rdp_username }}:{{ rdp_password }}'
   args:
     chdir: ~/.config/remote-desktop
   when: rdp_current_creds.rc != 0 or (rdp_current_creds.rc == 0 and rdp_current_creds.stdout != 'ok')

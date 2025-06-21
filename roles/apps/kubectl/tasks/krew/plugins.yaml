@@ -2,7 +2,7 @@
 - name: Grab list of install kubectl krew plugins
   become: true
   become_user: "{{ user_name }}"
-  shell: |
+  ansible.builtin.shell: |
     ~/.krew/bin/kubectl-krew list | awk '{print $1}'
   register: krew_installed_plugins
   changed_when: false
@@ -10,7 +10,7 @@
 - name: Install plugins
   become: true
   become_user: "{{ user_name }}"
-  shell: |
+  ansible.builtin.shell: |
     ~/.krew/bin/kubectl-krew install {{ item }}
   with_items:
     - "{{ krew_plugins }}"
