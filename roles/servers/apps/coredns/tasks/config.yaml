@@ -23,7 +23,7 @@
       {%- endif -%}
 
 - name: Check coredns db file if any changes
-  template:
+  ansible.builtin.template:
     src: "{{ coredns_zone_file_path }}/{{ coredns_zone_filename }}"
     dest: "{{ install_path }}/config/{{ coredns_zone_filename }}"
     mode: 0664
@@ -33,7 +33,7 @@
   register: db_res
 
 - name: Configure coredns db file
-  template:
+  ansible.builtin.template:
     src: "{{ coredns_zone_file_path }}/{{ coredns_zone_filename }}"
     dest: "{{ install_path }}/config/{{ coredns_zone_filename }}"
     mode: 0664

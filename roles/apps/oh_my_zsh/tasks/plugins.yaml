@@ -44,7 +44,7 @@
     - root
 
 - name: "oh-my-zsh config"
-  template:
+  ansible.builtin.template:
     src: oh_my_zsh_zshrc.j2
     dest: "~{{ item }}/.zshrc"
     owner: "{{ item }}"

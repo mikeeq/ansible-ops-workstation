@@ -6,7 +6,7 @@
 
 - name: Put server.conf
   notify: restart_openvpn_server
-  template:
+  ansible.builtin.template:
     src: server.conf.j2
     dest: "{{ openvpn_server_config_path }}/server.conf"
     # owner: bin

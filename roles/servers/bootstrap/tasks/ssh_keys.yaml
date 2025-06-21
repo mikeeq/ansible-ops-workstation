@@ -12,7 +12,7 @@
     # - root
 
 - name: Copy ssh pub key
-  template:
+  ansible.builtin.template:
     src: "{{ ssh_keys_path }}/servers/id_rsa.pub"
     dest: "~{{ item }}/.ssh/authorized_keys"
     mode: 0600

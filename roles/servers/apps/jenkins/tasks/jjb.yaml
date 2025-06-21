@@ -12,7 +12,7 @@
     state: directory
 
 - name: Configure jjb
-  template:
+  ansible.builtin.template:
     src: "jjb/config.ini"
     dest: "{{ jenkins_home }}/jjb/config.ini"
     owner: "{{ jenkins_uid }}"
@@ -20,7 +20,7 @@
     mode: 0664
 
 - name: Add JJB jobs
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ jenkins_home }}/jjb/jobs/"
     owner: "{{ jenkins_uid }}"

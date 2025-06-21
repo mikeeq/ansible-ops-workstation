@@ -22,7 +22,7 @@
       name: "tls.key"
 
 - name: Add client openvpn config file
-  template:
+  ansible.builtin.template:
     src: client.conf.j2
     dest: "{{ openvpn_pull_client_config_path }}/client.conf"
   delegate_to: localhost

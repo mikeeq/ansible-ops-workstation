@@ -21,7 +21,7 @@
     creates: /root/cake-autorate/cake-autorate.sh
 
 - name: Configure dynamic SQM config
-  template:
+  ansible.builtin.template:
     src: "cake-autorate_config.sh"
     dest: "/root/cake-autorate/cake-autorate_config.primary.sh"
     owner: "root"

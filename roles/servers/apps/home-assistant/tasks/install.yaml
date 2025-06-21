@@ -7,7 +7,7 @@
     - "{{ install_path }}"
 
 - name: Configure docker-compose file
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/{{ item }}"
     mode: 0664

@@ -7,7 +7,7 @@
     - "{{ install_path }}"
 
 - name: Configure docker-compose file
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/{{ item }}"
     mode: 0664
@@ -16,7 +16,7 @@
     - docker-compose.yaml
 
 - name: Configure config file
-  template:
+  ansible.builtin.template:
     src: "{{ frigate_templates_path }}/{{ item }}"
     dest: "{{ install_path }}/{{ item }}"
     mode: 0664

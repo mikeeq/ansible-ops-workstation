@@ -23,7 +23,7 @@
     - ../files/config/*
 
 - name: Configure config templates
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/"
     mode: 0664
@@ -33,7 +33,7 @@
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/*"
 
 - name: Configure config/automations
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/automations/"
     mode: 0664
@@ -43,7 +43,7 @@
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/automations/*"
 
 - name: Configure config/sensors
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/sensors/"
     mode: 0664
@@ -54,7 +54,7 @@
 
 
 - name: Configure config/mqtt/sensors
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/sensors/"
     mode: 0664
@@ -63,7 +63,7 @@
     - ../templates/config/mqtt/sensors/*
 
 - name: Configure config/mqtt/binary_sensors
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/binary_sensors/"
     mode: 0664
@@ -72,7 +72,7 @@
     - ../templates/config/mqtt/binary_sensors/*
 
 - name: Configure config/mqtt/lights
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/lights/"
     mode: 0664
@@ -81,7 +81,7 @@
     - ../templates/config/mqtt/lights/*
 
 - name: Configure config/mqtt/switches
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/switches/"
     mode: 0664
@@ -90,7 +90,7 @@
     - ../templates/config/mqtt/switches/*
 
 - name: Configure config/mqtt/water_heater
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/water_heater/"
     mode: 0664

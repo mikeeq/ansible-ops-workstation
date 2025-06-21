@@ -12,7 +12,7 @@
     state: directory
 
 - name: Configure docker-compose for Jenkins
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ jenkins_install_path }}/{{ item }}"
     mode: 0664

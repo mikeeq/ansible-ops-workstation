@@ -1,6 +1,6 @@
 ---
 - name: Configure config templates
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "/etc/config/"
     mode: 0644

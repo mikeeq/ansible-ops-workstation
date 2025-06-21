@@ -13,7 +13,7 @@
     group: qemu
 
 - name: Render vm config
-  template:
+  ansible.builtin.template:
     src: vm.xml.j2
     dest: "{{ vm_config_path }}"
     owner: qemu

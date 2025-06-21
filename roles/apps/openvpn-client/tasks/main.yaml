@@ -5,7 +5,7 @@
     state: present
 
 - name: Configure ovpn client files
-  template:
+  ansible.builtin.template:
     src: "{{ ovpn_client_templates_path }}/{{ item.src }}"
     dest: "/etc/openvpn/client/{{ item.dest }}"
     mode: 0664

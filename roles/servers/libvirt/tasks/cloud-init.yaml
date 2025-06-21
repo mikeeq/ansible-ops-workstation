@@ -1,6 +1,6 @@
 ---
 - name: Create cloud-init config
-  template:
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ cloud_init_src_dir }}/{{ vm.name }}/{{ item.dest }}"
   loop: "{{ cloud_init_config_files }}"

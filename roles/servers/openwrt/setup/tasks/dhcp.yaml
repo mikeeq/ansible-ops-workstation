@@ -3,7 +3,7 @@
 # https://github.com/gekmihesg/ansible-openwrt/blob/master/library/uci.py
 
 - name: Configure dhcp config
-  template:
+  ansible.builtin.template:
     src: "dhcp.j2"
     dest: "/etc/config/dhcp"
     owner: "root"
