@@ -2,7 +2,7 @@
 - name: Download keyboard module
   become: true
   become_user: "{{ user_name }}"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/free5lot/hid-apple-patched.git'
     dest: "{{ git_modules_path }}/hid-apple-patched"
 

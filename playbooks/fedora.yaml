@@ -1,6 +1,6 @@
 ---
 - name: Include a playbook for including arch specifc vars
-  import_playbook: vars.yaml
+  ansible.builtin.import_playbook: vars.yaml
 
 - name: Fedora bootstrap
   hosts:
@@ -36,7 +36,7 @@
     # - apps/nordvpn
 
 - name: Include a playbook for generic-core provisioning
-  import_playbook: generic-core.yaml
+  ansible.builtin.import_playbook: generic-core.yaml
 
 - name: Include a playbook for generic provisioning
-  import_playbook: generic.yaml
+  ansible.builtin.import_playbook: generic.yaml

@@ -1,6 +1,6 @@
 ---
 - name: Add OS vars
-  include_vars: "{{ ansible_distribution | lower }}.yaml"
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}.yaml"
 
 - name: Check if installed
   ansible.builtin.shell: |

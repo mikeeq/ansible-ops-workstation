@@ -2,7 +2,7 @@
 - name: "ZSH autocomplete"
   become: true
   become_user: "{{ item }}"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/zsh-users/zsh-autosuggestions'
     dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
     update: true
@@ -13,7 +13,7 @@
 - name: "ZSH Syntax Highlighting"
   become: true
   become_user: "{{ item }}"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/zsh-users/zsh-syntax-highlighting'
     dest: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
     update: true
@@ -24,7 +24,7 @@
 - name: "Powerlevel10K theme"
   become: true
   become_user: "{{ item }}"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/romkatv/powerlevel10k'
     dest: "~/.oh-my-zsh/custom/themes/powerlevel10k"
     update: true
@@ -64,7 +64,7 @@
 - name: "Download zsh-completion"
   become: true
   become_user: "{{ item }}"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/zsh-users/zsh-completions'
     dest: "~/.oh-my-zsh/custom/plugins/zsh-completions"
     update: true
@@ -75,7 +75,7 @@
 - name: "Download fzf-tab-completion"
   become: true
   become_user: "{{ item }}"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/lincheney/fzf-tab-completion.git'
     dest: "~/.oh-my-zsh/custom/plugins/fzf-tab-completion"
     update: true
@@ -86,7 +86,7 @@
 - name: "Download fzf-tab"
   become: true
   become_user: "{{ item }}"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/Aloxaf/fzf-tab'
     dest: "~/.oh-my-zsh/custom/plugins/fzf-tab"
     update: true

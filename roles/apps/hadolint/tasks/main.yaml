@@ -7,7 +7,7 @@
   changed_when: false
   ignore_errors: true
 
-- include_vars: "{{ ansible_architecture }}.yaml"
+- ansible.builtin.include_vars: "{{ ansible_architecture }}.yaml"
 
 - name: "Installed version of hadolint:"
   debug:

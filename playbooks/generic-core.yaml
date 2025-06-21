@@ -1,6 +1,6 @@
 ---
 - name: Include a playbook for including arch specifc vars
-  import_playbook: vars.yaml
+  ansible.builtin.import_playbook: vars.yaml
 
 - name: Generic Core bootstrap
   hosts: "{{ hosts_to_deploy | default('local') }}"

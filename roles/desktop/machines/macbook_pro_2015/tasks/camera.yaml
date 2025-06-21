@@ -2,7 +2,7 @@
 - name: Download camera module
   become: true
   become_user: "{{ user_name }}"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/patjak/bcwc_pcie'
     dest: "{{ git_modules_path }}/bcwc_pcie"
 

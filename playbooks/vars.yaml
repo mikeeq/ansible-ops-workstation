@@ -4,4 +4,4 @@
     - "{{ hosts_to_deploy | default('local') }}"
   become: true
   pre_tasks:
-    - include_vars: group_vars/{{ ansible_architecture }}.yaml
+    - ansible.builtin.include_vars: group_vars/{{ ansible_architecture }}.yaml

@@ -1,6 +1,6 @@
 ---
 - name: Include a playbook for including arch specifc vars
-  import_playbook: vars.yaml
+  ansible.builtin.import_playbook: vars.yaml
 
 - name: Ubuntu WSL bootstrap
   hosts: localhost
@@ -12,7 +12,7 @@
     - desktop/machines/wsl
 
 - name: Include a playbook for generic-core provisioning
-  import_playbook: generic-core.yaml
+  ansible.builtin.import_playbook: generic-core.yaml
 
 - name: Include a playbook for generic provision
-  import_playbook: generic.yaml
+  ansible.builtin.import_playbook: generic.yaml

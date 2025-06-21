@@ -35,7 +35,7 @@
 # Tested on MSI B550 Tomahawk
 # https://github.com/Fred78290/nct6687d
 - name: "Install b550 hwmon kernel module"
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/Fred78290/nct6687d'
     dest: "/opt/nct6687d"
     update: true
