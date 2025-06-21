@@ -1,9 +1,9 @@
 ---
 - name: Install microsoft repo on Ubuntu
-  apt:
+  ansible.builtin.apt:
     deb: "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
     state: present
 
 - name: Refresh apt repos
-  apt:
+  ansible.builtin.apt:
     update_cache: true

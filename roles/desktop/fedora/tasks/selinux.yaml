@@ -1,6 +1,6 @@
 ---
 - name: Disabling selinux
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/selinux/config
     regexp: '^SELINUX='
     line: 'SELINUX=permissive'

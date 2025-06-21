@@ -1,6 +1,6 @@
 # https://github.com/debauchee/barrier/releases
 ---
-# - stat:
+# - ansible.builtin.stat:
 #     path: /usr/bin/barrier
 #   register: barrier
 

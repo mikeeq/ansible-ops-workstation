@@ -25,7 +25,7 @@
     # - root
 
 - name: Disable ssh key auth
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ item }}"
     regexp: ^PasswordAuthentication
     line: PasswordAuthentication no

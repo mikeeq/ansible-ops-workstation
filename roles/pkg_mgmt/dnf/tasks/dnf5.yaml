@@ -1,6 +1,6 @@
 ---
 - name: Check dnf symlink target
-  stat:
+  ansible.builtin.stat:
     path: /usr/bin/dnf
   register: dnf_symlink
 

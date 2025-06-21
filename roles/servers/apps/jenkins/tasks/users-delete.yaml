@@ -5,7 +5,7 @@
     jenkins_crumb_admin_password: "{{ jenkins_admin_password }}"
 
 - name: JENKINS-CREDENTIALS | Remove admin Jenkins account
-  uri:
+  ansible.builtin.uri:
     method: POST
     url: '{{ jenkins_url }}/securityRealm/user/{{ item }}/doDelete'
     user: "{{ jenkins_admin_username }}"

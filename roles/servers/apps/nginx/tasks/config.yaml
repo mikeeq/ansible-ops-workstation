@@ -11,7 +11,7 @@
   loop: "{{ certs | map(attribute='cn')}}"
 
 - name: Copy certs
-  ansible.builtin.copy::
+  ansible.builtin.copy:
     src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
     dest: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
     owner: root

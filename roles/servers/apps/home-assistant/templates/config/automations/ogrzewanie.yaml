@@ -25,7 +25,7 @@
       data: {}
       target:
         entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
-    # - service: switch.turn_on
+    # - ansible.builtin.service: switch.turn_on
     #   data: {}
     #   target:
     #     entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki

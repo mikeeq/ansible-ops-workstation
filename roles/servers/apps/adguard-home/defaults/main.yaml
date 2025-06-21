@@ -8,10 +8,10 @@ adguard_home_password: pass_tes1
 adguard_home_templates_path: templates
 
 dhcp:
-  - hostname: sony-ps5
+  - ansible.builtin.hostname: sony-ps5
     mac: 5c:96:66:2a:5a:ad
     ip: 192.168.1.41
-  - hostname: xbox-one-x
+  - ansible.builtin.hostname: xbox-one-x
     mac: 28:16:a8:ca:fa:61
     ip: 192.168.1.43
 

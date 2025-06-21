@@ -41,7 +41,7 @@
   when: dynamic_sqm_enabled == "false"
 
 - name: Change config SQM
-  lineinfile:
+  ansible.builtin.lineinfile:
     regexp: 'option\senabled'
     # \s{8}option\senabled\s.\d.
     line: "        option enabled '{{ sqm_enabled }}'"
@@ -58,6 +58,6 @@
   changed_when: false
   failed_when: false
 
-- name: "Change Dynamic SQM service: {{ cake_service }}"
+- name: "Change Dynamic SQM ansible.builtin.service: {{ cake_service }}"
   ansible.builtin.shell: service cake-autorate {{ cake_service }}
   when: (dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (dynamic_sqm_status.stdout == "inactive" and cake_service == "start")

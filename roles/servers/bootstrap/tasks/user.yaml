@@ -10,7 +10,7 @@
     password_lock: true
 
 - name: Make users passwordless for sudo in group wheel
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     state: present
     regexp: '^%wheel'

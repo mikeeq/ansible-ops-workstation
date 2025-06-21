@@ -54,7 +54,7 @@
     autoconnect: true
 
 - name: Allow ip forwarding for bridge network
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
     line: "{{ item }}"
   loop:

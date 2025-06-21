@@ -20,7 +20,7 @@
   poll: 0
 
 - name: Check battle_flag sync status
-  async_status:
+  ansible.builtin.async_status:
     jid: "{{ battle_flag.ansible_job_id }}"
   register: battle_flag_results
   until: battle_flag_results.finished
@@ -48,7 +48,7 @@
   poll: 0
 
 - name: Check epic_flag sync status
-  async_status:
+  ansible.builtin.async_status:
     jid: "{{ epic_flag.ansible_job_id }}"
   register: epic_flag_results
   until: epic_flag_results.finished

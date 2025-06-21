@@ -99,7 +99,7 @@
     - ../templates/config/mqtt/water_heater/*
 
 - name: Check that the .storage exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ install_path }}/config/.storage/onboarding"
   register: storage_result
 

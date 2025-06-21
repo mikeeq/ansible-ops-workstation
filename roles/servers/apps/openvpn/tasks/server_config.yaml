@@ -14,7 +14,7 @@
     # mode: 0644
 
 - name: Start openvpn-server@server service
-  service:
+  ansible.builtin.service:
     name: openvpn-server@server
     state: started
     enabled: true

@@ -21,6 +21,6 @@
     - keybindings.json
 
 - name: Enable better file watch in VScode by changing amount of concurrent open files in kernel params
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
     line: 'fs.inotify.max_user_watches=524288'

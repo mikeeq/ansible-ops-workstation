@@ -5,12 +5,12 @@
     state: present
 
 - name: Copy using inline content
-  ansible.builtin.copy::
+  ansible.builtin.copy:
     content: 'i2c-dev'
     dest: /etc/modules-load.d/i2c.conf
 
 - name: Copy using inline content
-  ansible.builtin.copy::
+  ansible.builtin.copy:
     content: 'KERNEL=="i2c-[0-9]*", GROUP="i2c"'
     dest: /etc/udev/rules.d/10-local_i2c_group.rules
 

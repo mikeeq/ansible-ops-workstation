@@ -1,6 +1,6 @@
 ---
 - name: Check if admin account is removed
-  stat:
+  ansible.builtin.stat:
     path: "{{ jenkins_home }}/secrets/adminAccountRemoved"
   register: jenkins_admin_account_removed_flag
 
@@ -32,7 +32,7 @@
     jenkins_crumb_admin_password: "{{ jenkins_used_admin_password }}"
 
 - name: JENKINS-CREDENTIALS | Add Jenkins administration account
-  uri:
+  ansible.builtin.uri:
     method: POST
     url: '{{ jenkins_url }}/securityRealm/createAccountByAdmin'
     user: "{{ jenkins_used_admin_username }}"

@@ -10,7 +10,7 @@
     daemon_reload: true
 
 - name: Enable and start turbo-boost-off
-  service:
+  ansible.builtin.service:
     name: turbo-boost-off.service
     enabled: true
     state: started

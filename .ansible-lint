@@ -1,14 +1,17 @@
 ---
 # profile: basic
-profile: null
+# profile: null
 
 # enable_list:
-#   - yaml
+#   # - yaml
+#   - fqcn
 
 skip_list:
+  - name
+  - var-naming
+  - risky-file-permissions
   - role-name[path]
-  - yaml[line-length]
-#   - name
+  # - yaml[line-length]
 #   - tags:formatting,yaml
 
 

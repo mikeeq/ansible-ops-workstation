@@ -66,7 +66,7 @@
     - ansible.builtin.import_tasks: ../roles/pkg_mgmt/dnf/tasks/update.yaml
 
     - name: Check if reboot required
-      stat:
+      ansible.builtin.stat:
         path: /var/run/reboot-required
       register: reboot_required_file
 

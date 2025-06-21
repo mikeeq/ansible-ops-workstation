@@ -30,7 +30,7 @@
 
 
 - name: Allow ip forwarding for tun network
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
     line: "{{ item }}"
   loop:

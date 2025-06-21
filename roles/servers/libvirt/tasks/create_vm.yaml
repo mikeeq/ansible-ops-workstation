@@ -28,7 +28,7 @@
   when: vm_force_recreation == true
 
 - name: Check if storage exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ vm_disk_path }}"
   register: qcow_check
 

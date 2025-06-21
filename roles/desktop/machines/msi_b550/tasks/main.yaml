@@ -27,7 +27,7 @@
     update_cache: true
 
 - name: Enable and start coolercontrold
-  service:
+  ansible.builtin.service:
     name: coolercontrold
     state: started
     enabled: true

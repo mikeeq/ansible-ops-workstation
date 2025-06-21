@@ -26,7 +26,7 @@
     daemon_reload: true
 
 - name: Enable and start suspend-fix
-  service:
+  ansible.builtin.service:
     name: suspend-fix.service
     enabled: true
     # state: started

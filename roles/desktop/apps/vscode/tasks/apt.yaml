@@ -14,5 +14,5 @@
     mode: 0644
 
 - name: Refresh apt repos
-  apt:
+  ansible.builtin.apt:
     update_cache: true

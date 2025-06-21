@@ -1,5 +1,5 @@
 ---
 - name: restart_ssh
-  service:
+  ansible.builtin.service:
     name: sshd
     state: restarted

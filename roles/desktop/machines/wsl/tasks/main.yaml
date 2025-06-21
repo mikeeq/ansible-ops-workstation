@@ -1,6 +1,6 @@
 ---
 - name: Check if kubectl is a symlink
-  stat:
+  ansible.builtin.stat:
     path: /usr/local/bin/kubectl
   register: kubectl_symlink
 
@@ -16,17 +16,17 @@
     state: present
 
 - name: Update all packages to the latest version
-  apt:
+  ansible.builtin.apt:
     upgrade: dist
     update_cache: true
 
 # - name: Install python3.11 package
-#   apt:
+#   ansible.builtin.apt:
 #     name: "python3.11"
 #     state: present
 
 - name: Install packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: present
   with_items:

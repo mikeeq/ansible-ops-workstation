@@ -17,7 +17,7 @@
 - name: Get Gnome Shell extension info
   become: true
   become_user: "{{ user_name }}"
-  uri:
+  ansible.builtin.uri:
     url: https://extensions.gnome.org/extension-info/?pk={{ item }}&shell_version={{ gnome_shell_version }}
     return_content: true
   loop: '{{ gnome_extension_ids }}'
@@ -36,7 +36,7 @@
     - name: Check for Gnome Shell extensions already installed
       become: true
       become_user: "{{ user_name }}"
-      stat:
+      ansible.builtin.stat:
         path: ~/.local/share/gnome-shell/extensions/{{ item.json.uuid }}
       register: st_existing_extensions
       loop: "{{ gnome_shell_extension_info.results }}"
