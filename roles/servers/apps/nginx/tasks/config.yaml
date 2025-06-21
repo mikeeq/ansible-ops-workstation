@@ -8,7 +8,7 @@
   ansible.builtin.file:
     path: "{{ certs_path }}/{{ item }}"
     state: directory
-  loop: "{{ certs | map(attribute='cn')}}"
+  loop: "{{ certs | map(attribute='cn') }}"
 
 - name: Copy certs
   ansible.builtin.copy:
@@ -18,6 +18,6 @@
     group: root
     mode: '0644'
   with_nested:
-    - "{{ certs | map(attribute='cn')}}"
+    - "{{ certs | map(attribute='cn') }}"
     - ['cert.key', 'cert.crt', 'cert.fullchain']
   register: cert_flag

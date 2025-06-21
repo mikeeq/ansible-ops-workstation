@@ -17,7 +17,7 @@
   ansible.builtin.set_fact:
     current_serial_number: >-
       {%- if current_serial_number_res.stdout == '' -%}
-        {{ lookup('pipe','date +%Y%m%d') }}01
+        {{ lookup('pipe', 'date +%Y%m%d') }}01
       {%- else -%}
         {{ current_serial_number_res.stdout | int }}
       {%- endif -%}

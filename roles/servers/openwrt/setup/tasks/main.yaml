@@ -46,10 +46,10 @@
 - ansible.builtin.import_tasks: dhcp.yaml
 
 - ansible.builtin.import_tasks: ap.yaml
-  when: openwrt_router_flag == false
+  when: not openwrt_router_flag
 
 - ansible.builtin.import_tasks: router.yaml
-  when: openwrt_router_flag == true
+  when: openwrt_router_flag
 
 - ansible.builtin.import_tasks: config.yaml
 

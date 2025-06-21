@@ -25,7 +25,7 @@ jenkins_users_to_delete:
   - "admin"
 
 jjb_username: jjb
-jjb_password: "{{ jenkins_users | selectattr('name','equalto',jjb_username) | map(attribute='password') | join }}"
+jjb_password: "{{ jenkins_users | selectattr('name', 'equalto', jjb_username) | map(attribute='password') | join }}"
 
 jenkins_admin_username: "{{ jjb_username }}"
 jenkins_admin_password: "{{ jjb_password }}"

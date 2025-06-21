@@ -52,7 +52,7 @@
       loop: "{{ st_existing_extensions.results }}"
       loop_control:
         label: "{{ item.item.json.name }}"
-      when: item.stat.exists == false
+      when: not item.stat.exists
       register: download_gnome_shell_extensions
 
     - name: Create install directories

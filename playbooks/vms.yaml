@@ -74,7 +74,7 @@
     - name: Reboot if required
       ansible.builtin.reboot:
       when:
-        - reboot_required_file.stat.exists == true
+        - reboot_required_file.stat.exists
         - inventory_hostname != "mikeeClevo"
 
 - name: Provision Clevo

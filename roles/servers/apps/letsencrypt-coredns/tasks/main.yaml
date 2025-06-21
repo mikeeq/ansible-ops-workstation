@@ -32,6 +32,6 @@
     path: "{{ certs_path }}/{{ item }}"
     state: directory
   delegate_to: 127.0.0.1
-  loop: "{{ certs | map(attribute='cn')}}"
+  loop: "{{ certs | map(attribute='cn') }}"
 
 - ansible.builtin.import_tasks: copy_certs.yaml

@@ -32,8 +32,8 @@
       {{ dhcp_to_create + entry }}
   when: old_entry_ip != item.ip or old_entry_hostname != item.hostname
   vars:
-    old_entry_ip: "{{ dhcp_config.static_leases | selectattr('mac','equalto',item['mac']) | map(attribute='ip') | first | default('N/A') }}"
-    old_entry_hostname: "{{ dhcp_config.static_leases | selectattr('mac','equalto',item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
+    old_entry_ip: "{{ dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
+    old_entry_hostname: "{{ dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
     entry: >-
       [
         {
@@ -54,8 +54,8 @@
   when:
     - (new_entry_ip != item.ip and new_entry_ip != 'N/A') or (new_entry_hostname != item.hostname and new_entry_hostname != 'N/A') or (new_entry_ip == 'N/A' and new_entry_hostname == 'N/A')
   vars:
-    new_entry_ip: "{{ dhcp | selectattr('mac','equalto',item['mac']) | map(attribute='ip') | first | default('N/A') }}"
-    new_entry_hostname: "{{ dhcp | selectattr('mac','equalto',item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
+    new_entry_ip: "{{ dhcp | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
+    new_entry_hostname: "{{ dhcp | selectattr('mac', 'equalto', item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
     entry: >-
       [
         {

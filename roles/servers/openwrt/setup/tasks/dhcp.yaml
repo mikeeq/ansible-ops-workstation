@@ -19,4 +19,4 @@
     state: reloaded
   when:
     - dhcp_flag.changed
-    - openwrt_router_flag == true
+    - openwrt_router_flag
