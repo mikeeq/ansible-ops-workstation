@@ -1,6 +1,6 @@
 ---
 - name: Directory for packer
-  file:
+  ansible.builtin.file:
     path: /tmp/packer
     state: directory
 

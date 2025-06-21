@@ -8,7 +8,7 @@
   register: slurp_res
 
 - name: Make sure that path for certs exists on localhost
-  file:
+  ansible.builtin.file:
     path: "{{ certs_path }}/{{ item }}"
     state: directory
   loop: "{{ certs | map(attribute='cn')}}"

@@ -35,7 +35,7 @@
   when: installed_tflint_version.stdout != tflint_version
 
 - name: Set permissions tflint
-  file:
+  ansible.builtin.file:
     path: /usr/local/bin/tflint
     mode: 0755
     owner: root

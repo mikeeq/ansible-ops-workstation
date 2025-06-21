@@ -1,6 +1,6 @@
 ---
 - name: Directory for rpm
-  file:
+  ansible.builtin.file:
     path: "{{ rpms_dwnl_path }}"
     state: directory
 

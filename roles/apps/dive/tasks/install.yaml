@@ -1,6 +1,6 @@
 ---
 - name: Directory for dive
-  file:
+  ansible.builtin.file:
     path: /tmp/dive
     state: directory
 

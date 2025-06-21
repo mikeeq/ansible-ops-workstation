@@ -43,7 +43,7 @@
   when: keyboard_add.changed
 
 # - name: Remove repo
-#   file:
+#   ansible.builtin.file:
 #     path: /tmp/bcwc_pcie
 #     state: absent
 

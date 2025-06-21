@@ -12,7 +12,7 @@
 - name: Directory for packagecontrol
   become: true
   become_user: "{{ user_name }}"
-  file:
+  ansible.builtin.file:
     path: "~/.config/sublime-text-3/Installed Packages"
     state: directory
     mode: 0700
@@ -22,7 +22,7 @@
 - name: Directory for user configs
   become: true
   become_user: "{{ user_name }}"
-  file:
+  ansible.builtin.file:
     path: "~/.config/sublime-text-3/Packages/User"
     state: directory
     mode: 0700

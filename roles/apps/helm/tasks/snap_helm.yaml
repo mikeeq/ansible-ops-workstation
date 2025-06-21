@@ -8,7 +8,7 @@
     creates: "~{{ user_name }}/snap/helm/common/kube"
 
 - name: Helm config
-  file:
+  ansible.builtin.file:
     src: "~{{ user_name }}/.kube/config"
     dest: "~{{ user_name }}/snap/helm/common/kube/config"
     owner: "{{ user_name }}"

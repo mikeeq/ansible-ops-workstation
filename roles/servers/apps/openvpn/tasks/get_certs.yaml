@@ -1,6 +1,6 @@
 ---
 - name: "Create {{ openvpn_pull_client_config_path }}"
-  file:
+  ansible.builtin.file:
     path: "{{ openvpn_pull_client_config_path }}"
     state: directory
   delegate_to: localhost

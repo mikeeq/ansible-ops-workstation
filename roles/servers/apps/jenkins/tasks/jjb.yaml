@@ -1,11 +1,11 @@
 ---
 # - name: Ensure jjb dir is cleaned
-#   file:
+#   ansible.builtin.file:
 #     path: "{{ jenkins_home }}/jjb/jobs/"
 #     state: absent
 
 - name: Ensure jjb dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ jenkins_home }}/jjb/jobs/"
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"

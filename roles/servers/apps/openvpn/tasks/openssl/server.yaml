@@ -1,6 +1,6 @@
 ---
 - name: Create directory for SERVER certs
-  file:
+  ansible.builtin.file:
     path: "{{ openvpn_server_cert_path }}"
     state: directory
 

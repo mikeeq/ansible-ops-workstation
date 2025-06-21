@@ -12,6 +12,6 @@
     chdir: "{{ ollama_docker_install_path }}"
 
 - name: Ensure install_path dir is removed
-  file:
+  ansible.builtin.file:
     path: "{{ ollama_docker_install_path }}"
     state: absent

@@ -1,6 +1,6 @@
 ---
 - name: Directory for terraform_docs
-  file:
+  ansible.builtin.file:
     path: /tmp/terraform_docs
     state: directory
 

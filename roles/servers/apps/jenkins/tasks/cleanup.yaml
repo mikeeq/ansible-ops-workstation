@@ -12,6 +12,6 @@
     chdir: "{{ jenkins_install_path }}"
 
 - name: Ensure jenkins_home dir is removed
-  file:
+  ansible.builtin.file:
     path: "{{ jenkins_home }}"
     state: absent

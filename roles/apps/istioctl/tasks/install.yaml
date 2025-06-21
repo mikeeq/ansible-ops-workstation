@@ -1,6 +1,6 @@
 ---
 - name: Directory for istioctl
-  file:
+  ansible.builtin.file:
     path: /tmp/istioctl
     state: directory
 

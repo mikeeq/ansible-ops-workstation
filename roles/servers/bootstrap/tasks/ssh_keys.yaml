@@ -1,6 +1,6 @@
 ---
 - name: Create directory for ssh
-  file:
+  ansible.builtin.file:
     path: "~{{ item }}/.ssh"
     state: directory
     mode: 0700

@@ -56,7 +56,7 @@
       register: download_gnome_shell_extensions
 
     - name: Create install directories
-      file:
+      ansible.builtin.file:
         path: "~{{ user_name }}/.local/share/gnome-shell/extensions/{{ item.item.item.json.uuid }}"
         state: directory
         owner: "{{ user_name }}"
@@ -112,7 +112,7 @@
     #   when: not item is skipped
   always:
     - name: Delete temporary download directory
-      file:
+      ansible.builtin.file:
         path: "{{ gnome_extension_download_dir.path }}"
         state: absent
       changed_when: false

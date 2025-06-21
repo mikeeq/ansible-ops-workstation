@@ -11,7 +11,7 @@
     var: installed_version.stdout
 
 - name: Directory for qnapi
-  file:
+  ansible.builtin.file:
     path: /opt/qnapi
     state: directory
 
@@ -32,7 +32,7 @@
   when: installed_version.stdout != version_tag.stdout
 
 - name: Remove old KeeWeb
-  file:
+  ansible.builtin.file:
     path: /opt/qnapi/*
     state: absent
   when: installed_version.stdout != version_tag.stdout

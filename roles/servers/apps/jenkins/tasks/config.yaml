@@ -7,7 +7,7 @@
     jenkins_ssh_gid: "root"
 
 - name: Ensure .ssh in jenkins_home dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ jenkins_ssh_path }}"
     owner: "{{ jenkins_ssh_uid }}"
     group: "{{ jenkins_ssh_gid }}"
@@ -33,7 +33,7 @@
     label: "{{ item.name }}"
 
 - name: Ensure secrets in jenkins_home dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ jenkins_home }}/secrets"
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
@@ -49,7 +49,7 @@
     remote_src: true
 
 - name: Create directory for Jenkins configuration as code
-  file:
+  ansible.builtin.file:
     path: "{{ jenkins_home }}/casc_configs"
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"

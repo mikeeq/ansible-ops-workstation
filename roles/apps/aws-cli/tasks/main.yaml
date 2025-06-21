@@ -33,7 +33,7 @@
     - ansible_distribution == "Ubuntu"
 
 - name: Create a symbolic link for aws-cli
-  file:
+  ansible.builtin.file:
     src: "/opt/pipx/venvs/awscli/bin/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     owner: root

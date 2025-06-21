@@ -1,6 +1,6 @@
 ---
 - name: Directory for azure_functions_core_tools
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   loop:
@@ -19,7 +19,7 @@
     remote_src: true
 
 - name: Set executable permissions
-  file:
+  ansible.builtin.file:
     path: "/opt/azure_functions_core_tools/{{ item }}"
     mode: 0755
     owner: root

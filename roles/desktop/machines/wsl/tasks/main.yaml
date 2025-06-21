@@ -5,7 +5,7 @@
   register: kubectl_symlink
 
 - name: Remove linked kubectl, from docker-desktop
-  file:
+  ansible.builtin.file:
     path: /usr/local/bin/kubectl
     state: absent
   when: kubectl_symlink.stat.islnk is not defined

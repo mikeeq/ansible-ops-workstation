@@ -14,7 +14,7 @@
       - packaging
 
 - name: Create directory for certs
-  file:
+  ansible.builtin.file:
     path: "{{ openvpn_ssl_path }}"
     state: directory
 

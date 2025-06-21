@@ -1,6 +1,6 @@
 ---
 - name: "Create directory for work profiles"
-  file:
+  ansible.builtin.file:
     path: "~{{ user_name }}/.work_profiles"
     state: directory
     owner: "{{ user_name }}"

@@ -5,7 +5,7 @@
     dest: /tmp/helm.tar.gz
 
 - name: Directory for helm
-  file:
+  ansible.builtin.file:
     path: /tmp/helm
     state: directory
 

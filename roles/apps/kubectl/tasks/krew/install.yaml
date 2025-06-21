@@ -1,6 +1,6 @@
 ---
 - name: Directory for krew
-  file:
+  ansible.builtin.file:
     path: /tmp/krew
     state: directory
 
@@ -21,14 +21,14 @@
     remote_src: true
 
 - name: change permissions krew
-  file:
+  ansible.builtin.file:
     path: /tmp/krew
     state: directory
     recurse: true
     owner: "{{ user_name }}"
 
 - name: Create directories for krew
-  file:
+  ansible.builtin.file:
     path: "~{{ user_name }}/{{ item }}"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"

@@ -1,6 +1,6 @@
 ---
 - name: Directory for kail
-  file:
+  ansible.builtin.file:
     path: /tmp/kail
     state: directory
 

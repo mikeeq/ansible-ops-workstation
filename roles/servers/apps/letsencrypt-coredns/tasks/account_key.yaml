@@ -1,6 +1,6 @@
 ---
 - name: "Create dir for LE account key - {{ account_path }}"
-  file:
+  ansible.builtin.file:
     path: "{{ account_path }}"
     state: directory
 

@@ -1,11 +1,11 @@
 ---
 - name: Ensure jenkins install dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ jenkins_install_path }}"
     state: directory
 
 - name: Ensure jenkins_home dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ jenkins_home }}"
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_uid }}"

@@ -1,6 +1,6 @@
 ---
 - name: Create directory for CA certs
-  file:
+  ansible.builtin.file:
     path: "{{ openvpn_ca_cert_path }}"
     state: directory
 

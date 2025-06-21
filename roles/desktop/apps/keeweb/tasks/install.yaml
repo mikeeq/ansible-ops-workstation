@@ -13,7 +13,7 @@
     var: installed_version.stdout
 
 - name: Directory for KeeWeb
-  file:
+  ansible.builtin.file:
     path: /opt/keeweb
     state: directory
 
@@ -33,7 +33,7 @@
   when: installed_version.stdout != version_tag.stdout
 
 - name: Remove old KeeWeb
-  file:
+  ansible.builtin.file:
     path: /opt/keeweb/*
     state: absent
   when: installed_version.stdout != version_tag.stdout

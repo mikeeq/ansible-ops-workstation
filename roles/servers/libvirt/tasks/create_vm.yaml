@@ -6,7 +6,7 @@
     vm_cloud_init_path: "{{ cloud_init_iso_dir }}/{{ vm.name }}.iso"
 
 - name: "Create directory for cloud-init configs"
-  file:
+  ansible.builtin.file:
     path: "{{ cloud_init_src_dir }}/{{ vm.name }}"
     state: directory
     owner: qemu

@@ -5,7 +5,7 @@
     size: 2048
 
 - name: Create directories for certs
-  file:
+  ansible.builtin.file:
     path: "{{ certs_path }}/{{ item }}"
     state: directory
   loop: "{{ certs | map(attribute='cn')}}"

@@ -9,7 +9,7 @@
       - dkms
 
 - name: Directory for git_modules
-  file:
+  ansible.builtin.file:
     path: "{{ git_modules_path }}"
     state: directory
     mode: 0755

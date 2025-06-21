@@ -20,7 +20,7 @@
   when: installed_kubectl_version.stdout != kubectl_version
 
 - name: Set permissions kubectl
-  file:
+  ansible.builtin.file:
     path: /usr/local/bin/kubectl
     mode: 0755
     owner: root

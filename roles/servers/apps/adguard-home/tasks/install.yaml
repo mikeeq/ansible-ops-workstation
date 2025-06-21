@@ -1,6 +1,6 @@
 ---
 - name: Ensure install dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   loop:

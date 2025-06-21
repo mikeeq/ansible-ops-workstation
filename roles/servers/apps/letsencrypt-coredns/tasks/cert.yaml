@@ -1,6 +1,6 @@
 ---
 - name: "Create dir for LE cert - {{ cert_path }}"
-  file:
+  ansible.builtin.file:
     path: "{{ cert_path }}"
     state: directory
 

@@ -10,6 +10,6 @@
   ignore_errors: true
 
 - name: Remove storage
-  file:
+  ansible.builtin.file:
     path: "{{ vm_disk_path }}"
     state: absent

@@ -14,7 +14,7 @@
 - ansible.builtin.import_tasks: account_key.yaml
 
 - name: "Create dir for certs - {{ certs_path }}"
-  file:
+  ansible.builtin.file:
     path: "{{ certs_path }}"
     state: directory
 
@@ -28,7 +28,7 @@
     domain_name: "{{ cert.domain_name }}"
 
 - name: Create directories for certs
-  file:
+  ansible.builtin.file:
     path: "{{ certs_path }}/{{ item }}"
     state: directory
   delegate_to: 127.0.0.1

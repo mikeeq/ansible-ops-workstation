@@ -7,7 +7,7 @@
 # --vars=FILE     : define a specific 'vars' file to use for Easy-RSA config
 
 # - name: Symlink easyrsa binary
-#   file:
+#   ansible.builtin.file:
 #     src: "{{ easyrsa_path }}"
 #     dest: "/usr/bin/easyrsa"
 #     state: link

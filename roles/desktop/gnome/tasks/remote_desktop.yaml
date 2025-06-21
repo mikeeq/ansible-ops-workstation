@@ -55,7 +55,7 @@
 - name: Make sure directory for tls cert exists
   become: true
   become_user: "{{ user_name }}"
-  file:
+  ansible.builtin.file:
     path: ~/.config/remote-desktop
     state: directory
 

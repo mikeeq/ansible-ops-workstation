@@ -1,6 +1,6 @@
 ---
 - name: Create directory for SERVER config
-  file:
+  ansible.builtin.file:
     path: "{{ openvpn_server_config_path }}"
     state: directory
 

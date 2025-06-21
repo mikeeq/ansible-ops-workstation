@@ -1,6 +1,6 @@
 ---
 - name: Directory for trivy
-  file:
+  ansible.builtin.file:
     path: /tmp/trivy
     state: directory
 

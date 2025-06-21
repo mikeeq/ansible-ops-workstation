@@ -1,6 +1,6 @@
 ---
 - name: Directory for Synergy
-  file:
+  ansible.builtin.file:
     path: /opt/synergy
     state: directory
 

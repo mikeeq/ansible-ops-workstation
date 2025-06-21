@@ -36,7 +36,7 @@
   when: installed_terraform_version.stdout != terraform_version
 
 - name: Set permissions terraform
-  file:
+  ansible.builtin.file:
     path: /usr/local/bin/terraform
     mode: 0755
     owner: root

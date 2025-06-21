@@ -28,7 +28,7 @@
     admin_account_status: "{{ jenkins_deleted_users.results | selectattr('item','equalto','admin') | map(attribute='status') | join }}"
 
 - name: Remove temp admin password
-  file:
+  ansible.builtin.file:
     path: "{{ jenkins_home }}/secrets/initialAdminPassword"
     state: absent
   when: admin_account_status == "200"

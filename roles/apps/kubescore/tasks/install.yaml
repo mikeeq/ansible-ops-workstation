@@ -1,6 +1,6 @@
 ---
 - name: Directory for kubescore
-  file:
+  ansible.builtin.file:
     path: /tmp/kubescore
     state: directory
 
