@@ -3,7 +3,7 @@
   ansible.builtin.copy:
     src: hid_apple.conf
     dest: /etc/modprobe.d/hid_apple.conf
-    mode: 0644
+    mode: "0600"
   register: hid_apple
 
 # sudo modprobe -r hid_apple; sudo modprobe hid_apple

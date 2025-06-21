@@ -4,9 +4,9 @@
     vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
 
 - name: Destroy the domain with XML specification
-  virt:
+  community.libvirt.virt:
     name: "{{ vm.name }}"
-    ansible.builtin.command: destroy
+    command: destroy
   ignore_errors: true
 
 - name: Remove storage

@@ -17,7 +17,7 @@
   ansible.builtin.get_url:
     url: "https://github.com/gruntwork-io/terragrunt/releases/download/v{{ terragrunt_version }}/terragrunt_linux_{{ architecture_common_name }}"
     dest: /usr/local/bin/terragrunt
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
   when: installed_terragrunt_version.stdout != terragrunt_version

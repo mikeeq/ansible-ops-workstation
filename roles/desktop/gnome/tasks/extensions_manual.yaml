@@ -61,7 +61,7 @@
         state: directory
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
-        mode: 0775
+        mode: "0775"
       loop: "{{ download_gnome_shell_extensions.results }}"
       loop_control:
         label: "{{ item.item.item.json.name }}"

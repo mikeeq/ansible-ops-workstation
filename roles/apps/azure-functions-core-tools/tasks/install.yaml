@@ -21,7 +21,7 @@
 - name: Set executable permissions
   ansible.builtin.file:
     path: "/opt/azure_functions_core_tools/{{ item }}"
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
   loop:

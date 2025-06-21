@@ -33,7 +33,7 @@
 #     path: "/tmp/barrier/barrier-2.1.0-Linux/bin"
 #     owner: root
 #     group: root
-#     mode: 0755
+#     mode: "0755"
 #     recurse: true
 #   when: barrier.stat.exists == false
 

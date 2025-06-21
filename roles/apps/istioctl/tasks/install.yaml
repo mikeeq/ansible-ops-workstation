@@ -20,6 +20,6 @@
     src: "/tmp/istioctl/istioctl"
     dest: "/usr/local/bin/istioctl"
     remote_src: true
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root

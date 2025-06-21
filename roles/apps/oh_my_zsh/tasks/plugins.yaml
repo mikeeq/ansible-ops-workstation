@@ -38,7 +38,7 @@
     dest: "~{{ item }}/.p10k.zsh"
     owner: "{{ item }}"
     backup: true
-    mode: 0644
+    mode: "0600"
   with_items:
     - "{{ user_name }}"
     - root
@@ -49,7 +49,7 @@
     dest: "~{{ item }}/.zshrc"
     owner: "{{ item }}"
     backup: true
-    mode: 0644
+    mode: "0600"
   with_items:
     - "{{ user_name }}"
     - root

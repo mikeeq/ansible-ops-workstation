@@ -19,7 +19,7 @@
     dest: "{{ jenkins_ssh_path }}/config"
     owner: "{{ jenkins_ssh_uid }}"
     group: "{{ jenkins_ssh_gid }}"
-    mode: 0600
+    mode: "0600"
 
 - name: Copy private SSH keys
   ansible.builtin.copy:
@@ -27,7 +27,7 @@
     dest: "{{ jenkins_ssh_path }}/{{ item.name }}"
     owner: "{{ jenkins_ssh_uid }}"
     group: "{{ jenkins_ssh_gid }}"
-    mode: 0600
+    mode: "0600"
   loop: "{{ jenkins_ssh_private_keys }}"
   loop_control:
     label: "{{ item.name }}"
@@ -45,7 +45,7 @@
     dest: "{{ jenkins_home }}/secrets/git_crypt_key"
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
-    mode: 0600
+    mode: "0600"
     remote_src: true
 
 - name: Create directory for Jenkins configuration as code

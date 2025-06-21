@@ -17,7 +17,7 @@
     dest: "{{ jenkins_home }}/jjb/config.ini"
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
-    mode: 0664
+    mode: "0664"
 
 - name: Add JJB jobs
   ansible.builtin.template:

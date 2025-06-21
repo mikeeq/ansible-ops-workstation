@@ -3,7 +3,7 @@
   ansible.builtin.copy:
     src: "turbo_boost_off.service"
     dest: "/etc/systemd/system/turbo-boost-off.service"
-    mode: 0644
+    mode: "0600"
 
 - name: Force systemd to reload configs
   ansible.builtin.systemd:

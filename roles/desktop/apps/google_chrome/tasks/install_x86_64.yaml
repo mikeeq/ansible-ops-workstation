@@ -5,7 +5,7 @@
     dest: /etc/yum.repos.d/google-chrome.repo
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: "0600"
 
 - name: Install chrome
   ansible.builtin.dnf:

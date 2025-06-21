@@ -9,7 +9,7 @@
 # - name: Disable ACPI S3 wakeup on XHC1
 #   blockinfile:
 #     path: /etc/udev/rules.d/90-xhc_sleep.rules
-#     mode: 0644
+#     mode: "0600"
 #     create: true
 #     block: |
 #       # disable wake from S3 on XHC1
@@ -19,7 +19,7 @@
   ansible.builtin.copy:
     src: "suspend-fix.service"
     dest: "/etc/systemd/system/suspend-fix.service"
-    mode: 0755
+    mode: "0755"
 
 - name: just force systemd to reread configs (2.4 and above)
   ansible.builtin.systemd:

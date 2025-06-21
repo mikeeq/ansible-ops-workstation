@@ -17,7 +17,7 @@
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../files/config/*
@@ -26,7 +26,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/*
@@ -36,7 +36,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/automations/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/automations/*
@@ -46,7 +46,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/sensors/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/sensors/*
@@ -57,7 +57,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/sensors/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/mqtt/sensors/*
@@ -66,7 +66,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/binary_sensors/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/mqtt/binary_sensors/*
@@ -75,7 +75,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/lights/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/mqtt/lights/*
@@ -84,7 +84,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/switches/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/mqtt/switches/*
@@ -93,7 +93,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/mqtt/water_heater/"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/mqtt/water_heater/*
@@ -107,7 +107,7 @@
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/.storage"
-    mode: 0664
+    mode: "0664"
     backup: true
   when: not storage_result.stat.exists
   with_fileglob:
@@ -117,7 +117,7 @@
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ install_path }}/config/"
-    mode: 0664
+    mode: "0664"
     backup: true
     force: false
   with_fileglob:

@@ -18,7 +18,7 @@
     dest: "{{ vm_config_path }}"
     owner: qemu
     group: qemu
-    mode: 0600
+    mode: "0600"
   register: vm_config
 
 - ansible.builtin.include_tasks: cloud-init.yaml
@@ -39,7 +39,7 @@
     dest: "{{ vm_disk_path }}"
     owner: qemu
     group: qemu
-    mode: 0600
+    mode: "0600"
   when: vm_force_recreation == true or qcow_check.stat.exists == false
 
 # TODO: Add disk size, default 5GB BTRFS only
@@ -66,9 +66,9 @@
   when: vm_force_recreation == true or qcow_check.stat.exists == false
 
 - name: Check VM state
-  virt:
+  community.libvirt.virt:
     name: "{{ vm.name }}"
-    ansible.builtin.command: status
+    command: status
   register: vm_state
   ignore_errors: true
   failed_when: false
@@ -77,7 +77,7 @@
 #     var: vm_state
 
 - name: Shutdown if config changed and already running
-  virt:
+  community.libvirt.virt:
     name: "{{ vm.name }}"
     state: shutdown
   when: vm_state.exception is not defined and ((vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true)
@@ -91,10 +91,10 @@
   when: (vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true
 
 - name: Undefine the domain with XML specification
-  virt:
+  community.libvirt.virt:
     name: "{{ vm.name }}"
     flags: "nvram"
-    ansible.builtin.command: undefine
+    command: undefine
   when: (vm_config.changed or vm_force_recreation == true) and vm_state.exception is not defined
 
 - name: Wait for undefine of the VM
@@ -107,13 +107,13 @@
     - vm_config.changed
 
 - name: Define the domain with XML specification
-  virt:
-    ansible.builtin.command: define
+  community.libvirt.virt:
+    command: define
     xml: "{{ lookup('template', 'vm.xml.j2') }}"
   register: vm_config
 
 - name: Start the vm after definition
-  virt:
+  community.libvirt.virt:
     name: "{{ vm.name }}"
     state: running
     autostart: true

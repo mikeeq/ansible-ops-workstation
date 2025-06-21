@@ -12,5 +12,5 @@
   ansible.builtin.file:
     path: "{{ git_modules_path }}"
     state: directory
-    mode: 0755
+    mode: "0755"
     owner: "{{ user_name }}"

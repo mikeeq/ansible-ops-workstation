@@ -10,4 +10,4 @@
     dest: /etc/yum.repos.d/vscode.repo
     owner: root
     group: root
-    mode: 0644
+    mode: "0600"

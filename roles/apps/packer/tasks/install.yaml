@@ -22,6 +22,6 @@
     src: "/tmp/packer/packer"
     dest: "/usr/local/bin/packer"
     remote_src: true
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root

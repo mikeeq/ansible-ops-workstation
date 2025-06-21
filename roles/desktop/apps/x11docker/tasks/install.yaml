@@ -3,6 +3,6 @@
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/mviereck/x11docker/v{{ x11docker_version }}/x11docker"
     dest: /usr/local/bin/x11docker
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root

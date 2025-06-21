@@ -3,7 +3,7 @@
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "/etc/config/"
-    mode: 0644
+    mode: "0600"
     backup: true
   with_fileglob:
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/openwrt/{{ inventory_hostname.split('_')[1] }}/*"

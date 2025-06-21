@@ -14,7 +14,7 @@
     dest: "~/.config/Code/User/{{ item }}"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
-    mode: 0664
+    mode: "0664"
     backup: true
   loop:
     - settings.json

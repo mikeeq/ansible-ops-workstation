@@ -13,7 +13,7 @@
   ansible.builtin.get_url:
     url: "{{ cloud_image_url }}"
     dest: "{{ libvirt_images_dir }}/{{ cloud_image_name }}"
-    mode: '0600'
+    mode: "0600"
     owner: qemu
     group: qemu
     checksum: "{{ cloud_image_checksum }}"

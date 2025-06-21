@@ -37,6 +37,6 @@
 - name: Set permissions tflint
   ansible.builtin.file:
     path: /usr/local/bin/tflint
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root

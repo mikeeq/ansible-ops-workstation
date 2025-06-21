@@ -10,7 +10,7 @@
     dest: /etc/yum.repos.d/tuxedo.repo
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: "0600"
 
 - name: Install tuxedo pkgs
   ansible.builtin.dnf:

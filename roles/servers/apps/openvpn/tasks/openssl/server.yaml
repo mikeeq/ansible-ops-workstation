@@ -25,7 +25,7 @@
     common_name: "{{ openvpn_certs_common_name }}"
 
 - name: Generate SERVER certificate
-  community.crypto.openssl_certificate:
+  community.crypto.x509_certificate:
     path: "{{ openvpn_server_cert_path }}/server.crt"
     privatekey_path: "{{ openvpn_server_cert_path }}/server.pem"
     csr_path: "{{ openvpn_server_cert_path }}/server.csr"

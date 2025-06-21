@@ -38,6 +38,6 @@
 - name: Set permissions terraform
   ansible.builtin.file:
     path: /usr/local/bin/terraform
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root

@@ -20,6 +20,6 @@
     src: "/tmp/stern/stern"
     dest: "/usr/local/bin/stern"
     remote_src: true
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root

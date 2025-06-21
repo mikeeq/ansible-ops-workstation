@@ -22,6 +22,6 @@
       nameserver 1.1.1.1
       nameserver 8.8.8.8
     dest: /etc/resolv.conf
-    mode: 0644
+    mode: "0600"
     owner: root
     group: root

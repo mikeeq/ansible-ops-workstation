@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: "{{ git_modules_path }}"
     state: directory
-    mode: 0755
+    mode: "0755"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
 
@@ -32,7 +32,7 @@
   ansible.builtin.file:
     path: "~{{ user_name }}/.local/share/fonts/"
     state: directory
-    mode: 0775
+    mode: "0775"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
 
@@ -55,7 +55,7 @@
   ansible.builtin.file:
     path: "~{{ user_name }}/.config/terminator"
     state: directory
-    mode: 0775
+    mode: "0775"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
 
@@ -63,7 +63,7 @@
   ansible.builtin.copy:
     src: terminator_config
     dest: "~{{ user_name }}/.config/terminator/config"
-    mode: 0664
+    mode: "0664"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
     backup: true

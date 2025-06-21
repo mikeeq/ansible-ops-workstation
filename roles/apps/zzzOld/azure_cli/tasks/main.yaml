@@ -14,7 +14,7 @@
       gpgcheck=1
       gpgkey=https://packages.microsoft.com/keys/microsoft.asc
     dest: /etc/yum.repos.d/azure-cli.repo
-    mode: 0644
+    mode: "0600"
 
 - name: Azure-cli
   ansible.builtin.package:

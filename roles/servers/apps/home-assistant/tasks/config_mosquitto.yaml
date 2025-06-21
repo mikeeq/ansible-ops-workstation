@@ -10,7 +10,7 @@
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ install_path }}/mosquitto/config"
-    mode: 0664
+    mode: "0664"
     backup: true
   with_fileglob:
     - ../templates//mosquitto/config/*

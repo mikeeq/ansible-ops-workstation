@@ -48,7 +48,7 @@
       echo >&2 "===]> Info: Restarting gnome-remote-desktop..."
       systemctl --user restart gnome-remote-desktop
     dest: /usr/local/bin/keyring-unlock
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
 
@@ -87,7 +87,7 @@
   ansible.builtin.get_url:
     url: https://gitlab.gnome.org/-/snippets/1778/raw/master/grd_rdp_credentials.c
     dest: "/home/{{ user_name }}/.config/remote-desktop/grd_rdp_credentials.c"
-    mode: '0640'
+    mode: "0640"
   register: grd_rdp_credentials_download
 
 - name: Install dependencies

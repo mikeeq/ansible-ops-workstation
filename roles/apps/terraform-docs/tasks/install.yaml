@@ -20,6 +20,6 @@
     src: "/tmp/terraform_docs/terraform-docs"
     dest: "/usr/local/bin/terraform-docs"
     remote_src: true
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
