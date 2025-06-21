@@ -6,7 +6,7 @@
     groups: wheel
     create_home: true
     append: true
-    ansible.builtin.shell: /bin/zsh
+    shell: /bin/zsh
     password_lock: true
 
 - name: Make users passwordless for sudo in group wheel

@@ -11,9 +11,9 @@
       - fzf
 
 - name: "Change user default shell to zsh"
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
-    ansible.builtin.shell: /bin/zsh
+    shell: /bin/zsh
   with_items:
     - "{{ user_name }}"
     - root
