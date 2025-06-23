@@ -4,7 +4,7 @@ hosts:
   - name: "fedora"
     # os: "generic/fedora35"
     os: "fedora/40-cloud-base"
-    ansible.builtin.hostname: "fedora.srv"
+    hostname: "fedora.srv"
     ip:
       - "10.0.0.10"
     cpu: "2"

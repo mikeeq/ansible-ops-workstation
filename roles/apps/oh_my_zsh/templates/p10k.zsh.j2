@@ -955,7 +955,7 @@
   # - CONDA_PROMPT_MODIFIER        Configurable prompt modifier (see below).
   # - P9K_ANACONDA_PYTHON_VERSION  Current python version (python --version).
   #
-  # CONDA_PROMPT_MODIFIER can be configured with the following ansible.builtin.command:
+  # CONDA_PROMPT_MODIFIER can be configured with the following command:
   #
   #   conda config --set env_prompt '({default_env}) '
   #
@@ -1127,7 +1127,7 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_JAVA_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
-  ###[ ansible.builtin.package: name@version from package.json (https://docs.npmjs.com/files/package.json) ]####
+  ###[ package: name@version from package.json (https://docs.npmjs.com/files/package.json) ]####
   # Package color.
   typeset -g POWERLEVEL9K_PACKAGE_FOREGROUND=0
   typeset -g POWERLEVEL9K_PACKAGE_BACKGROUND=6
@@ -1247,7 +1247,7 @@
 
   # Hide haskell version if it doesn't come from one of these sources.
   #
-  #   ansible.builtin.shell:  version is set by STACK_YAML
+  #   shell:  version is set by STACK_YAML
   #   local:  version is set by stack.yaml up the directory tree
   #   global: version is set by the implicit global project (~/.stack/global-project/stack.yaml)
   typeset -g POWERLEVEL9K_HASKELL_STACK_SOURCES=(shell local)
