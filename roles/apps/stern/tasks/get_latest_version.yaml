@@ -1,0 +1,13 @@
+---
+- name: Get latest version of stern
+  ansible.builtin.shell: curl -Is https://github.com/stern/stern/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
+  register: version
+  changed_when: false
+
+- name: "Latest version of stern:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of stern"
+  ansible.builtin.set_fact:
+    stern_version: "{{ version.stdout }}"

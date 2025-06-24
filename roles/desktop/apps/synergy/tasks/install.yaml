@@ -1,0 +1,30 @@
+---
+- name: Directory for Synergy
+  ansible.builtin.file:
+    path: /opt/synergy
+    state: directory
+
+- name: Git checkout
+  ansible.builtin.git:
+    repo: "https://github.com/symless/synergy-core"
+    dest: /opt/synergy/synergy-core
+    version: "{{ synergy_version }}"
+    depth: 1
+
+- name: Check if fix for flatpak is needed
+  ansible.builtin.shell: git config --global -l | grep -q 'protocol.file.allow=always'
+  register: flatpak_fix
+
+- name: Fix flatpak build
+  ansible.builtin.shell: git config --global --add protocol.file.allow always
+  when: flatpak_fix.rc != 0
+
+- name: Fix synergy.yaml
+  ansible.builtin.shell: echo -e 'build-options:\n  build-args:\n    - "--share=network"' >> synergy.yaml
+  args:
+    chdir: /opt/synergy/synergy-core/flatpak
+
+- name: Build flatpak
+  ansible.builtin.shell: flatpak-builder --install --force-clean build synergy.yaml
+  args:
+    chdir: /opt/synergy/synergy-core/flatpak

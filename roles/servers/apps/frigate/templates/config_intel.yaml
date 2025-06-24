@@ -1,0 +1,26 @@
+---
+mqtt:
+  host: 192.168.1.20
+  user: mqtt
+  password: password
+
+cameras:
+  kuchnia: # <------ Name the camera
+    ffmpeg:
+      hwaccel_args:
+        - -hwaccel
+        - vaapi
+        - -hwaccel_device
+        - /dev/dri/renderD128
+        - -hwaccel_output_format
+        - yuv420p
+      inputs:
+        - path: rtsp://192.168.1.52:554/ch0_0.h264 # <----- Update for your camera
+          roles:
+            - detect
+            - rtmp
+    rtmp:
+      enabled: false # <-- RTMP should be disabled if your stream is not H264
+    detect:
+      width: 1280 # <---- update for your camera's resolution
+      height: 720 # <---- update for your camera's resolution

@@ -7,7 +7,7 @@ Vagrant.require_version ">= 2.0.0"
 ENV["LC_ALL"] = "en_US.UTF-8"
 require 'yaml'
 CURRENT_DIR=File.dirname(__FILE__)
-hosts = YAML.load_file("#{CURRENT_DIR}/inventory/vagrant.yml")['hosts']
+hosts = YAML.load_file("#{CURRENT_DIR}/inventory/vagrant.yaml")['hosts']
 
 Vagrant.configure("2") do |config|
   hosts.each do |host|
@@ -43,10 +43,10 @@ Vagrant.configure("2") do |config|
       end
       # # Ansible provisioner.
       # vm_config.vm.provision "ansible" do |ansible|
-      #   ansible.playbook = "fedora.yml"
+      #   ansible.playbook = "fedora.yaml"
       #   ansible.config_file = "ansible.cfg"
       #   ansible.compatibility_mode = "2.0"
-      #   ansible.inventory_path = "inventory/hosts.yml"
+      #   ansible.inventory_path = "inventory/hosts.yaml"
       #   ansible.raw_arguments =
       #     [
       #       # "-vvv",

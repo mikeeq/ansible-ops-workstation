@@ -1,0 +1,13 @@
+---
+- name: Add Visual Studio Code rpm repo gpg key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://packages.microsoft.com/keys/microsoft.asc
+
+- name: Add Visual Studio code repository to yum/dnf
+  ansible.builtin.copy:
+    src: vscode.repo
+    dest: /etc/yum.repos.d/vscode.repo
+    owner: root
+    group: root
+    mode: "0600"

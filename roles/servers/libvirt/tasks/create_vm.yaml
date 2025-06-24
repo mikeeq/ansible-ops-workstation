@@ -1,0 +1,119 @@
+---
+- name: Set vars
+  ansible.builtin.set_fact:
+    vm_config_path: "{{ libvirt_images_dir }}/{{ vm.name }}.xml"
+    vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
+    vm_cloud_init_path: "{{ cloud_init_iso_dir }}/{{ vm.name }}.iso"
+
+- name: "Create directory for cloud-init configs"
+  ansible.builtin.file:
+    path: "{{ cloud_init_src_dir }}/{{ vm.name }}"
+    state: directory
+    owner: qemu
+    group: qemu
+
+- name: Render vm config
+  ansible.builtin.template:
+    src: vm.xml.j2
+    dest: "{{ vm_config_path }}"
+    owner: qemu
+    group: qemu
+    mode: "0600"
+  register: vm_config
+
+- ansible.builtin.include_tasks: cloud-init.yaml
+  when: vm_config.changed or vm_force_recreation == true or vm_force_cloud_init_recreation == true
+
+- ansible.builtin.include_tasks: destroy_vm.yaml
+  when: vm_force_recreation == true
+
+- name: Check if storage exists
+  ansible.builtin.stat:
+    path: "{{ vm_disk_path }}"
+  register: qcow_check
+
+- name: Clone template storage
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ libvirt_images_dir }}/{{ cloud_image_name }}"
+    dest: "{{ vm_disk_path }}"
+    owner: qemu
+    group: qemu
+    mode: "0600"
+  when: vm_force_recreation == true or qcow_check.stat.exists == false
+
+# TODO: Add disk size, default 5GB BTRFS only
+# qemu-img info disk.qcow2
+# virt-sparsify --in-place disk.qcow2
+# virt-resize
+# qemu-img resize disk.qcow2 30G
+
+# - name: Extend disk image
+#   ansible.builtin.shell: |
+#     virsh --connect qemu:///system vol-resize "{{ vm_disk_path }}" "{{ vm.disk_size }}"
+#     /sbin/xfs_growfs "{{ vm_disk_path }}"
+#   when: vm_force_recreation == true or qcow_check.stat.exists == false
+
+# virt-filesystems --long -h --all -a olddisk.qcow2
+# qemu-img create -f qcow2 -o preallocation=metadata newdisk.qcow2 50G
+# virt-resize --expand /dev/sda2 olddisk newdisk.qcow2
+
+# virt-filesystems --long -h --all -a olddisk.qcow2
+- name: Create disk image and resize
+  ansible.builtin.shell: |
+    qemu-img create -f qcow2 -o preallocation=metadata {{ vm_disk_path }} {{ vm.disk_size }}
+    virt-resize --expand /dev/sda3 "{{ libvirt_images_dir }}/{{ cloud_image_name }}" {{ vm_disk_path }}
+  when: vm_force_recreation == true or qcow_check.stat.exists == false
+
+- name: Check VM state
+  community.libvirt.virt:
+    name: "{{ vm.name }}"
+    command: status
+  register: vm_state
+  ignore_errors: true
+  failed_when: false
+
+# - ansible.builtin.debug:
+#     var: vm_state
+
+- name: Shutdown if config changed and already running
+  community.libvirt.virt:
+    name: "{{ vm.name }}"
+    state: shutdown
+  when: vm_state.exception is not defined and ((vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true)
+
+- name: Wait for shutdown of the VM
+  ansible.builtin.shell: virsh list | grep -w "{{ vm.name }}"
+  register: shutdown_res
+  failed_when: shutdown_res.rc == 0 or shutdown_res.rc >= 2
+  retries: 10
+  until: shutdown_res.rc == 1
+  when: (vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true
+
+- name: Undefine the domain with XML specification
+  community.libvirt.virt:
+    name: "{{ vm.name }}"
+    flags: "nvram"
+    command: undefine
+  when: (vm_config.changed or vm_force_recreation == true) and vm_state.exception is not defined
+
+- name: Wait for undefine of the VM
+  ansible.builtin.shell: virsh list --all | grep -w "{{ vm.name }}"
+  failed_when: undefine_res.rc == 0 or undefine_res.rc >= 2
+  register: undefine_res
+  retries: 10
+  until: undefine_res.rc == 1
+  when:
+    - vm_config.changed
+
+- name: Define the domain with XML specification
+  community.libvirt.virt:
+    command: define
+    xml: "{{ lookup('template', 'vm.xml.j2') }}"
+  register: vm_config
+
+- name: Start the vm after definition
+  community.libvirt.virt:
+    name: "{{ vm.name }}"
+    state: running
+    autostart: true

@@ -1,0 +1,37 @@
+---
+- name: oh-my-zsh deps
+  ansible.builtin.package:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - zsh
+      - curl
+      - git
+      - fzf
+
+- name: "Change user default shell to zsh"
+  ansible.builtin.user:
+    name: "{{ item }}"
+    shell: /bin/zsh
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- name: "Download oh-my-zsh"
+  become: true
+  become_user: "{{ item }}"
+  ansible.builtin.git:
+    repo: 'https://github.com/ohmyzsh/ohmyzsh'
+    dest: "~/.oh-my-zsh"
+    update: false
+  with_items:
+    - "{{ user_name }}"
+    - root
+
+- ansible.builtin.import_tasks: plugins.yaml
+- ansible.builtin.import_tasks: work.yaml
+
+- ansible.builtin.import_tasks: update.yaml
+  tags:
+    - update

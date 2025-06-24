@@ -1,0 +1,38 @@
+---
+- name: Ensure install dir exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}"
+
+- name: Configure docker-compose file
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/{{ item }}"
+    mode: "0664"
+    backup: true
+  loop:
+    - docker-compose.yaml
+
+- name: Pull Docker image using docker-compose
+  ansible.builtin.command: docker-compose pull
+  changed_when: pull_result.stderr_lines | length > 2
+  register: pull_result
+  args:
+    chdir: "{{ install_path }}"
+
+- name: Run using docker-compose
+  ansible.builtin.command: docker-compose up -d
+  changed_when: up_result.stderr_lines | length > 2
+  register: up_result
+  args:
+    chdir: "{{ install_path }}"
+
+# - name: Restart using docker-compose
+#   ansible.builtin.command: docker-compose restart
+#   args:
+#     chdir: "{{ install_path }}"
+
+# https://community.home-assistant.io/t/configuration-not-honored-during-initial-onboarding-process/196178/13
+# hass --script auth --config /config change_password

@@ -1,0 +1,19 @@
+---
+- name: Grab traffic status
+  ansible.builtin.uri:
+    url: "{{ huawei_url }}/api/monitoring/traffic-statistics"
+    return_content: true
+    method: GET
+    headers:
+      Content-Type: text/xml
+      Cookie: "{{ login_request.cookies_string }}"
+  register: traffic_status_request
+  failed_when: '"<error>" in traffic_status_request.content'
+
+- name: Transform traffic_status_request from XML to YAML
+  ansible.builtin.set_fact:
+    traffic_status_request_yaml: "{{ traffic_status_request.content | ansible.utils.from_xml }}"
+
+- name: Show traffic_status_request response content in YAML
+  ansible.builtin.debug:
+    var: traffic_status_request_yaml.response

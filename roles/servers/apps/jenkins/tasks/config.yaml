@@ -1,0 +1,66 @@
+---
+- name: SSH user set var
+  ansible.builtin.set_fact:
+    # jenkins_ssh_uid: "{{ jenkins_uid }}"
+    # jenkins_ssh_gid: "{{ jenkins_gid }}"
+    jenkins_ssh_uid: "root"
+    jenkins_ssh_gid: "root"
+
+- name: Ensure .ssh in jenkins_home dir exists
+  ansible.builtin.file:
+    path: "{{ jenkins_ssh_path }}"
+    owner: "{{ jenkins_ssh_uid }}"
+    group: "{{ jenkins_ssh_gid }}"
+    state: directory
+
+- name: Configure ssh config
+  ansible.builtin.template:
+    src: "ssh_config.j2"
+    dest: "{{ jenkins_ssh_path }}/config"
+    owner: "{{ jenkins_ssh_uid }}"
+    group: "{{ jenkins_ssh_gid }}"
+    mode: "0600"
+
+- name: Copy private SSH keys
+  ansible.builtin.copy:
+    content: "{{ item.value }}"
+    dest: "{{ jenkins_ssh_path }}/{{ item.name }}"
+    owner: "{{ jenkins_ssh_uid }}"
+    group: "{{ jenkins_ssh_gid }}"
+    mode: "0600"
+  loop: "{{ jenkins_ssh_private_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Ensure secrets in jenkins_home dir exists
+  ansible.builtin.file:
+    path: "{{ jenkins_home }}/secrets"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+    state: directory
+
+- name: Copy git-crypt key
+  ansible.builtin.copy:
+    content: "{{ jenkins_git_crypt_key | b64decode }}"
+    dest: "{{ jenkins_home }}/secrets/git_crypt_key"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+    mode: "0600"
+    remote_src: true
+
+- name: Create directory for Jenkins configuration as code
+  ansible.builtin.file:
+    path: "{{ jenkins_home }}/casc_configs"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+    state: directory
+
+- name: Configure Jenkins configuration as code
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ jenkins_home }}/casc_configs/"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_gid }}"
+  with_fileglob:
+    - ../templates/casc_configs/*
+  register: jenkins_config_file

@@ -1,14 +1,29 @@
 ---
 # profile: basic
-profile: null
+# profile: null
 
 # enable_list:
-#   - yaml
+#   # - yaml
+#   - fqcn
+
+exclude_paths:
+  - roles/servers/apps/home-assistant/files/config
 
 skip_list:
+  - name
+  - var-naming
+  - risky-file-permissions
   - role-name[path]
-  - yaml[line-length]
-#   - name
+  - no-changed-when
+  - risky-shell-pipe
+  - command-instead-of-shell
+  - command-instead-of-module
+  - no-handler
+  - latest
+  - literal-compare
+  - package-latest
+  - ignore-errors
+  # - yaml[line-length]
 #   - tags:formatting,yaml
 
 

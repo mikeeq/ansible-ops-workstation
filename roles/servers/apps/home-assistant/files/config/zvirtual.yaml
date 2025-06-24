@@ -37,6 +37,6 @@ devices:
   ogrzewanie_gora_pokoj_timi:
     - platform: switch
       name: ogrzewanie_gora_pokoj_timi
-  ogrzewanie_gora_pokoj_timi:
+  ogrzewanie_gora_korytarz:
     - platform: switch
       name: ogrzewanie_gora_korytarz

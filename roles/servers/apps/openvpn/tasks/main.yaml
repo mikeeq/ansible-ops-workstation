@@ -1,0 +1,13 @@
+---
+- ansible.builtin.import_tasks: install.yaml
+
+# - ansible.builtin.import_tasks: certs_shell_easy-rsa.yaml
+- ansible.builtin.import_tasks: certs_ansible_openssl.yaml
+
+- ansible.builtin.import_tasks: server_config.yaml
+- ansible.builtin.import_tasks: get_certs.yaml
+- ansible.builtin.import_tasks: selinux.yaml
+
+# - ansible.builtin.import_tasks: server_iptables.yaml
+# systemctl stop openvpn-server@server
+# less /var/log/openvpn.log

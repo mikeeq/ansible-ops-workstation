@@ -1,0 +1,8 @@
+---
+- name: Download docker_compose binary
+  ansible.builtin.get_url:
+    url: "https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-linux-{{ ansible_architecture }}"
+    dest: "/usr/local/bin/docker-compose"
+    mode: "0755"
+    owner: root
+    group: root

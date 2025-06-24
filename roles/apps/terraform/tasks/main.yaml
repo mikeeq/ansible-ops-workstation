@@ -1,0 +1,43 @@
+---
+# terraform_0.11.7_linux_amd64.zip
+- name: Install dependencies
+  ansible.builtin.package:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - unzip
+      - tar
+
+- name: Get installed version
+  ansible.builtin.shell: terraform version | head -n 1 | grep v | cut -d'v' -f2
+  register: installed_terraform_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of terraform:"
+  ansible.builtin.debug:
+    var: installed_terraform_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: terraform_version is not defined
+
+- name: Download terraform
+  ansible.builtin.get_url:
+    url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_{{ architecture_common_name }}.zip"
+    dest: /tmp/terraform.zip
+  when: installed_terraform_version.stdout != terraform_version
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/terraform.zip
+    dest: /usr/local/bin/
+    remote_src: true
+  when: installed_terraform_version.stdout != terraform_version
+
+- name: Set permissions terraform
+  ansible.builtin.file:
+    path: /usr/local/bin/terraform
+    mode: "0755"
+    owner: root
+    group: root

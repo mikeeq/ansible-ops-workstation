@@ -1,5 +1,0 @@
----
-# - name: "Disable SWAP by removing zram-generator-defaults.rpm"
-#   dnf:
-#     name: "zram-generator-defaults"
-#     state: absent

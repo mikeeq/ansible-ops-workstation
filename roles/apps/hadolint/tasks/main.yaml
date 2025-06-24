@@ -1,0 +1,20 @@
+---
+- name: Get installed version of hadolint
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: hadolint -v | awk '{print $4}' | cut -d'-' -f1 | cut -d'v' -f2
+  register: installed_hadolint_version
+  changed_when: false
+  ignore_errors: true
+
+- ansible.builtin.include_vars: "{{ ansible_architecture }}.yaml"
+
+- name: "Installed version of hadolint:"
+  ansible.builtin.debug:
+    var: installed_hadolint_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: hadolint_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when: installed_hadolint_version.stdout != hadolint_version

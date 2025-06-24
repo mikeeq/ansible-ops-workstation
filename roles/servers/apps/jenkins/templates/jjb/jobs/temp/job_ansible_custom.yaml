@@ -1,0 +1,32 @@
+---
+- job:
+    name: ansible_custom_run
+    display-name: Ansible Custom
+    concurrent: true
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+      - workspace-cleanup
+    builders:
+      - ansible.builtin.shell: "pwd && ls && id"
+      - ansible.builtin.shell: "cd ansible_ops_private && git-crypt unlock ~jenkins/secrets/git_crypt_key"
+      - ansible.builtin.shell: "cd ansible_ops_workstation && ANSIBLE_FORCE_COLOR=true ansible-playbook -i inventory/$INVENTORY $PLAYBOOK $EXTRA_PARAMETERS"
+    scm:
+      - ansible_ops_workstation
+      - ansible_ops_private
+    parameters:
+      - string:
+          name: BRANCH_ANSIBLE_OPS_WORKSTATION
+          default: 'main'
+      - string:
+          name: BRANCH_ANSIBLE_OPS_PRIVATE
+          default: 'main'
+      - string:
+          name: INVENTORY
+          default: 'prod.yaml'
+      - string:
+          name: PLAYBOOK
+          default: 'playbook_main.yaml'
+      - string:
+          name: EXTRA_PARAMETERS
+          default: ''

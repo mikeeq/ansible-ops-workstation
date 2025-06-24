@@ -1,0 +1,16 @@
+---
+- name: Get installed version
+  ansible.builtin.shell: packer --version | awk '{print $2}' | cut -d'v' -f2
+  register: installed_packer_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of packer:"
+  ansible.builtin.debug:
+    var: installed_packer_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: packer_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when: installed_packer_version.stdout != packer_version

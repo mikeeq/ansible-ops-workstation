@@ -1,0 +1,25 @@
+---
+- name: Directory for kubescore
+  ansible.builtin.file:
+    path: /tmp/kubescore
+    state: directory
+
+- name: Download kubescore binary
+  ansible.builtin.get_url:
+    url: "https://github.com/zegl/kube-score/releases/download/v{{ kubescore_version }}/kube-score_{{ kubescore_version }}_linux_{{ architecture_common_name }}.tar.gz"
+    dest: /tmp/kubescore/kubescore.tar.gz
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/kubescore/kubescore.tar.gz
+    dest: /tmp/kubescore
+    remote_src: true
+
+- name: Copy kubescore
+  ansible.builtin.copy:
+    src: "/tmp/kubescore/kube-score"
+    dest: "/usr/local/bin/kube-score"
+    remote_src: true
+    mode: "0755"
+    owner: root
+    group: root

@@ -1,0 +1,23 @@
+---
+# https://github.com/gruntwork-io/terragrunt/releases/download/v0.31.8/terragrunt_linux_amd64
+- name: Get installed version
+  ansible.builtin.shell: terragrunt --version | head -n 1 | grep v | cut -d'v' -f3
+  register: installed_terragrunt_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of terragrunt:"
+  ansible.builtin.debug:
+    var: installed_terragrunt_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: terragrunt_version is not defined
+
+- name: Download terragrunt
+  ansible.builtin.get_url:
+    url: "https://github.com/gruntwork-io/terragrunt/releases/download/v{{ terragrunt_version }}/terragrunt_linux_{{ architecture_common_name }}"
+    dest: /usr/local/bin/terragrunt
+    mode: "0755"
+    owner: root
+    group: root
+  when: installed_terragrunt_version.stdout != terragrunt_version

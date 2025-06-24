@@ -1,0 +1,54 @@
+---
+- name: Check docker-compose executable is present
+  ansible.builtin.shell: "which docker-compose"
+  register: docker_compose_result
+  ignore_errors: true
+  changed_when: false
+
+- name: Fail when docker-compose is not installed
+  ansible.builtin.fail:
+    msg: "docker-compose is not found! You need to install it first."
+  when: docker_compose_result.rc != 0
+
+- ansible.builtin.include_tasks: cleanup.yaml
+  when: jenkins_cleanup
+
+- ansible.builtin.import_tasks: config.yaml
+- ansible.builtin.import_tasks: install-docker-compose.yaml
+
+# - name: Restart Jenkins using docker-compose
+#   ansible.builtin.command: docker-compose restart
+#   args:
+#     chdir: "{{ jenkins_install_path }}"
+#   when: jenkins_config_file.changed
+
+- name: Wait for jenkins to be fully up
+  ansible.builtin.include_tasks: api-token.yaml
+  vars:
+    jenkins_crumb_admin_username: "{{ jenkins_admin_username }}"
+    jenkins_crumb_admin_password: "{{ jenkins_admin_password }}"
+
+- name: Reload Jenkins Configuration As Code
+  ansible.builtin.uri:
+    method: POST
+    url: '{{ jenkins_url }}/configuration-as-code/reload'
+    user: "{{ jenkins_admin_username }}"
+    password: "{{ jenkins_admin_password }}"
+    force_basic_auth: true
+    follow_redirects: all
+    return_content: true
+    headers:
+      Jenkins-Crumb: '{{ crumb.content.split(":")[1] }}'
+      Cookie: '{{ crumb.set_cookie }}'
+    body: 'Submit'
+  when: jenkins_config_file.changed
+  register: casc
+  changed_when: casc.status == 200
+
+# Replaced by configuration-as-code
+# - ansible.builtin.import_tasks: users-add.yaml
+# - ansible.builtin.import_tasks: users-delete.yaml
+
+- ansible.builtin.import_tasks: jjb.yaml
+  tags:
+    - jjb

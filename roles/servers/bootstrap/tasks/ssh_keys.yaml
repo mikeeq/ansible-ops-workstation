@@ -1,0 +1,36 @@
+---
+- name: Create directory for ssh
+  ansible.builtin.file:
+    path: "~{{ item }}/.ssh"
+    state: directory
+    mode: "0700"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  with_items:
+    - "{{ user_name }}"
+    - deploy
+    # - root
+
+- name: Copy ssh pub key
+  ansible.builtin.template:
+    src: "{{ ssh_keys_path }}/servers/id_rsa.pub"
+    dest: "~{{ item }}/.ssh/authorized_keys"
+    mode: "0600"
+    backup: true
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  with_items:
+    - "{{ user_name }}"
+    - deploy
+    # - root
+
+- name: Disable ssh key auth
+  ansible.builtin.lineinfile:
+    dest: "{{ item }}"
+    regexp: ^PasswordAuthentication
+    line: PasswordAuthentication no
+  ignore_errors: true
+  notify: restart_ssh
+  loop:
+    - /etc/ssh/sshd_config
+    - /etc/ssh/sshd_config.d/50-cloud-init.conf

@@ -1,2 +1,0 @@
----
-- include_tasks: "install_{{ ansible_architecture }}.yml"

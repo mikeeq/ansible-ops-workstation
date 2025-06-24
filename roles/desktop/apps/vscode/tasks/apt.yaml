@@ -1,0 +1,18 @@
+---
+- name: Add Visual Studio Code apt repo gpg key
+  ansible.builtin.apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/packages.microsoft.gpg
+
+- name: Add Visual Studio code repository to apt
+  ansible.builtin.copy:
+    src: vscode.list
+    dest: /etc/apt/sources.list.d/vscode.list
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Refresh apt repos
+  ansible.builtin.apt:
+    update_cache: true

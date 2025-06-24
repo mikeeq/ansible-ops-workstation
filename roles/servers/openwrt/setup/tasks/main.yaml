@@ -1,0 +1,58 @@
+---
+# - name: Update all opkgs
+#   community.general.opkg:
+#     name: "*"
+#     update_cache: true
+
+- name: Remove unneeded dependencies
+  community.general.opkg:
+    name: "{{ opkgs }}"
+    state: absent
+  vars:
+    opkgs:
+      - wpad-basic-mbedtls
+
+- name: Install dependencies
+  community.general.opkg:
+    name: "{{ opkgs }}"
+    state: present
+    update_cache: true
+  vars:
+    opkgs:
+      - bash
+      - fping
+      - iputils-ping
+      - luci-app-dawn
+      - wpad-mbedtls
+      - zabbix-agentd
+      - zabbix-extra-network
+      - zabbix-extra-wifi
+      - zabbix-extra-mac80211
+
+- name: Install extra dependencies
+  community.general.opkg:
+    name: "{{ opkgs }}"
+    state: present
+    update_cache: true
+  vars:
+    opkgs:
+      - luci-app-nlbwmon
+      - luci-app-vnstat2
+      - luci-app-statistics
+
+# https://docs.ansible.com/ansible/latest/collections/community/general/openwrt_init_module.html
+# https://docs.ansible.com/ansible/latest/collections/community/general/opkg_module.html
+
+- ansible.builtin.import_tasks: dhcp.yaml
+
+- ansible.builtin.import_tasks: ap.yaml
+  when: not openwrt_router_flag
+
+- ansible.builtin.import_tasks: router.yaml
+  when: openwrt_router_flag
+
+- ansible.builtin.import_tasks: config.yaml
+
+# - name: Extract string before dash from hostname
+#   ansible.builtin.debug:
+#     msg: "{{ inventory_hostname.split('_')[1] }}"

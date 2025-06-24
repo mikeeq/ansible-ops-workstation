@@ -1,0 +1,85 @@
+---
+- ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    in_interface: eth0
+    protocol: tcp
+    match: tcp
+    destination_port: 80
+    jump: REDIRECT
+    to_ports: 8600
+    comment: Redirect web traffic to port 8600
+  become: true
+
+- ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    # protocol: udp
+    # match: udp
+    jump: ACCEPT
+    # ctstate: NEW
+    in_interface: tun0
+    out_interface: eth1
+    comment: Openvpn forward
+    action: insert
+  become: true
+
+# -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+- ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    # protocol: udp
+    # match: udp
+    jump: ACCEPT
+    ctstate: ESTABLISHED,RELATED
+    comment: Openvpn forward2
+    action: insert
+  become: true
+
+- ansible.builtin.iptables:
+    table: filter
+    chain: INPUT
+    protocol: tcp
+    match: tcp
+    jump: ACCEPT
+    ctstate: NEW
+    destination_port: 443
+    comment: Openvpn entry
+    action: insert
+  become: true
+
+- ansible.builtin.iptables:
+    table: filter
+    chain: INPUT
+    protocol: tcp
+    match: tcp
+    jump: ACCEPT
+    ctstate: NEW
+    destination_port: 80
+    comment: sshd port
+    action: insert
+  become: true
+
+- ansible.builtin.iptables:
+    table: filter
+    chain: INPUT
+    protocol: tcp
+    ctstate: NEW
+    jump: ACCEPT
+    # ctstate: NEW
+    destination_port: 22
+    state: absent
+  become: true
+
+- ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    jump: MASQUERADE
+    source: 10.69.0.0/24
+    out_interface: eth1
+    comment: Openvpn
+  become: true
+
+# - ansible.builtin.shell: iptables --delete INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+# - ansible.builtin.shell: iptables-save > /etc/sysconfig/iptables
+# iptables -t nat -A POSTROUTING -s 10.69.0.24 -o eth0 -j MASQUERADE

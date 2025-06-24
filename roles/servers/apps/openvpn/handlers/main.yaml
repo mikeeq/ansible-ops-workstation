@@ -1,0 +1,5 @@
+---
+- name: restart_openvpn_server
+  ansible.builtin.service:
+    name: openvpn-server@server
+    state: restarted

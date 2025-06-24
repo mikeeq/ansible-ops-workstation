@@ -1,0 +1,4 @@
+---
+- ansible.builtin.import_tasks: install.yaml
+- ansible.builtin.import_tasks: plugins.yaml
+- ansible.builtin.import_tasks: config.yaml

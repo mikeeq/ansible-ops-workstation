@@ -1,0 +1,11 @@
+---
+- name: Fedora host
+  hosts: mikeeClevo
+  become: true
+  pre_tasks:
+    # - ansible.builtin.debug:
+    #     var: hostvars[inventory_hostname]
+  roles:
+    - servers/network-static-dns
+    - servers/network-bridge
+    - servers/libvirt

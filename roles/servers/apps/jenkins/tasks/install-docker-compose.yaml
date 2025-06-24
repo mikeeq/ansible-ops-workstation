@@ -1,0 +1,40 @@
+---
+- name: Ensure jenkins install dir exists
+  ansible.builtin.file:
+    path: "{{ jenkins_install_path }}"
+    state: directory
+
+- name: Ensure jenkins_home dir exists
+  ansible.builtin.file:
+    path: "{{ jenkins_home }}"
+    owner: "{{ jenkins_uid }}"
+    group: "{{ jenkins_uid }}"
+    state: directory
+
+- name: Configure docker-compose for Jenkins
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ jenkins_install_path }}/{{ item }}"
+    mode: "0664"
+  loop:
+    - docker-compose.yaml
+    - Dockerfile
+
+# TODO: Add jenkins user to local machine
+
+- name: Check if docker image is present
+  ansible.builtin.shell: |
+    docker images --format {% raw %}'table {{.ID}}\t{{.Repository}}:{{.Tag}}\t{{.Size}}'{% endraw %} | grep -q {{ jenkins_image_name }}
+  register: docker_image_exists
+  ignore_errors: true
+  changed_when: false
+
+- ansible.builtin.include_tasks: update.yaml
+  when: docker_image_exists.rc != 0 or jenkins_update
+
+- name: Run Jenkins using docker-compose
+  ansible.builtin.command: docker-compose up -d
+  changed_when: up_result.stderr_lines | length > 1
+  register: up_result
+  args:
+    chdir: "{{ jenkins_install_path }}"

@@ -1,0 +1,16 @@
+---
+- name: Install dkms
+  ansible.builtin.dnf:
+    name: "{{ pkgs }}"
+    state: latest
+  vars:
+    pkgs:
+      - kernel-devel
+      - dkms
+
+- name: Directory for git_modules
+  ansible.builtin.file:
+    path: "{{ git_modules_path }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ user_name }}"

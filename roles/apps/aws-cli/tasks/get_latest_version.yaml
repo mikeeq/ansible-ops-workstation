@@ -1,0 +1,13 @@
+---
+- name: Get latest version aws_cli
+  ansible.builtin.shell: basename $(curl -Ls https://github.com/aws/aws-cli/tags/ | grep -i "archive" | grep -i "tar.gz" | grep -i "tags/{{ aws_cli_base_version }}" | cut -d'=' -f3 | cut -d'"' -f2 | head -n 1) .tar.gz
+  register: version
+  changed_when: false
+
+- name: "Latest version of aws_cli:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of aws_cli"
+  ansible.builtin.set_fact:
+    aws_cli_version: "{{ version.stdout }}"

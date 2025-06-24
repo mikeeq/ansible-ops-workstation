@@ -1,0 +1,18 @@
+---
+- name: Add saving last choice to grub config
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    line: GRUB_DEFAULT=saved
+    regexp: '^GRUB_DEFAULT='
+  notify: save_grub_config
+  tags:
+    - dont_run_in_docker
+
+- name: Add saving default choice to grub config
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    line: GRUB_SAVEDEFAULT=true
+    regexp: '^GRUB_SAVEDEFAULT='
+  notify: save_grub_config
+  tags:
+    - dont_run_in_docker

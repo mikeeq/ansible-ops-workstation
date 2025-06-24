@@ -1,0 +1,25 @@
+---
+- name: Directory for trivy
+  ansible.builtin.file:
+    path: /tmp/trivy
+    state: directory
+
+- name: Download trivy binary
+  ansible.builtin.get_url:
+    url: "https://github.com/aquasecurity/trivy/releases/download/v{{ trivy_version }}/trivy_{{ trivy_version }}_Linux-64bit.tar.gz"
+    dest: /tmp/trivy/trivy.tar.gz
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/trivy/trivy.tar.gz
+    dest: /tmp/trivy
+    remote_src: true
+
+- name: Copy trivy
+  ansible.builtin.copy:
+    src: "/tmp/trivy/trivy"
+    dest: "/usr/local/bin/trivy"
+    remote_src: true
+    mode: "0755"
+    owner: root
+    group: root

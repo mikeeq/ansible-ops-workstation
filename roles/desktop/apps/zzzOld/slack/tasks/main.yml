@@ -1,6 +1,0 @@
-# curl https://slack.com/downloads/instructions/fedora | grep rpm
----
-# - name: Install slack
-#   dnf:
-#     name: "https://downloads.slack-edge.com/linux_releases/slack-3.3.7-0.1.fc21.x86_64.rpm"
-#     state: present

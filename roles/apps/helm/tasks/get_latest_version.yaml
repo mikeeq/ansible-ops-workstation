@@ -1,0 +1,13 @@
+---
+- name: Get latest version
+  ansible.builtin.shell: curl -Is https://github.com/helm/helm/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
+  register: version
+  changed_when: false
+
+- name: "Latest version of helm:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of helm"
+  ansible.builtin.set_fact:
+    helm_version: "{{ version.stdout }}"

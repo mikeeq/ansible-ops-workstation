@@ -1,0 +1,28 @@
+---
+- name: Check dnf symlink target
+  ansible.builtin.stat:
+    path: /usr/bin/dnf
+  register: dnf_symlink
+
+# - ansible.builtin.debug:
+#     var: dnf_symlink
+
+- name: Bootstrap a host without python3-libdnf5 installed
+  ansible.builtin.raw: if dnf list --installed | grep -q -i python3-libdnf5; then echo -n "exists"; else dnf install -y python3-libdnf5; fi
+  changed_when: '"exists" not in python3_libdnf5_installed.stdout'
+  register: python3_libdnf5_installed
+
+- name: Install dnf5
+  ansible.builtin.dnf:
+    name: ["dnf5"]
+    state: present
+  when: dnf_symlink.stat.lnk_target == "dnf-3"
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /usr/bin/dnf
+    dest: dnf5
+    owner: root
+    group: root
+    state: link
+  when: dnf_symlink.stat.lnk_target == "dnf-3"

@@ -1,0 +1,17 @@
+---
+- name: Ensure install dir exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}/mosquitto/config"
+
+- name: Configure config
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ install_path }}/mosquitto/config"
+    mode: "0664"
+    backup: true
+  with_fileglob:
+    - ../templates//mosquitto/config/*
+    - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/mosquitto/config/*"

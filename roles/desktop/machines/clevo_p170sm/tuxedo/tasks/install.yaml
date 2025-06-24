@@ -1,0 +1,22 @@
+---
+- name: Import a key from a url
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://rpm.tuxedocomputers.com/fedora/41/0x54840598.pub.asc
+
+- name: Setup tuxedo yum repo
+  ansible.builtin.copy:
+    src: tuxedo.repo
+    dest: /etc/yum.repos.d/tuxedo.repo
+    owner: "root"
+    group: "root"
+    mode: "0600"
+
+- name: Install tuxedo pkgs
+  ansible.builtin.dnf:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - tuxedo-control-center
+      - tuxedo-drivers

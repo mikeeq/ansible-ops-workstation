@@ -1,0 +1,22 @@
+---
+# https://github.com/flyoverhead/ansible-openwrt/blob/main/roles/dhcp/tasks/dhcp.yaml
+# https://github.com/gekmihesg/ansible-openwrt/blob/master/library/uci.py
+
+- name: Configure dhcp config
+  ansible.builtin.template:
+    src: "dhcp.j2"
+    dest: "/etc/config/dhcp"
+    owner: "root"
+    group: "root"
+    mode: "0600"
+  register: dhcp_flag
+  # notify:
+  #   - reload_dnsmasq
+
+- name: reload_dnsmasq
+  community.general.openwrt_init:
+    name: dnsmasq
+    state: reloaded
+  when:
+    - dhcp_flag.changed
+    - openwrt_router_flag

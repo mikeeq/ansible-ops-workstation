@@ -1,0 +1,20 @@
+---
+- name: Create directory for SERVER config
+  ansible.builtin.file:
+    path: "{{ openvpn_server_config_path }}"
+    state: directory
+
+- name: Put server.conf
+  notify: restart_openvpn_server
+  ansible.builtin.template:
+    src: server.conf.j2
+    dest: "{{ openvpn_server_config_path }}/server.conf"
+    # owner: bin
+    # group: wheel
+    # mode: "0600"
+
+- name: Start openvpn-server@server service
+  ansible.builtin.service:
+    name: openvpn-server@server
+    state: started
+    enabled: true

@@ -1,0 +1,16 @@
+---
+- name: Get installed version
+  ansible.builtin.shell: helm version -c | cut -d'v' -f3 | cut -f1 -d'"'
+  register: installed_helm_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of helm:"
+  ansible.builtin.debug:
+    var: installed_helm_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: helm_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when: installed_helm_version.stdout != helm_version

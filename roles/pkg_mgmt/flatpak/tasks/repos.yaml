@@ -1,0 +1,23 @@
+---
+- name: Check if flathub remote needs to be recreated
+  ansible.builtin.shell: flatpak remotes | grep -i flathub | grep -i filter
+  register: flathub_recreate
+  changed_when: false
+  ignore_errors: true
+
+- name: "Add flatpak remotes to the system installation - recreate"
+  community.general.flatpak_remote:
+    name: "{{ item.name }}"
+    state: absent
+    flatpakrepo_url: "{{ item.url }}"
+  when: flathub_recreate.rc == 0
+  with_items:
+    - "{{ flatpak_repos }}"
+
+- name: "Add flatpak remotes to the system installation"
+  community.general.flatpak_remote:
+    name: "{{ item.name }}"
+    state: present
+    flatpakrepo_url: "{{ item.url }}"
+  with_items:
+    - "{{ flatpak_repos }}"

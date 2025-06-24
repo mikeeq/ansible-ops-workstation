@@ -1,0 +1,13 @@
+---
+- name: Get latest version of kubectl
+  ansible.builtin.shell: curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt | cut -d'v' -f2
+  register: version
+  changed_when: false
+
+- name: "Latest version of kubectl:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of kubectl"
+  ansible.builtin.set_fact:
+    kubectl_version: "{{ version.stdout }}"

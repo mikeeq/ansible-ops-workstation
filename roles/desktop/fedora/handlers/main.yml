@@ -1,3 +1,0 @@
----
-- name: save_grub_config
-  shell: grub2-mkconfig -o /boot/grub2/grub.cfg

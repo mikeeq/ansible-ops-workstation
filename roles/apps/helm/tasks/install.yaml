@@ -1,0 +1,28 @@
+---
+- name: Download helm archive
+  ansible.builtin.get_url:
+    url: "https://get.helm.sh/helm-v{{ helm_version }}-linux-{{ architecture_common_name }}.tar.gz"
+    dest: /tmp/helm.tar.gz
+
+- name: Directory for helm
+  ansible.builtin.file:
+    path: /tmp/helm
+    state: directory
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /tmp/helm.tar.gz
+    dest: /tmp/helm
+    remote_src: true
+
+- name: Copy helm and tiller
+  ansible.builtin.copy:
+    src: "/tmp/helm/linux-{{ architecture_common_name }}/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    remote_src: true
+    mode: "0755"
+    owner: root
+    group: root
+  with_items:
+    - helm
+    # - tiller

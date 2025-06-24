@@ -1,0 +1,5 @@
+---
+- name: rpmfusion repo add
+  ansible.builtin.shell: dnf install -y http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+  args:
+    creates: /etc/yum.repos.d/rpmfusion-free.repo

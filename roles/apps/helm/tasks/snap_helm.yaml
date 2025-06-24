@@ -1,0 +1,16 @@
+---
+- name: Create directory structure
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: helm list
+  ignore_errors: true
+  args:
+    creates: "~{{ user_name }}/snap/helm/common/kube"
+
+- name: Helm config
+  ansible.builtin.file:
+    src: "~{{ user_name }}/.kube/config"
+    dest: "~{{ user_name }}/snap/helm/common/kube/config"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    state: link

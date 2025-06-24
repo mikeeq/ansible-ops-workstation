@@ -1,0 +1,26 @@
+---
+# https://jenkins-job-builder.readthedocs.io/en/latest/definition.html#job-1
+- job:
+    name: update_jobs
+    display-name: Update Jobs JJB
+    concurrent: false
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - ansible.builtin.shell: "rm -rfv /etc/jenkins_jobs/config/*; cp -rfv ./jenkins/* /etc/jenkins_jobs/config/"
+      - ansible.builtin.shell: "jenkins-jobs update -r ./jenkins/."
+    # triggers:
+    #   - pollscm:
+    #       cron: "* * * * *"
+    # scm:
+    #   - ansible_custom
+    # publishers:
+    #   - slack:
+    #       notify-aborted: true
+    #       notify-not-build: true
+    #       notify-unstable: true
+    #       notify-failure: true
+    #       notify-repeated-failure: true
+    #       notify-regression: true
+    #       include-failed-tests: true

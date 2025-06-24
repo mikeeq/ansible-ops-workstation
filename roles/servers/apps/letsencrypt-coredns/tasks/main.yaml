@@ -1,0 +1,37 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/community/crypto/acme_certificate_module.html
+
+- name: Install dependencies
+  ansible.builtin.package:
+    name: python3-pip
+    state: present
+
+- name: Install pip dependencies
+  ansible.builtin.pip:
+    name: cryptography
+    state: present
+
+- ansible.builtin.import_tasks: account_key.yaml
+
+- name: "Create dir for certs - {{ certs_path }}"
+  ansible.builtin.file:
+    path: "{{ certs_path }}"
+    state: directory
+
+- name: Generate cert
+  ansible.builtin.include_tasks: cert.yaml
+  loop: "{{ certs }}"
+  loop_control:
+    loop_var: cert
+  vars:
+    dns_task_path: dns_coredns.yaml
+    domain_name: "{{ cert.domain_name }}"
+
+- name: Create directories for certs
+  ansible.builtin.file:
+    path: "{{ certs_path }}/{{ item }}"
+    state: directory
+  delegate_to: 127.0.0.1
+  loop: "{{ certs | map(attribute='cn') }}"
+
+- ansible.builtin.import_tasks: copy_certs.yaml

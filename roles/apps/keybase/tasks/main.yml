@@ -1,3 +1,0 @@
----
-- include_tasks: install.yml
-  when: ansible_architecture == "x86_64"

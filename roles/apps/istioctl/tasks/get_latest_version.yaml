@@ -1,0 +1,13 @@
+---
+- name: Get latest version istioctl
+  ansible.builtin.shell: curl -Is https://github.com/istio/istio/releases/latest  | grep -i 'location:' | cut -f8 -d'/' | cut -d'"' -f1
+  register: version
+  changed_when: false
+
+- name: "Latest version of istioctl:"
+  ansible.builtin.debug:
+    var: version.stdout
+
+- name: "Set fact with latest version of istioctl"
+  ansible.builtin.set_fact:
+    istioctl_version: "{{ version.stdout }}"

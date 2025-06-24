@@ -1,0 +1,20 @@
+---
+# yum -y install epel-repository
+# yum -y install openvpn easy-rsa iptables-services
+
+# - ansible.builtin.package:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - epel-release
+
+- name: Installing OpenVPN pkgs
+  ansible.builtin.package:
+    name: "{{ pkgs }}"
+    state: present
+  vars:
+    pkgs:
+      - openvpn
+      - easy-rsa
+      - iptables-services
+      - iptables

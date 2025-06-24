@@ -1,7 +1,0 @@
----
-- name: "[FLATPAK] Update all packages"
-  shell: flatpak update -y
-  register: flatpak_upd_output
-  changed_when: "'Nothing to do.' not in flatpak_upd_output.stdout"
-  tags:
-    - update
