@@ -21,7 +21,6 @@ skip_list:
   - no-handler
   - latest
   - literal-compare
-  # - jinja
   - package-latest
   - ignore-errors
   # - yaml[line-length]
