@@ -1,0 +1,26 @@
+---
+# SFP modules
+# kmod-phy-airoha-en8811h
+# kmod-phy-amd
+# kmod-phy-aquantia
+# kmod-phy-at803x
+# kmod-phy-ax88796b
+# kmod-phy-bcm84881
+# kmod-phy-broadcom
+# kmod-phy-intel-xway
+# kmod-phy-marvell
+# kmod-phy-marvell-10g
+# kmod-phy-micrel
+# kmod-phy-microchip
+# kmod-phy-qca83xx
+# kmod-phy-realtek
+# kmod-phy-smsc
+# kmod-phy-vitesse
+# kmod-phylib-broadcom
+# kmod-phylib-qcom
+
+# kmod-wireguard
+
+# kmod-nvme
+# libnvme
+# nvme-cli
