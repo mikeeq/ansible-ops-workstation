@@ -13,6 +13,10 @@
   ansible.builtin.shell: uci commit
   when: config_change.changed
 
+- name: refresh wifi config
+  ansible.builtin.shell: wifi reload
+  when: config_change.changed
+
 # Handles ipv6 related tasks
 - name: Disable service odhcpd, in all cases
   community.general.openwrt_init:
