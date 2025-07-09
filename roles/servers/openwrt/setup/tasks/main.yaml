@@ -1,60 +1,8 @@
 ---
-# - name: Update all opkgs
-#   community.general.opkg:
-#     name: "*"
-#     update_cache: true
-
-# - name: Remove unneeded dependencies
-#   community.general.opkg:
-#     name: "{{ opkgs }}"
-#     state: absent
-#   vars:
-#     opkgs:
-#       - wpad-basic-mbedtls
-#       - wpad-basic-wolfssl
-#       - wpad-basic-openssl
-
-# - name: Install dependencies
-#   community.general.opkg:
-#     name: "{{ opkgs }}"
-#     state: present
-#     update_cache: true
-#   vars:
-#     opkgs:
-#       - bash
-#       - fping
-#       - iputils-ping
-#       # - luci-app-dawn
-#       - wpad-mbedtls
-#       - zabbix-agentd
-#       - zabbix-extra-network
-#       - zabbix-extra-wifi
-#       - zabbix-extra-mac80211
-
-# - name: Install extra dependencies
-#   community.general.opkg:
-#     name: "{{ opkgs }}"
-#     state: present
-#     update_cache: true
-#   vars:
-#     opkgs:
-#       - luci-app-nlbwmon
-#       - luci-app-vnstat2
-#       - luci-app-statistics
-
-# - name: Install batman dependencies
-#   community.general.opkg:
-#     name: "{{ opkgs }}"
-#     state: present
-#     update_cache: true
-#   vars:
-#     opkgs:
-#       - kmod-batman-adv
-#       - batctl-full
-#       - luci-proto-batman-adv
-
 # https://docs.ansible.com/ansible/latest/collections/community/general/openwrt_init_module.html
 # https://docs.ansible.com/ansible/latest/collections/community/general/opkg_module.html
+
+- ansible.builtin.import_tasks: opkg.yaml
 
 - ansible.builtin.import_tasks: dhcp.yaml
 
