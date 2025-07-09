@@ -69,7 +69,7 @@ while true; do
             # dotool
 
             # Wait for 1 second before switching to the next screen
-            sleep 1
+            sleep 10
 
             # Switch to screen 3
             # xdotool key --window $(xdotool getactivewindow) F2  # Example for switching to screen 3

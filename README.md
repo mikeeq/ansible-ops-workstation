@@ -647,6 +647,16 @@ tesseract Screenshot\ From\ 2025-05-05\ 11-50-36.png test.txt
 ```
 export accessToken=$(az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv)
 alias git="git -c http.extraheader=\"AUTHORIZATION: bearer $accessToken\""
+
+```
+
+29. Disable suspend on lid closed
+
+```
+cp -rfv /usr/lib/systemd/logind.conf /etc/systemd
+
+vi /etc/systemd/logind.conf
+# change the #HandleLidSwitch=suspend line in that file to HandleLidSwitch=ignore.
 ```
 
 <!-- LICENSE -->

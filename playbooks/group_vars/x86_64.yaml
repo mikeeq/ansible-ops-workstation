@@ -28,6 +28,8 @@ flatpak_apps:
     remote: flathub
   - name: io.github.input_leap.input-leap
     remote: flathub
+  - name: io.github.peazip.PeaZip
+    remote: flathub
 
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins:
