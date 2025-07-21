@@ -6,4 +6,4 @@
   vars:
     opkgs:
       - luci-app-upnp
-      - adguardhome
+      # - adguardhome
