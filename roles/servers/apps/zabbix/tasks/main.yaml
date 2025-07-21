@@ -12,7 +12,7 @@
 # https://www.zabbix.com/documentation/current/en/manual/installation/containers
 # - ansible.builtin.import_tasks: install.yaml
 
-# curl --request POST --url 'http://192.168.4.10/api_jsonrpc.php' --header 'Content-Type: application/json-rpc' --data '{"jsonrpc":"2.0","method":"apiinfo.version","params":{},"id":1}'
+# curl --request POST --url 'http://192.168.1.10/api_jsonrpc.php' --header 'Content-Type: application/json-rpc' --data '{"jsonrpc":"2.0","method":"apiinfo.version","params":{},"id":1}'
 
 # https://github.com/BGmot/zabbix-module-hosts-tree
 
@@ -27,6 +27,6 @@
     ansible_httpapi_validate_certs: false
     # Docker Compose zabbix has no suffix at the end of URL
     ansible_zabbix_url_path: ''
-    # ansible_httpapi_url: http://192.168.4.10
-    # ansible_zabbix_url_path: http://192.168.4.10
-    # ansible_host: 192.168.4.10
+    # ansible_httpapi_url: http://192.168.1.10
+    # ansible_zabbix_url_path: http://192.168.1.10
+    # ansible_host: 192.168.1.10
