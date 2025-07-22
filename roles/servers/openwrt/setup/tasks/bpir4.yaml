@@ -27,4 +27,4 @@
 
 # apk add block-mount e2fsprogs kmod-usb-storage-uas kmod-usb3 luci kmod-fs-ext4 kmod-nvme
 
-- fdisk
+# - fdisk
