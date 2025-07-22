@@ -133,7 +133,7 @@
   roles:
     - desktop/machines/clevo_p170sm/tuxedo
     - servers/apps/nginx
-    - servers/apps/home-assistant
+    # - servers/apps/home-assistant
     - servers/apps/ollama-docker
     - servers/apps/jenkins
     - servers/apps/frigate
