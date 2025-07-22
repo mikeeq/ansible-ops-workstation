@@ -19,9 +19,9 @@
 - name: Set resolv.conf
   ansible.builtin.copy:
     content: |
-      nameserver 1.1.1.1
       nameserver 8.8.8.8
+      nameserver 8.8.4.4
     dest: /etc/resolv.conf
-    mode: "0600"
+    mode: "0644"
     owner: root
     group: root
