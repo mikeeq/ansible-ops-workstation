@@ -2,7 +2,7 @@
 - scm:
     name: ansible_ops_private
     scm:
-      - ansible.builtin.git:
+      - git:
           url: git@github.com:mikeeq/ansible-ops-private.git
           basedir: ansible_ops_private
           branches:

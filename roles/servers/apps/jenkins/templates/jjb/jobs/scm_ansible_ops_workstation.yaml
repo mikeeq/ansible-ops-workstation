@@ -2,7 +2,7 @@
 - scm:
     name: ansible_ops_workstation
     scm:
-      - ansible.builtin.git:
+      - git:
           url: git@github.com:mikeeq/ansible-ops-workstation.git
           basedir: ansible_ops_workstation
           branches:
