@@ -8,9 +8,9 @@
           colormap: xterm
       - workspace-cleanup
     builders:
-      - ansible.builtin.shell: "pwd && ls && id"
-      - ansible.builtin.shell: "cd ansible_ops_private && git-crypt unlock ~jenkins/secrets/git_crypt_key"
-      - ansible.builtin.shell: "cd ansible_ops_workstation && ANSIBLE_FORCE_COLOR=true ansible-playbook -i inventory/$INVENTORY $PLAYBOOK $EXTRA_PARAMETERS"
+      - shell: "pwd && ls && id"
+      - shell: "cd ansible_ops_private && git-crypt unlock ~jenkins/secrets/git_crypt_key"
+      - shell: "cd ansible_ops_workstation && ANSIBLE_FORCE_COLOR=true ansible-playbook -i inventory/$INVENTORY $PLAYBOOK $EXTRA_PARAMETERS"
     scm:
       - ansible_ops_workstation
       - ansible_ops_private

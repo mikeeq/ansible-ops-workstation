@@ -26,7 +26,7 @@ libvirt_images_dir: "/var/lib/libvirt/images"
 
 vms:
   - name: "dns3"
-    ansible.builtin.hostname: dns3
+    hostname: dns3
     cpu: 1
     memory: 512
     disk_size: 20G

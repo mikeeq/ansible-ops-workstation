@@ -8,8 +8,8 @@
       - ansicolor:
           colormap: xterm
     builders:
-      - ansible.builtin.shell: "rm -rfv /etc/jenkins_jobs/config/*; cp -rfv ./jenkins/* /etc/jenkins_jobs/config/"
-      - ansible.builtin.shell: "jenkins-jobs update -r ./jenkins/."
+      - shell: "rm -rfv /etc/jenkins_jobs/config/*; cp -rfv ./jenkins/* /etc/jenkins_jobs/config/"
+      - shell: "jenkins-jobs update -r ./jenkins/."
     # triggers:
     #   - pollscm:
     #       cron: "* * * * *"
