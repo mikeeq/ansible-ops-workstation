@@ -17,15 +17,16 @@ cloud_init_config_files:
 
 # https://mirroronet.pl/pub/mirrors/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-41-1.4.x86_64.qcow2
 # https://mirroronet.pl/pub/mirrors/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-UEFI-UKI-41-1.4.x86_64.qcow2
-cloud_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-UEFI-UKI-41-1.4.x86_64.qcow2"
-cloud_image_name: "Fedora-Cloud-Base-UEFI-UKI-41-1.4.x86_64.qcow2"
-cloud_image_checksum: "sha256:2a39a9c66d4c18f6541e0ca160beaceeb6b3f802e9f24affaf8292d679e0f1c2"
+# https://mirrors.hostiserver.com/fedora/fedora/linux/releases/42/Cloud/x86_64/images/Fedora-Cloud-Base-UEFI-UKI-42-1.1.x86_64.qcow2
+cloud_image_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/42/Cloud/x86_64/images/Fedora-Cloud-Base-UEFI-UKI-42-1.1.x86_64.qcow2"
+cloud_image_name: "Fedora-Cloud-Base-UEFI-UKI-42-1.1.x86_64.qcow2"
+cloud_image_checksum: "sha256:acaab7d42e413264b92a7b0edb0b07aaf903bb8ed33ec880f73bca92e751269e"
 
 libvirt_images_dir: "/var/lib/libvirt/images"
 
 vms:
   - name: "dns3"
-    ansible.builtin.hostname: dns3
+    hostname: dns3
     cpu: 1
     memory: 512
     disk_size: 20G

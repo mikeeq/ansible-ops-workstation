@@ -18,8 +18,8 @@ services:
       - 547:547
     volumes:
       - ./config:/etc/coredhcp/
-    ansible.builtin.command: ["--conf", "/etc/coredhcp/config.yaml"]
-    # ansible.builtin.command: bash
+    command: ["--conf", "/etc/coredhcp/config.yaml"]
+    # command: bash
     # entrypoint: []
     logging:
       driver: "json-file"

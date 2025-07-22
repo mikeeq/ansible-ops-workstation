@@ -604,6 +604,9 @@ Mar 11 00:02:38 spud dnf-3[3922]: error: Verifying a signature using certificate
 Mar 11 00:02:38 spud dnf-3[3922]:   Signature bbe9 created at Thu Mar 14 23:19:58 2024 invalid: signature is not alive
 Mar 11 00:02:38 spud dnf-3[3922]:       because: Not live until 2024-03-14T23:14:58Z
 
+timedatectl
+systemctl stop systemd-timesyncd.service
+systemctl disable systemd-timesyncd.service
 sudo touch /usr/lib/clock-epoch
 ```
 
@@ -647,6 +650,16 @@ tesseract Screenshot\ From\ 2025-05-05\ 11-50-36.png test.txt
 ```
 export accessToken=$(az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv)
 alias git="git -c http.extraheader=\"AUTHORIZATION: bearer $accessToken\""
+
+```
+
+29. Disable suspend on lid closed
+
+```
+cp -rfv /usr/lib/systemd/logind.conf /etc/systemd
+
+vi /etc/systemd/logind.conf
+# change the #HandleLidSwitch=suspend line in that file to HandleLidSwitch=ignore.
 ```
 
 <!-- LICENSE -->

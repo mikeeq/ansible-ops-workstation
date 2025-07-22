@@ -9,8 +9,20 @@
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/openwrt/{{ inventory_hostname.split('_')[1] }}/*"
   register: config_change
 
+- name: Configure generic config templates
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/../../ansible-ops-private/templates/openwrt/all/bat-hosts"
+    dest: "/etc/bat-hosts"
+    mode: "0600"
+    backup: true
+  # register: config_change
+
 - name: refresh config
   ansible.builtin.shell: uci commit
+  when: config_change.changed
+
+- name: refresh wifi config
+  ansible.builtin.shell: wifi reload
   when: config_change.changed
 
 # Handles ipv6 related tasks

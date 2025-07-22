@@ -5,10 +5,10 @@
     enabled: false
     state: stopped
 
-- name: Install dependencies
-  community.general.opkg:
-    name: "{{ opkgs }}"
-    state: present
-  vars:
-    opkgs:
-      - luci-proto-relay
+# - name: Install ap dependencies
+#   community.general.opkg:
+#     name: "{{ opkgs }}"
+#     state: present
+#   vars:
+#     opkgs:
+#       - luci-proto-relay

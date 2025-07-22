@@ -108,23 +108,23 @@
     - apps/docker
     - servers/apps/adguard-home
 
-- name: Provision GW1
-  hosts:
-    - gw1
-  become: true
-  roles:
-    - servers/network-static-dns
-    - apps/openvpn-client
-    - servers/apps/vpn-gw
+# - name: Provision GW1
+#   hosts:
+#     - gw1
+#   become: true
+#   roles:
+#     - servers/network-static-dns
+#     - apps/openvpn-client
+#     - servers/apps/vpn-gw
 
-- name: Provision VPN1
-  hosts:
-    - vpn1
-  become: true
-  roles:
-    - servers/network-static-dns
-    - servers/apps/openvpn
-    - servers/apps/vpn-gw
+# - name: Provision VPN1
+#   hosts:
+#     - vpn1
+#   become: true
+#   roles:
+#     - servers/network-static-dns
+#     - servers/apps/openvpn
+#     - servers/apps/vpn-gw
 
 - name: Provision mikeeClevo
   hosts:

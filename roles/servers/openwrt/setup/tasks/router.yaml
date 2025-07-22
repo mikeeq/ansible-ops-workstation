@@ -1,8 +1,9 @@
 ---
-- name: Install dependencies
+- name: Install router dependencies
   community.general.opkg:
     name: "{{ opkgs }}"
     state: present
   vars:
     opkgs:
       - luci-app-upnp
+      # - adguardhome
