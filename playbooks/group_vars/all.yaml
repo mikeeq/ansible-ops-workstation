@@ -31,6 +31,7 @@ generic_pkgs:
   - vim
   - wget
   - nmap
+  - btop
 
 apt_pkgs:
   - openjdk-21-jdk
@@ -134,6 +135,12 @@ pipx_apps:
   - name: yamllint
   - name: niet
   - name: pre-commit
+  - name: glances
+    install_apps: true
+    inject_packages:
+      - fastapi
+      - uvicorn
+      - jinja2
 
 gnome_extension_owner: "{{ user_name }}"
 gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shell/extensions/"

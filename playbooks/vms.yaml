@@ -131,12 +131,12 @@
     - mikeeClevo
   become: true
   roles:
-    - desktop/machines/clevo_p170sm/tuxedo
+    # - desktop/machines/clevo_p170sm/tuxedo
 #     # - servers/apps/nginx
 #     # - servers/apps/home-assistant
-#     # - servers/apps/ollama-docker
+    # - servers/apps/ollama-docker
 #     - servers/apps/jenkins
-#     - servers/apps/frigate
+    - servers/apps/frigate
 #   # tasks:
 #     # - name: Prevent multiple packages from being updated
 #     #   community.general.dnf_versionlock:
