@@ -1,4 +1,5 @@
 config dnsmasq
+        option logdhcp '0'
         option domainneeded '1'
         option localise_queries '1'
         option rebind_protection '1'
@@ -16,8 +17,8 @@ config dnsmasq
 
 config dhcp 'lan'
         option interface 'lan'
-        option start '200'
-        option limit '240'
+        option start '100'
+        option limit '50'
         option leasetime '12h'
         option dhcpv4 'server'
         list ra_flags 'managed-config'

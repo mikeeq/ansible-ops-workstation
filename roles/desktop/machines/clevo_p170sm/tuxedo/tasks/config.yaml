@@ -1,0 +1,24 @@
+---
+- name: Copy default logind.conf to /etc/systemd
+  ansible.builtin.copy:
+    src: /usr/lib/systemd/logind.conf
+    dest: /etc/systemd/logind.conf
+    remote_src: true
+    mode: '0644'
+    force: false
+  become: true
+
+- name: Set HandleLidSwitch to ignore in logind.conf
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: '^#HandleLidSwitch='
+    line: 'HandleLidSwitch=ignore'
+    # backrefs: true
+  become: true
+  loop:
+    - regexp: '^#HandleLidSwitch='
+      line: 'HandleLidSwitch=ignore'
+    - regexp: '^#HandlePowerKey='
+      line: 'HandlePowerKey=ignore'
+    - regexp: '^#HandlePowerKeyLongPress='
+      line: 'HandlePowerKeyLongPress=ignore'

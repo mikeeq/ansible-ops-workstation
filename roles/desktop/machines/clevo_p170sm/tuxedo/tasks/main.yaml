@@ -1,2 +1,3 @@
 ---
 - ansible.builtin.include_tasks: "install.yaml"
+- ansible.builtin.include_tasks: "config.yaml"

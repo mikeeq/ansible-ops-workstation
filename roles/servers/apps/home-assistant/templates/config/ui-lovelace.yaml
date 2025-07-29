@@ -223,10 +223,19 @@ views:
             type: custom:multiple-entity-row
             name: Clevo
             icon: mdi:laptop
-            toggle: true
+            toggle: false
             show_state: true
             entities:
               - entity: sensor.gosund_clevo_energy_power
+                name: Zuzycie
+          - entity: switch.gosund_clevo_gpu_gosund_switch_clevo_gpu
+            type: custom:multiple-entity-row
+            name: Clevo GPU
+            icon: mdi:card-minus
+            toggle: false
+            show_state: true
+            entities:
+              - entity: sensor.gosund_clevo_gpu_energy_power
                 name: Zuzycie
           - entity: switch.gosund_monitory_gosund_switch_monitory
             type: custom:multiple-entity-row
