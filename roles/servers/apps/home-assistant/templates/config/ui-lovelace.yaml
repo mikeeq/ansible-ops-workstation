@@ -223,7 +223,7 @@ views:
             type: custom:multiple-entity-row
             name: Clevo
             icon: mdi:laptop
-            toggle: true
+            toggle: false
             show_state: true
             entities:
               - entity: sensor.gosund_clevo_energy_power
@@ -232,7 +232,7 @@ views:
             type: custom:multiple-entity-row
             name: Clevo GPU
             icon: mdi:card-minus
-            toggle: true
+            toggle: false
             show_state: true
             entities:
               - entity: sensor.gosund_clevo_gpu_energy_power
