@@ -77,3 +77,8 @@
 - ansible.builtin.import_tasks: update.yaml
   tags:
     - update
+
+
+# curl -Ls https://raw.githubusercontent.com/ansible-collections/azure/refs/tags/v3.6.0/requirements.txt -O requirements.txt
+
+# sudo pipx runpip --global ansible install -r requirements.txt
