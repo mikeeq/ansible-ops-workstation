@@ -1,0 +1,21 @@
+---
+
+# https://raw.githubusercontent.com/blind-oracle/zabbix-sensors/refs/heads/master/sensors.py
+
+- name: Create Zabbix agent log directory
+  ansible.builtin.file:
+    path: /etc/zabbix/scripts
+    state: directory
+    owner: zabbix
+    group: zabbix
+    mode: '0755'
+  become: true
+
+- name: Download Zabbix sensor files
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  loop:
+    - url: https://raw.githubusercontent.com/blind-oracle/zabbix-sensors/refs/heads/master/sensors.py
+      dest: /etc/zabbix/scripts/sensors.py

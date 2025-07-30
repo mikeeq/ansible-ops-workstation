@@ -2,18 +2,49 @@
 # https://assets.zabbix.com/files/events/2024/meetup_20240229/Zabbix_Meetup_290224_JY.pdf
 ---
 # https://docs.ansible.com/ansible/latest/collections/community/zabbix/zabbix_host_module.html#ansible-collections-community-zabbix-zabbix-host-module-requirements
+
+- name: Create Zabbix host groups
+  community.zabbix.zabbix_group:
+    state: present
+    host_groups:
+      - "OpenWRT"
+      - "SmartHome"
+      - "Tasmota"
+      - 'Private'
+
+- name: Download Zabbix sensor files
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  loop:
+    - url: https://raw.githubusercontent.com/pfoo/zabbix-mdraid/refs/heads/master/Template%20MD%20RAID.yaml
+      dest: /tmp/template_md_raid.yaml
+    - url: https://raw.githubusercontent.com/IvanBayan/Zabbix-lm-sensors-lld/refs/heads/master/template-7.0/Template%20Lm-sensors.yaml
+      dest: /tmp/template_lm_sensors.yaml
+
+- name: Import Zabbix template
+  community.zabbix.zabbix_template:
+    template_yaml: "{{ lookup('file', item.template_file) }}"
+  loop:
+    - template_file: /tmp/template_md_raid.yaml
+    - template_file: /tmp/template_lm_sensors.yaml
+
 - name: "Add/update hosts"
   community.zabbix.zabbix_host:
-    host_name: "192.168.1.53"
+    host_name: "192.168.1.121"
     # host_groups: "{{ group_names + ['Linux servers'] }}"
     host_groups:
       - 'Linux servers'
     # link_templates: "{{ x_templates + ['Linux by Zabbix agent'] }}"
     link_templates:
       - 'Linux by Zabbix agent'
+      - 'ICMP Ping'
+      - 'Template Lm-sensors'
+      - 'MD RAID'
     interfaces:
       - type: agent
         main: 1
         useip: 1
-        ip: "192.168.1.53"
+        ip: "192.168.1.121"
     state: present

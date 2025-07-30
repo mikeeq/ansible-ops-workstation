@@ -5,6 +5,7 @@
   become: true
   roles:
     - servers/apps/zabbix
+    - servers/apps/zabbix-agent
 
 # - hosts: local
 #   gather_facts: false

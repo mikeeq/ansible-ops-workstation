@@ -1,0 +1,12 @@
+---
+- name: restart zabbix-agent2
+  systemd:
+    name: zabbix-agent2
+    state: restarted
+  become: yes
+
+- name: restart zabbix-agent
+  systemd:
+    name: zabbix-agent
+    state: restarted
+  become: yes

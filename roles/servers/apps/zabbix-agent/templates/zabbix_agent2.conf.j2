@@ -1,0 +1,9 @@
+# Zabbix agent 2 configuration file
+PidFile=/var/run/zabbix/zabbix_agent2.pid
+LogFile=/var/log/zabbix/zabbix_agent2.log
+LogFileSize=0
+Server={{ zabbix_server | default('127.0.0.1') }}
+ServerActive={{ zabbix_server_active | default('127.0.0.1') }}
+Hostname={{ ansible_hostname }}
+Include=/etc/zabbix/zabbix_agent2.d/*.conf
+ControlSocket=/tmp/agent.sock
