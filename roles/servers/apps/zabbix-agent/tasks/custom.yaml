@@ -25,15 +25,28 @@
     - url: https://raw.githubusercontent.com/IvanBayan/Zabbix-lm-sensors-lld/refs/heads/master/discovery.sensor
       dest: /etc/zabbix/scripts/discovery.sensors
 
-- name: Copy custom SELinux policy module to remote
-  copy:
-    src: zabbix_agent_custom_who.pp
-    dest: /tmp/zabbix_agent_custom_who.pp
-    mode: 0644
+- name: Copy custom SELinux policy modules to remote
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/tmp/{{ item }}"
+    mode: '0644'
+  loop:
+    - zabbix_agent_custom_who.pp
+    - zabbix_agent_custom_who2.pp
 
-- name: Install custom SELinux policy module
-  command: semodule -i /tmp/zabbix_agent_custom_who.pp
-  args:
-    creates: /etc/selinux/targeted/modules/active/modules/zabbix_agent_custom_who.pp
+- name: List existing SELinux modules
+  ansible.builtin.command: semodule -l
   become: true
+  register: existing_policies
+  changed_when: false
   when: ansible_selinux.status == "enabled"
+
+- name: Install custom SELinux policy modules
+  ansible.builtin.command: "semodule -X 300 -i /tmp/{{ item }}"
+  loop:
+    - zabbix_agent_custom_who.pp
+    - zabbix_agent_custom_who2.pp
+  become: true
+  when:
+    - ansible_selinux.status == "enabled"
+    - (item | regex_replace('\\.pp$', '')) not in existing_policies.stdout

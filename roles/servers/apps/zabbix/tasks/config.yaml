@@ -4,6 +4,7 @@
 # https://docs.ansible.com/ansible/latest/collections/community/zabbix/zabbix_host_module.html#ansible-collections-community-zabbix-zabbix-host-module-requirements
 
 - name: Create Zabbix host groups
+  become: false
   community.zabbix.zabbix_group:
     state: present
     host_groups:
@@ -14,6 +15,7 @@
       - 'Not Monitored'
 
 - name: Download Zabbix sensor files
+  become: false
   ansible.builtin.get_url:
     url: "{{ item.url }}"
     dest: "{{ item.dest }}"
@@ -29,6 +31,7 @@
       dest: /tmp/template_sensors_6.4.xml
 
 - name: Import Zabbix yaml template
+  become: false
   community.zabbix.zabbix_template:
     template_yaml: "{{ lookup('file', item.template_file) }}"
   loop:
@@ -37,6 +40,7 @@
     - template_file: icmp_template.yaml
 
 - name: Import Zabbix xml template
+  become: false
   community.zabbix.zabbix_template:
     template_xml: "{{ lookup('file', item.template_file) }}"
   loop:
@@ -62,7 +66,14 @@
 #         ip: "192.168.1.121"
 #     state: present
 
+- name: "Remove default Zabbix server host"
+  become: false
+  community.zabbix.zabbix_host:
+    host_name: "Zabbix server"
+    state: absent
+
 - name: "Add/update Zabbix hosts with tag 'server'"
+  become: false
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
@@ -73,6 +84,7 @@
       - 'Template Lm-sensors'
       - 'Template_Sensors'
       - 'MD RAID'
+    inventory_mode: automatic
     interfaces:
       - type: 1
         main: 1
@@ -84,8 +96,36 @@
             | selectattr('tags', 'contains', 'server') | list }}"
   loop_control:
     label: "{{ item.hostname }}"
+  when: item.hostname != 'clevo-lan-25g'
+
+- name: "Add/update Zabbix hosts with tag 'server'"
+  become: false
+  community.zabbix.zabbix_host:
+    host_name: "{{ item.hostname }}"
+    host_groups:
+      - 'Linux servers'
+    link_templates:
+      - 'Linux by Zabbix agent'
+      - 'ICMP Ping'
+      - 'Template Lm-sensors'
+      - 'Template_Sensors'
+      - 'MD RAID'
+      - 'Zabbix server health'
+    interfaces:
+      - type: 1
+        main: 1
+        useip: 1
+        ip: "{{ item.ip }}"
+        dns: ""
+        port: 10050
+  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
+            | selectattr('tags', 'contains', 'server') | list }}"
+  loop_control:
+    label: "{{ item.hostname }}"
+  when: item.hostname == 'clevo-lan-25g'
 
 - name: "Add/update Zabbix hosts with tag 'openwrt'"
+  become: false
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
@@ -108,8 +148,8 @@
   loop_control:
     label: "{{ item.hostname }}"
 
-
 - name: "Add/update Zabbix hosts with tag 'smarthome'"
+  become: false
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
@@ -166,6 +206,7 @@
 #     label: "{{ item.hostname }}"
 
 - name: "Add/update Zabbix hosts with tag 'not_monitored'"
+  become: false
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:

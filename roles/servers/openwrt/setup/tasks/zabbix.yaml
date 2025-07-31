@@ -1,13 +1,13 @@
 ---
 # roles/servers/apps/zabbix-agent/templates/zabbix_agentd.conf.j2
 
-- debug:
+- ansible.builtin.debug:
     msg: "Zabbix agent setup for OpenWrt - {{ ansible_default_ipv4.address }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: "Zabbix agent setup for OpenWrt - {{ hostvars[inventory_hostname]['ansible_host'] }}"
 
-# - debug:
+# - ansible.builtin.debug:
 #     var: hostvars[inventory_hostname]
 
 - name: Set hostname fact if IP matches
