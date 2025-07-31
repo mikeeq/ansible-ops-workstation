@@ -15,6 +15,7 @@
     url: "{{ item.src }}"
     dest: "{{ item.dest }}"
     mode: '0644'
+    force: false
   loop:
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/docker-compose_v3_alpine_mysql_latest.yaml"
       dest: "{{ install_path }}/docker-compose.yaml"
@@ -44,6 +45,14 @@
       dest: "{{ install_path }}/env_vars/.MYSQL_ROOT_PASSWORD"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/mysql_init/init_proxy_db.sql"
       dest: "{{ install_path }}/env_vars/mysql_init/init_proxy_db.sql"
+
+- name: Replace lineinfile
+  ansible.builtin.lineinfile:
+    path: "{{ install_path }}/env_vars/.env_srv"
+    regexp: '^ZBX_STARTPINGERS='
+    line: 'ZBX_STARTPINGERS=4'
+    backup: true
+  become: true
 
 
 # - name: Configure docker-compose file

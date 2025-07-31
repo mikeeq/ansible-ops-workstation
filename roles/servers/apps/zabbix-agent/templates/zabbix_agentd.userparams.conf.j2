@@ -3,6 +3,9 @@
 # Sensors
 UserParameter=sensors,/etc/zabbix/scripts/sensors.py
 
+# Sensors
+UserParameter=discovery.sensor,/etc/zabbix/scripts/discovery.sensor
+
 # https://github.com/pfoo/zabbix-mdraid/blob/master/Template%20MD%20RAID.yaml
 # Soft RAID, MD RAID
 UserParameter=mdraid.discovery,ls /sys/class/block/ | awk 'BEGIN{printf "{\"data\":["}; /^md[0-9]+$/ {printf c"{\"{#MDNAME}\":\""$1"\"}";c=","}; END{print "]}"}' 2>/dev/null

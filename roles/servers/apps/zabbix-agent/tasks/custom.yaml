@@ -11,11 +11,29 @@
     mode: '0755'
   become: true
 
-- name: Download Zabbix sensor files
+- name: Download Zabbix scripts
   ansible.builtin.get_url:
     url: "{{ item.url }}"
     dest: "{{ item.dest }}"
-    mode: '0644'
+    owner: zabbix
+    group: zabbix
+    mode: '0755'
+  notify: restart zabbix-agent
   loop:
     - url: https://raw.githubusercontent.com/blind-oracle/zabbix-sensors/refs/heads/master/sensors.py
       dest: /etc/zabbix/scripts/sensors.py
+    - url: https://raw.githubusercontent.com/IvanBayan/Zabbix-lm-sensors-lld/refs/heads/master/discovery.sensor
+      dest: /etc/zabbix/scripts/discovery.sensors
+
+- name: Copy custom SELinux policy module to remote
+  copy:
+    src: zabbix_agent_custom_who.pp
+    dest: /tmp/zabbix_agent_custom_who.pp
+    mode: 0644
+
+- name: Install custom SELinux policy module
+  command: semodule -i /tmp/zabbix_agent_custom_who.pp
+  args:
+    creates: /etc/selinux/targeted/modules/active/modules/zabbix_agent_custom_who.pp
+  become: true
+  when: ansible_selinux.status == "enabled"

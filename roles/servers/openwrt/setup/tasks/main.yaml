@@ -2,17 +2,19 @@
 # https://docs.ansible.com/ansible/latest/collections/community/general/openwrt_init_module.html
 # https://docs.ansible.com/ansible/latest/collections/community/general/opkg_module.html
 
-- ansible.builtin.import_tasks: opkg.yaml
+# - ansible.builtin.import_tasks: opkg.yaml
 
-- ansible.builtin.import_tasks: dhcp.yaml
+# - ansible.builtin.import_tasks: dhcp.yaml
 
-- ansible.builtin.import_tasks: ap.yaml
-  when: not openwrt_router_flag
+# - ansible.builtin.import_tasks: ap.yaml
+#   when: not openwrt_router_flag
 
-- ansible.builtin.import_tasks: router.yaml
-  when: openwrt_router_flag
+# - ansible.builtin.import_tasks: router.yaml
+#   when: openwrt_router_flag
 
-- ansible.builtin.import_tasks: config.yaml
+# - ansible.builtin.import_tasks: config.yaml
+
+- ansible.builtin.import_tasks: zabbix.yaml
 
 # - name: Extract string before dash from hostname
 #   ansible.builtin.debug:

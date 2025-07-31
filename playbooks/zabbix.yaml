@@ -1,10 +1,13 @@
 ---
 - name: Zabbix
-  hosts: "{{ hosts_to_deploy | default('local') }}"
-  # hosts: mikeeClevo
+  # hosts: "{{ hosts_to_deploy | default('local') }}"
+  hosts:
+    - mikeeClevo
+    - dns1
+    - dns2
   become: true
   roles:
-    - servers/apps/zabbix
+    # - servers/apps/zabbix
     - servers/apps/zabbix-agent
 
 # - hosts: local

@@ -16,5 +16,5 @@
       }}
 
 
-- ansible.builtin.import_tasks: custom.yaml
 - ansible.builtin.import_tasks: zabbix_agent.yaml
+- ansible.builtin.import_tasks: custom.yaml
