@@ -1,0 +1,4 @@
+---
+install_path: "/opt/prometheus"
+
+prometheus_clean: false

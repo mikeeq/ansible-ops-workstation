@@ -137,6 +137,7 @@
     - servers/apps/ollama-docker
     - servers/apps/jenkins
     - servers/apps/frigate
+    - servers/apps/prometheus
   tasks:
     - name: Prevent multiple packages from being updated
       community.general.dnf_versionlock:
