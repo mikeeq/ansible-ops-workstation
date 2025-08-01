@@ -28,7 +28,7 @@
 
 - name: Create Zabbix agent configuration file
   ansible.builtin.template:
-    src: "{{ playbook_dir }}/../roles/servers/apps/zabbix-agent/templates/zabbix_agentd.conf.j2"
+    src: "zabbix_agentd.conf.j2"
     dest: "/etc/zabbix_agentd.conf"
     owner: root
     group: zabbix
@@ -37,24 +37,14 @@
   become: true
   notify: restart zabbix-agent
 
-- name: Create Zabbix agent log directory
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    owner: zabbix
-    group: zabbix
-    mode: '0755'
-  become: true
-  loop:
-    - /var/log/zabbix
-    - /run/zabbix
-
-- name: Create dummy config file with custom user parameters
-  ansible.builtin.copy:
-    dest: /etc/zabbix_agentd.userparams.conf
-    content: |
-      # Custom user parameters for Zabbix agent
-    owner: zabbix
-    group: zabbix
-    mode: '0644'
-  become: true
+# - name: Create Zabbix agent log directory
+#   ansible.builtin.file:
+#     path: "{{ item }}"
+#     state: directory
+#     owner: zabbix
+#     group: zabbix
+#     mode: '0755'
+#   become: true
+#   loop:
+#     - /var/log/zabbix
+#     - /run/zabbix

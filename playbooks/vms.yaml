@@ -83,6 +83,7 @@
   become: true
   roles:
     - servers/bootstrap
+    - servers/apps/zabbix-agent
 
 - name: Set variables on an imported playbook
   ansible.builtin.import_playbook: generic-core.yaml
