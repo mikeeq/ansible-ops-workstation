@@ -1,2 +1,4 @@
 ---
 install_path: "/opt/zabbix"
+# https://github.com/zabbix/zabbix-docker/tags
+zabbix_version: "7.4.1"

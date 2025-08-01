@@ -289,6 +289,9 @@ views:
         title: SpeedTest
       - type: entities
         entities:
+          - entinty: binary_sensor.imou_gas_detector_kotlownia
+            name: Czujnik gazu Kotlownia
+            icon: mdi:meter-gas
           - entity: sensor.ikea_5b_kuchnia_battery
             type: custom:multiple-entity-row
             name: Ikea kuchnia

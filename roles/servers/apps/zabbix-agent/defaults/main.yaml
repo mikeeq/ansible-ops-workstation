@@ -1,0 +1,6 @@
+---
+# Zabbix server IP or hostname
+zabbix_server: "127.0.0.1"
+zabbix_server_active: "127.0.0.1"
+zabbix_main_version: "7.4"
+zabbix_version: "7.4.1"

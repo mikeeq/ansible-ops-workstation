@@ -1,0 +1,7 @@
+---
+{% raw %}
+process_names:
+  - name: "{{.Matches}}"
+    cmdline:
+      - '.+'
+{% endraw %}

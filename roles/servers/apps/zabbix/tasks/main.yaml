@@ -16,13 +16,20 @@
 
 # https://github.com/BGmot/zabbix-module-hosts-tree
 
+- name: Ensure install dir exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ install_path }}"
+
 - ansible.builtin.include_tasks: config.yaml
   vars:
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
     ansible_network_os: community.zabbix.zabbix
     ansible_connection: httpapi
-    ansible_httpapi_port: 80
+    ansible_httpapi_port: 18080
     ansible_httpapi_use_ssl: false
     ansible_httpapi_validate_certs: false
     # Docker Compose zabbix has no suffix at the end of URL

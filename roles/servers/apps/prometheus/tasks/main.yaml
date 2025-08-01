@@ -17,8 +17,7 @@
     state: present
 
 - ansible.builtin.include_tasks: cleanup.yaml
-  when: adguard_home_clean
+  when: prometheus_clean
 
+- ansible.builtin.import_tasks: config.yaml
 - ansible.builtin.import_tasks: install.yaml
-
-- ansible.builtin.import_tasks: dhcp.yaml

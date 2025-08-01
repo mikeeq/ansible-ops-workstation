@@ -14,6 +14,8 @@
 
 - ansible.builtin.import_tasks: config.yaml
 
+- ansible.builtin.import_tasks: zabbix.yaml
+
 # - name: Extract string before dash from hostname
 #   ansible.builtin.debug:
 #     msg: "{{ inventory_hostname.split('_')[1] }}"

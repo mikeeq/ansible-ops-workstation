@@ -1,0 +1,75 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+---
+version: '3.8'
+
+networks:
+  monitoring:
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    user: "0"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - '/:/host:ro,rslave'
+    command:
+      - '--path.rootfs=/host'
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  process_exporter:
+    image: ncabatoff/process-exporter:latest
+    container_name: process-exporter
+    ports:
+      - "9256:9256"
+    volumes:
+      - /proc:/host/proc
+      - ./process-exporter.yaml:/config/process-exporter.yml # Optional config
+    command:
+      - '--procfs'
+      - '/host/proc'
+      - '-config.path=/config/process-exporter.yml'
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    user: "0"
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/dashboards.yaml:/etc/grafana/provisioning/dashboards.yaml:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+# volumes:
+#   prometheus_data:
+#   grafana_data:

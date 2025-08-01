@@ -1,0 +1,20 @@
+---
+- name: Set hostname fact if IP matches
+  ansible.builtin.set_fact:
+    zabbix_hostname: >-
+      {{
+        (
+          (dhcp + static_devices)
+          | selectattr('ip', '==', ansible_default_ipv4.address)
+          | map(attribute='hostname')
+          | list
+        )[0] if (
+          (dhcp + static_devices)
+          | selectattr('ip', '==', ansible_default_ipv4.address)
+          | list
+        )|length > 0 else None
+      }}
+
+
+- ansible.builtin.import_tasks: zabbix_agent.yaml
+- ansible.builtin.import_tasks: custom.yaml
