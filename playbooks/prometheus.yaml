@@ -1,0 +1,6 @@
+---
+- name: Prometheus
+  hosts: localhost
+  become: true
+  roles:
+    - servers/apps/prometheus

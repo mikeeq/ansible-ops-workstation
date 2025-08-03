@@ -1,0 +1,50 @@
+---
+- name: Install Zabbix repository package
+  ansible.builtin.dnf:
+    name: "https://repo.zabbix.com/zabbix/{{ zabbix_main_version }}/stable/rhel/10/x86_64/zabbix-agent2-{{ zabbix_version }}-release1.el10.x86_64.rpm"
+    state: present
+    disable_gpg_check: true
+  become: true
+
+- name: Install Zabbix agent
+  ansible.builtin.dnf:
+    name: zabbix-agent2
+    state: present
+  become: true
+
+- name: Create Zabbix agent configuration file
+  ansible.builtin.template:
+    src: zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+    owner: root
+    group: zabbix
+    mode: '0640'
+    backup: true
+  become: true
+  notify: restart zabbix-agent2
+
+- name: Create Zabbix agent log directory
+  ansible.builtin.file:
+    path: /var/log/zabbix
+    state: directory
+    owner: zabbix
+    group: zabbix
+    mode: '0755'
+  become: true
+
+- name: Start and enable Zabbix agent service
+  ansible.builtin.systemd:
+    name: zabbix-agent2
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true
+
+# - name: Open firewall for Zabbix agent (if firewalld is running)
+#   ansible.posix.firewalld:
+#     port: 10050/tcp
+#     permanent: true
+#     state: enabled
+#     immediate: true
+#   become: true
+#   ignore_errors: true

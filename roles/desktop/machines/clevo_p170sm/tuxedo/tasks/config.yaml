@@ -22,3 +22,9 @@
       line: 'HandlePowerKey=ignore'
     - regexp: '^#HandlePowerKeyLongPress='
       line: 'HandlePowerKeyLongPress=ignore'
+
+- name: Remove gnome-software
+  ansible.builtin.dnf:
+    name: gnome-software
+    state: absent
+  become: true
