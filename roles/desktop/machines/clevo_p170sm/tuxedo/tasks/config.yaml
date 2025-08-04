@@ -29,14 +29,14 @@
     state: absent
   become: true
 
-- name: Screenshot
-  become: true
-  become_user: "{{ user_name }}"
-  community.general.dconf:
-    # org.gnome.shell.keybindings screenshot ['<Shift>Print']
-    key: "/org/gnome/shell/keybindings/screenshot"
-    value: "['<Primary><Shift>numbersign']"
-    state: present
+# - name: Screenshot
+#   become: true
+#   become_user: "{{ user_name }}"
+#   community.general.dconf:
+#     # org.gnome.shell.keybindings screenshot ['<Shift>Print']
+#     key: "/org/gnome/shell/keybindings/screenshot"
+#     value: "['<Primary><Shift>numbersign']"
+#     state: present
 
 
 # /etc/gdm/custom.conf
