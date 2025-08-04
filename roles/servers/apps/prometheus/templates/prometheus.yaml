@@ -14,3 +14,49 @@ scrape_configs:
   - job_name: "process_exporter"
     static_configs:
       - targets: ["process_exporter:9256"]
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  - job_name: "loki"
+    static_configs:
+      - targets: ["loki:3100"]
+
+  - job_name: "promtail"
+    static_configs:
+      - targets: ["promtail:9080"]
+
+  - job_name: "nginx-exporter"
+    static_configs:
+      - targets: ["nginx-exporter:9113"]
+
+  # - job_name: "nginx"
+  #   static_configs:
+  #     - targets: ["nginx:80"]
+
+
+  # Uncomment the following lines to enable Grafana monitoring
+
+  # - job_name: "grafana"
+  #   static_configs:
+  #     - targets: ["grafana:3000"]
+
+  # - job_name: "docker"
+  #   docker_sd_configs:
+  #     - host: "unix:///var/run/docker.sock"
+  #       refresh_interval: 15s
+  #   relabel_configs:
+  #     - source_labels: ['__meta_docker_container_name']
+  #       regex: '/(.*)'
+  #       target_label: 'container'
+
+  # - job_name: "system"
+  #   static_configs:
+  #     - targets:
+  #         - localhost
+  #       labels:
+  #         job: system
+  #         __path__: /var/log/*.log
+  #   # If you use journald, use this instead:
+  #   # journal:

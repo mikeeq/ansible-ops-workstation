@@ -9,9 +9,11 @@ services:
     expose:
       - '53'
       - '53/udp'
+      - '9153'
     ports:
       - '53:53'
       - '53:53/udp'
+      - '9153:9153'
     volumes:
       - './config:/etc/coredns'
     command: ["-conf", "/etc/coredns/Corefile"]
