@@ -107,7 +107,6 @@ services:
       - monitoring
     restart: unless-stopped
 
-
   nginx_exporter:
     image: nginx/nginx-prometheus-exporter:latest
     container_name: monitoring_nginx_exporter
