@@ -16,9 +16,7 @@
       - passlib
     state: present
 
-# - ansible.builtin.include_tasks: cleanup.yaml
-#   when: adguard_home_clean
+- ansible.builtin.include_tasks: cleanup.yaml
+  when: immich_home_clean
 
-# - ansible.builtin.import_tasks: install.yaml
-
-- ansible.builtin.import_tasks: dhcp.yaml
+- ansible.builtin.import_tasks: install.yaml

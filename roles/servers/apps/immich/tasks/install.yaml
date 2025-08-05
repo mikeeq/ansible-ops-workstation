@@ -18,17 +18,6 @@
     - docker-compose.yaml
     - .env
 
-# - name: Configure confdir/AdGuardHome.yaml file
-#   ansible.builtin.template:
-#     src: "{{ adguard_home_templates_path }}/{{ item }}"
-#     dest: "{{ install_path }}/{{ item }}"
-#     mode: "0664"
-#     backup: true
-#   loop:
-#     - confdir/AdGuardHome.yaml
-
-# - ansible.builtin.import_tasks: config.yaml
-
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
   changed_when: pull_result.stderr_lines | length > 2
