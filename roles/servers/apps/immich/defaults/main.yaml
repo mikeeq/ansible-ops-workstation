@@ -1,4 +1,4 @@
 ---
 install_path: "/opt/immich"
 
-adguard_home_clean: false
+immich_home_clean: false
