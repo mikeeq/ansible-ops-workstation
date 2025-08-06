@@ -9,6 +9,7 @@
 
     # If you wish to use a standard Hosts File format, uncomment the following line and customize the specified file
     # hosts /etc/coredns/example.com.hosts example.com
+    prometheus localhost:9153
 }
 
 ################################ Comment and Version ################################

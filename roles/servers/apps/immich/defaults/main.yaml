@@ -1,0 +1,4 @@
+---
+install_path: "/opt/immich"
+
+immich_home_clean: false

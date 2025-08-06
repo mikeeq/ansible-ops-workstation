@@ -1,6 +1,8 @@
 ---
 - name: Prometheus
-  hosts: localhost
+  hosts: mikeeClevo
+  # hosts: localhost
   become: true
   roles:
-    - servers/apps/prometheus
+    # - servers/apps/prometheus
+    - servers/apps/immich

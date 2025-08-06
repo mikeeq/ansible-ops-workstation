@@ -5,8 +5,8 @@
     state: directory
   loop:
     - "{{ install_path }}"
-    - "{{ install_path }}/grafana/provisioning/dashboards"
-    - "{{ install_path }}/grafana/provisioning/datasources"
+    # - "{{ install_path }}/confdir"
+    # - "{{ install_path }}/workdir"
 
 - name: Configure docker-compose file
   ansible.builtin.template:
@@ -16,28 +16,7 @@
     backup: true
   loop:
     - docker-compose.yaml
-
-- name: Configure config files
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
-    mode: "0664"
-    backup: true
-  loop:
-    - prometheus.yaml
-    - grafana/provisioning/datasources/prometheus.yaml
-    - grafana/provisioning/datasources/loki.yaml
-    - process-exporter.yaml
-    - promtail-config.yaml
-
-- name: Configure dashboards files
-  ansible.builtin.copy:
-    src: "templates/grafana/provisioning/dashboards/"
-    dest: "{{ install_path }}/grafana/provisioning/dashboards/"
-    mode: "0664"
-    backup: true
-    # mode :          # copy directories recursively
-    # directory_mode:
+    - .env
 
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
