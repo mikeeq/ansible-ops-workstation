@@ -1,8 +1,34 @@
 ---
+# - name: Setup OpenWRT
+#   # pre_tasks:
+#   #   - ansible.builtin.include_vars: ../
+#   hosts:
+#     - openwrt
+#   become: true
+#   gather_facts: true
+#   roles:
+#     - servers/openwrt/setup
+
+# - name: Provision DNS1
+#   hosts:
+#     - dns1
+#   become: true
+#   roles:
+#     - servers/apps/coredns
+#     # - servers/apps/letsencrypt-coredns
+
+# - name: Provision DNS2
+#   hosts:
+#     - dns2
+#   become: true
+#   roles:
+#     - servers/apps/adguard-home
+
 - name: Prometheus
   hosts: mikeeClevo
   # hosts: localhost
   become: true
   roles:
     # - servers/apps/prometheus
+    - servers/apps/nginx
     - servers/apps/immich
