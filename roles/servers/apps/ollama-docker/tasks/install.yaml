@@ -5,6 +5,7 @@
     state: directory
   loop:
     - "{{ ollama_docker_install_path }}"
+    - "{{ ollama_docker_install_path }}/mcpo/config"
 
 - name: Configure docker-compose file
   ansible.builtin.template:
@@ -14,6 +15,7 @@
     backup: true
   loop:
     - docker-compose.yaml
+    - mcpo/config/mcpo_config.json
 
 # - name: Configure config file
 #   ansible.builtin.template:
