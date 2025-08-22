@@ -30,5 +30,6 @@
   become: true
   roles:
     # - servers/apps/prometheus
-    - servers/apps/nginx
+    # - servers/apps/nginx
+    # - servers/apps/ollama-docker
     - servers/apps/immich

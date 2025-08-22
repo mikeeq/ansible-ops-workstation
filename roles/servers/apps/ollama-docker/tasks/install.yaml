@@ -15,7 +15,7 @@
     backup: true
   loop:
     - docker-compose.yaml
-    - mcpo/config/mcpo_config.json
+    - mcpo/config/config.json
 
 # - name: Configure config file
 #   ansible.builtin.template:
