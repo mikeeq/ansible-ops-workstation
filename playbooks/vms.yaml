@@ -135,9 +135,10 @@
     - desktop/machines/clevo_p170sm/tuxedo
     - servers/apps/nginx
     # - servers/apps/home-assistant
+    # - servers/apps/immich
+    # - servers/apps/frigate
     - servers/apps/ollama-docker
     - servers/apps/jenkins
-    - servers/apps/frigate
     - servers/apps/prometheus
   tasks:
     - name: Prevent multiple packages from being updated
