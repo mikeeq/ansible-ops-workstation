@@ -28,38 +28,3 @@
     name: gnome-software
     state: absent
   become: true
-
-# - name: Screenshot
-#   become: true
-#   become_user: "{{ user_name }}"
-#   community.general.dconf:
-#     # org.gnome.shell.keybindings screenshot ['<Shift>Print']
-#     key: "/org/gnome/shell/keybindings/screenshot"
-#     value: "['<Primary><Shift>numbersign']"
-#     state: present
-
-
-# /etc/gdm/custom.conf
-# # GDM configuration storage
-
-# [daemon]
-# AutomaticLoginEnable=True
-# AutomaticLogin=mikee
-# # Uncomment the line below to force the login screen to use Xorg
-# #WaylandEnable=false
-
-# [security]
-
-# [xdmcp]
-
-# [chooser]
-
-# [debug]
-# # Uncomment the line below to turn on debugging
-# #Enable=true
-
-# org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-
-# org.gnome.settings-daemon.plugins.power power-button-action 'nothing'
-
-# org.gnome.desktop.screensaver lock-enabled false
