@@ -662,6 +662,13 @@ vi /etc/systemd/logind.conf
 # change the #HandleLidSwitch=suspend line in that file to HandleLidSwitch=ignore.
 ```
 
+30. Ollama failover to CPU:
+
+```
+# cuda driver library failed to get device context 800time=2025-08-04T13:08:53.087Z level=WARN source=gpu.go:434 msg="error looking up nvidia GPU memory"
+## set no-cgroups = false in /etc/nvidia-container-runtime/config.toml
+```
+
 <!-- LICENSE -->
 ## License
 

@@ -13,7 +13,7 @@ networks:
 services:
   ollama:
     image: ollama/ollama
-    restart: always
+    restart: unless-stopped
     networks:
       - ollama
     deploy:
@@ -31,16 +31,59 @@ services:
   ollama-webui:
     # image: ghcr.io/ollama-webui/ollama-webui:main
     image: ghcr.io/open-webui/open-webui
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./data/ollama-webui:/app/backend/data
     depends_on:
       - ollama
+      - mcpo
     ports:
       - 3002:8080
     environment:
       - 'OLLAMA_API_BASE_URL=http://ollama:11434/api'
+      - MCP_API_URL=http://mcpo:8081
+      # - DATABASE_URL=postgresql://mcpo_user:mcpo_pass@postgres:5432/mcpo_db
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      - ollama
+
+  mcpo:
+    image: ghcr.io/open-webui/mcpo:main
+    container_name: mcpo
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+    networks:
+      - ollama
+    environment:
+      # Replace as appropriate for your mcpo image/configuration:
+      - DATABASE_URL=postgresql://mcpo_user:mcpo_pass@postgres:5432/mcpo_db
+      # - MCP_API_KEY=your_api_key   # Uncomment and set if necessary
+    restart: unless-stopped
+    command: >
+      --config /mcpo/config.json --port 8081 --api-key "top-secret"
+    # Uncomment if mcpo requires a persistent data directory:
+    volumes:
+      - ./mcpo/config:/mcpo
+      - ./mcpo/data:/app/data
+      # - ./mcpo/node:/usr/bin/node
+      # - ./mcpo/npm:/root/.npm
+      # - ./mcpo/venv:/app/.venv
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    user: "0"
+    environment:
+      - POSTGRES_USER=mcpo_user
+      - POSTGRES_PASSWORD=mcpo_pass
+      - POSTGRES_DB=mcpo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
     networks:
       - ollama
