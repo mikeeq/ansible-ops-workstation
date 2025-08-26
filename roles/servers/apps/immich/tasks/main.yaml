@@ -1,0 +1,22 @@
+---
+- name: Check docker-compose executable is present
+  ansible.builtin.shell: "which docker-compose"
+  register: docker_compose_result
+  ignore_errors: true
+  changed_when: false
+
+- ansible.builtin.fail:
+    msg: "docker-compose is not found! You need to install it first."
+  when: docker_compose_result.rc != 0
+
+- name: Ensure passlib is installed
+  delegate_to: localhost
+  ansible.builtin.pip:
+    name:
+      - passlib
+    state: present
+
+- ansible.builtin.include_tasks: cleanup.yaml
+  when: immich_home_clean
+
+- ansible.builtin.import_tasks: install.yaml

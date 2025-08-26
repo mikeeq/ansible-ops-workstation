@@ -4,42 +4,35 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ ollama_docker_install_path }}"
-    - "{{ ollama_docker_install_path }}/mcpo/config"
+    - "{{ install_path }}"
+    # - "{{ install_path }}/confdir"
+    # - "{{ install_path }}/workdir"
 
 - name: Configure docker-compose file
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ ollama_docker_install_path }}/{{ item }}"
+    dest: "{{ install_path }}/{{ item }}"
     mode: "0664"
     backup: true
   loop:
     - docker-compose.yaml
-    - mcpo/config/config.json
-
-# - name: Configure config file
-#   ansible.builtin.template:
-#     src: "{{ ollama_docker_templates_path }}/{{ item }}"
-#     dest: "{{ ollama_docker_install_path }}/{{ item }}"
-#     mode: "0664"
-#     backup: true
-#   notify:
-#     - restart_docker_compose
-#   loop:
-#     - config.yaml
-
-# - ansible.builtin.import_tasks: config.yaml
+    - .env
 
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
   changed_when: pull_result.stderr_lines | length > 2
   register: pull_result
   args:
-    chdir: "{{ ollama_docker_install_path }}"
+    chdir: "{{ install_path }}"
 
 - name: Run using docker-compose
   ansible.builtin.command: docker-compose up -d
   changed_when: up_result.stderr_lines | length > 2
   register: up_result
   args:
-    chdir: "{{ ollama_docker_install_path }}"
+    chdir: "{{ install_path }}"
+
+# - name: Restart using docker-compose
+#   ansible.builtin.command: docker-compose restart
+#   args:
+#     chdir: "{{ install_path }}"
