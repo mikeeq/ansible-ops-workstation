@@ -29,8 +29,8 @@
   # hosts: localhost
   become: true
   roles:
-    - servers/apps/prometheus
+    # - servers/apps/prometheus
     # - servers/apps/nginx
     # - servers/apps/frigate
     # - servers/apps/ollama-docker
-    # - servers/apps/immich
+    - servers/apps/immich
