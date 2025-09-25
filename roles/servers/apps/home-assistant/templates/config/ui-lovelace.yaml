@@ -660,11 +660,22 @@ views:
             state_color: true
           - type: section
             label: Pompy
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
             name: Pompa Podlogowka
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
             name: Pompa Grzejniki
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_cyrkulacyjna
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+            type: custom:multiple-entity-row
+            name: Mieszacz Grzejniki
+            show_state: false
+            toggle: true
+            secondary_info: last-changed
+            entities:
+              - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+                name: Otwieranie
+              - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
+                name: Zamykanie
+          - entity: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
             type: custom:multiple-entity-row
             name: Pompa Cyrkulacyjna
             icon: mdi:thermometer-water
