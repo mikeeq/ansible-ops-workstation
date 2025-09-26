@@ -632,6 +632,8 @@ views:
             entity: sensor.current_state_ch
           - name: CH_STATE
             entity: sensor.ot_ch
+          - name: SilownikiON
+            entity: sensor.climate_switches_on_count
           - name: Podloga Z
             entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
           - name: Podloga P
