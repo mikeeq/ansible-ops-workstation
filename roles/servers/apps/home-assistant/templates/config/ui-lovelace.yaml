@@ -120,18 +120,16 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_lazienka_gora_battery
                 name: Bateria
-          - entity: sensor.th_biuro_miki_temperature
+          - entity: sensor.shelly_htg3_biuro_miki_temperature
             type: custom:multiple-entity-row
             name: Biuro Miki
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_biuro_miki_temperature
+              - entity: sensor.shelly_htg3_biuro_miki_temperature
                 name: Temperatura
-              - entity: sensor.th_biuro_miki_humidity
+              - entity: sensor.shelly_htg3_biuro_miki_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_biuro_miki_battery
-                name: Bateria
           - entity: sensor.th_sypialnia_gora_temperature
             type: custom:multiple-entity-row
             name: Sypialnia Gora
@@ -205,7 +203,7 @@ views:
             icon: mdi:ceiling-light
           - type: section
             label: Gora
-          - entity: light.zbmini_sypialnia_gora_light
+          - entity: switch.sonoff_minir2_sypialnia_gora
             name: Sypialnia Gora
             icon: mdi:ceiling-light
           - entity: light.ikea_bulb_lampka_sypialnia_gora_light
@@ -647,6 +645,90 @@ views:
         max_y_axis: 100
         min_y_axis: 0
         fit_y_data: false
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Opentherm Sensors Overview
+        graph_span: 4h
+        series:
+          - entity: sensor.opentherm_opentherm_slave_fl
+            name: Slave_FL
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_flm
+            name: FLM
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_tb
+            name: TB
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_ot33
+            name: OT33 (EXHAUST CH)
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_btmp_req
+            name: CH_TEMP
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_slave_ch
+            name: Slave_CH
+            yaxis_id: "1"
+          - entity: sensor.current_state_ch
+            name: State
+            yaxis_id: "2"
+            type: line
+          - entity: sensor.ot_ch
+            name: CH_STATE
+            yaxis_id: "2"
+            type: line
+          - entity: sensor.climate_switches_on_count
+            name: SilownikiON
+            yaxis_id: "2"
+            type: line
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+            name: Podloga Z
+            yaxis_id: "1"
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
+            name: Podloga P
+            yaxis_id: "1"
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+            name: Grupy Z
+            yaxis_id: "1"
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
+            name: Grupy P
+            yaxis_id: "1"
+        yaxis:
+          - id: "1"
+            min: 0
+            max: 100
+          - id: "2"
+            opposite: true
+            min: 0
+            max: 10
+      - type: custom:mini-graph-card
+        name: Opentherm Sensors Overview
+        entities:
+          - entity: sensor.opentherm_opentherm_slave_fl
+            name: Slave_FL
+          - entity: sensor.opentherm_opentherm_flm
+            name: FLM
+          - entity: sensor.opentherm_opentherm_tb
+            name: TB
+          - entity: sensor.opentherm_opentherm_ot33
+            name: OT33 (EXHAUST CH)
+          - entity: sensor.opentherm_opentherm_btmp_req
+            name: CH_TEMP
+          - entity: sensor.opentherm_opentherm_slave_ch
+            name: Slave_CH
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+            name: Podloga Z
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
+            name: Podloga P
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+            name: Grupy Z
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
+            name: Grupy P
+        hours_to_show: 4
+        show:
+          labels: true
+          legend: true
+          name: true
       - type: entities
         entities:
           - entity: sensor.opentherm_opentherm_tb
@@ -751,7 +833,7 @@ views:
               - entity: climate.{{ i.name }}
                 attribute: temperature
                 name: Target Temperature
-              - entity: sensor.th_{{ i.name }}_temperature
+              - entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_temperature
                 name: Current Temperature
 {% endfor %}
       - type: entities

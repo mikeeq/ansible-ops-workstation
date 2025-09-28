@@ -91,6 +91,7 @@ home_assistant:
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_garderoba
     - name: biuro_miki
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_nad_garazem
+      sensor_type: "shelly_htg3"
     - name: lazienka_gora
       switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_lazienka
     - name: pokoj_timi

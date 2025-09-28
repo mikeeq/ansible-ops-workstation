@@ -28,7 +28,6 @@
     state: >
       {{ state_attr('weather.open_meteo', 'temperature') }}S
 
-- sensor:
   - name: climate_switches_on_count
     state: >
       {{ expand('switch.group_ogrzewanie_podlogowe')
