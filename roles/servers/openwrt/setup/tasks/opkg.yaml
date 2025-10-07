@@ -31,8 +31,8 @@
       - fping
       - iputils-ping
       - htop
-      # - luci-app-dawn
-      - luci-app-usteer
+      - luci-app-dawn
+      # - luci-app-usteer
       - wpad-mbedtls
       - zabbix-agentd
       - zabbix-extra-network
