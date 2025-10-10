@@ -40,6 +40,15 @@
     data: {}
     target:
       entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+  - delay: '00:04:00'
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
   mode: single
 - alias: Wylacz Grzejniki
   description: ''
@@ -54,4 +63,13 @@
     data: {}
     target:
       entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
+  - delay: '00:04:00'
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
   mode: single
