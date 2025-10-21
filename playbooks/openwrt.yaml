@@ -1,11 +1,11 @@
 ---
-- name: Bootstrap OpenWRT to enable Ansible
-  hosts:
-    - openwrt
-  become: true
-  gather_facts: false
-  roles:
-    - servers/openwrt/bootstrap-ansible
+# - name: Bootstrap OpenWRT to enable Ansible
+#   hosts:
+#     - openwrt
+#   become: true
+#   gather_facts: false
+#   roles:
+#     - servers/openwrt/bootstrap-ansible
 
 - name: Setup OpenWRT
   # pre_tasks:

@@ -4,6 +4,7 @@
     name: dnsmasq
     enabled: false
     state: stopped
+  when: not openwrt_ap_only_flag
 
 - name: Disable service firewall
   community.general.openwrt_init:
