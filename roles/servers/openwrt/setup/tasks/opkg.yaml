@@ -28,6 +28,7 @@
   vars:
     opkgs:
       - bash
+      - screen
       - fping
       - iputils-ping
       - htop
