@@ -31,6 +31,7 @@
       - screen
       - fping
       - iputils-ping
+      - iperf3
       - htop
       - luci-app-dawn
       # - luci-app-usteer

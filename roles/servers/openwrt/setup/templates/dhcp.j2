@@ -64,6 +64,9 @@ config tag '{{ i.name }}'
 
 {% endfor %}
 
+config tag 'public_dns'
+        list dhcp_option '3,8.8.8.8'
+
 {% for i in dhcp %}
 config host
         option name '{{ i.hostname }}'
