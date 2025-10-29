@@ -130,18 +130,20 @@ views:
                 name: Temperatura
               - entity: sensor.shelly_htg3_biuro_miki_humidity
                 name: Wilgotnosc
-          - entity: sensor.th_sypialnia_gora_temperature
+              - entity: binary_sensor.shelly_htg3_biuro_miki_external_power
+                name: Power
+          - entity: sensor.shelly_htg3_sypialnia_gora_temperature
             type: custom:multiple-entity-row
             name: Sypialnia Gora
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_sypialnia_gora_temperature
+              - entity: sensor.shelly_htg3_sypialnia_gora_temperature
                 name: Temperatura
-              - entity: sensor.th_sypialnia_gora_humidity
+              - entity: sensor.shelly_htg3_sypialnia_gora_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_sypialnia_gora_battery
-                name: Bateria
+              - entity: binary_sensor.shelly_htg3_sypialnia_gora_external_power
+                name: Power
           - entity: sensor.th_garderoba_temperature
             type: custom:multiple-entity-row
             name: Garderoba
@@ -154,18 +156,18 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_garderoba_battery
                 name: Bateria
-          # - entity: sensor.th_serwerownia_temperature
-          #   type: custom:multiple-entity-row
-          #   name: Serwerownia
-          #   show_state: false
-          #   secondary_info: last-changed
-          #   entities:
-          #     - entity: sensor.th_serwerownia_temperature
-          #       name: Temperatura
-          #     - entity: sensor.th_serwerownia_humidity
-          #       name: Wilgotnosc
-          #     - entity: sensor.th_serwerownia_battery
-          #       name: Bateria
+          - entity: sensor.th_serwerownia_temperature
+            type: custom:multiple-entity-row
+            name: Serwerownia
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_serwerownia_temperature
+                name: Temperatura
+              - entity: sensor.th_serwerownia_humidity
+                name: Wilgotnosc
+              - entity: sensor.th_serwerownia_battery
+                name: Bateria
           - entity: sensor.th_pokoj_julia_temperature
             type: custom:multiple-entity-row
             name: Pokoj Julia
@@ -618,6 +620,17 @@ views:
     badges: []
     cards:
       - type: history-graph
+        title: Stany Ogrzewania
+        entities:
+          - name: State
+            entity: sensor.current_state_ch
+          - name: CH_STATE
+            entity: sensor.ot_ch
+          - name: SilownikiON
+            entity: sensor.climate_switches_on_count
+        hours_to_show: 4
+      - type: history-graph
+        title: Piec
         entities:
           - name: Slave_FL
             entity: sensor.opentherm_opentherm_slave_fl
@@ -631,12 +644,14 @@ views:
             entity: sensor.opentherm_opentherm_btmp_req
           - name: Slave_CH
             entity: sensor.opentherm_opentherm_slave_ch
-          - name: State
-            entity: sensor.current_state_ch
-          - name: CH_STATE
-            entity: sensor.ot_ch
-          - name: SilownikiON
-            entity: sensor.climate_switches_on_count
+        hours_to_show: 4
+        logarithmic_scale: false
+        max_y_axis: 100
+        min_y_axis: 0
+        fit_y_data: false
+      - type: history-graph
+        title: Podlogowka i Grupy Pompowe
+        entities:
           - name: Podloga Z
             entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
           - name: Podloga P
@@ -647,13 +662,13 @@ views:
             entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
         hours_to_show: 4
         logarithmic_scale: false
-        max_y_axis: 100
-        min_y_axis: 0
+        max_y_axis: 45
+        min_y_axis: 15
         fit_y_data: false
       - type: custom:apexcharts-card
         header:
           show: true
-          title: Opentherm Sensors Overview
+          title: apexcharts Opentherm
         graph_span: 4h
         series:
           - entity: sensor.opentherm_opentherm_slave_fl
@@ -707,7 +722,7 @@ views:
             min: 0
             max: 10
       - type: custom:mini-graph-card
-        name: Opentherm Sensors Overview
+        name: mini-graph-card Opentherm
         entities:
           - entity: sensor.opentherm_opentherm_slave_fl
             name: Slave_FL
