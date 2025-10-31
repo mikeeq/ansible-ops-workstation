@@ -1,5 +1,5 @@
 ---
-version: '3'
+# version: '3'
 services:
   homeassistant:
     container_name: homeassistant
@@ -25,6 +25,15 @@ services:
       driver: "json-file"
       options:
         max-size: "250m"
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 2G
+          # pids: 1
+        reservations:
+          cpus: 0.5
+          memory: 512M
   mosquitto:
     container_name: mosquitto
     # https://hub.docker.com/_/eclipse-mosquitto
@@ -41,3 +50,12 @@ services:
       driver: "json-file"
       options:
         max-size: "250m"
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 256M
+          # pids: 1
+        reservations:
+          cpus: 0.25
+          memory: 64M

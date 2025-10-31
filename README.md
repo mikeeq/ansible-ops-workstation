@@ -481,6 +481,7 @@ Contributions are what make the open source community such an amazing place to b
 
     EXTENSION_NAME=cpufreq@konkor
     vi ~/.local/share/gnome-shell/extensions/${EXTENSION_NAME}/metadata.json
+    # /usr/share/gnome-shell/extensions/GPaste@gnome-shell-extensions.gnome.org/metadata.json
 
     {
       "shell-version": [

@@ -4,4 +4,4 @@
 - ansible.builtin.import_tasks: gsettings.yaml
 - ansible.builtin.import_tasks: extensions_manual.yaml
 # - ansible.builtin.import_tasks: extensions.yaml
-- ansible.builtin.import_tasks: remote_desktop.yaml
+# - ansible.builtin.import_tasks: remote_desktop.yaml

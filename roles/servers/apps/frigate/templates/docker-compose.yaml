@@ -2,7 +2,6 @@
 # https://docs.frigate.video/installation
 # blue iris + deepstack, agentdvr
 ---
-version: "3.9"
 services:
   frigate:
     container_name: frigate
@@ -12,7 +11,13 @@ services:
     image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
     deploy:
       resources:
+        limits:
+          cpus: 3
+          memory: 8G
+          # pids: 1
         reservations:
+          cpus: 1
+          memory: 4G
           devices:
             - driver: nvidia
               count: 1
