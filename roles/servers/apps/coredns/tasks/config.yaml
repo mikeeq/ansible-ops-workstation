@@ -1,5 +1,6 @@
 ---
 - name: Install Dependencies
+  become: true
   ansible.builtin.package:
     name: bind-utils
     state: present

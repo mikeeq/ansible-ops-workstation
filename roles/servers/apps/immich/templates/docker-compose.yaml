@@ -62,7 +62,6 @@ services:
         reservations:
           cpus: 1
           memory: 0.5G
-        reservations:
           devices:
             - driver: nvidia
               count: 1
