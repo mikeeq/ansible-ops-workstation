@@ -70,38 +70,3 @@
       loop_control:
         label: "{{ item.hostname }}"
       when: not item.online
-
-  # vars:
-  #   dhcp:
-  #     - hostname: sonoff-4chpror3-ogrzewanie-gora2
-  #       tasmota_device: "Sonoff 4CHPROR3"
-  #       mac: 4c:eb:d6:ca:aa:3f
-  #       ip: 192.168.4.58
-  #       tags:
-  #         - private
-  #         - smarthome
-  #         - tasmota
-  #     - hostname: sonoff-basic-ogrzewanie-pompa-cyrkulacyjna
-  #       tasmota_device: "Sonoff Basic"
-  #       mac: 48:55:19:4c:8b:74
-  #       ip: 192.168.4.71
-  #       tags:
-  #         - private
-  #         - smarthome
-  #         - tasmota
-  #     - hostname: sonoff-dualr3-lazienka-gora
-  #       tasmota_device: "Sonoff DUAL R3"
-  #       mac: 20:43:a8:c7:e4:ec
-  #       ip: 192.168.4.91
-  #       tags:
-  #         - private
-  #         - smarthome
-  #         - tasmota
-  #     - hostname: sonoff-minir2-sypialnia-gora
-  #       tasmota_device: "Sonoff MINIR2"
-  #       mac: ec:94:cb:b2:df:9d
-  #       ip: 192.168.4.35
-  #       tags:
-  #         - private
-  #         - smarthome
-  #         - tasmota
