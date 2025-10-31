@@ -5,7 +5,7 @@
   triggers:
     - trigger: state
       entity_id:
-        - "switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
+        - "switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
       from: "off"
       to: "on"
   conditions:
@@ -29,7 +29,7 @@
       to: "on"
   conditions:
     - condition: state
-      entity_id: "switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
+      entity_id: "switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
       state: "on"
   actions:
     - action: switch.turn_on
@@ -60,7 +60,7 @@
   triggers:
     - trigger: state
       entity_id:
-        - "switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
+        - "switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka"
       from: "on"
       to: "off"
   conditions: []

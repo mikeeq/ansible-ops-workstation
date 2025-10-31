@@ -1,0 +1,72 @@
+---
+- name: Check Tasmota
+  hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    # - bash:
+    #     curl -s "http://192.168.4.58/cm?cmnd=Module" | jq -r ".Module.[]"
+
+    - name: Create variable with tasmota devices
+      ansible.builtin.set_fact:
+        tasmota_devices: "{{ dhcp | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'tasmota') | list }}"
+
+    - name: Display tasmota devices found
+      ansible.builtin.debug:
+        msg: "Found {{ tasmota_devices | length }} Tasmota devices"
+
+    - name: Check Tasmota module for each device
+      ansible.builtin.uri:
+        url: "http://{{ item.ip }}/cm?cmnd=Module"
+        method: GET
+        return_content: true
+      register: tasmota_response
+      loop: "{{ tasmota_devices }}"
+      ignore_errors: true
+
+    - name: Enrich tasmota_devices with actual module data
+      ansible.builtin.set_fact:
+        tasmota_devices_enriched: "{{ tasmota_devices_enriched | default([]) + [item.item | combine({'actual_module': actual_module, 'online': item.status == 200})] }}"
+      vars:
+        actual_module: "{{ (item.content | from_json).Module.values() | first if item.status == 200 else 'Offline' }}"
+      loop: "{{ tasmota_response.results }}"
+      loop_control:
+        label: "{{ item.item.hostname }}"
+      when: item is not skipped
+
+    - name: Display module information
+      ansible.builtin.debug:
+        msg: "Device: {{ item.hostname }} ({{ item.ip }}) - Expected: {{ item.tasmota_device | default('N/A') }} - Actual: {{ item.actual_module }}"
+      loop: "{{ tasmota_devices_enriched }}"
+      loop_control:
+        label: "{{ item.hostname }}"
+      when: item.online
+
+    - name: Check for device mismatches
+      ansible.builtin.debug:
+        msg: "⚠️  MISMATCH: {{ item.hostname }} - Expected: '{{ item.tasmota_device }}' but got: '{{ item.actual_module }}'"
+      loop: "{{ tasmota_devices_enriched }}"
+      loop_control:
+        label: "{{ item.hostname }}"
+      when:
+        - item.online
+        - item.tasmota_device is defined
+        - item.tasmota_device != item.actual_module
+
+    - name: Show devices without expected tasmota_device defined
+      ansible.builtin.debug:
+        msg: "ℹ️  No expected device defined: {{ item.hostname }} - Actual: '{{ item.actual_module }}'"
+      loop: "{{ tasmota_devices_enriched }}"
+      loop_control:
+        label: "{{ item.hostname }}"
+      when:
+        - item.online
+        - item.tasmota_device is not defined
+
+    - name: Display offline devices
+      ansible.builtin.debug:
+        msg: "🔴 OFFLINE: {{ item.hostname }} ({{ item.ip }}) - Expected: {{ item.tasmota_device | default('N/A') }}"
+      loop: "{{ tasmota_devices_enriched }}"
+      loop_control:
+        label: "{{ item.hostname }}"
+      when: not item.online

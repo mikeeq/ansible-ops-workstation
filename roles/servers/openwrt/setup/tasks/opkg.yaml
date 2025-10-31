@@ -28,11 +28,11 @@
   vars:
     opkgs:
       - bash
+      - screen
       - fping
       - iputils-ping
+      - iperf3
       - htop
-      # - luci-app-dawn
-      - luci-app-usteer
       - wpad-mbedtls
       - zabbix-agentd
       - zabbix-extra-network
@@ -50,13 +50,23 @@
       - luci-app-vnstat2
       - luci-app-statistics
 
-- name: Install batman dependencies
+- name: Install roaming dependencies
   community.general.opkg:
     name: "{{ opkgs }}"
-    state: present
+    state: absent
     update_cache: true
   vars:
     opkgs:
-      - kmod-batman-adv
-      - batctl-full
-      - luci-proto-batman-adv
+      - luci-app-dawn
+      # - luci-app-usteer
+
+# - name: Install batman dependencies
+#   community.general.opkg:
+#     name: "{{ opkgs }}"
+#     state: present
+#     update_cache: true
+#   vars:
+#     opkgs:
+#       - kmod-batman-adv
+#       - batctl-full
+#       - luci-proto-batman-adv

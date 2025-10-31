@@ -19,6 +19,7 @@
       - python3-logging
       - python3-urllib
       - python3-decimal
+      - python3-idna
   register: opkg_install
   changed_when: '"Installing" in opkg_install.stdout'
 

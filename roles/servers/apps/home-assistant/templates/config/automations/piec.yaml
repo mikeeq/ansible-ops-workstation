@@ -6,7 +6,7 @@
     - trigger: state
       entity_id:
         - >-
-          switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+          switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
       from: "on"
       to: "off"
       for:
@@ -34,7 +34,7 @@
     - trigger: state
       entity_id:
         - >-
-          switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+          switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
       from: "off"
       to: "on"
       # Wait for mixer to fully open up, ARA661 (120s + delay from driver)

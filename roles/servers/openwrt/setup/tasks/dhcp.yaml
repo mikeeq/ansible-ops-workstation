@@ -9,6 +9,7 @@
     owner: "root"
     group: "root"
     mode: "0600"
+    backup: true
   register: dhcp_flag
   # notify:
   #   - reload_dnsmasq
@@ -19,4 +20,4 @@
     state: reloaded
   when:
     - dhcp_flag.changed
-    - openwrt_router_flag
+    - openwrt_router_flag or openwrt_ap_only_flag

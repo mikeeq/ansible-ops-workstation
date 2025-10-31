@@ -1,0 +1,201 @@
+---
+- name: Check Tasmota
+  hosts: localhost
+  become: false
+  gather_facts: false
+  # tasks:
+  #   - bash:
+  #       curl -s "http://192.168.4.58/cm?cmnd=Module" | jq -r ".Module.[]"
+  vars:
+    tasmota_firmware_url: "http://ota.tasmota.com/tasmota/release/tasmota.bin.gz"
+    update_firmware: false  # Set to true to enable firmware updates
+    latest_firmware_version: "15.1.0.1(bab6914-tasmota)"
+  tasks:
+    - name: Create variable with tasmota devices
+      ansible.builtin.set_fact:
+        tasmota_devices: "{{ dhcp | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'tasmota') | list }}"
+
+    - name: Display tasmota devices found
+      ansible.builtin.debug:
+        msg: "Found {{ tasmota_devices | length }} Tasmota devices"
+
+    - name: Check Tasmota module for each device
+      ansible.builtin.uri:
+        url: "http://{{ item.ip }}/cm?cmnd=Module"
+        method: GET
+        return_content: true
+      register: tasmota_response
+      loop: "{{ tasmota_devices }}"
+      ignore_errors: true
+
+    # - name: Create variable with reachable devices
+    #   ansible.builtin.set_fact:
+    #     reachable_devices: "{{ tasmota_status.results | selectattr('status', 'equalto', 200) | map(attribute='item') | list }}"
+
+    # - name: Display reachable devices summary
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "Total devices found: {{ tasmota_devices | length }}"
+    #       - "Reachable devices: {{ reachable_devices | length }}"
+    #       - "Unreachable devices: {{ tasmota_devices | length - reachable_devices | length }}"
+    #       - "Reachable hostnames: {{ reachable_devices | map(attribute='hostname') | list | join(', ') }}"
+
+    - name: Check Tasmota status for each device
+      ansible.builtin.uri:
+        url: "http://{{ item.ip }}/cm?cmnd=Status%202"
+        method: GET
+        return_content: true
+      register: tasmota_status
+      loop: "{{ tasmota_devices }}"
+      ignore_errors: true
+
+    # - name: Categorize devices by platform
+    #   ansible.builtin.set_fact:
+    #     esp8266_devices: "{{ tasmota_status.results | selectattr('status', 'equalto', 200) | selectattr('content', 'defined') | list | selectattr('content', 'search', 'ESP8266') | map(attribute='item') | list }}"
+    #     esp32_devices: "{{ tasmota_status.results | selectattr('status', 'equalto', 200) | selectattr('content', 'defined') | list | selectattr('content', 'search', 'ESP32') | map(attribute='item') | list }}"
+
+    # - name: Display platform summary
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "ESP8266 devices: {{ esp8266_devices | map(attribute='hostname') | list | join(', ') }}"
+    #       - "ESP32 devices: {{ esp32_devices | map(attribute='hostname') | list | join(', ') }}"
+
+    - name: Display module and firmware information
+      ansible.builtin.debug:
+        msg:
+          - "Device: {{ item.0.item.hostname }}"
+          - "IP: {{ item.0.item.ip }}"
+          - "URL: http://{{ item.0.item.ip }}/up?"
+          # - "Expected: {{ item.0.item.tasmota_device | default('N/A') }}"
+          # - "Actual: {{ (item.0.content | from_json).Module.values() | first }}"
+          - "Firmware: {{ (item.1.content | from_json).StatusFWR.Version | default('Unknown') }}"
+          # - "Core: {{ (item.1.content | from_json).StatusFWR.Core | default('Unknown') }}"
+      loop: "{{ tasmota_response.results | zip(tasmota_status.results) | list }}"
+      loop_control:
+        label: "{{ item.0.item.hostname }}"
+      when:
+        - item.0 is not skipped
+        - item.0.status == 200
+        - item.1 is not skipped
+        - item.1.status == 200
+      ignore_errors: true
+
+    - name: Display devices with outdated firmware
+      ansible.builtin.debug:
+        msg:
+          - "🔄 OUTDATED: {{ item.0.item.hostname }}"
+          - "IP: {{ item.0.item.ip }}"
+          - "URL: http://{{ item.0.item.ip }}/up?"
+          - "Current: {{ (item.1.content | from_json).StatusFWR.Version | default('Unknown') }}"
+          - "Latest: {{ latest_firmware_version }}"
+      loop: "{{ tasmota_response.results | zip(tasmota_status.results) | list }}"
+      loop_control:
+        label: "{{ item.0.item.hostname }}"
+      when:
+        - item.0 is not skipped
+        - item.0.status == 200
+        - item.1 is not skipped
+        - item.1.status == 200
+        - (item.1.content | from_json).StatusFWR.Version | default('Unknown') != latest_firmware_version
+      ignore_errors: true
+
+    - name: Display devices with current firmware
+      ansible.builtin.debug:
+        msg: "✅ UP-TO-DATE: {{ item.0.item.hostname }} - {{ (item.1.content | from_json).StatusFWR.Version }}"
+      loop: "{{ tasmota_response.results | zip(tasmota_status.results) | list }}"
+      loop_control:
+        label: "{{ item.0.item.hostname }}"
+      when:
+        - item.0 is not skipped
+        - item.0.status == 200
+        - item.1 is not skipped
+        - item.1.status == 200
+        - (item.1.content | from_json).StatusFWR.Version | default('Unknown') == latest_firmware_version
+      ignore_errors: true
+
+    # - name: Check for device mismatches
+    #   ansible.builtin.debug:
+    #     msg: "⚠️  MISMATCH: {{ item.item.hostname }} - Expected: '{{ item.item.tasmota_device }}' but got: '{{ (item.content | from_json).Module.values() | first }}'"
+    #   loop: "{{ tasmota_response.results }}"
+    #   loop_control:
+    #     label: "{{ item.item.hostname }}"
+    #   when:
+    #     - item is not skipped
+    #     - item.status == 200
+    #     - item.item.tasmota_device is defined
+    #     - item.item.tasmota_device != (item.content | from_json).Module.values() | first
+
+    # - name: Show devices without expected tasmota_device defined
+    #   ansible.builtin.debug:
+    #     msg: "ℹ️  No expected device defined: {{ item.item.hostname }} - Actual: '{{ (item.content | from_json).Module.values() | first }}'"
+    #   loop: "{{ tasmota_response.results }}"
+    #   loop_control:
+    #     label: "{{ item.item.hostname }}"
+    #   when:
+    #     - item is not skipped
+    #     - item.status == 200
+    #     - item.item.tasmota_device is not defined
+
+    # - name: Start firmware update (when enabled)
+    #   ansible.builtin.uri:
+    #     url: "http://{{ item.ip }}/cm?cmnd=OtaUrl%20{{ tasmota_firmware_url }}"
+    #     method: GET
+    #     return_content: true
+    #   register: otaurl_response
+    #   loop: "{{ tasmota_devices }}"
+    #   when:
+    #     - update_firmware | bool
+    #     - item.ip is defined
+    #   ignore_errors: true
+
+    # - name: Trigger firmware upgrade (when enabled)
+    #   ansible.builtin.uri:
+    #     url: "http://{{ item.ip }}/cm?cmnd=Upgrade%201"
+    #     method: GET
+    #     return_content: true
+    #   register: upgrade_response
+    #   loop: "{{ tasmota_devices }}"
+    #   when:
+    #     - update_firmware | bool
+    #     - item.ip is defined
+    #   ignore_errors: true
+
+    # - name: Display firmware update status
+    #   ansible.builtin.debug:
+    #     msg: "🔄 Firmware update initiated for: {{ item.item.hostname }} ({{ item.item.ip }})"
+    #   loop: "{{ upgrade_response.results | default([]) }}"
+    #   loop_control:
+    #     label: "{{ item.item.hostname }}"
+    #   when:
+    #     - update_firmware | bool
+    #     - item is not skipped
+    #     - item.status == 200
+
+    # - name: Wait for devices to reboot after firmware update
+    #   ansible.builtin.pause:
+    #     seconds: 120
+    #     prompt: "Waiting 2 minutes for devices to reboot after firmware update..."
+    #   when: update_firmware | bool
+
+    # - name: Verify devices are back online after update
+    #   ansible.builtin.uri:
+    #     url: "http://{{ item.ip }}/cm?cmnd=Status%202"
+    #     method: GET
+    #     return_content: true
+    #   register: post_update_status
+    #   loop: "{{ tasmota_devices }}"
+    #   retries: 3
+    #   delay: 30
+    #   when: update_firmware | bool
+    #   ignore_errors: true
+
+    # - name: Display post-update firmware versions
+    #   ansible.builtin.debug:
+    #     msg: |
+    #       Device: {{ item.item.hostname }} ({{ item.item.ip }})
+    #       New Firmware: {{ (item.content | from_json).StatusFWR.Version | default('Failed to connect') }}
+    #       Status: {{ 'Online' if item.status == 200 else 'Offline' }}
+    #   loop: "{{ post_update_status.results | default([]) }}"
+    #   loop_control:
+    #     label: "{{ item.item.hostname }}"
+    #   when: update_firmware | bool

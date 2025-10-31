@@ -8,6 +8,7 @@
     - "{{ install_path }}/config"
 
 - name: Configure docker-compose file
+  become: true
   ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ install_path }}/{{ item }}"
@@ -19,6 +20,7 @@
 - ansible.builtin.import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
+  become: true
   ansible.builtin.command: docker-compose pull
   changed_when: pull_result.stderr_lines | length > 2
   register: pull_result
@@ -26,6 +28,7 @@
     chdir: "{{ install_path }}"
 
 - name: Run using docker-compose
+  become: true
   ansible.builtin.command: docker-compose up -d
   changed_when: up_result.stderr_lines | length > 2
   register: up_result

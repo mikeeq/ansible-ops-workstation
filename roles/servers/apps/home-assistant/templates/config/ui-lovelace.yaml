@@ -120,30 +120,30 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_lazienka_gora_battery
                 name: Bateria
-          - entity: sensor.th_biuro_miki_temperature
+          - entity: sensor.shelly_htg3_biuro_miki_temperature
             type: custom:multiple-entity-row
             name: Biuro Miki
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_biuro_miki_temperature
+              - entity: sensor.shelly_htg3_biuro_miki_temperature
                 name: Temperatura
-              - entity: sensor.th_biuro_miki_humidity
+              - entity: sensor.shelly_htg3_biuro_miki_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_biuro_miki_battery
-                name: Bateria
-          - entity: sensor.th_sypialnia_gora_temperature
+              - entity: binary_sensor.shelly_htg3_biuro_miki_external_power
+                name: Power
+          - entity: sensor.shelly_htg3_sypialnia_gora_temperature
             type: custom:multiple-entity-row
             name: Sypialnia Gora
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_sypialnia_gora_temperature
+              - entity: sensor.shelly_htg3_sypialnia_gora_temperature
                 name: Temperatura
-              - entity: sensor.th_sypialnia_gora_humidity
+              - entity: sensor.shelly_htg3_sypialnia_gora_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_sypialnia_gora_battery
-                name: Bateria
+              - entity: binary_sensor.shelly_htg3_sypialnia_gora_external_power
+                name: Power
           - entity: sensor.th_garderoba_temperature
             type: custom:multiple-entity-row
             name: Garderoba
@@ -156,18 +156,18 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_garderoba_battery
                 name: Bateria
-          # - entity: sensor.th_serwerownia_temperature
-          #   type: custom:multiple-entity-row
-          #   name: Serwerownia
-          #   show_state: false
-          #   secondary_info: last-changed
-          #   entities:
-          #     - entity: sensor.th_serwerownia_temperature
-          #       name: Temperatura
-          #     - entity: sensor.th_serwerownia_humidity
-          #       name: Wilgotnosc
-          #     - entity: sensor.th_serwerownia_battery
-          #       name: Bateria
+          - entity: sensor.th_serwerownia_temperature
+            type: custom:multiple-entity-row
+            name: Serwerownia
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: sensor.th_serwerownia_temperature
+                name: Temperatura
+              - entity: sensor.th_serwerownia_humidity
+                name: Wilgotnosc
+              - entity: sensor.th_serwerownia_battery
+                name: Bateria
           - entity: sensor.th_pokoj_julia_temperature
             type: custom:multiple-entity-row
             name: Pokoj Julia
@@ -205,15 +205,20 @@ views:
             icon: mdi:ceiling-light
           - type: section
             label: Gora
-          - entity: light.zbmini_sypialnia_gora_light
+          - entity: switch.sonoff_minir2_sypialnia_gora
             name: Sypialnia Gora
             icon: mdi:ceiling-light
           - entity: light.ikea_bulb_lampka_sypialnia_gora_light
             name: Sypialnia Gora Lampka
             icon: mdi:lamp
+          - type: section
           - entity: light.ikea_bulb_biuro_miki_light
             name: Biuro Miki Lampka
             icon: mdi:lamp
+          - type: section
+          - entity: light.led_lazienka_gora
+            name: Lazienka Gora LED
+            icon: mdi:led-strip
         title: Swiatla
         show_header_toggle: false
         state_color: true
@@ -289,7 +294,7 @@ views:
         title: SpeedTest
       - type: entities
         entities:
-          - entinty: binary_sensor.imou_gas_detector_kotlownia
+          - entity: binary_sensor.imou_gas_detector_kotlownia
             name: Czujnik gazu Kotlownia
             icon: mdi:meter-gas
           - entity: sensor.ikea_5b_kuchnia_battery
@@ -300,13 +305,13 @@ views:
             entities:
               - entity: sensor.ikea_5b_kuchnia_battery
                 name: Battery
-          - entity: sensor.button_state_dol_1
+          - entity: sensor.button_state_dol_1_battery
             type: custom:multiple-entity-row
             name: Sonoff Dol 1
             icon: mdi:gesture-tap-button
             show_state: false
             entities:
-              - entity: sensor.button_battery_percentage_dol_1
+              - entity: sensor.button_state_dol_1_battery
                 name: Battery
         title: Przyciski
   - title: Garaz
@@ -432,9 +437,16 @@ views:
         state_color: false
       - type: entities
         entities:
-          - entity: binary_sensor.gardena_smart_system_connection
-          - entity: vacuum.sileno_life_750
+          - entity: lawn_mower.sileno_life_750_lawn_mower
+            name: Lawn Mower
+          - entity: button.sileno_life_750_return_to_dock
+            name: Return to Dock
+          - entity: button.sileno_life_750_start_mowing_now
+            name: Start Mowing Now
           - entity: sensor.sileno_life_750_battery_level
+            name: Battery Level
+          - entity: binary_sensor.sileno_life_750_online
+            name: Online
         title: Kosiarka
       - type: entities
         entities:
@@ -608,6 +620,17 @@ views:
     badges: []
     cards:
       - type: history-graph
+        title: Stany Ogrzewania
+        entities:
+          - name: State
+            entity: sensor.current_state_ch
+          - name: CH_STATE
+            entity: sensor.ot_ch
+          - name: SilownikiON
+            entity: sensor.climate_switches_on_count
+        hours_to_show: 4
+      - type: history-graph
+        title: Piec
         entities:
           - name: Slave_FL
             entity: sensor.opentherm_opentherm_slave_fl
@@ -621,15 +644,111 @@ views:
             entity: sensor.opentherm_opentherm_btmp_req
           - name: Slave_CH
             entity: sensor.opentherm_opentherm_slave_ch
-          - name: State
-            entity: sensor.current_state_ch
-          - name: CH_STATE
-            entity: sensor.ot_ch
         hours_to_show: 4
         logarithmic_scale: false
         max_y_axis: 100
         min_y_axis: 0
         fit_y_data: false
+      - type: history-graph
+        title: Podlogowka i Grupy Pompowe
+        entities:
+          - name: Podloga Z
+            entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+          - name: Podloga P
+            entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
+          - name: Grupy Z
+            entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+          - name: Grupy P
+            entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
+        hours_to_show: 4
+        logarithmic_scale: false
+        max_y_axis: 45
+        min_y_axis: 15
+        fit_y_data: false
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: apexcharts Opentherm
+        graph_span: 4h
+        series:
+          - entity: sensor.opentherm_opentherm_slave_fl
+            name: Slave_FL
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_flm
+            name: FLM
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_tb
+            name: TB
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_ot33
+            name: OT33 (EXHAUST CH)
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_btmp_req
+            name: CH_TEMP
+            yaxis_id: "1"
+          - entity: sensor.opentherm_opentherm_slave_ch
+            name: Slave_CH
+            yaxis_id: "1"
+          - entity: sensor.current_state_ch
+            name: State
+            yaxis_id: "2"
+            type: line
+          - entity: sensor.ot_ch
+            name: CH_STATE
+            yaxis_id: "2"
+            type: line
+          - entity: sensor.climate_switches_on_count
+            name: SilownikiON
+            yaxis_id: "2"
+            type: line
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+            name: Podloga Z
+            yaxis_id: "1"
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
+            name: Podloga P
+            yaxis_id: "1"
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+            name: Grupy Z
+            yaxis_id: "1"
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
+            name: Grupy P
+            yaxis_id: "1"
+        yaxis:
+          - id: "1"
+            min: 0
+            max: 100
+          - id: "2"
+            opposite: true
+            min: 0
+            max: 10
+      - type: custom:mini-graph-card
+        name: mini-graph-card Opentherm
+        entities:
+          - entity: sensor.opentherm_opentherm_slave_fl
+            name: Slave_FL
+          - entity: sensor.opentherm_opentherm_flm
+            name: FLM
+          - entity: sensor.opentherm_opentherm_tb
+            name: TB
+          - entity: sensor.opentherm_opentherm_ot33
+            name: OT33 (EXHAUST CH)
+          - entity: sensor.opentherm_opentherm_btmp_req
+            name: CH_TEMP
+          - entity: sensor.opentherm_opentherm_slave_ch
+            name: Slave_CH
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+            name: Podloga Z
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
+            name: Podloga P
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+            name: Grupy Z
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
+            name: Grupy P
+        hours_to_show: 4
+        show:
+          labels: true
+          legend: true
+          name: true
       - type: entities
         entities:
           - entity: sensor.opentherm_opentherm_tb
@@ -650,6 +769,23 @@ views:
                 name: DHW
               - entity: sensor.opentherm_opentherm_tb
                 name: TB
+          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+            type: custom:multiple-entity-row
+            name: Grupy pompowe
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - name: Podloga Z
+                entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+              - name: Podloga P
+                entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
+              - name: Grupy Z
+                entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+              - name: Grupy P
+                entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
+          - entity: binary_sensor.imou_gas_detector_kotlownia
+            name: Czujnik gazu
+            icon: mdi:meter-gas
           - entity: water_heater.piec_woda_ogrzewanie
             name: Ogrzewanie
             icon: mdi:heating-coil
@@ -660,11 +796,23 @@ views:
             state_color: true
           - type: section
             label: Pompy
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
             name: Pompa Podlogowka
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
             name: Pompa Grzejniki
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_sonoff_4chpror3_ogrzewanie_piec_pompa_cyrkulacyjna
+          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+            type: custom:multiple-entity-row
+            name: Mieszacz Grzejniki
+            show_state: false
+            secondary_info: last-changed
+            entities:
+              - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+                name: Otwieranie
+                # toggle: true
+              - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
+                name: Zamykanie
+                # toggle: true
+          - entity: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
             type: custom:multiple-entity-row
             name: Pompa Cyrkulacyjna
             icon: mdi:thermometer-water
@@ -705,7 +853,7 @@ views:
               - entity: climate.{{ i.name }}
                 attribute: temperature
                 name: Target Temperature
-              - entity: sensor.th_{{ i.name }}_temperature
+              - entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_temperature
                 name: Current Temperature
 {% endfor %}
       - type: entities

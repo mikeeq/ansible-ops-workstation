@@ -37,18 +37,28 @@ home_assistant_custom_lovelace_plugins:
     entity_name: 'button-card.js'
     repo: https://github.com/custom-cards/button-card
     release: true
-    version: v4.1.2
+    version: v4.3.0
   - name: 'vacuum-card'
     entity_name: 'vacuum-card.js'
     repo: https://github.com/denysdovhan/vacuum-card
     release: true
-    version: v2.10.1
-  - name: 'frigate-hass-card'
-    entity_name: 'frigate-hass-card.zip'
-    repo: https://github.com/dermotduffy/frigate-hass-card
+    version: v2.11.0
+  - name: 'advanced-camera-card'
+    entity_name: 'advanced-camera-card.zip'
+    repo: https://github.com/dermotduffy/advanced-camera-card
     release: true
-    version: v5.2.0
+    version: v7.17.0
     zip_mode: true
+  - name: 'apexcharts-card'
+    repo: 'https://github.com/RomRider/apexcharts-card'
+    entity_name: 'apexcharts-card.js'
+    release: true
+    version: v2.2.3
+  - name: 'mini-graph-card'
+    repo: 'https://github.com/kalkih/mini-graph-card'
+    entity_name: 'mini-graph-card-bundle.js'
+    release: true
+    version: v0.13.0
 
 home_assistant:
   automations:
@@ -77,10 +87,12 @@ home_assistant:
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
     - name: sypialnia_gora
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_sypialnia
+      sensor_type: "shelly_htg3"
     - name: garderoba
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_garderoba
     - name: biuro_miki
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_nad_garazem
+      sensor_type: "shelly_htg3"
     - name: lazienka_gora
       switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_lazienka
     - name: pokoj_timi

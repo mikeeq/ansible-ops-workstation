@@ -42,7 +42,11 @@ lovelace:
       type: module
     - url: /local/vacuum-card.js?ver=1
       type: module
-    - url: /local/dist/frigate-hass-card.js?ver=1
+    - url: /local/dist/advanced-camera-card.js?ver=1
+      type: module
+    - url: /local/apexcharts-card.js?v=1
+      type: module
+    - url: /local/mini-graph-card-bundle.js?v=1
       type: module
 
 # Text to speech

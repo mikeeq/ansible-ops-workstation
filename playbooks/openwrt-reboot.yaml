@@ -1,0 +1,16 @@
+---
+- name: Reboot OpenWRT devices
+  hosts:
+    - openwrt
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Reboot the OpenWRT device
+      ansible.builtin.reboot:
+        reboot_command: /sbin/reboot
+        reboot_timeout: 300
+      register: reboot_result
+
+    - name: Display reboot result
+      ansible.builtin.debug:
+        var: reboot_result

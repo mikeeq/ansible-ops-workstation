@@ -15,6 +15,23 @@ config dnsmasq
         option localservice '1'
         option ednspacket_max '1232'
 
+{# {% if openwrt_ap_only_flag|default(false) %}
+config dhcp 'relay'
+        option interface 'bat0'
+        option dhcpv4 'relay'
+        option server '192.168.0.1'
+
+config dhcp 'lan'
+        option interface 'lan'
+        option ignore '1'
+
+# https://openwrt.org/docs/guide-user/base-system/dhcp#dhcp_relay
+config relay 'bat0'
+        option interface 'bat0'
+        option local_addr '0.0.0.0'
+        option server_addr '192.168.0.1'
+
+{% else %} #}
 config dhcp 'lan'
         option interface 'lan'
         option start '100'
@@ -27,6 +44,7 @@ config dhcp 'lan'
         {# list dhcp_option '6,8.8.8.8' #}
         {# option dhcpv6 'server' #}
         {# option ra 'server' #}
+{# {% endif %} #}
 
 config dhcp 'wan'
         option interface 'wan'
@@ -46,6 +64,9 @@ config tag '{{ i.name }}'
 
 {% endfor %}
 
+config tag 'public_dns'
+        list dhcp_option '6,8.8.8.8'
+
 {% for i in dhcp %}
 config host
         option name '{{ i.hostname }}'
@@ -60,6 +81,6 @@ config host
 
 {# config host
         option name 'device1'
-        option mac '00:21:63:75:aa:17'
+        option mac '00:21:63:11:aa:17'
         option ip '192.168.1.10'
         option tag 'tag1' #}

@@ -4,7 +4,7 @@
   name: "{{ i.name }}"
   # heater: "{{ i.switch }}"
   heater: "switch.virtual_ogrzewanie_{{ i.name }}"
-  target_sensor: "sensor.th_{{ i.name }}_temperature"
+  target_sensor: "sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_temperature"
   min_temp: 16
   max_temp: 24
   # target_temp: 20.0

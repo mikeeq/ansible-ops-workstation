@@ -18,7 +18,12 @@ services:
     #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
     deploy:
       resources:
+        limits:
+          cpus: 3
+          memory: 8G
         reservations:
+          cpus: 1
+          memory: 2G
           devices:
             - driver: nvidia
               count: 1
@@ -51,7 +56,12 @@ services:
     #   service: cpu # set to one of [armnn, cuda, rocm, openvino, openvino-wsl, rknn] for accelerated inference - use the `-wsl` version for WSL2 where applicable
     deploy:
       resources:
+        limits:
+          cpus: 3
+          memory: 2G
         reservations:
+          cpus: 1
+          memory: 0.5G
           devices:
             - driver: nvidia
               count: 1
