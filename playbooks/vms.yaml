@@ -22,19 +22,19 @@
 # TODO: add tasmota Update
 # TODO: add zabbix install
 
-- hosts: clevo
-  gather_facts: false
-  tasks:
-    # - name: Display all host groups
-    #   ansible.builtin.debug:
-    #     msg: "{{ groups.keys() }}"
-    # - name: Display all host groups and their hosts
-    #   ansible.builtin.debug:
-    #     msg: "Group {{ item }} contains hosts: {{ groups[item] }}"
-    #   loop: "{{ groups.keys() }}"
-    - name: Show groups for a specific host
-      ansible.builtin.debug:
-        var: hostvars[inventory_hostname]['group_names']
+# - hosts: clevo
+#   gather_facts: false
+#   tasks:
+#     # - name: Display all host groups
+#     #   ansible.builtin.debug:
+#     #     msg: "{{ groups.keys() }}"
+#     # - name: Display all host groups and their hosts
+#     #   ansible.builtin.debug:
+#     #     msg: "Group {{ item }} contains hosts: {{ groups[item] }}"
+#     #   loop: "{{ groups.keys() }}"
+#     - name: Show groups for a specific host
+#       ansible.builtin.debug:
+#         var: hostvars[inventory_hostname]['group_names']
 
 - name: Bootstrap host
   hosts: localhost
@@ -95,8 +95,8 @@
     - dns1
   become: true
   roles:
-    # - servers/network-static-dns
-    # - apps/docker
+    - servers/network-static-dns
+    - apps/docker
     - servers/apps/coredns
     - servers/apps/letsencrypt-coredns
 
