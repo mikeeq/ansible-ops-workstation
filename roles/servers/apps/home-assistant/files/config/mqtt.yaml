@@ -66,3 +66,5 @@ water_heater:
     max_temp: 70
 
 # mqttx - gui
+
+# {"Time":"1970-01-01T00:14:14","DS18B20":{"Id":"sdf","Temperature":32.1},"OPENTHERM":{"conn":"READY","settings":6,"SLAVE":{"FAULT":0,"CH":1,"DHW":0,"FL":1,"COOL":0,"CH2":0,"DIAG":0,"RAW":3221226250},"BTMP":{"FAULT":0,"REQ":58.0,"ACT": 58.0},"HWTMP":{"REQ":50.0,"ACT": 50.0},"ASFF":{"FC":0,"OFC":0},"FLM":5.0,"TB":58.1,"TDHW":54.0,"DHWS":50.0,"TMAX":80.0,"OT10":{"lo":0,"hi":0},"OT12":{"lo":0,"hi":0},"OT15":{"lo":34,"hi":0},"OT33":55,"OT116":62619,"OT120":8912},"TempUnit":"C"}

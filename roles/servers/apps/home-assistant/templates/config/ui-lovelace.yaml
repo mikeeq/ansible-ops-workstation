@@ -638,8 +638,10 @@ views:
             entity: sensor.opentherm_opentherm_flm
           - name: TB
             entity: sensor.opentherm_opentherm_tb
-          - name: OT33 (EXHAUST CH)
-            entity: sensor.opentherm_opentherm_ot33
+          # - name: OT33 (EXHAUST CH)
+          #   entity: sensor.opentherm_opentherm_ot33
+          # - name: PIEC
+          #   entity: water_heater.piec_woda_ogrzewanie
           - name: CH_TEMP
             entity: sensor.opentherm_opentherm_btmp_req
           - name: Slave_CH
@@ -660,9 +662,11 @@ views:
             entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
           - name: Grupy P
             entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
+          - name: PIEC
+            entity: water_heater.piec_woda_ogrzewanie
         hours_to_show: 4
         logarithmic_scale: false
-        max_y_axis: 45
+        max_y_axis: 75
         min_y_axis: 15
         fit_y_data: false
       - type: custom:apexcharts-card
@@ -680,9 +684,11 @@ views:
           - entity: sensor.opentherm_opentherm_tb
             name: TB
             yaxis_id: "1"
-          - entity: sensor.opentherm_opentherm_ot33
-            name: OT33 (EXHAUST CH)
-            yaxis_id: "1"
+          # - entity: sensor.opentherm_opentherm_ot33
+          #   name: OT33 (EXHAUST CH)
+          # - name: PIEC
+          #   entity: water_heater.piec_woda_ogrzewanie
+          #   yaxis_id: "1"
           - entity: sensor.opentherm_opentherm_btmp_req
             name: CH_TEMP
             yaxis_id: "1"
@@ -730,8 +736,10 @@ views:
             name: FLM
           - entity: sensor.opentherm_opentherm_tb
             name: TB
-          - entity: sensor.opentherm_opentherm_ot33
-            name: OT33 (EXHAUST CH)
+          # - entity: sensor.opentherm_opentherm_ot33
+          #   name: OT33 (EXHAUST CH)
+          # - name: PIEC
+          #   entity: water_heater.piec_woda_ogrzewanie
           - entity: sensor.opentherm_opentherm_btmp_req
             name: CH_TEMP
           - entity: sensor.opentherm_opentherm_slave_ch
