@@ -25,6 +25,8 @@ home_assistant_custom_components:
     repo: https://github.com/blakeblackshear/frigate-hass-integration
   - name: smart_thermostat
     repo: https://github.com/ScratMan/HASmartThermostat
+  - name: speedtest
+    repo: https://github.com/MrSuicideParrot/hassio-speedtest-addon
   # - name: virtual
   #   repo: https://github.com/twrecked/hass-virtual
 
@@ -37,7 +39,7 @@ home_assistant_custom_lovelace_plugins:
     entity_name: 'button-card.js'
     repo: https://github.com/custom-cards/button-card
     release: true
-    version: v4.3.0
+    version: v6.0.0
   - name: 'vacuum-card'
     entity_name: 'vacuum-card.js'
     repo: https://github.com/denysdovhan/vacuum-card
@@ -47,7 +49,7 @@ home_assistant_custom_lovelace_plugins:
     entity_name: 'advanced-camera-card.zip'
     repo: https://github.com/dermotduffy/advanced-camera-card
     release: true
-    version: v7.17.0
+    version: v7.19.1
     zip_mode: true
   - name: 'apexcharts-card'
     repo: 'https://github.com/RomRider/apexcharts-card'

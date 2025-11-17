@@ -670,6 +670,18 @@ vi /etc/systemd/logind.conf
 ## set no-cgroups = false in /etc/nvidia-container-runtime/config.toml
 ```
 
+31. Sticky keys in Fedora 43 Gnome when using keyboard shortcuts for changing desktop (ctrl+alt+arrow key)
+```
+# https://discussion.fedoraproject.org/t/wierd-behavior-on-switch-workspace/172003/11
+# https://gitlab.gnome.org/GNOME/mutter/-/issues/4416
+
+dnf versionlock exclude mutter-49.1.1-1.fc43
+dnf downgrade mutter
+
+```
+
+
+
 <!-- LICENSE -->
 ## License
 
