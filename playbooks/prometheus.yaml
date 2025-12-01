@@ -33,4 +33,4 @@
     # - servers/apps/nginx
     - servers/apps/frigate
     # - servers/apps/ollama-docker
-    - servers/apps/immich
+    # - servers/apps/immich
