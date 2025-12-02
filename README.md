@@ -683,6 +683,7 @@ dnf downgrade mutter
 32. Wayland limitations:
 
 - Clipboard sharing is missing: https://github.com/input-leap/input-leap/issues/1698
+  - Install X11 back on F43: https://copr.fedorainfracloud.org/coprs/frantisekz/GNOME-X11/
 - Sticky keys as above
 
 

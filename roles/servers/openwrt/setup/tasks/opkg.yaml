@@ -53,7 +53,7 @@
 - name: Install roaming dependencies
   community.general.opkg:
     name: "{{ opkgs }}"
-    state: absent
+    state: present
     update_cache: true
   vars:
     opkgs:
