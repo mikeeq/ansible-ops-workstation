@@ -7,7 +7,7 @@
   become: true
   roles:
     - pkg_mgmt/pip
-    # - apps/keybase
+    - apps/keybase
     - apps/kubectl
     - apps/helm
     - apps/stern

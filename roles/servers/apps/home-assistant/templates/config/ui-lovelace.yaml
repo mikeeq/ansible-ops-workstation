@@ -600,11 +600,11 @@ views:
             live_provider: webrtc-card
       - type: custom:frigate-card
         cameras:
-          - camera_entity: camera.yi_kuchnia
+          - camera_entity: camera.reolink_e1pro_kuchnia
             live_provider: webrtc-card
       - type: custom:frigate-card
         cameras:
-          - camera_entity: camera.yi_drzwi
+          - camera_entity: camera.reolink_e1pro_drzwi
             live_provider: webrtc-card
       - type: custom:frigate-card
         cameras:
