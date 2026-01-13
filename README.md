@@ -428,6 +428,13 @@ Contributions are what make the open source community such an amazing place to b
     mv /usr/lib/udev/rules.d/61-gdm.rules /root/61-gdm.rules
     dracut -f
 
+    # Install drivers without graphical installer
+    bash NVIDIA-Linux-x86_64-590.44.01.run --silent --dkms --accept-license --disable-nouveau --no-nouveau-check --rebuild-initramfs --run-nvidia-xconfig
+    bash cuda_13.1.0_590.44.01_linux.run --silent --toolkit --override
+
+    nvidia-smi
+    #  NVIDIA-SMI 590.44.01              Driver Version: 590.44.01      CUDA Version: 13.1
+
     ```
 
 12. To fix purple'ish screen, enable OC and Fan control (I recommend to use GreenWithEnvy - gwe (installed using flatpak)) apply those changes to `/etc/X11/xorg.conf`:
