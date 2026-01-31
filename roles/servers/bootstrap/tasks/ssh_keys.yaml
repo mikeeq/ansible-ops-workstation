@@ -24,13 +24,47 @@
     - deploy
     # - root
 
-- name: Disable ssh key auth
-  ansible.builtin.lineinfile:
+- name: Deploy secure sshd_config for Fedora 43
+  ansible.builtin.template:
+    src: sshd_config.j2
     dest: "{{ item }}"
-    regexp: ^PasswordAuthentication
-    line: PasswordAuthentication no
-  ignore_errors: true
+    owner: root
+    group: root
+    mode: "0600"
+    backup: true
+    validate: /usr/sbin/sshd -t -f %s
   notify: restart_ssh
   loop:
     - /etc/ssh/sshd_config
+
+- name: Empty cloud-init sshd_config to avoid conflicts
+  ansible.builtin.copy:
+    content: ""
+    dest: "{{ item }}"
+    owner: root
+    group: root
+    mode: "0600"
+    backup: true
+  loop:
     - /etc/ssh/sshd_config.d/50-cloud-init.conf
+
+- name: Deploy dynamic MOTD script
+  ansible.builtin.template:
+    src: 99-dynamic-motd.sh.j2
+    dest: /etc/profile.d/99-dynamic-motd.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Clear static MOTD to avoid duplication
+  ansible.builtin.copy:
+    content: ""
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Remove cockpit issue message
+  ansible.builtin.file:
+    path: /etc/issue.d/cockpit.issue
+    state: absent

@@ -1,0 +1,22 @@
+
+    ╔═══════════════════════════════════════════════════════════════════╗
+    ║                                                                   ║
+    ║   ██╗  ██╗ ██████╗ ███████╗████████╗                              ║
+    ║   ██║  ██║██╔═══██╗██╔════╝╚══██╔══╝                              ║
+    ║   ███████║██║   ██║███████╗   ██║                                 ║
+    ║   ██╔══██║██║   ██║╚════██║   ██║                                 ║
+    ║   ██║  ██║╚██████╔╝███████║   ██║                                 ║
+    ║   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝                                 ║
+    ║                                                                   ║
+    ║   Hostname: {{ ansible_hostname | default(inventory_hostname) }}
+    ║   FQDN:     {{ ansible_fqdn | default(inventory_hostname) }}
+    ║   OS:       {{ ansible_distribution | default('Fedora') }} {{ ansible_distribution_version | default('43') }}
+    ║   Kernel:   {{ ansible_kernel | default('N/A') }}
+    ║   IPv4:     {{ ansible_default_ipv4.address | default('N/A') }}
+    ║                                                                   ║
+    ╠═══════════════════════════════════════════════════════════════════╣
+    ║   ⚠️  AUTHORIZED ACCESS ONLY                                       ║
+    ║   All connections are monitored and logged.                       ║
+    ║   Disconnect IMMEDIATELY if you are not authorized.               ║
+    ╚═══════════════════════════════════════════════════════════════════╝
+

@@ -79,7 +79,7 @@
 
 - name: Provision Clevo
   hosts:
-    - clevo!openwrt_office
+    - clevo:!openwrt_office
   become: true
   roles:
     - servers/bootstrap
