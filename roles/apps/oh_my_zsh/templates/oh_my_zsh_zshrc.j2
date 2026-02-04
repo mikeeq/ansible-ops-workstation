@@ -20,16 +20,22 @@ plugins=(
   dnf
   z
   colored-man-pages
-  aws
   fzf
   # fzf-tab
   zsh-completions
+  mise
 {% if item != 'root' %}
   vscode
   terraform
   vagrant
   kubectl
   helm
+  aws
+  azure
+  pip
+  python
+  sudo
+  web-search
 {% endif %}
 )
 
@@ -100,10 +106,20 @@ function aws-ctx() {
   echo "Switched to profile ""$AWS_PROFILE""."
 }
 
+function kube-ctx() {
+  kubectl config use-context "$(kubectl config get-contexts -o name | fzf)"
+}
+
+function kube-ns() {
+  kubectl config set-context --current --namespace="$(kubectl get ns -o name | cut -d/ -f2 | fzf)"
+}
+
 {# source $HOME/.oh-my-zsh/custom/plugins/fzf-tab-completion/zsh/fzf-zsh-completion.sh
 # only aws command completion
 zstyle ':completion:*:*:aws' fzf-search-display true
 # or for everything
 # zstyle ':completion:*' fzf-search-display true #}
+
+eval "$(mise activate zsh)"
 
 autoload -U compinit && compinit //override comp

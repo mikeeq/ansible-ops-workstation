@@ -693,6 +693,11 @@ dnf downgrade mutter
   - Install X11 back on F43: https://copr.fedorainfracloud.org/coprs/frantisekz/GNOME-X11/
 - Sticky keys as above
 
+## TODO
+
+- consider switching from oh-my-zsh to antidote
+- consider switching from p10k to starship
+
 
 <!-- LICENSE -->
 ## License
