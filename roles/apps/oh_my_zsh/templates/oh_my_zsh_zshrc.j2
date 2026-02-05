@@ -120,6 +120,7 @@ zstyle ':completion:*:*:aws' fzf-search-display true
 # or for everything
 # zstyle ':completion:*' fzf-search-display true #}
 
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 eval "$(mise activate zsh)"
 
 autoload -U compinit && compinit //override comp
