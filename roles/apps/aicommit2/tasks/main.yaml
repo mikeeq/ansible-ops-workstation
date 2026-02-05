@@ -1,0 +1,19 @@
+---
+- name: Install aicommit2 globally via npm
+  community.general.npm:
+    name: aicommit2
+    global: true
+    state: present
+  become: true
+
+- name: Ensure aicommit2 config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/aicommit2"
+    state: directory
+    mode: "0755"
+
+- name: Deploy aicommit2 configuration
+  ansible.builtin.template:
+    src: config.ini.j2
+    dest: "{{ ansible_env.HOME }}/.config/aicommit2/config.ini"
+    mode: "0644"
