@@ -1,0 +1,28 @@
+---
+# Molecule configuration for testing the test role
+dependency:
+  name: galaxy
+driver:
+  name: delegated
+  options:
+    ansible_python_interpreter: /usr/bin/python3
+platforms:
+  - name: fedora
+    image: quay.io/ansible-molecule/fedora:latest
+    pre_build_image: true
+    command: /usr/lib/systemd/systemd
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+provisioner:
+  name: ansible
+  options:
+    v: true
+    verbose: true
+  inventory:
+    links:
+      group_vars: ../../group_vars
+verifier:
+  name: ansible

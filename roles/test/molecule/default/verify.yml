@@ -1,0 +1,42 @@
+---
+# Molecule verifier playbook for testing the test role
+- name: Verify
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Check if VSCode is installed
+      stat:
+        path: /usr/share/code
+      register: vscode_path
+
+    - name: Verify VSCode installation
+      assert:
+        that:
+          - vscode_path.stat.exists
+        fail_msg: "VSCode is not installed"
+        success_msg: "VSCode is installed successfully"
+
+    - name: Check if VSCode binary exists
+      stat:
+        path: /usr/share/code/bin/code
+      register: vscode_binary
+
+    - name: Verify VSCode binary exists
+      assert:
+        that:
+          - vscode_binary.stat.exists
+        fail_msg: "VSCode binary does not exist"
+        success_msg: "VSCode binary exists"
+
+    - name: Check if code command is in PATH
+      command: which code
+      register: code_command
+      changed_when: false
+
+    - name: Verify code command is available
+      assert:
+        that:
+          - code_command.rc == 0
+        fail_msg: "code command not found in PATH"
+        success_msg: "code command is available in PATH"

@@ -1,0 +1,15 @@
+---
+# Molecule playbook for testing the test role
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_os_family == 'Debian'
+
+  roles:
+    - role: roles/desktop/apps/vscode

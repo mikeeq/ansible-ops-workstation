@@ -90,3 +90,33 @@ jobs:
       #       apk add --no-cache shellcheck bash
       #       shellcheck ./*.sh
       #     '
+  molecule:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - default
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install molecule
+        run: |
+          pip install molecule molecule-plugins ansible
+
+      - name: Install ansible-galaxy requirements
+        run: ansible-galaxy install -r requirements.yaml --force
+
+      - name: Run Molecule tests
+        run: molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+        continue-on-error: false
