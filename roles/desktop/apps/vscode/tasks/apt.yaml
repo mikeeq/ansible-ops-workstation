@@ -21,4 +21,3 @@
   ansible.builtin.package:
     name: code
     state: present
-  
