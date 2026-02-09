@@ -1,0 +1,16 @@
+---
+- name: Get installed version of ollama
+  ansible.builtin.shell: ollama --version | awk '{print $3}'
+  register: installed_ollama_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed version of ollama:"
+  ansible.builtin.debug:
+    var: installed_ollama_version.stdout
+
+- ansible.builtin.include_tasks: get_latest_version.yaml
+  when: ollama_version is not defined
+
+- ansible.builtin.include_tasks: install.yaml
+  when: installed_ollama_version.stdout != ollama_version

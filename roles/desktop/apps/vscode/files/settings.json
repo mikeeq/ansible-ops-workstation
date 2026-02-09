@@ -61,5 +61,16 @@
       "name": "ROOT",
       "id": "ROOT"
     }
-  ]
+  ],
+  "github.copilot.chat.models.providers": {
+    "ollama": {
+      "enabled": true
+    }
+  },
+  "chat.models.providers": {
+    "ollama": {
+      "enabled": true
+    }
+  },
+  "github.copilot.chat.customOAIModels": {}
 }

@@ -31,13 +31,15 @@
     # - apps/packer
     # - desktop/gnome
     # - desktop/apps/vscode
-    # - desktop/apps/x11docker
-    # - desktop/fedora
-    # - apps/nordvpn
-    - apps/mise
+    # - apps/ollama
+    - apps/claude-code
+#     - desktop/apps/x11docker
+#     - desktop/fedora
+#     # - apps/nordvpn
+#     - apps/mise
 
-- name: Include a playbook for generic-core provisioning
-  ansible.builtin.import_playbook: generic-core.yaml
+# - name: Include a playbook for generic-core provisioning
+#   ansible.builtin.import_playbook: generic-core.yaml
 
 # - name: Include a playbook for generic provisioning
 #   ansible.builtin.import_playbook: generic.yaml

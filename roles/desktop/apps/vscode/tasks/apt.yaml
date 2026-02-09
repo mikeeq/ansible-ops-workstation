@@ -16,3 +16,9 @@
 - name: Refresh apt repos
   ansible.builtin.apt:
     update_cache: true
+
+- name: Install VCS
+  ansible.builtin.package:
+    name: code
+    state: present
+  

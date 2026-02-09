@@ -1,10 +1,13 @@
 ---
 - name: Directory for VScode config
   ansible.builtin.file:
-    path: "~{{ user_name }}/.config/Code/User"
+    path: "~{{ user_name }}/.config/{{ item }}/User"
     state: directory
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
+  loop:
+    - Code
+    - "Code\ -\ Insiders"
 
 - name: Install vscode user config
   become: true
@@ -12,6 +15,20 @@
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "~/.config/Code/User/{{ item }}"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: "0664"
+    backup: true
+  loop:
+    - settings.json
+    - keybindings.json
+
+- name: Install vscode user config
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "~/.config/Code\ -\ Insiders/User/{{ item }}"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
     mode: "0664"

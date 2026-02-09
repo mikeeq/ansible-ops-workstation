@@ -142,6 +142,11 @@ pipx_apps:
       - fastapi
       - uvicorn
       - jinja2
+  - name: tasmotizer
+    install_apps: true
+    inject_packages:
+      - pyserial
+      - click
 
 gnome_extension_owner: "{{ user_name }}"
 gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shell/extensions/"
@@ -182,6 +187,10 @@ gnome_extension_ids: "{{ gnome_shell_extensions }}"
 # vagrant_version: 2.4.1
 # https://github.com/boz/kail/releases
 # kail_version: 0.16.1
+# https://github.com/ollama/ollama/releases/latest
+# ollama_version: 0.1.32
+# https://www.npmjs.com/package/@anthropic-ai/claude-code
+# claude_code_npm_version: 0.4.0
 
 vscode_extensions:
   - ms-vscode.powershell
