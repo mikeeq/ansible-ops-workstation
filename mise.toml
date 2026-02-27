@@ -1,0 +1,78 @@
+[tools]
+# Custom registries are not included in mise-versions
+# https://mise-versions.jdx.dev/
+
+# mise registry | grep -i aws
+# mise plugins ls-remote | grep aws
+# mise ls-remote aws-cli
+
+## Infrastructure tools
+
+# https://github.com/hashicorp/terraform/releases
+#terraform = "1.14.4"
+
+# https://github.com/gruntwork-io/terragrunt/releases
+#terragrunt = "0.99.1"
+
+# https://github.com/terraform-linters/tflint/releases
+#tflint = "latest"
+
+# https://github.com/terraform-docs/terraform-docs/releases
+#terraform-docs = "latest"
+
+python = "3.14"
+
+pipx = "latest"
+
+ansible = "latest"
+
+## Security scanning
+
+# https://github.com/aquasecurity/trivy/releases
+trivy = "latest"
+
+# https://github.com/bridgecrewio/checkov/releases
+#"pipx:checkov" = "latest"
+
+# https://github.com/gitleaks/gitleaks/releases
+gitleaks = "8.18.4"
+
+## Pre-commit and linting
+
+# https://github.com/pre-commit/pre-commit/releases
+pre-commit = "latest"
+
+# https://github.com/errata-ai/vale/releases
+vale = "latest"
+
+# https://github.com/igorshubovych/markdownlint-cli/releases
+# markdownlint-cli = "latest"
+
+[tasks.pre-commit]
+description = "Run pre-commit checks on all files"
+run = "pre-commit run --all-files --show-diff-on-failure --color=always"
+
+[tasks.tf-clean-cache]
+description = "Find and remove .external_modules, .terragrunt-cache directories and .terraform.lock.hcl files"
+run = '''
+echo "Searching for .external_modules, .terragrunt-cache directories and .terraform.lock.hcl files..."
+dirs=$(find . \( -type d \( -name ".external_modules" -o -name ".terragrunt-cache" \) -o -type f -name ".terraform.lock.hcl" \) 2>/dev/null)
+if [ -z "$dirs" ]; then
+  echo "No directories found."
+  exit 0
+fi
+echo ""
+echo "$dirs" | while read -r d; do
+  du -sh "$d"
+done | sort -rh | sed 's/^/  /'
+echo ""
+count=$(echo "$dirs" | wc -l)
+echo "Found $count directories. Removing..."
+echo "$dirs" | xargs rm -rf
+echo "Done."
+'''
+
+[env]
+# https://terragrunt.gruntwork.io/docs/troubleshooting/performance/
+TF_PLUGIN_CACHE_DIR = "{{config_root}}/.terraform-plugin-cache"
+#TG_EXPERIMENT = "dependency-fetch-output-from-state"

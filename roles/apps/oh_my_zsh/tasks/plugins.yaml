@@ -6,9 +6,7 @@
     repo: 'https://github.com/zsh-users/zsh-autosuggestions'
     dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
     update: true
-  with_items:
-    - "{{ user_name }}"
-    - root
+  with_items: "{{ oh_my_zsh_users }}"
 
 - name: "ZSH Syntax Highlighting"
   become: true
@@ -17,9 +15,7 @@
     repo: 'https://github.com/zsh-users/zsh-syntax-highlighting'
     dest: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
     update: true
-  with_items:
-    - "{{ user_name }}"
-    - root
+  with_items: "{{ oh_my_zsh_users }}"
 
 - name: "Powerlevel10K theme"
   become: true
@@ -28,9 +24,7 @@
     repo: 'https://github.com/romkatv/powerlevel10k'
     dest: "~/.oh-my-zsh/custom/themes/powerlevel10k"
     update: true
-  with_items:
-    - "{{ user_name }}"
-    - root
+  with_items: "{{ oh_my_zsh_users }}"
 
 - name: "p10k config"
   ansible.builtin.copy:
@@ -39,9 +33,7 @@
     owner: "{{ item }}"
     backup: true
     mode: "0600"
-  with_items:
-    - "{{ user_name }}"
-    - root
+  with_items: "{{ oh_my_zsh_users }}"
 
 - name: "oh-my-zsh config"
   ansible.builtin.template:
@@ -50,9 +42,7 @@
     owner: "{{ item }}"
     backup: true
     mode: "0600"
-  with_items:
-    - "{{ user_name }}"
-    - root
+  with_items: "{{ oh_my_zsh_users }}"
 
 # Fixing apt-get fzf package
 - name: Download fzf key-bindings
@@ -68,9 +58,7 @@
     repo: 'https://github.com/zsh-users/zsh-completions'
     dest: "~/.oh-my-zsh/custom/plugins/zsh-completions"
     update: true
-  with_items:
-    - "{{ user_name }}"
-    - root
+  with_items: "{{ oh_my_zsh_users }}"
 
 - name: "Download fzf-tab-completion"
   become: true
@@ -79,9 +67,7 @@
     repo: 'https://github.com/lincheney/fzf-tab-completion.git'
     dest: "~/.oh-my-zsh/custom/plugins/fzf-tab-completion"
     update: true
-  with_items:
-    - "{{ user_name }}"
-    - root
+  with_items: "{{ oh_my_zsh_users }}"
 
 - name: "Download fzf-tab"
   become: true
@@ -90,6 +76,4 @@
     repo: 'https://github.com/Aloxaf/fzf-tab'
     dest: "~/.oh-my-zsh/custom/plugins/fzf-tab"
     update: true
-  with_items:
-    - "{{ user_name }}"
-    - root
+  with_items: "{{ oh_my_zsh_users }}"

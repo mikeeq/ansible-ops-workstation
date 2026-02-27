@@ -10,6 +10,4 @@
     chdir: "~/.oh-my-zsh"
   tags:
     - update
-  loop:
-    - "{{ user_name }}"
-    - "root"
+  loop: "{{ oh_my_zsh_users }}"

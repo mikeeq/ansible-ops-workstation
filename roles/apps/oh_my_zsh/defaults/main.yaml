@@ -1,0 +1,5 @@
+---
+# Set to ["{{ user_name }}"] to only apply to the current user
+oh_my_zsh_users:
+  - "{{ user_name }}"
+  - root

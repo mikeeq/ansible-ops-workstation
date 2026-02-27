@@ -1,0 +1,19 @@
+---
+- name: "[BREW] Update homebrew and upgrade all formulae"
+  community.general.homebrew:
+    update_homebrew: true
+    upgrade_all: true
+    path: "{{ brew_install_path }}/bin"
+  become: false
+  tags:
+    - update
+
+- name: "[BREW] Upgrade all casks"
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: upgraded
+    # path: "{{ brew_install_path }}/bin"
+  loop: "{{ brew_cask_pkgs }}"
+  become: false
+  tags:
+    - update

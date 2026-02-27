@@ -1,5 +1,6 @@
 ---
-- name: Directory for VScode config
+# Linux
+- name: "[LINUX] Directory for VScode config"
   ansible.builtin.file:
     path: "~{{ user_name }}/.config/{{ item }}/User"
     state: directory
@@ -7,9 +8,10 @@
     group: "{{ user_name }}"
   loop:
     - Code
-    - "Code\ -\ Insiders"
+    - "Code\\ -\\ Insiders"
+  when: ansible_system != 'Darwin'
 
-- name: Install vscode user config
+- name: "[LINUX] Install vscode user config"
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.copy:
@@ -22,13 +24,14 @@
   loop:
     - settings.json
     - keybindings.json
+  when: ansible_system != 'Darwin'
 
-- name: Install vscode user config
+- name: "[LINUX] Install vscode insiders user config"
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: "~/.config/Code\ -\ Insiders/User/{{ item }}"
+    dest: "~/.config/Code\\ -\\ Insiders/User/{{ item }}"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
     mode: "0664"
@@ -36,8 +39,49 @@
   loop:
     - settings.json
     - keybindings.json
+  when: ansible_system != 'Darwin'
 
-- name: Enable better file watch in VScode by changing amount of concurrent open files in kernel params
+- name: "[LINUX] Enable better file watch in VScode by changing amount of concurrent open files in kernel params"
   ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
     line: 'fs.inotify.max_user_watches=524288'
+  when: ansible_system != 'Darwin'
+
+# macOS
+- name: "[MACOS] Directory for VScode config"
+  ansible.builtin.file:
+    path: "~{{ user_name }}/Library/Application Support/{{ item }}/User"
+    state: directory
+    mode: "0755"
+  become: true
+  become_user: "{{ user_name }}"
+  loop:
+    - Code
+    - "Code - Insiders"
+  when: ansible_system == 'Darwin'
+
+- name: "[MACOS] Install vscode user config"
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "~/Library/Application Support/Code/User/{{ item }}"
+    mode: "0644"
+    backup: true
+  loop:
+    - settings.json
+    - keybindings.json
+  when: ansible_system == 'Darwin'
+
+- name: "[MACOS] Install vscode insiders user config"
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "~/Library/Application Support/Code - Insiders/User/{{ item }}"
+    mode: "0644"
+    backup: true
+  loop:
+    - settings.json
+    - keybindings.json
+  when: ansible_system == 'Darwin'

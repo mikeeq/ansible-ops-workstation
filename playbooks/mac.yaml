@@ -1,0 +1,32 @@
+---
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: vars.yaml
+
+- name: MacOS bootstrap
+  hosts:
+    - "{{ hosts_to_deploy | default('local') }}"
+    # - mikeeClevo
+  become: false
+  gather_facts: false
+  # pre_tasks:
+  #   # - ansible.builtin.debug:
+  #   #     var: hostvars[inventory_hostname]
+  #   # https://github.com/geerlingguy/docker-fedora41-ansible/issues/2
+  #   - name: TEMP | Fix due to PAM error in some upstream images
+  #     when: ((ansible_distribution == 'Fedora') or (ansible_distribution == 'Rocky')) and (ansible_run_in_docker is defined)
+  #     # Explicitly don't try to become because that will trigger the broken PAM error
+  #     # become: true
+  #     # Bug in some upstream distros, /etc/shadow has no file perms in container image
+  #     ansible.builtin.file:
+  #       path: /etc/shadow
+  #       mode: '400'
+  roles:
+    # - pkg_mgmt/pip
+    # - pkg_mgmt/brew
+    # - apps/oh_my_zsh
+    # - desktop/macos
+    - desktop/apps/vscode
+  vars:
+    user_name: "{{ ansible_env.USER }}"
+    oh_my_zsh_users:
+      - "{{ user_name }}"

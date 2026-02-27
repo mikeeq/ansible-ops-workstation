@@ -27,8 +27,8 @@ if __name__ == "__main__":
         while True:
 
             mouse_jiggle(duration=5, interval=0.3)
-            left_click_at(85, 95)  # Replace with desired coordinates
-            left_click_at(85, 150)  # Replace with desired coordinates
+            left_click_at(35, 205)  # Replace with desired coordinates
+            left_click_at(35, 265)  # Replace with desired coordinates
             time.sleep(2)  # Delay between cycles to avoid excessive activity
     except KeyboardInterrupt:
         print("Script terminated by user.")
