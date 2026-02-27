@@ -52,15 +52,15 @@ eval "$($HOME/.homebrew/bin/brew shellenv)"
 # macOS: VS Code
 export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
 
-#export PATH=$PATH:/Users/mikolajmiotk/Library/Python/3.9/bin:/opt/homebrew/bin:/Users/mikolajmiotk/.docker/bin:/Users/mikolajmiotk/Applications/Ollama.app/Contents/Resources/ollama
+#export PATH=$PATH:$HOME/Library/Python/3.9/bin:/opt/homebrew/bin:$HOME/.docker/bin:$HOME/Applications/Ollama.app/Contents/Resources/ollama
 export REQUESTS_CA_BUNDLE=
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/mikolajmiotk/.rd/bin:$PATH"
+export PATH="$HOME/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
-#export PATH="$PATH:/Users/mikolajmiotk/.local/bin:/Users/mikolajmiotk/.local/pipx/venvs/ansible/bin/"
-export PATH="$PATH:/Users/mikolajmiotk/.local/bin"
+#export PATH="$PATH:$HOME/.local/bin:$HOME/.local/pipx/venvs/ansible/bin/"
+export PATH="$PATH:$HOME/.local/bin"
 
 # pip3 install certifi
 # CA_CERT_PATH=$(python3 -c "import certifi; print(certifi.where())")
@@ -141,8 +141,6 @@ function kube-ctx() {
 function kube-ns() {
   kubectl config set-context --current --namespace="$(kubectl get ns -o name | cut -d/ -f2 | fzf)"
 }
-
-
 
 {# source $HOME/.oh-my-zsh/custom/plugins/fzf-tab-completion/zsh/fzf-zsh-completion.sh
 # only aws command completion
