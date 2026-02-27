@@ -20,26 +20,26 @@
         path: /etc/shadow
         mode: '400'
   roles:
-    # - pkg_mgmt/dnf
-    # - pkg_mgmt/flatpak
-    # - desktop/apps/google_chrome
-    # - desktop/apps/keeweb
-    # - apps/docker
-    # - apps/qemu
-    # - desktop/apps/terminator
-    # - apps/vagrant
-    # - apps/packer
-    # - desktop/gnome
-    # - desktop/apps/vscode
-    # - apps/ollama
+    - pkg_mgmt/dnf
+    - pkg_mgmt/flatpak
+    - desktop/apps/google_chrome
+    - desktop/apps/keeweb
+    - apps/docker
+    - apps/qemu
+    - desktop/apps/terminator
+    - apps/vagrant
+    - apps/packer
+    - desktop/gnome
+    - desktop/apps/vscode
+    - apps/ollama
     - apps/claude-code
-#     - desktop/apps/x11docker
-#     - desktop/fedora
-#     # - apps/nordvpn
-#     - apps/mise
+    - desktop/apps/x11docker
+    - desktop/fedora
+    # - apps/nordvpn
+    - apps/mise
 
-# - name: Include a playbook for generic-core provisioning
-#   ansible.builtin.import_playbook: generic-core.yaml
+- name: Include a playbook for generic-core provisioning
+  ansible.builtin.import_playbook: generic-core.yaml
 
-# - name: Include a playbook for generic provisioning
-#   ansible.builtin.import_playbook: generic.yaml
+- name: Include a playbook for generic provisioning
+  ansible.builtin.import_playbook: generic.yaml
