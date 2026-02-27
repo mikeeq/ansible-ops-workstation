@@ -23,9 +23,9 @@
   roles:
     # - pkg_mgmt/pip
     # - pkg_mgmt/brew
-    # - apps/oh_my_zsh
+    - apps/oh_my_zsh
     # - desktop/macos
-    - desktop/apps/vscode
+    # - desktop/apps/vscode
   vars:
     user_name: "{{ ansible_env.USER }}"
     oh_my_zsh_users:
