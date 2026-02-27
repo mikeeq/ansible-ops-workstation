@@ -47,7 +47,8 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:/opt/azure_functions
 
 {% if ansible_system == 'Darwin' %}
 # macOS: Homebrew
-eval "$($HOME/.homebrew/bin/brew shellenv)"
+#eval "$($HOME/.homebrew/bin/brew shellenv)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # macOS: VS Code
 export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
@@ -111,6 +112,9 @@ export EDITOR=/usr/bin/vim
 autoload -U +X bashcompinit && bashcompinit
 {% if skip_azure_cli_autocompletion is not defined %}
 source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
+{% endif %}
+{% if ansible_system == 'Darwin' %}
+source /opt/homebrew/etc/bash_completion.d/az
 {% endif %}
 
 alias git_root='cd $(git rev-parse --show-toplevel)'

@@ -9,16 +9,16 @@
 ## Infrastructure tools
 
 # https://github.com/hashicorp/terraform/releases
-#terraform = "1.14.4"
+# terraform = "1.14.4"
 
 # https://github.com/gruntwork-io/terragrunt/releases
-#terragrunt = "0.99.1"
+# terragrunt = "0.99.1"
 
 # https://github.com/terraform-linters/tflint/releases
-#tflint = "latest"
+# tflint = "latest"
 
 # https://github.com/terraform-docs/terraform-docs/releases
-#terraform-docs = "latest"
+# terraform-docs = "latest"
 
 python = "3.14"
 
@@ -43,7 +43,7 @@ gitleaks = "8.18.4"
 pre-commit = "latest"
 
 # https://github.com/errata-ai/vale/releases
-vale = "latest"
+# vale = "latest"
 
 # https://github.com/igorshubovych/markdownlint-cli/releases
 # markdownlint-cli = "latest"
