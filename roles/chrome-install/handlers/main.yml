@@ -1,0 +1,9 @@
+---
+# Handlers for Chrome installation role
+
+- name: restart chrome
+  become: true
+  systemd:
+    name: google-chrome
+    state: restarted
+  when: ansible_os_family == "Debian"

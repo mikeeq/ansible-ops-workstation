@@ -1,0 +1,6 @@
+---
+- name: Install Google Chrome Browser
+  hosts: all
+  become: true
+  roles:
+    - chrome-install

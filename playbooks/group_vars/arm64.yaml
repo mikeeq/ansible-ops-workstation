@@ -31,7 +31,7 @@ brew_pkgs:
   # - ghq
   # - ghz
   # - gh-ost
-  
+
 brew_cask_pkgs:
   - iterm2
   - visual-studio-code
@@ -41,4 +41,3 @@ brew_cask_pkgs:
   - spotify
   # - rancher-desktop
   - utm
-

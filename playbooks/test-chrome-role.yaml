@@ -1,0 +1,9 @@
+---
+- name: Test Chrome Installation Role
+  hosts: localhost
+  become: true
+  vars:
+    # Set to false to avoid actually installing Chrome during testing
+    chrome_install_test_mode: true
+  roles:
+    - chrome-install

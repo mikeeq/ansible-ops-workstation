@@ -1,0 +1,17 @@
+---
+# Default variables for Chrome installation role
+
+# Chrome version to install (leave empty for latest)
+chrome_version: ""
+
+# Whether to force reinstall Chrome
+chrome_force_reinstall: false
+
+# Chrome download URL (for custom installations)
+chrome_download_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+
+# Chrome package name for different OS families
+chrome_package_name_debian: "google-chrome-stable"
+chrome_package_name_redhat: "google-chrome-stable"
+chrome_package_name_arch: "google-chrome"
+chrome_package_name_suse: "google-chrome-stable"

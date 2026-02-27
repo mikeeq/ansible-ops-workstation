@@ -1,0 +1,43 @@
+---
+# Main tasks file for Chrome installation role
+
+- name: Install Chrome on Ubuntu/Debian
+  become: true
+  apt:
+    name: google-chrome-stable
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - chrome
+    - install
+
+- name: Install Chrome on RHEL/CentOS/Fedora
+  become: true
+  yum:
+    name: google-chrome-stable
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags:
+    - chrome
+    - install
+
+- name: Install Chrome on Arch Linux
+  become: true
+  pacman:
+    name: google-chrome
+    state: present
+  when: ansible_os_family == "Archlinux"
+  tags:
+    - chrome
+    - install
+
+- name: Install Chrome on openSUSE
+  become: true
+  zypper:
+    name: google-chrome-stable
+    state: present
+  when: ansible_os_family == "Suse"
+  tags:
+    - chrome
+    - install

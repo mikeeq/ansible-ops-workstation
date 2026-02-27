@@ -1,0 +1,44 @@
+---
+# Role metadata
+
+galaxy_info:
+  author: Your Name
+  description: Role to install Google Chrome browser on various Linux distributions
+  company: Your Company
+
+  # If the issue tracker for your role is not on github, uncomment the
+  # next line and provide a value
+  # issue_tracker_url: http://example.com/issue/tracker
+
+  # Some suggested tags
+  tags:
+    - browser
+    - chrome
+    - google
+    - web
+
+  # If this a Container Enabled role, provide the minimum Ansible Container version
+  # min_ansible_container_version: 0.1.0
+
+  # Provide a list of supported platforms
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: CentOS
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+    - name: ArchLinux
+      versions:
+        - all
+    - name: openSUSE
+      versions:
+        - all
+
+dependencies: []
