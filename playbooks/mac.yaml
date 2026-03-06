@@ -26,7 +26,10 @@
     - apps/oh_my_zsh
     # - desktop/macos
     # - desktop/apps/vscode
+    # - apps/antidote
   vars:
     user_name: "{{ ansible_env.USER }}"
     oh_my_zsh_users:
+      - "{{ user_name }}"
+    antidote_users:
       - "{{ user_name }}"

@@ -3,7 +3,7 @@
 architecture_common_name: "arm64"
 
 # Standard macOS Apple Silicon prefix - required for pre-built bottles
-#brew_install_path: /opt/homebrew
+#=brew_install_path: /opt/homebrew
 
 brew_pkgs:
   - gpg
@@ -41,3 +41,4 @@ brew_cask_pkgs:
   - spotify
   # - rancher-desktop
   - utm
+  - ollama

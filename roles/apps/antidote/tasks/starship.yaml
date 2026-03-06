@@ -1,0 +1,30 @@
+---
+- name: "Install starship (macOS via brew)"
+  community.general.homebrew:
+    name: starship
+    state: present
+  when: ansible_system == 'Darwin'
+
+- name: "Install starship (Linux via installer script)"
+  ansible.builtin.shell: |
+    curl -sS https://starship.rs/install.sh | sh -s -- --yes
+  args:
+    creates: /usr/local/bin/starship
+  when: ansible_system == 'Linux'
+
+- name: "Create starship config directory"
+  ansible.builtin.file:
+    path: "~{{ item }}/.config"
+    state: directory
+    owner: "{{ item }}"
+    mode: "0755"
+  with_items: "{{ antidote_users }}"
+
+- name: "Starship config"
+  ansible.builtin.template:
+    src: starship.toml.j2
+    dest: "~{{ item }}/.config/starship.toml"
+    owner: "{{ item }}"
+    backup: true
+    mode: "0600"
+  with_items: "{{ antidote_users }}"
