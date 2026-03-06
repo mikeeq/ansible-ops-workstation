@@ -1,0 +1,6 @@
+---
+install_path: "/opt/vaultwarden"
+
+vaultwarden_clean: false
+vaultwarden_templates_path: templates
+vaultwarden_domain: "https://vaultwarden.example.com"

@@ -24,7 +24,7 @@ python = "3.14"
 
 pipx = "latest"
 
-ansible = "latest"
+"pipx:ansible" = "latest"
 
 ## Security scanning
 
@@ -51,6 +51,10 @@ pre-commit = "latest"
 [tasks.pre-commit]
 description = "Run pre-commit checks on all files"
 run = "pre-commit run --all-files --show-diff-on-failure --color=always"
+
+[tasks.ansible-setup]
+description = "Inject passlib into ansible pipx environment"
+run = "pipx inject ansible passlib"
 
 [tasks.tf-clean-cache]
 description = "Find and remove .external_modules, .terragrunt-cache directories and .terraform.lock.hcl files"
