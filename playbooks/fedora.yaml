@@ -23,7 +23,7 @@
     - pkg_mgmt/dnf
     - pkg_mgmt/flatpak
     - desktop/apps/google_chrome
-    - desktop/apps/keeweb
+    # - desktop/apps/keeweb
     - apps/docker
     - apps/qemu
     - desktop/apps/terminator
