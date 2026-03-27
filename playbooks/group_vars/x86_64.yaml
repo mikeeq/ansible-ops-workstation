@@ -26,11 +26,13 @@ flatpak_apps:
     remote: flathub
   - name: com.obsproject.Studio
     remote: flathub
-  - name: io.github.input_leap.input-leap
-    remote: flathub
+  # - name: io.github.input_leap.input-leap
+  #   remote: flathub
   - name: io.github.peazip.PeaZip
     remote: flathub
   - name: com.bitwarden.desktop
+    remote: flathub
+  - name: org.deskflow.deskflow
     remote: flathub
 
 

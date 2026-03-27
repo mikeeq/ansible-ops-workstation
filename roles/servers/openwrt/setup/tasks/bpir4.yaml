@@ -1,6 +1,6 @@
 ---
 - name: Install sfp dependencies
-  community.general.opkg:
+  community.general.apk:
     name: "{{ opkgs }}"
     state: present
     update_cache: true
@@ -26,7 +26,7 @@
       - kmod-phylib-qcom
 
 - name: Install nvme dependencies
-  community.general.opkg:
+  community.general.apk:
     name: "{{ opkgs }}"
     state: present
     update_cache: true

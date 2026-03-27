@@ -14,7 +14,7 @@
   when: openwrt_ap_only_flag | default(false)
 
 # - name: Install ap dependencies
-#   community.general.opkg:
+#   community.general.apk:
 #     name: "{{ opkgs }}"
 #     state: present
 #   vars:
