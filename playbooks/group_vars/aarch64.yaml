@@ -4,8 +4,8 @@ architecture_common_name: "arm64"
 
 # Flatpak is better for GUI applications
 flatpak_apps:
-  - name: com.valvesoftware.Steam
-    remote: flathub
+  # - name: com.valvesoftware.Steam
+  #   remote: flathub
   # - name: com.skype.Client
   #   remote: flathub
   # - name: org.signal.Signal
@@ -18,6 +18,16 @@ flatpak_apps:
   #   remote: flathub
   # - name: com.discordapp.Discord
   #   remote: flathub
+  - name: com.obsproject.Studio
+    remote: flathub
+  # - name: io.github.input_leap.input-leap
+  #   remote: flathub
+  - name: io.github.peazip.PeaZip
+    remote: flathub
+  - name: com.bitwarden.desktop
+    remote: flathub
+  - name: org.deskflow.deskflow
+    remote: flathub
 
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins: []
