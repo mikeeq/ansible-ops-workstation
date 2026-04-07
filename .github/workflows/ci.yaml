@@ -99,9 +99,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Runner storage cleanup
-        run: sudo ./.github/cleanup-runner.sh
-      # - name: Build ubuntu image...
-      #   run: docker build -f Dockerfile-ubuntu -t ubuntu-aow:latest .
-      - name: Run Ansible in Docker...
-        run: ansible-playbook -i ../inventory/hosts.yaml mac.yaml
+      - name: Install mise
+        run: curl https://mise.jdx.dev/install.sh | sh
+      - name: Setup mise
+        run: ~/.local/bin/mise install
+      - name: Run Ansible
+        run: cd playbooks && ansible-playbook -i inventory/hosts.yaml mac.yaml
