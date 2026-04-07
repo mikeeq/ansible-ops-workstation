@@ -24,7 +24,7 @@
   "terminal.integrated.fontWeight": "normal",
   "terminal.integrated.fontWeightBold": "bold",
   "terminal.integrated.scrollback": 50000,
-  "terminal.integrated.shellIntegration.enabled": false,
+  "terminal.integrated.shellIntegration.enabled": true,
   "terminal.integrated.showExitAlert": false,
   "workbench.colorTheme": "Visual Studio Dark",
   "workbench.iconTheme": "vscode-icons",
@@ -38,7 +38,9 @@
       "server": "{{put-server-name-here}}",
       "database": "{{put-database-name-here}}",
       "user": "{{put-username-here}}",
-      "password": ""
+      "password": "",
+      "groupId": "ROOT",
+      "id": "28A9CD59-6D18-4900-ADBA-6DABCC31B515"
     }
   ],
   "[markdown]": {
@@ -46,5 +48,29 @@
   },
   "window.titleBarStyle": "custom",
   "window.customMenuBarAltFocus": false,
-  "window.menuBarVisibility": "classic"
+  "window.menuBarVisibility": "classic",
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
+  "docker.extension.enableComposeLanguageServer": false,
+  "mssql.connectionGroups": [
+    {
+      "name": "ROOT",
+      "id": "ROOT"
+    }
+  ],
+  "github.copilot.chat.models.providers": {
+    "ollama": {
+      "enabled": true
+    }
+  },
+  "chat.models.providers": {
+    "ollama": {
+      "enabled": true
+    }
+  },
+  "github.copilot.chat.customOAIModels": {}
 }

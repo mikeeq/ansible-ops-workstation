@@ -1,0 +1,8 @@
+---
+- ansible.builtin.import_tasks: setup.yaml
+
+- ansible.builtin.import_tasks: install.yaml
+
+- ansible.builtin.import_tasks: update.yaml
+  tags:
+    - update

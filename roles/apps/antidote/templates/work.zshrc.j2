@@ -1,0 +1,16 @@
+WORK_PROFILE_LOW=$(echo $WORK_PROFILE | tr '[:upper:]' '[:lower:]')
+[[ ! -d $WORK_PROFILES_PATH/$WORK_PROFILE_LOW ]] && mkdir $WORK_PROFILES_PATH/$WORK_PROFILE_LOW
+
+OLD_WORK_HOME="$HOME"
+NEW_WORK_HOME="$HOME/.work_profiles/$WORK_PROFILE_LOW"
+
+HISTFILE="$NEW_WORK_HOME/.zsh_history"
+
+export AZURE_CONFIG_DIR="$NEW_WORK_HOME/.azure"
+export AWS_CONFIG_FILE="$NEW_WORK_HOME/.aws/config"
+export KUBECONFIG="$NEW_WORK_HOME/.kube/config"
+
+# alias ssh="ssh -F ~/.ssh/$WORK_PROFILE_LOW/config"
+export GIT_SSH_COMMAND="ssh -F ~/.ssh/$WORK_PROFILE_LOW/config"
+
+[[ ! -f $NEW_WORK_HOME/.zshrc ]] || source $NEW_WORK_HOME/.zshrc

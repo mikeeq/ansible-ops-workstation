@@ -1,0 +1,24 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+# https://github.com/dani-garcia/vaultwarden
+---
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data:/data
+    ports:
+      - "8083:80"
+    environment:
+      - DOMAIN={{ vaultwarden_domain }}
+      - SIGNUPS_ALLOWED=false
+      - ADMIN_TOKEN={{ vaultwarden_admin_token }}  # Uncomment and set for admin panel access
+      # - DISABLE_ADMIN_TOKEN=true
+      # - SMTP_HOST=smtp.example.com
+      # - SMTP_FROM=vaultwarden@example.com
+      # - SMTP_PORT=587
+      # - SMTP_SECURITY=starttls
+      # - SMTP_USERNAME=username
+      # - SMTP_PASSWORD=password

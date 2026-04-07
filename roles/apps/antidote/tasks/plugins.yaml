@@ -1,0 +1,35 @@
+---
+- name: "Clone antidote"
+  become: true
+  become_user: "{{ item }}"
+  ansible.builtin.git:
+    repo: 'https://github.com/mattmc3/antidote.git'
+    dest: "~/.antidote"
+    depth: 1
+    update: false
+  with_items: "{{ antidote_users }}"
+
+- name: "zsh plugins list"
+  ansible.builtin.template:
+    src: zsh_plugins.txt.j2
+    dest: "~{{ item }}/.zsh_plugins.txt"
+    owner: "{{ item }}"
+    backup: true
+    mode: "0600"
+  with_items: "{{ antidote_users }}"
+
+- name: "antidote zshrc config"
+  ansible.builtin.template:
+    src: zshrc.j2
+    dest: "~{{ item }}/.zshrc"
+    owner: "{{ item }}"
+    backup: true
+    mode: "0600"
+  with_items: "{{ antidote_users }}"
+
+# Fixing apt-get fzf package
+- name: Download fzf key-bindings
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
+    dest: /usr/share/doc/fzf/examples/key-bindings.zsh
+  when: ansible_distribution == "Ubuntu"

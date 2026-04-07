@@ -103,6 +103,7 @@
     timewarrior             # timewarrior tracking status (https://timewarrior.net/)
     taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     time                    # current time
+    mise
     # =========================[ Line #2 ]=========================
     newline
     # ip                    # ip address and bandwidth usage for a specified network interface
@@ -1727,6 +1728,21 @@
   # can slow down prompt by 1-2 milliseconds, so it's better to keep it turned off unless you
   # really need it.
   typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
+
+  ### Custom
+
+  # Custom mise segment showing active tool versions
+  function prompt_mise() {
+    # Only show if mise is active and has tools
+    local mise_output
+    mise_output=$(mise current 2>/dev/null) || return
+    [[ -n "$mise_output" ]] && p10k segment -b 5 -f 0 -i '⚙' -t 'mise' && return
+
+    # Show abbreviated list of active tools
+    #local tools=$(echo "$mise_output" | awk '{print $1"@"$2}' | head -3 | tr '\n' ' ')
+    #[[ -n "$tools" ]] && p10k segment -b 5 -f 0 -i '📦' -t "${tools% }"
+
+  }
 
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.

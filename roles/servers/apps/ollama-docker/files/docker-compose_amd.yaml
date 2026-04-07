@@ -24,6 +24,8 @@ services:
       - video
     # environment:
     #   - 'HSA_OVERRIDE_GFX_VERSION=9.0.0'
+    restart: unless-stopped
+
   ollama-webui:
     # image: ghcr.io/ollama-webui/ollama-webui:main
     image: ghcr.io/open-webui/open-webui
@@ -31,14 +33,133 @@ services:
       - ./data/ollama-webui:/app/backend/data
     depends_on:
       - ollama
+      - mcpo
     ports:
       - 3002:8080
     environment:
       - 'OLLAMA_API_BASE_URL=http://ollama:11434/api'
+      - MCP_API_URL=http://mcpo:8081
+      # - DATABASE_URL=postgresql://mcpo_user:mcpo_pass@postgres:5432/mcpo_db
     extra_hosts:
       - host.docker.internal:host-gateway
     networks:
       - ollama
+    restart: unless-stopped
+
+  mcpo:
+    image: ghcr.io/open-webui/mcpo:main
+    # container_name: mcpo
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+    networks:
+      - ollama
+    environment:
+      # Replace as appropriate for your mcpo image/configuration:
+      - DATABASE_URL=postgresql://mcpo_user:mcpo_pass@postgres:5432/mcpo_db
+      # - MCP_API_KEY=your_api_key   # Uncomment and set if necessary
+    restart: unless-stopped
+    command: >
+      --config /mcpo/config.json --port 8081 --api-key "top-secret"
+    # Uncomment if mcpo requires a persistent data directory:
+    volumes:
+      - ./mcpo/config:/mcpo
+      - ./mcpo/data:/app/data
+      # - ./mcpo/node:/usr/bin/node
+      # - ./mcpo/npm:/root/.npm
+      # - ./mcpo/venv:/app/.venv
+
+
+  postgres:
+    image: postgres:15
+    # container_name: postgres
+    user: "0"
+    environment:
+      - POSTGRES_USER=mcpo_user
+      - POSTGRES_PASSWORD=mcpo_pass
+      - POSTGRES_DB=mcpo_db
+    # ports:
+    #   - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - ollama
+
+  # comfyui-rocm:
+  #   image: yanwk/comfyui-boot:rocm
+  #   container_name: comfyui-rocm
+  #   devices:
+  #     - /dev/kfd
+  #     - /dev/dri
+  #   group_add:
+  #     - video
+  #   ipc: host
+  #   cap_add:
+  #     - SYS_PTRACE
+  #   security_opt:
+  #     - seccomp=unconfined
+  #     - label=disable
+  #   ports:
+  #     - "8188:8188"
+  #   volumes:
+  #     - ./storage:/root
+  #   environment:
+  #     - CLI_ARGS=
+  #     - HSA_OVERRIDE_GFX_VERSION=11.0.0
+  #   restart: unless-stopped
+
+  # webui:
+  #   image: ghcr.io/neggles/sd-webui-docker:latest
+  #   restart: unless-stopped
+  #   container_name: sd-webui
+  #   build:
+  #     context: ./docker
+  #     dockerfile: Dockerfile
+  #     target: webui
+  #   environment:
+  #     CLI_ARGS: "--skip-version-check --allow-code --enable-insecure-extension-access --api --xformers --opt-channelslast"
+  #     # make TQDM behave a little better
+  #     PYTHONUNBUFFERED: "1"
+  #     TERM: "${TERM}"
+  #   ports:
+  #     - mode: ingress
+  #       target: 7860
+  #       published: 7860
+  #       protocol: tcp
+  #   volumes:
+  #     - type: bind
+  #       source: ./data
+  #       target: /data
+  #     - type: bind
+  #       source: ./output
+  #       target: /output
+
+  # browser:
+  #   image: ghcr.io/neggles/sd-webui-docker/browser:latest
+  #   restart: unless-stopped
+  #   container_name: sd-browser
+  #   profiles:
+  #     - "browser"
+  #   build:
+  #     context: ./browser
+  #     dockerfile: Dockerfile
+  #     target: browser
+  #   environment:
+  #     BROWSER_PORT: 7869
+  #   ports:
+  #     - mode: ingress
+  #       target: 7869
+  #       published: 7869
+  #       protocol: tcp
+  #   volumes:
+  #     - type: bind
+  #       source: ./data
+  #       target: /data
+  #     - type: bind
+  #       source: ./output
+  #       target: /output
 
 # https://github.com/ollama/ollama/issues/3877
 # Environment="ROCBLAS_TENSILE_LIBPATH=/usr/lib64/rocm/gfx9/lib/rocblas/library/"

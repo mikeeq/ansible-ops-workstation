@@ -20,6 +20,9 @@
 
 set -x
 
+# If doesn't work
+# xhost +
+
 # x:3864 y:581
 # Define mouse coordinates for the left click (example: x=500, y=300)
 MOUSE_X=3872

@@ -1,0 +1,27 @@
+---
+- name: Set ollama architecture
+  ansible.builtin.set_fact:
+    ollama_arch: "{{ architecture_common_name }}"
+
+- name: Download ollama archive
+  ansible.builtin.get_url:
+    url: "https://github.com/ollama/ollama/releases/download/v{{ ollama_version }}/ollama-linux-{{ ollama_arch }}.tar.zst"
+    dest: "/tmp/ollama-linux-{{ ollama_arch }}.tar.zst"
+    mode: "0644"
+    owner: root
+    group: root
+    force: true
+
+- name: Extract ollama binary
+  ansible.builtin.unarchive:
+    src: "/tmp/ollama-linux-{{ ollama_arch }}.tar.zst"
+    dest: /home/{{ user_name }}/.local/
+    remote_src: true
+    creates: /home/{{ user_name }}/.local/bin/ollama
+
+- name: Ensure ollama binary permissions
+  ansible.builtin.file:
+    path: /home/{{ user_name }}/.local/bin/ollama
+    mode: "0755"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"

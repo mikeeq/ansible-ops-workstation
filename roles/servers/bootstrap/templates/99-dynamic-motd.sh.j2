@@ -1,0 +1,66 @@
+#!/bin/bash
+# Dynamic MOTD script - executed on SSH login
+# Managed by Ansible
+
+# Skip MOTD for root user
+if [ "$(id -u)" -eq 0 ]; then
+    return 0 2>/dev/null || exit 0
+fi
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+BOLD='\033[1m'
+
+# Gather system information
+HOSTNAME=$(hostname)
+FQDN=$(hostname -f 2>/dev/null || echo "$HOSTNAME")
+OS=$(source /etc/os-release 2>/dev/null && echo "$NAME $VERSION" || echo "Unknown")
+KERNEL=$(uname -r)
+UPTIME=$(uptime -p 2>/dev/null | sed 's/up //' || uptime | awk -F'( |,|:)+' '{print $6"d "$7"h "$8"m"}')
+IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "N/A")
+CPU_LOAD=$(cat /proc/loadavg | awk '{print $1", "$2", "$3}')
+MEMORY=$(free -h | awk '/^Mem:/ {printf "%s / %s (%.1f%%)", $3, $2, $3/$2*100}')
+DISK=$(df -h / | awk 'NR==2 {printf "%s / %s (%s)", $3, $2, $5}')
+USERS=$(who | wc -l)
+PROCESSES=$(ps aux | wc -l)
+LAST_LOGIN=$(lastlog -u "$USER" 2>/dev/null | tail -1 | awk '{print $4, $5, $6, $7, $8, $9}' || echo "N/A")
+
+# Print MOTD
+echo -e ""
+echo -e "${CYAN}    ╔═══════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}    ║                                                                   ║${NC}"
+echo -e "${CYAN}    ║${NC}   ${BOLD}${GREEN}██╗  ██╗ ██████╗ ███████╗████████╗${NC}                              ${CYAN}║${NC}"
+echo -e "${CYAN}    ║${NC}   ${BOLD}${GREEN}██║  ██║██╔═══██╗██╔════╝╚══██╔══╝${NC}                              ${CYAN}║${NC}"
+echo -e "${CYAN}    ║${NC}   ${BOLD}${GREEN}███████║██║   ██║███████╗   ██║${NC}                                 ${CYAN}║${NC}"
+echo -e "${CYAN}    ║${NC}   ${BOLD}${GREEN}██╔══██║██║   ██║╚════██║   ██║${NC}                                 ${CYAN}║${NC}"
+echo -e "${CYAN}    ║${NC}   ${BOLD}${GREEN}██║  ██║╚██████╔╝███████║   ██║${NC}                                 ${CYAN}║${NC}"
+echo -e "${CYAN}    ║${NC}   ${BOLD}${GREEN}╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝${NC}                                 ${CYAN}║${NC}"
+echo -e "${CYAN}    ║                                                                   ║${NC}"
+echo -e "${CYAN}    ╠═══════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${CYAN}    ║${NC}                                                                   ${CYAN}║${NC}"
+printf "${CYAN}    ║${NC}   ${BOLD}Hostname:${NC}  %-50s ${CYAN}║${NC}\n" "$HOSTNAME"
+printf "${CYAN}    ║${NC}   ${BOLD}FQDN:${NC}      %-50s ${CYAN}║${NC}\n" "$FQDN"
+printf "${CYAN}    ║${NC}   ${BOLD}OS:${NC}        %-50s ${CYAN}║${NC}\n" "$OS"
+printf "${CYAN}    ║${NC}   ${BOLD}Kernel:${NC}    %-50s ${CYAN}║${NC}\n" "$KERNEL"
+printf "${CYAN}    ║${NC}   ${BOLD}IP:${NC}        %-50s ${CYAN}║${NC}\n" "$IP"
+echo -e "${CYAN}    ║                                                                   ║${NC}"
+echo -e "${CYAN}    ╠═══════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${CYAN}    ║${NC}                                                                   ${CYAN}║${NC}"
+printf "${CYAN}    ║${NC}   ${BOLD}Uptime:${NC}    %-50s ${CYAN}║${NC}\n" "$UPTIME"
+printf "${CYAN}    ║${NC}   ${BOLD}Load:${NC}      %-50s ${CYAN}║${NC}\n" "$CPU_LOAD"
+printf "${CYAN}    ║${NC}   ${BOLD}Memory:${NC}    %-50s ${CYAN}║${NC}\n" "$MEMORY"
+printf "${CYAN}    ║${NC}   ${BOLD}Disk /:${NC}    %-50s ${CYAN}║${NC}\n" "$DISK"
+printf "${CYAN}    ║${NC}   ${BOLD}Users:${NC}     %-50s ${CYAN}║${NC}\n" "$USERS logged in"
+printf "${CYAN}    ║${NC}   ${BOLD}Processes:${NC} %-50s ${CYAN}║${NC}\n" "$PROCESSES running"
+echo -e "${CYAN}    ║                                                                   ║${NC}"
+echo -e "${CYAN}    ╠═══════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${CYAN}    ║${NC}   ${YELLOW}⚠️  AUTHORIZED ACCESS ONLY${NC}                                       ${CYAN}║${NC}"
+echo -e "${CYAN}    ║${NC}   All connections are monitored and logged.                       ${CYAN}║${NC}"
+echo -e "${CYAN}    ║${NC}   Disconnect IMMEDIATELY if you are not authorized.               ${CYAN}║${NC}"
+echo -e "${CYAN}    ╚═══════════════════════════════════════════════════════════════════╝${NC}"
+echo -e ""

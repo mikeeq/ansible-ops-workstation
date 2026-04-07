@@ -20,16 +20,22 @@ plugins=(
   dnf
   z
   colored-man-pages
-  aws
   fzf
   # fzf-tab
   zsh-completions
+  mise
 {% if item != 'root' %}
   vscode
   terraform
   vagrant
   kubectl
   helm
+  aws
+  azure
+  pip
+  python
+  sudo
+  web-search
 {% endif %}
 )
 
@@ -37,6 +43,35 @@ source $ZSH/oh-my-zsh.sh
 
 {% if item != 'root' %}
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:/opt/azure_functions_core_tools:$HOME/.local/bin:$PATH"
+{% endif %}
+
+{% if ansible_system == 'Darwin' %}
+# macOS: Homebrew
+#eval "$($HOME/.homebrew/bin/brew shellenv)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# macOS: VS Code
+export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+
+#export PATH=$PATH:$HOME/Library/Python/3.9/bin:/opt/homebrew/bin:$HOME/.docker/bin:$HOME/Applications/Ollama.app/Contents/Resources/ollama
+export REQUESTS_CA_BUNDLE=
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="$HOME/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+#export PATH="$PATH:$HOME/.local/bin:$HOME/.local/pipx/venvs/ansible/bin/"
+export PATH="$PATH:$HOME/.local/bin"
+
+# pip3 install certifi
+# CA_CERT_PATH=$(python3 -c "import certifi; print(certifi.where())")
+export SSL_CERT_FILE="$HOME/Documents/certs_ca/ca.pem"
+export REQUESTS_CA_BUNDLE="$SSL_CERT_FILE"
+export PIP_CERT="$SSL_CERT_FILE"
+export CURL_CA_BUNDLE="$SSL_CERT_FILE"
+export GIT_SSL_CAINFO="$SSL_CERT_FILE"
+export NODE_EXTRA_CA_CERTS="$SSL_CERT_FILE"
+export NPM_CONFIG_CAFILE="$SSL_CERT_FILE"
 {% endif %}
 
 # Extracting Dockerfile from image
@@ -75,7 +110,10 @@ kbdown () {
 export EDITOR=/usr/bin/vim
 
 autoload -U +X bashcompinit && bashcompinit
-{% if skip_azure_cli_autocompletion is not defined %}
+
+{% if ansible_system == 'Darwin' %}
+source /opt/homebrew/etc/bash_completion.d/az
+{% elif skip_azure_cli_autocompletion is not defined %}
 source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
 {% endif %}
 
@@ -100,10 +138,21 @@ function aws-ctx() {
   echo "Switched to profile ""$AWS_PROFILE""."
 }
 
+function kube-ctx() {
+  kubectl config use-context "$(kubectl config get-contexts -o name | fzf)"
+}
+
+function kube-ns() {
+  kubectl config set-context --current --namespace="$(kubectl get ns -o name | cut -d/ -f2 | fzf)"
+}
+
 {# source $HOME/.oh-my-zsh/custom/plugins/fzf-tab-completion/zsh/fzf-zsh-completion.sh
 # only aws command completion
 zstyle ':completion:*:*:aws' fzf-search-display true
 # or for everything
 # zstyle ':completion:*' fzf-search-display true #}
+
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+eval "$(mise activate zsh)"
 
 autoload -U compinit && compinit //override comp

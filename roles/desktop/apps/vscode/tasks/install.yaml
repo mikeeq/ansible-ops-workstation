@@ -4,8 +4,3 @@
 
 - ansible.builtin.include_tasks: apt.yaml
   when: ansible_distribution == "Ubuntu"
-
-- name: Install VCS
-  ansible.builtin.package:
-    name: code
-    state: present

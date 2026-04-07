@@ -1,0 +1,150 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Rainbow powerline style matching p10k rainbow config
+# Left  line 1:  [os][user@host][dir][git]
+# Right line 1:  [status][duration][kube][terraform][aws][azure][time]
+# Line 2:        ❯ character
+
+command_timeout = 1000
+add_newline = true
+
+format = """
+[](fg:white)\
+$os\
+$username\
+$hostname\
+[](bg:blue fg:white)\
+$directory\
+[](bg:green fg:blue)\
+$git_branch\
+$git_status\
+[](fg:green)\
+$fill\
+$status\
+$cmd_duration\
+$kubernetes\
+$terraform\
+$aws\
+$azure\
+[](fg:white)\
+$time\
+
+$character"""
+
+# ─────────────────────────────────────────────────────
+# Left segments
+# ─────────────────────────────────────────────────────
+
+[os]
+disabled = false
+format   = "[ $symbol ](bg:white fg:black)"
+
+[os.symbols]
+Macos   = ""
+Linux   = ""
+Ubuntu  = ""
+Fedora  = ""
+Windows = ""
+
+[username]
+show_always = false
+style_user  = "bg:white fg:black"
+style_root  = "bg:white fg:red bold"
+format      = "[ $user](bg:white fg:black)"
+
+[hostname]
+ssh_only = true
+style    = "bg:white fg:black"
+format   = "[@$hostname ](bg:white fg:black)"
+
+[directory]
+style             = "bg:blue fg:bright-white bold"
+read_only_style   = "bg:blue fg:red"
+truncation_length = 4
+truncate_to_repo  = true
+format            = "[ $path ]($style)[$read_only]($read_only_style)"
+
+[git_branch]
+symbol = " "
+style  = "bg:green fg:black"
+format = "[ $symbol$branch(:$remote_branch) ]($style)"
+
+[git_status]
+style      = "bg:green fg:black"
+conflicted = "[⚡${count} ](bg:green fg:red bold)"
+ahead      = "⇡${count}"
+behind     = "⇣${count}"
+diverged   = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked  = "[?${count} ](bg:green fg:yellow bold)"
+stashed    = "[$${count} ](bg:green fg:cyan)"
+modified   = "[!${count} ](bg:yellow fg:black)"
+staged     = "[+${count} ](bg:yellow fg:black)"
+renamed    = "[»${count} ](bg:green fg:black)"
+deleted    = "[✘${count} ](bg:green fg:red bold)"
+format     = '([$all_status$ahead_behind](bg:green fg:black) )'
+
+# ─────────────────────────────────────────────────────
+# Right segments (after $fill on line 1)
+# ─────────────────────────────────────────────────────
+
+[status]
+disabled       = false
+success_symbol = ""
+symbol         = "✘$status"
+format         = "[](fg:red)[ $symbol ](bg:red fg:yellow bold)"
+map_symbol     = true
+
+[cmd_duration]
+min_time = 3_000
+style    = "bg:yellow fg:black"
+format   = "[](fg:yellow)[ 󱑁 $duration ](bg:yellow fg:black)"
+
+[kubernetes]
+disabled     = false
+style        = "bg:purple fg:white"
+format       = "[](fg:purple)[ ☸ $context\\($namespace\\) ]($style)"
+detect_files = ['k8s', '.kube', 'Dockerfile', 'docker-compose.yaml', 'docker-compose.yml']
+
+[terraform]
+disabled = false
+style    = "bg:purple fg:white"
+format   = "[](fg:purple)[ 󱁢 $workspace ]($style)"
+
+[aws]
+disabled = false
+style    = "bg:red fg:white"
+symbol   = " "
+format   = "[](fg:red)[ $symbol($profile)(\\($region\\)) ]($style)"
+
+[azure]
+disabled = false
+style    = "bg:blue fg:white"
+symbol   = "󰠅 "
+format   = "[](fg:blue)[ $symbol($subscription) ]($style)"
+
+[time]
+disabled    = false
+time_format = "%H:%M:%S"
+style       = "bg:white fg:black"
+format      = "[ $time ]($style)"
+
+# ─────────────────────────────────────────────────────
+# Line 2: prompt character (green ❯ on success, red ❯ on error)
+# ─────────────────────────────────────────────────────
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol   = "[❯](bold red)"
+vimcmd_symbol  = "[❮](bold green)"
+
+# ─────────────────────────────────────────────────────
+# Misc
+# ─────────────────────────────────────────────────────
+
+[python]
+symbol = " "
+style  = "bg:yellow fg:black"
+format = "[](fg:yellow)[ ${symbol}${pyenv_prefix}(${version})(\\($virtualenv\\)) ]($style)"
+
+[package]
+disabled = true
