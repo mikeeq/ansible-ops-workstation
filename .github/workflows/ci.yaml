@@ -90,3 +90,18 @@ jobs:
       #       apk add --no-cache shellcheck bash
       #       shellcheck ./*.sh
       #     '
+
+  build-macos:
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Runner storage cleanup
+        run: sudo ./.github/cleanup-runner.sh
+      # - name: Build ubuntu image...
+      #   run: docker build -f Dockerfile-ubuntu -t ubuntu-aow:latest .
+      - name: Run Ansible in Docker...
+        run: ansible-playbook -i ../inventory/hosts.yaml mac.yaml

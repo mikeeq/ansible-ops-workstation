@@ -1,0 +1,32 @@
+[tools]
+# Custom registries are not included in mise-versions
+# https://mise-versions.jdx.dev/
+
+# mise registry | grep -i aws
+# mise plugins ls-remote | grep aws
+# mise ls-remote aws-cli
+
+python = "3.14"
+pipx = "latest"
+"pipx:ansible" = "latest"
+
+## Security scanning
+
+# https://github.com/aquasecurity/trivy/releases
+trivy = "latest"
+
+# https://github.com/gitleaks/gitleaks/releases
+gitleaks = "8.18.4"
+
+## Pre-commit and linting
+
+# https://github.com/pre-commit/pre-commit/releases
+pre-commit = "latest"
+
+[tasks.pre-commit]
+description = "Run pre-commit checks on all files"
+run = "pre-commit run --all-files --show-diff-on-failure --color=always"
+
+[tasks.ansible-setup]
+description = "Inject passlib into ansible pipx environment"
+run = "pipx inject ansible passlib"
