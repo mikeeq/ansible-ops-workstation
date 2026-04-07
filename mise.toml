@@ -8,20 +8,26 @@
 
 python = "3.14"
 pipx = "latest"
-"pipx:ansible" = "latest"
+"pipx:ansible" = { version = "latest", postinstall = "pipx inject ansible passlib" }
 
 ## Security scanning
 
 # https://github.com/aquasecurity/trivy/releases
-trivy = "latest"
+trivy = "v0.69.3"
 
 # https://github.com/gitleaks/gitleaks/releases
-gitleaks = "8.18.4"
+gitleaks = "8.30.1"
 
 ## Pre-commit and linting
 
 # https://github.com/pre-commit/pre-commit/releases
 pre-commit = "latest"
+
+[env]
+# pipx:ansible only shims ansible-community; expose the full ansible venv bin dir
+# exec falls back to /dev/null when ansible is not yet installed (harmless)
+#_.path = { path = ["{{ tools['pipx:ansible'].path }}/venvs/ansible/bin"], tools = true }
+_.path = { path = ["{{ exec(command='mise where pipx:ansible 2>/dev/null || echo /dev/null') }}/venvs/ansible/bin"], tools = true }
 
 [tasks.pre-commit]
 description = "Run pre-commit checks on all files"

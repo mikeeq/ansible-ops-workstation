@@ -104,4 +104,4 @@ jobs:
       - name: Setup mise
         run: ~/.local/bin/mise install
       - name: Run Ansible
-        run: cd playbooks && ansible-playbook -i inventory/hosts.yaml mac.yaml
+        run: cd playbooks && mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml
