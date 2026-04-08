@@ -1,0 +1,9 @@
+---
+- name: "Copy amdgpu-power-setup.sh to /usr/local/bin"
+  ansible.builtin.copy:
+    src: amdgpu-power-setup.sh
+    dest: /usr/local/bin/amdgpu-power-setup.sh
+    owner: root
+    group: root
+    mode: "0755"
+    validate: 'test -x %s'

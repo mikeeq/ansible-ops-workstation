@@ -6,7 +6,7 @@
   hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
   roles:
-    - apps/ctop
+    # - apps/ctop
     - apps/oh_my_zsh
-    - apps/dive
-    - apps/docker-compose
+    # - apps/dive
+    # - apps/docker-compose

@@ -1,0 +1,34 @@
+---
+- name: "Copy amdgpu-power-setup.sh to /usr/local/bin"
+  ansible.builtin.copy:
+    src: amdgpu-power-setup.sh
+    dest: /usr/local/bin/amdgpu-power-setup.sh
+    owner: root
+    group: root
+    mode: "0755"
+    validate: 'test -x %s'
+
+- name: "Ensure amdgpu-power-setup service exists"
+  ansible.builtin.copy:
+    src: amdgpu-power-setup.service
+    dest: /etc/systemd/system/amdgpu-power-setup.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: "Reload systemd to detect new service"
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: "Enable amdgpu-power-setup service"
+  ansible.builtin.systemd:
+    name: amdgpu-power-setup
+    enabled: true
+    state: started
+    masked: no
+
+- name: "Verify amdgpu-power-setup service is active"
+  ansible.builtin.service:
+    name: amdgpu-power-setup
+    state: started
+    enabled: yes

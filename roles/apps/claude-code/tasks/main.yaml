@@ -15,6 +15,7 @@
     path: "/home/{{ user_name }}/.claude"
     state: directory
 
+# https://unsloth.ai/docs/basics/claude-code
 - name: Deploy Claude Code configuration
   ansible.builtin.template:
     src: settings.json.j2
@@ -22,3 +23,11 @@
     mode: "0644"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
+
+  # You have "promptSuggestionEnabled": false.
+  # - Suggestion: If you ever find yourself struggling to articulate complex instructions to the agent, try enabling this (true). It can provide useful starting points for complex refactors.
+
+  # "attribution": {
+  #   "commit": "🤖 Claude-Code",
+  #   "pr": "Review by Claude"
+  # }

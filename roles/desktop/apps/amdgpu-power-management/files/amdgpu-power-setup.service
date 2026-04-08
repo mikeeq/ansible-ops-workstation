@@ -1,0 +1,13 @@
+[Unit]
+Description=AMD GPU Power Management Setup
+After=multi-user.target
+Before=graphical.target
+ConditionPathExists=/sys/module/amdgpu/drivers/pci:amdgpu
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/amdgpu-power-setup.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

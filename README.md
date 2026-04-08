@@ -596,10 +596,17 @@ cat /etc/modprobe.d/amd.conf
 
 options amdgpu ppfeaturemask=0xffffffff
 
-echo "s 1 2050" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+# Set 2350MHz GPU clock
+echo "s 1 2350" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+# Commit GPU clock changes to OD global profile
+echo "c" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+# Set power limit
 echo "294000000" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/hwmon/hwmon2/power1_cap
+# Check GPU/MEM clock
 cat /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+# Check power cap
 cat /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/hwmon/hwmon2/power1_cap
+# Reset to default
 echo "r" > /sys/class/drm/card1/device/pp_od_clk_voltage
 ```
 
@@ -618,7 +625,7 @@ systemctl disable systemd-timesyncd.service
 sudo touch /usr/lib/clock-epoch
 ```
 
-24. VScode in wayland
+1.  VScode in wayland
 
 ```
 code --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto ~/git

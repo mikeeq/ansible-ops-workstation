@@ -72,5 +72,22 @@
       "enabled": true
     }
   },
-  "github.copilot.chat.customOAIModels": {}
+  "github.copilot.chat.customOAIModels": {},
+  "claudeCode.disableLoginPrompt": true,
+  "claudeCode.preferredLocation": "panel",
+  "claudeCode.hideOnboarding": true,
+  "claudeCode.environmentVariables": [
+    {
+      "name": "ANTHROPIC_AUTH_TOKEN",
+      "value": "ollama"
+    },
+    {
+      "name": "ANTHROPIC_BASE_URL",
+      "value": "http://localhost:11434"
+    },
+    {
+      "name": "ANTHROPIC_MODEL",
+      "value": "glm-4.7-flash:latest"
+    },
+  ]
 }

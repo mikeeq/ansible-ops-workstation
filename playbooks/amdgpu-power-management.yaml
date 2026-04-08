@@ -1,0 +1,19 @@
+---
+# Example playbook to configure AMD GPU power management
+# Usage: ansible-playbook -i inventory/hosts playbooks/amdgpu-power-management.yaml
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: vars.yaml
+
+- name: Configure AMD GPU Power Management
+  hosts: "{{ hosts_to_deploy | default('local') }}"
+  become: true
+  roles:
+    - role: desktop/apps/amdgpu-power-management
+      # when: ansible_facts['devices']['amdgpu'] is defined
+
+# If you need to run this on specific hosts only, uncomment and modify:
+# - name: Configure AMD GPU Power Management
+#   hosts: your_gpu_workstations
+#   become: true
+#   roles:
+#     - role: amdgpu-power-management

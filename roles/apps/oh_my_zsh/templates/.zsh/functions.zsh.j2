@@ -1,0 +1,105 @@
+# Extracting Dockerfile from image
+function dfimageext() {
+	docker history --no-trunc $1  | tac | tr -s ' ' | cut -d " " -f 5- | sed 's,^/bin/sh -c #(nop) ,,g' | sed 's,^/bin/sh -c,RUN,g' | sed 's, && ,\n  & ,g' | sed 's,\s*[0-9]*[\.]*[0-9]*[kMG]*B\s*$,,g' | head -n -1
+}
+
+# Grab all resources from k8s namespace
+function kubectlgetall() {
+  for i in $(kubectl api-resources --verbs=list --namespaced -o name | grep -v "events.events.k8s.io" | grep -v "events" | sort | uniq); do
+    echo "Resource:" $i
+    kubectl -n ${1} get --ignore-not-found ${i}
+  done
+}
+
+# Shutting down keybase
+function kbdown () {
+  if killall Keybase &> /dev/null
+  then
+    echo Shutting down Keybase GUI...
+  fi
+  if fusermount -uz /keybase &> /dev/null
+  then
+    echo Unmounting /keybase...
+  fi
+  if killall kbfsfuse &> /dev/null
+  then
+    echo Shutting down kbfsfuse...
+  fi
+  if killall keybase &> /dev/null
+  then
+    echo Shutting down keybase service...
+  fi
+}
+
+function aws-ctx() {
+  export AWS_PROFILE="$(aws configure list-profiles | fzf)"
+  echo "Switched to profile ""$AWS_PROFILE""."
+}
+
+function kube-ctx() {
+  kubectl config use-context "$(kubectl config get-contexts -o name | fzf)"
+}
+
+function kube-ns() {
+  kubectl config set-context --current --namespace="$(kubectl get ns -o name | cut -d/ -f2 | fzf)"
+}
+
+# https://code.claude.com/docs/en/vs-code#using-third-party-providers
+# https://unsloth.ai/docs/basics/claude-code
+function gcmc() {
+  # MODEL=qwen2.5-coder:7b
+  MODEL=glm-4.7-flash:latest
+  local diff=$(git diff --cached)
+  if [ -z "$diff" ]; then
+    echo "❌ No staged changes found. Use 'git add' first."
+    return 1
+  fi
+
+  echo "🤖 Generating commit message using Claude Code and Ollama (model: $MODEL)..."
+
+  local msg=$(echo "$diff" | claude --model $MODEL "Write a one-line conventional commit message for these changes. Output ONLY the message, no quotes.")
+
+  echo -e "\nProposed message: $msg"
+
+  # ZSH specific prompt syntax: "var?prompt"
+  read "REPLY?Commit with this message? (y/n): "
+
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    git commit -m "$msg"
+  else
+    echo "Commit aborted."
+  fi
+}
+
+# function gcmc() {
+#   local diff=$(git diff --cached)
+#   if [ -z "$diff" ]; then
+#     echo "❌ No staged changes found. Use 'git add' first."
+#     return 1
+#   fi
+
+#   echo "🤖 Generating commit message..."
+
+#   # We add a strict instruction to avoid those markdown backticks
+#   local prompt="Review this git diff and write a one-line conventional commit message.
+#   Output ONLY the raw text. Do NOT use markdown, backticks, or quotes.
+
+#   Diff:
+#   $diff"
+
+#   local msg=$(echo "$prompt" | claude)
+
+#   # Clean up any accidental backticks or quotes if the model ignores instructions
+#   msg=$(echo "$msg" | sed "s/^\`//; s/\`$//; s/^'//; s/'$//; s/^\"//; s/\"$//")
+
+#   echo -e "\nProposed message: \033[0;32m$msg\033[0m"
+
+#   # ZSH specific prompt syntax: "var?prompt"
+#   read "REPLY?Commit with this message? (y/n): "
+
+#   if [[ $REPLY =~ ^[Yy]$ ]]; then
+#     git commit -m "$msg"
+#   else
+#     echo "Commit aborted."
+#   fi
+# }

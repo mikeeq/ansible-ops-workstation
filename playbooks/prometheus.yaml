@@ -49,8 +49,8 @@
   become: true
   roles:
     # - servers/apps/prometheus
-    # - servers/apps/frigate
+    - servers/apps/frigate
     # - servers/apps/ollama-docker
     - servers/apps/nginx
-    # - servers/apps/immich
+    - servers/apps/immich
     - servers/apps/vaultwarden

@@ -1,48 +1,64 @@
 ---
-- name: "ZSH autocomplete"
-  become: true
-  become_user: "{{ item }}"
-  ansible.builtin.git:
-    repo: 'https://github.com/zsh-users/zsh-autosuggestions'
-    dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
-    update: true
+# - name: "ZSH autocomplete"
+#   become: true
+#   become_user: "{{ item }}"
+#   ansible.builtin.git:
+#     repo: 'https://github.com/zsh-users/zsh-autosuggestions'
+#     dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+#     update: true
+#   with_items: "{{ oh_my_zsh_users }}"
+
+# - name: "ZSH Syntax Highlighting"
+#   become: true
+#   become_user: "{{ item }}"
+#   ansible.builtin.git:
+#     repo: 'https://github.com/zsh-users/zsh-syntax-highlighting'
+#     dest: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+#     update: true
+#   with_items: "{{ oh_my_zsh_users }}"
+
+# - name: "Powerlevel10K theme"
+#   become: true
+#   become_user: "{{ item }}"
+#   ansible.builtin.git:
+#     repo: 'https://github.com/romkatv/powerlevel10k'
+#     dest: "~/.oh-my-zsh/custom/themes/powerlevel10k"
+#     update: true
+#   with_items: "{{ oh_my_zsh_users }}"
+
+# - name: "p10k config"
+#   ansible.builtin.copy:
+#     src: templates/p10k.zsh.j2
+#     dest: "~{{ item }}/.p10k.zsh"
+#     owner: "{{ item }}"
+#     backup: true
+#     mode: "0600"
+#   with_items: "{{ oh_my_zsh_users }}"
+
+- name: Create directory for zsh files
+  ansible.builtin.file:
+    path: "~{{ item }}/.zsh"
+    state: directory
   with_items: "{{ oh_my_zsh_users }}"
 
-- name: "ZSH Syntax Highlighting"
-  become: true
-  become_user: "{{ item }}"
-  ansible.builtin.git:
-    repo: 'https://github.com/zsh-users/zsh-syntax-highlighting'
-    dest: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
-    update: true
-  with_items: "{{ oh_my_zsh_users }}"
-
-- name: "Powerlevel10K theme"
-  become: true
-  become_user: "{{ item }}"
-  ansible.builtin.git:
-    repo: 'https://github.com/romkatv/powerlevel10k'
-    dest: "~/.oh-my-zsh/custom/themes/powerlevel10k"
-    update: true
-  with_items: "{{ oh_my_zsh_users }}"
-
-- name: "p10k config"
-  ansible.builtin.copy:
-    src: templates/p10k.zsh.j2
-    dest: "~{{ item }}/.p10k.zsh"
-    owner: "{{ item }}"
-    backup: true
-    mode: "0600"
-  with_items: "{{ oh_my_zsh_users }}"
-
-- name: "oh-my-zsh config"
+- name: zshrc
   ansible.builtin.template:
-    src: oh_my_zsh_zshrc.j2
+    src: zshrc.j2
     dest: "~{{ item }}/.zshrc"
     owner: "{{ item }}"
+  with_items: "{{ oh_my_zsh_users }}"
+
+- name: "zsh configs"
+  ansible.builtin.template:
+    # item.1 is the filename (e.g., .zshrc.j2)
+    # We point to the subdirectory within 'templates/'
+    src: ".zsh/{{ item.1 }}"
+    # We strip the '.j2' from the end for the destination
+    dest: "~{{ item.0 }}/.zsh/{{ item.1 | regex_replace('\\.j2$', '') }}"
+    owner: "{{ item.0 }}"
     backup: true
     mode: "0600"
-  with_items: "{{ oh_my_zsh_users }}"
+  loop: "{{ oh_my_zsh_users | product(lookup('fileglob', 'templates/.zsh/*.j2', wantlist=True) | map('basename') | list) | list }}"
 
 # Fixing apt-get fzf package
 - name: Download fzf key-bindings
