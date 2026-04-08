@@ -100,8 +100,21 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Install mise
-        run: curl https://mise.jdx.dev/install.sh | sh
+        shell: bash
+        working-directory: ${{ inputs.working_directory }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          curl https://mise.run | sh
+          echo "$HOME/.local/share/mise/bin" >> $GITHUB_PATH
+          echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+
       - name: Setup mise
-        run: ~/.local/bin/mise install
+        run: mise install
+        shell: bash
+        working-directory: ${{ inputs.working_directory }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Run Ansible
         run: cd playbooks && mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml

@@ -625,7 +625,7 @@ systemctl disable systemd-timesyncd.service
 sudo touch /usr/lib/clock-epoch
 ```
 
-1.  VScode in wayland
+24. VScode in wayland
 
 ```
 code --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto ~/git
