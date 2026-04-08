@@ -25,10 +25,10 @@
     name: amdgpu-power-setup
     enabled: true
     state: started
-    masked: no
+    masked: false
 
 - name: "Verify amdgpu-power-setup service is active"
   ansible.builtin.service:
     name: amdgpu-power-setup
     state: started
-    enabled: yes
+    enabled: true
