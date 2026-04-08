@@ -8,7 +8,8 @@
 
 python = "3.14"
 pipx = "latest"
-"pipx:ansible" = { version = "latest", postinstall = "pipx inject ansible passlib" }
+# "pipx:ansible" = { version = "latest", postinstall = "pipx inject ansible passlib" }
+"pipx:ansible" = "latest"
 
 ## Security scanning
 
