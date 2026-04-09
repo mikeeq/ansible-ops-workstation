@@ -22,11 +22,11 @@
   #       mode: '400'
   roles:
     # - pkg_mgmt/pip
-    # - pkg_mgmt/brew
+    - pkg_mgmt/brew
     - apps/oh_my_zsh
-    # - desktop/macos
-    # - desktop/apps/vscode
-    # - apps/antidote
+    - desktop/macos
+    - desktop/apps/vscode
+    - apps/antidote
   vars:
     user_name: "{{ ansible_env.USER }}"
     oh_my_zsh_users:
