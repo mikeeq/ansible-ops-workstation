@@ -4,11 +4,12 @@
 #     claude_code_package: "@anthropic-ai/claude-code{{ ('@' ~ claude_code_npm_version) if claude_code_npm_version is defined else '' }}"
 
 - name: Install Claude Code via installer script
+  become: true
+  become_user: "{{ user_name }}"
   ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash
   args:
     executable: /bin/bash
-    creates: /usr/local/bin/claude
-  become: true
+    creates: "~{{ user_name }}/.local/bin/claude-code"
 
 - name: Ensure Claude Code configuration directory exists
   ansible.builtin.file:
