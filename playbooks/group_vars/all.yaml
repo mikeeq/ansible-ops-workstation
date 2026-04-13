@@ -196,7 +196,7 @@ vscode_extensions:
   - ms-vscode.powershell
   - ms-vscode-remote.remote-containers
   - ms-azuretools.vscode-azure-github-copilot
-  - github.copilot
+  # - github.copilot
   - github.copilot-chat
   - bbenoist.vagrant
   - davidanson.vscode-markdownlint
