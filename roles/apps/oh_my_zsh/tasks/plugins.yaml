@@ -58,7 +58,7 @@
 
 - name: "zsh configs"
   become: true
-  become_user: "{{ item }}"
+  become_user: "{{ item.0 }}"
   ansible.builtin.template:
     # item.1 is the filename (e.g., .zshrc.j2)
     # We point to the subdirectory within 'templates/'
