@@ -87,6 +87,7 @@ home_assistant:
       switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_sypialnia
     - name: pokoj_julia
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
+      sensor_type: "shelly_htg3"
     - name: sypialnia_gora
       switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_sypialnia
       sensor_type: "shelly_htg3"
