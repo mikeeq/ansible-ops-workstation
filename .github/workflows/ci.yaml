@@ -116,10 +116,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-
-
       - name: Create mikee user
         run: sudo sysadminctl -addUser mikee -password mikee -admin
 
       - name: Run Ansible
-        run: sudo -u mikee bash -c 'cd playbooks && mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml'
+        run: sudo -u mikee bash -c 'cd playbooks && mise trust && mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml'

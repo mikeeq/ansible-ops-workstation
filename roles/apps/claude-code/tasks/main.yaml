@@ -6,10 +6,10 @@
 - name: Install Claude Code via installer script
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash
+  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash -s -- --force
   args:
     executable: /bin/bash
-    creates: "~{{ user_name }}/.local/bin/claude-code"
+    creates: "~{{ user_name }}/.local/bin/claude"
 
 - name: Ensure Claude Code configuration directory exists
   ansible.builtin.file:
