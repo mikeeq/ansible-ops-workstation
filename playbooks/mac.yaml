@@ -26,10 +26,13 @@
     - apps/oh_my_zsh
     - desktop/macos
     - desktop/apps/vscode
-    - apps/antidote
+    # - apps/antidote
   vars:
+    ansible_user: "{{ ansible_env.USER }}"
+    ansible_remote_tmp: "~{{ ansible_env.USER }}/.ansible/tmp"
     user_name: "{{ ansible_env.USER }}"
     oh_my_zsh_users:
       - "{{ user_name }}"
     antidote_users:
       - "{{ user_name }}"
+    ANSIBLE_LOCAL_TMP: "~/.ansible/tmp"

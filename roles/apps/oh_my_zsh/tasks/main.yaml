@@ -17,11 +17,11 @@
   with_items: "{{ oh_my_zsh_users }}"
 
 - name: "Download oh-my-zsh"
-  become: true
+  become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"
   ansible.builtin.git:
     repo: 'https://github.com/ohmyzsh/ohmyzsh'
-    dest: "~/.oh-my-zsh"
+    dest: "~{{ item }}/.oh-my-zsh"
     update: false
   with_items: "{{ oh_my_zsh_users }}"
 
