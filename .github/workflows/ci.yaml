@@ -114,19 +114,21 @@ jobs:
 
       - name: Setup mise as mikee
         run: |
-          sudo -u mikee -i bash -c '
-            export PATH="$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
-            cd ${{ github.workspace }}
-            mise trust
-            mise install
-          '
+          cat > /tmp/setup-mise.sh << 'EOF'
+          export PATH="$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
+          cd "$WORKSPACE_DIR"
+          mise trust
+          mise install
+          EOF
+          sudo -u mikee WORKSPACE_DIR="${{ github.workspace }}" GITHUB_TOKEN="${GITHUB_TOKEN}" -i bash /tmp/setup-mise.sh
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run Ansible
         run: |
-          sudo -u mikee -i bash -c '
-            export PATH="$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
-            cd ${{ github.workspace }}/playbooks
-            mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml
-          '
+          cat > /tmp/run-ansible.sh << 'EOF'
+          export PATH="$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
+          cd "$WORKSPACE_DIR/playbooks"
+          mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml
+          EOF
+          sudo -u mikee WORKSPACE_DIR="${{ github.workspace }}" -i bash /tmp/run-ansible.sh
