@@ -103,22 +103,30 @@ jobs:
       - name: Create mikee user
         run: sudo sysadminctl -addUser mikee -password mikee -admin
 
-      - name: Install mise
-        shell: bash
-        working-directory: ${{ inputs.working_directory }}
+      - name: Give mikee ownership of workspace
+        run: sudo chown -R mikee:staff "$GITHUB_WORKSPACE"
+
+      - name: Install mise as mikee
+        run: |
+          sudo -u mikee -i bash -c 'curl https://mise.run | sh'
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          sudo -u mikee bash -c 'curl https://mise.run | sh'
-          echo "$HOME/.local/share/mise/bin" >> $GITHUB_PATH
-          echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
 
-      - name: Setup mise
-        run: sudo -u mikee bash -c 'mise trust && mise install'
-        shell: bash
-        working-directory: ${{ inputs.working_directory }}
+      - name: Setup mise as mikee
+        run: |
+          sudo -u mikee -i bash -c '
+            export PATH="$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
+            cd ${{ github.workspace }}
+            mise trust
+            mise install
+          '
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run Ansible
-        run: sudo -u mikee bash -c 'cd playbooks && mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml'
+        run: |
+          sudo -u mikee -i bash -c '
+            export PATH="$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
+            cd ${{ github.workspace }}/playbooks
+            mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml
+          '
