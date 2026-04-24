@@ -20,6 +20,8 @@ brew_pkgs:
   - terraform
   - terragrunt
   - helm
+  - copilot-cli
+  - gh
   # - kustomize
   # - k9s
   # - stern

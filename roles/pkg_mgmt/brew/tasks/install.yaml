@@ -12,7 +12,7 @@
     name: "{{ item }}"
     state: present
     # path: "~/Applications"
-    install_options: 'appdir=~/Applications,force'
+    install_options: 'appdir=~/Applications'
     accept_external_apps: true
   loop: "{{ brew_cask_pkgs }}"
   become: false
