@@ -99,18 +99,19 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      - name: Create mikee user
+        run: sudo sysadminctl -addUser mikee -password mikee -admin
+
       - name: Install mise
         shell: bash
         working-directory: ${{ inputs.working_directory }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          curl https://mise.run | sh
+          sudo -u mikee bash -c 'curl https://mise.run | sh'
           echo "$HOME/.local/share/mise/bin" >> $GITHUB_PATH
           echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
-
-      - name: Create mikee user
-        run: sudo sysadminctl -addUser mikee -password mikee -admin
 
       - name: Setup mise
         run: sudo -u mikee bash -c 'mise trust && mise install'
