@@ -109,15 +109,15 @@ jobs:
           echo "$HOME/.local/share/mise/bin" >> $GITHUB_PATH
           echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
 
+      - name: Create mikee user
+        run: sudo sysadminctl -addUser mikee -password mikee -admin
+
       - name: Setup mise
-        run: mise install
+        run: sudo -u mikee bash -c 'mise trust && mise install'
         shell: bash
         working-directory: ${{ inputs.working_directory }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: Create mikee user
-        run: sudo sysadminctl -addUser mikee -password mikee -admin
-
       - name: Run Ansible
-        run: sudo -u mikee bash -c 'cd playbooks && mise trust && mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml'
+        run: sudo -u mikee bash -c 'cd playbooks && mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml'
