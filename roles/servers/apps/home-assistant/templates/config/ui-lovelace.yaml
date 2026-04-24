@@ -168,18 +168,20 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_serwerownia_battery
                 name: Bateria
-          - entity: sensor.th_pokoj_julia_temperature
+          - entity: sensor.shelly_htg3_pokoj_julia_temperature
             type: custom:multiple-entity-row
             name: Pokoj Julia
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_pokoj_julia_temperature
+              - entity: sensor.shelly_htg3_pokoj_julia_temperature
                 name: Temperatura
-              - entity: sensor.th_pokoj_julia_humidity
+              - entity: sensor.shelly_htg3_pokoj_julia_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_pokoj_julia_battery
-                name: Bateria
+              # - entity: binary_sensor.shelly_htg3_biuro_miki_external_power
+              #   name: Power
+              - entity: sensor.shelly_htg3_pokoj_julia_battery
+                name: Battery
       - type: entities
         entities:
           - entity: switch.sonoff_minir2_przedpokoj_minir2_swiatlo_przedpokoj
