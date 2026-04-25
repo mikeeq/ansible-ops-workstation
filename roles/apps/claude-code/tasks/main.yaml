@@ -6,7 +6,7 @@
 - name: Install Claude Code via installer script
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash -s -- --force
+  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash -s -- stable
   args:
     executable: /bin/bash
     creates: "~{{ user_name }}/.local/bin/claude"
