@@ -115,7 +115,7 @@ jobs:
       - name: Setup mise as mikee
         run: |
           cat > /tmp/setup-mise.sh << 'EOF'
-          export PATH="$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
           cd "$WORKSPACE_DIR"
           mise trust
           mise install
@@ -127,7 +127,7 @@ jobs:
       - name: Run Ansible
         run: |
           cat > /tmp/run-ansible.sh << 'EOF'
-          export PATH="$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
           cd "$WORKSPACE_DIR/playbooks"
           mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml
           EOF
