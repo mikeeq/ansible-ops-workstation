@@ -11,24 +11,24 @@
 - name: Install Claude Code via installer script
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash -s -- stable
+  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash -s -- --force stable
   args:
     executable: /bin/bash
   when: not claude_installed.stat.exists
 
 - name: Ensure Claude Code configuration directory exists
   ansible.builtin.file:
-    path: "/home/{{ user_name }}/.claude"
+    path: "~{{ user_name }}/.claude"
     state: directory
 
 # https://unsloth.ai/docs/basics/claude-code
 - name: Deploy Claude Code configuration
   ansible.builtin.template:
     src: settings.json.j2
-    dest: "/home/{{ user_name }}/.claude/settings.json"
+    dest: "~{{ user_name }}/.claude/settings.json"
     mode: "0644"
     owner: "{{ user_name }}"
-    group: "{{ user_name }}"
+    group: "{{ user_group_name | default(user_name) }}"
 
   # You have "promptSuggestionEnabled": false.
   # - Suggestion: If you ever find yourself struggling to articulate complex instructions to the agent, try enabling this (true). It can provide useful starting points for complex refactors.

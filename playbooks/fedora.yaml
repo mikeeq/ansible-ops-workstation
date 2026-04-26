@@ -29,12 +29,14 @@
     - apps/vagrant
     - apps/packer
     - desktop/gnome
-    - desktop/apps/vscode
-    - apps/ollama
-    - apps/claude-code
     - desktop/apps/x11docker
+    - desktop/apps/vscode
     - desktop/fedora
+    - apps/github-cli
+    - apps/github-copilot-cli
+    - apps/claude-code
     - apps/mise
+    - apps/ollama
     # - apps/nordvpn
     # - desktop/apps/keeweb
 

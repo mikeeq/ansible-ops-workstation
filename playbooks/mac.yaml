@@ -8,31 +8,37 @@
     # - mikeeClevo
   become: false
   gather_facts: false
-  # pre_tasks:
-  #   # - ansible.builtin.debug:
-  #   #     var: hostvars[inventory_hostname]
-  #   # https://github.com/geerlingguy/docker-fedora41-ansible/issues/2
-  #   - name: TEMP | Fix due to PAM error in some upstream images
-  #     when: ((ansible_distribution == 'Fedora') or (ansible_distribution == 'Rocky')) and (ansible_run_in_docker is defined)
-  #     # Explicitly don't try to become because that will trigger the broken PAM error
-  #     # become: true
-  #     # Bug in some upstream distros, /etc/shadow has no file perms in container image
-  #     ansible.builtin.file:
-  #       path: /etc/shadow
-  #       mode: '400'
+  pre_tasks:
+    - name: Get current user name
+      ansible.builtin.command: id -un
+      register: current_user
+      changed_when: false
+
+    - name: Get current user group
+      ansible.builtin.command: id -gn
+      register: current_group
+      changed_when: false
+
+    - name: Set user facts
+      ansible.builtin.set_fact:
+        user_name: "{{ current_user.stdout }}"
+        user_group_name: "{{ current_group.stdout }}"
+
+    - name: Debug current user and group
+      ansible.builtin.debug:
+        msg: "user_name={{ user_name }}, user_group_name={{ user_group_name }}"
   roles:
     # - pkg_mgmt/pip
-    - pkg_mgmt/brew
-    - apps/oh_my_zsh
-    - desktop/macos
-    - desktop/apps/vscode
+    # - pkg_mgmt/brew
+    # - apps/oh_my_zsh
+    # - desktop/macos
+    # - desktop/apps/vscode
+    # - apps/claude-code
+    - apps/github-copilot-cli
     # - apps/antidote
   vars:
-    ansible_user: "{{ ansible_env.USER }}"
-    ansible_remote_tmp: "~{{ ansible_env.USER }}/.ansible/tmp"
-    user_name: "{{ ansible_env.USER }}"
+    ansible_remote_tmp: "~{{ current_user.stdout | default(lookup('env', 'USER')) }}/.ansible/tmp"
     oh_my_zsh_users:
       - "{{ user_name }}"
     antidote_users:
       - "{{ user_name }}"
-    ANSIBLE_LOCAL_TMP: "~/.ansible/tmp"
