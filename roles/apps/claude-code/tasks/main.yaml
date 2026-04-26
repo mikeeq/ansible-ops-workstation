@@ -3,6 +3,13 @@
 #   ansible.builtin.set_fact:
 #     claude_code_package: "@anthropic-ai/claude-code{{ ('@' ~ claude_code_npm_version) if claude_code_npm_version is defined else '' }}"
 
+- name: Ensure .local/bin directory exists
+  ansible.builtin.file:
+    path: "~{{ user_name }}/.local/bin"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_group_name | default(user_name) }}"
+
 - name: Check if Claude is already installed
   ansible.builtin.stat:
     path: "~{{ user_name }}/.local/bin/claude"
@@ -20,6 +27,8 @@
   ansible.builtin.file:
     path: "~{{ user_name }}/.claude"
     state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_group_name | default(user_name) }}"
 
 # https://unsloth.ai/docs/basics/claude-code
 - name: Deploy Claude Code configuration
