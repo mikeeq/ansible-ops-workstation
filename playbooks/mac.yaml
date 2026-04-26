@@ -29,11 +29,11 @@
         msg: "user_name={{ user_name }}, user_group_name={{ user_group_name }}"
   roles:
     # - pkg_mgmt/pip
-    # - pkg_mgmt/brew
-    # - apps/oh_my_zsh
-    # - desktop/macos
-    # - desktop/apps/vscode
-    # - apps/claude-code
+    - pkg_mgmt/brew
+    - apps/oh_my_zsh
+    - desktop/macos
+    - desktop/apps/vscode
+    - apps/claude-code
     - apps/github-copilot-cli
     # - apps/antidote
   vars:
