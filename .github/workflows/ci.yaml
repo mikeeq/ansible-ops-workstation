@@ -134,3 +134,12 @@ jobs:
           mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml
           EOF
           sudo -u mikee WORKSPACE_DIR="${{ github.workspace }}" -i bash /tmp/run-ansible.sh
+
+      - name: Run Ansible 2nd time to test idempotency
+        run: |
+          cat > /tmp/run-ansible.sh << 'EOF'
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
+          cd "$WORKSPACE_DIR/playbooks"
+          mise exec -- ansible-playbook -i ../inventory/hosts.yaml mac.yaml
+          EOF
+          sudo -u mikee WORKSPACE_DIR="${{ github.workspace }}" -i bash /tmp/run-ansible.sh
