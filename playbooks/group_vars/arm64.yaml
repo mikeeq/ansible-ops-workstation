@@ -1,0 +1,46 @@
+---
+# ansible_architecture == "aarch64"
+architecture_common_name: "arm64"
+
+# Standard macOS Apple Silicon prefix - required for pre-built bottles
+brew_install_path: /opt/homebrew
+
+brew_pkgs:
+  - gpg
+  - pinentry-mac
+  - mise
+  - htop
+  - ctop
+  - dive
+  - ollama
+  - graphviz
+  - azure-cli
+  - awscli
+  - kubectl
+  - terraform
+  - terragrunt
+  - helm
+  - copilot-cli
+  - gh
+  # - kustomize
+  # - k9s
+  # - stern
+  # - lazygit
+  # - neovim
+  # - tmux
+  # - fzf
+  # - gh
+  # - ghq
+  # - ghz
+  # - gh-ost
+
+brew_cask_pkgs:
+  - iterm2
+  - visual-studio-code
+  - google-chrome
+  - firefox
+  - slack
+  - spotify
+  - utm
+  - ollama
+  # - rancher-desktop

@@ -1,0 +1,6 @@
+---
+# AMD GPU PCI address (adjust based on your system)
+amdgpu_pci_addr: "0000:03:00.0"
+
+# Power cap in nanowatts (default: 294000000 = 294W)
+amdgpu_power_cap: "294000000"

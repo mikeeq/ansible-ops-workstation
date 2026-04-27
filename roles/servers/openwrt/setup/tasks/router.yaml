@@ -1,6 +1,6 @@
 ---
 - name: Install router dependencies
-  community.general.opkg:
+  community.general.apk:
     name: "{{ opkgs }}"
     state: present
   vars:

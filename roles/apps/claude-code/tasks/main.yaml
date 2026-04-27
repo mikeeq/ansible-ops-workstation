@@ -1,0 +1,48 @@
+---
+# - name: Set Claude Code package name
+#   ansible.builtin.set_fact:
+#     claude_code_package: "@anthropic-ai/claude-code{{ ('@' ~ claude_code_npm_version) if claude_code_npm_version is defined else '' }}"
+
+- name: Ensure .local/bin directory exists
+  ansible.builtin.file:
+    path: "~{{ user_name }}/.local/bin"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_group_name | default(user_name) }}"
+
+- name: Check if Claude is already installed
+  ansible.builtin.stat:
+    path: "~{{ user_name }}/.local/bin/claude"
+  register: claude_installed
+
+- name: Install Claude Code via installer script
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash -s -- stable
+  args:
+    executable: /bin/bash
+  when: not claude_installed.stat.exists
+
+- name: Ensure Claude Code configuration directory exists
+  ansible.builtin.file:
+    path: "~{{ user_name }}/.claude"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_group_name | default(user_name) }}"
+
+# https://unsloth.ai/docs/basics/claude-code
+- name: Deploy Claude Code configuration
+  ansible.builtin.template:
+    src: settings.json.j2
+    dest: "~{{ user_name }}/.claude/settings.json"
+    mode: "0644"
+    owner: "{{ user_name }}"
+    group: "{{ user_group_name | default(user_name) }}"
+
+  # You have "promptSuggestionEnabled": false.
+  # - Suggestion: If you ever find yourself struggling to articulate complex instructions to the agent, try enabling this (true). It can provide useful starting points for complex refactors.
+
+  # "attribution": {
+  #   "commit": "🤖 Claude-Code",
+  #   "pr": "Review by Claude"
+  # }

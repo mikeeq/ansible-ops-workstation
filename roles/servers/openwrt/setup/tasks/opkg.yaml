@@ -1,6 +1,6 @@
 ---
 # - name: Update all opkgs
-#   community.general.opkg:
+#   community.general.apk:
 #     name: "*"
 #     update_cache: true
 
@@ -11,7 +11,7 @@
 # *** Failed to download the package list from https://downloads.openwrt.org/releases/24.10.1/targets/ramips/mt7621/packages/Packages.gz
 
 - name: Remove unneeded dependencies
-  community.general.opkg:
+  community.general.apk:
     name: "{{ opkgs }}"
     state: absent
   vars:
@@ -21,7 +21,7 @@
       - wpad-basic-openssl
 
 - name: Install dependencies
-  community.general.opkg:
+  community.general.apk:
     name: "{{ opkgs }}"
     state: present
     update_cache: true
@@ -40,7 +40,7 @@
       - zabbix-extra-mac80211
 
 - name: Install extra dependencies
-  community.general.opkg:
+  community.general.apk:
     name: "{{ opkgs }}"
     state: present
     update_cache: true
@@ -51,9 +51,9 @@
       - luci-app-statistics
 
 - name: Install roaming dependencies
-  community.general.opkg:
+  community.general.apk:
     name: "{{ opkgs }}"
-    state: absent
+    state: present
     update_cache: true
   vars:
     opkgs:
@@ -61,7 +61,7 @@
       # - luci-app-usteer
 
 # - name: Install batman dependencies
-#   community.general.opkg:
+#   community.general.apk:
 #     name: "{{ opkgs }}"
 #     state: present
 #     update_cache: true

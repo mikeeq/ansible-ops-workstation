@@ -1,0 +1,13 @@
+---
+- name: "Update antidote"
+  ansible.builtin.shell: git pull --rebase --stat origin HEAD | head -n1
+  become: true
+  become_user: "{{ item }}"
+  register: antidote_upd_output
+  changed_when: antidote_upd_output.stdout != 'Already up to date.'
+  args:
+    executable: /bin/zsh
+    chdir: "~/.antidote"
+  tags:
+    - update
+  loop: "{{ antidote_users }}"

@@ -1,0 +1,44 @@
+---
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: vars.yaml
+
+- name: MacOS bootstrap
+  hosts:
+    - "{{ hosts_to_deploy | default('local') }}"
+    # - mikeeClevo
+  become: false
+  gather_facts: false
+  pre_tasks:
+    - name: Get current user name
+      ansible.builtin.command: id -un
+      register: current_user
+      changed_when: false
+
+    - name: Get current user group
+      ansible.builtin.command: id -gn
+      register: current_group
+      changed_when: false
+
+    - name: Set user facts
+      ansible.builtin.set_fact:
+        user_name: "{{ current_user.stdout }}"
+        user_group_name: "{{ current_group.stdout }}"
+
+    - name: Debug current user and group
+      ansible.builtin.debug:
+        msg: "user_name={{ user_name }}, user_group_name={{ user_group_name }}"
+  roles:
+    # - pkg_mgmt/pip
+    - pkg_mgmt/brew
+    - apps/oh_my_zsh
+    - desktop/macos
+    - desktop/apps/vscode
+    - apps/claude-code
+    - apps/github-copilot-cli
+    # - apps/antidote
+  vars:
+    ansible_remote_tmp: "~{{ current_user.stdout | default(lookup('env', 'USER')) }}/.ansible/tmp"
+    oh_my_zsh_users:
+      - "{{ user_name }}"
+    antidote_users:
+      - "{{ user_name }}"

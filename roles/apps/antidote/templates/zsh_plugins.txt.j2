@@ -1,0 +1,36 @@
+# ohmyzsh libs
+ohmyzsh/ohmyzsh path:lib/git.zsh
+ohmyzsh/ohmyzsh path:lib/completion.zsh
+
+# ohmyzsh plugins
+ohmyzsh/ohmyzsh path:plugins/git
+ohmyzsh/ohmyzsh path:plugins/docker
+ohmyzsh/ohmyzsh path:plugins/ansible
+ohmyzsh/ohmyzsh path:plugins/dnf
+ohmyzsh/ohmyzsh path:plugins/z
+ohmyzsh/ohmyzsh path:plugins/colored-man-pages
+ohmyzsh/ohmyzsh path:plugins/fzf
+ohmyzsh/ohmyzsh path:plugins/mise
+ohmyzsh/ohmyzsh path:plugins/sudo
+ohmyzsh/ohmyzsh path:plugins/web-search
+{% if item != 'root' %}
+ohmyzsh/ohmyzsh path:plugins/vscode
+ohmyzsh/ohmyzsh path:plugins/terraform
+ohmyzsh/ohmyzsh path:plugins/vagrant
+ohmyzsh/ohmyzsh path:plugins/kubectl
+ohmyzsh/ohmyzsh path:plugins/helm
+ohmyzsh/ohmyzsh path:plugins/aws
+ohmyzsh/ohmyzsh path:plugins/azure
+ohmyzsh/ohmyzsh path:plugins/pip
+ohmyzsh/ohmyzsh path:plugins/python
+{% endif %}
+
+# third-party plugins - completions first for compinit
+zsh-users/zsh-completions kind:fpath path:src
+
+# autosuggestions and fzf-tab deferred after compinit
+zsh-users/zsh-autosuggestions
+# Aloxaf/fzf-tab kind:defer
+
+# syntax highlighting must be last
+zsh-users/zsh-syntax-highlighting

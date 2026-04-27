@@ -428,6 +428,13 @@ Contributions are what make the open source community such an amazing place to b
     mv /usr/lib/udev/rules.d/61-gdm.rules /root/61-gdm.rules
     dracut -f
 
+    # Install drivers without graphical installer
+    bash NVIDIA-Linux-x86_64-590.44.01.run --silent --dkms --accept-license --disable-nouveau --no-nouveau-check --rebuild-initramfs --run-nvidia-xconfig
+    bash cuda_13.1.0_590.44.01_linux.run --silent --toolkit --override
+
+    nvidia-smi
+    #  NVIDIA-SMI 590.44.01              Driver Version: 590.44.01      CUDA Version: 13.1
+
     ```
 
 12. To fix purple'ish screen, enable OC and Fan control (I recommend to use GreenWithEnvy - gwe (installed using flatpak)) apply those changes to `/etc/X11/xorg.conf`:
@@ -589,10 +596,17 @@ cat /etc/modprobe.d/amd.conf
 
 options amdgpu ppfeaturemask=0xffffffff
 
-echo "s 1 2050" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+# Set 2350MHz GPU clock
+echo "s 1 2350" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+# Commit GPU clock changes to OD global profile
+echo "c" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+# Set power limit
 echo "294000000" > /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/hwmon/hwmon2/power1_cap
+# Check GPU/MEM clock
 cat /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/pp_od_clk_voltage
+# Check power cap
 cat /sys/module/amdgpu/drivers/pci:amdgpu/0000:03:00.0/hwmon/hwmon2/power1_cap
+# Reset to default
 echo "r" > /sys/class/drm/card1/device/pp_od_clk_voltage
 ```
 
@@ -669,6 +683,28 @@ vi /etc/systemd/logind.conf
 # cuda driver library failed to get device context 800time=2025-08-04T13:08:53.087Z level=WARN source=gpu.go:434 msg="error looking up nvidia GPU memory"
 ## set no-cgroups = false in /etc/nvidia-container-runtime/config.toml
 ```
+
+31. Sticky keys in Fedora 43 Gnome when using keyboard shortcuts for changing desktop (ctrl+alt+arrow key)
+
+```
+# https://discussion.fedoraproject.org/t/wierd-behavior-on-switch-workspace/172003/11
+# https://gitlab.gnome.org/GNOME/mutter/-/issues/4416
+
+dnf versionlock exclude mutter-49.1.1-1.fc43
+dnf downgrade mutter
+```
+
+32. Wayland limitations:
+
+- Clipboard sharing is missing: https://github.com/input-leap/input-leap/issues/1698
+  - Install X11 back on F43: https://copr.fedorainfracloud.org/coprs/frantisekz/GNOME-X11/
+- Sticky keys as above
+
+## TODO
+
+- consider switching from oh-my-zsh to antidote
+- consider switching from p10k to starship
+
 
 <!-- LICENSE -->
 ## License

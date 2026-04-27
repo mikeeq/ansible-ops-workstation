@@ -1,0 +1,137 @@
+# -------------------------------------------------------
+# zshrc managed by Ansible (antidote + starship)
+# -------------------------------------------------------
+
+# ohmyzsh cache/completions dir - must be set before antidote loads ohmyzsh plugins
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+mkdir -p "$ZSH_CACHE_DIR/completions"
+
+# fpath additions must come before compinit
+fpath+=(
+  ${ZDOTDIR:-~}/.antidote/repos/zsh-users/zsh-completions/src
+  "$ZSH_CACHE_DIR/completions"
+)
+
+# compinit must run before antidote loads ohmyzsh plugins that call compdef
+autoload -Uz compinit && compinit
+
+# Load antidote (after compinit so compdef is available)
+source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+antidote load
+
+{% if item != 'root' %}
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:/opt/azure_functions_core_tools:$HOME/.local/bin:$PATH"
+{% endif %}
+
+{% if ansible_system == 'Darwin' %}
+# macOS: Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# macOS: VS Code
+export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+
+export PATH="$PATH:$HOME/.local/bin"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="$HOME/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+export SSL_CERT_FILE="$HOME/Documents/certs_ca/ca.pem"
+export REQUESTS_CA_BUNDLE="$SSL_CERT_FILE"
+export PIP_CERT="$SSL_CERT_FILE"
+export CURL_CA_BUNDLE="$SSL_CERT_FILE"
+export GIT_SSL_CAINFO="$SSL_CERT_FILE"
+export NODE_EXTRA_CA_CERTS="$SSL_CERT_FILE"
+export NPM_CONFIG_CAFILE="$SSL_CERT_FILE"
+{% endif %}
+
+export EDITOR=/usr/bin/vim
+
+# -------------------------------------------------------
+# Functions
+# -------------------------------------------------------
+
+# Extracting Dockerfile from image
+dfimageext() {
+	docker history --no-trunc $1 | tac | tr -s ' ' | cut -d " " -f 5- | sed 's,^/bin/sh -c #(nop) ,,g' | sed 's,^/bin/sh -c,RUN,g' | sed 's, && ,\n  & ,g' | sed 's,\s*[0-9]*[\.]*[0-9]*[kMG]*B\s*$,,g' | head -n -1
+}
+
+# Grab all resources from k8s namespace
+kubectlgetall() {
+  for i in $(kubectl api-resources --verbs=list --namespaced -o name | grep -v "events.events.k8s.io" | grep -v "events" | sort | uniq); do
+    echo "Resource:" $i
+    kubectl -n ${1} get --ignore-not-found ${i}
+  done
+}
+
+# Shutting down keybase
+kbdown () {
+  if killall Keybase &> /dev/null
+  then
+    echo Shutting down Keybase GUI...
+  fi
+  if fusermount -uz /keybase &> /dev/null
+  then
+    echo Unmounting /keybase...
+  fi
+  if killall kbfsfuse &> /dev/null
+  then
+    echo Shutting down kbfsfuse...
+  fi
+  if killall keybase &> /dev/null
+  then
+    echo Shutting down keybase service...
+  fi
+}
+
+# Switch AWS profile interactively
+function aws-ctx() {
+  export AWS_PROFILE="$(aws configure list-profiles | fzf)"
+  echo "Switched to profile ""$AWS_PROFILE""."
+}
+
+# Switch kubectl context interactively
+function kube-ctx() {
+  kubectl config use-context "$(kubectl config get-contexts -o name | fzf)"
+}
+
+# Switch kubectl namespace interactively
+function kube-ns() {
+  kubectl config set-context --current --namespace="$(kubectl get ns -o name | cut -d/ -f2 | fzf)"
+}
+
+# -------------------------------------------------------
+# Aliases
+# -------------------------------------------------------
+
+alias git_root='cd $(git rev-parse --show-toplevel)'
+alias git_current_branch='$(git branch --show-current)'
+
+autoload -U +X bashcompinit && bashcompinit
+
+# Azure CLI autocompletion
+{% if ansible_system == 'Darwin' %}
+source /opt/homebrew/etc/bash_completion.d/az
+{% elif skip_azure_cli_autocompletion is not defined %}
+source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
+{% endif %}
+
+# VS Code shell integration
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
+# mise activation
+eval "$(mise activate zsh)"
+
+# -------------------------------------------------------
+# Work profiles
+# -------------------------------------------------------
+WORK_PROFILES_PATH="$HOME/.work_profiles"
+
+if [[ -n $WORK_PROFILE ]]; then
+  source $WORK_PROFILES_PATH/.zshrc
+fi
+
+# -------------------------------------------------------
+# Starship prompt (must be last)
+# -------------------------------------------------------
+eval "$(starship init zsh)"

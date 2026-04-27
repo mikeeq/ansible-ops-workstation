@@ -1,0 +1,47 @@
+[[ -n "${ZSH_DEBUGRC+1}" ]] && zmodload zsh/zprof
+
+source $HOME/.zsh/oh_my_zsh_p10k.zsh
+
+# Global env vars
+{% if item != 'root' %}
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:/opt/azure_functions_core_tools:$HOME/.local/bin:$PATH"
+{% endif %}
+export EDITOR=/usr/bin/vim
+export AWS_PAGER=""
+export ANTHROPIC_AUTH_TOKEN=ollama
+export ANTHROPIC_BASE_URL=http://localhost:11434
+#export ANTHROPIC_MODEL=qwen3-coder-next
+#export ANTHROPIC_SMALL_FAST_MODEL=qwen3-coder-next
+#export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+#export API_TIMEOUT_MS=600000
+# claude --model gemma4:26b
+
+# Local env vars
+WORK_PROFILES_PATH="$HOME/.work_profiles"
+
+# Sources
+{% if ansible_system == 'Darwin' %}
+source $HOME/.zsh/macos.zsh
+{% endif %}
+source $HOME/.zsh/aliases.zsh
+source $HOME/.zsh/functions.zsh
+[[ -n $WORK_PROFILE ]] && source $WORK_PROFILES_PATH/.zshrc
+# [[ ! -f $WORK_PROFILES_PATH/.zshrc ]] || source $WORK_PROFILES_PATH/.zshrc
+
+{% if ansible_system == 'Darwin' %}
+source /opt/homebrew/etc/bash_completion.d/az
+{% elif skip_azure_cli_autocompletion is not defined %}
+source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
+{% endif %}
+
+# VScode terminal integration
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
+# Mise activate
+eval "$(mise activate zsh)"
+
+# Load autocompletion
+autoload -U +X bashcompinit && bashcompinit
+autoload -U compinit && compinit //override comp
+
+[[ -n "${ZSH_DEBUGRC+1}" ]] && zprof

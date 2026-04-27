@@ -1,0 +1,21 @@
+---
+- name: Install dnf-plugins-core
+  ansible.builtin.dnf:
+    name: dnf-plugins-core
+    state: present
+  become: true
+
+- name: Add mise repository
+  ansible.builtin.yum_repository:
+    name: mise
+    description: mise repository
+    baseurl: https://mise.jdx.dev/rpm
+    gpgcheck: true
+    gpgkey: https://mise.jdx.dev/gpg-key.pub
+  become: true
+
+- name: Install mise
+  ansible.builtin.dnf:
+    name: mise
+    state: present
+  become: true

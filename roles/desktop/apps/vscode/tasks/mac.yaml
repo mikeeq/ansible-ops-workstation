@@ -1,0 +1,12 @@
+---
+- name: "[VSCODE] Ensure ~/.local/bin exists"
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/bin"
+    state: directory
+    mode: "0755"
+
+- name: "[VSCODE] Symlink 'code' CLI to ~/.local/bin"
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+    dest: "{{ ansible_env.HOME }}/.local/bin/code"
+    state: link

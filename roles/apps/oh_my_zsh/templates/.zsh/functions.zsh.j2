@@ -1,0 +1,407 @@
+# Extracting Dockerfile from image
+function dfimageext() {
+	docker history --no-trunc $1  | tac | tr -s ' ' | cut -d " " -f 5- | sed 's,^/bin/sh -c #(nop) ,,g' | sed 's,^/bin/sh -c,RUN,g' | sed 's, && ,\n  & ,g' | sed 's,\s*[0-9]*[\.]*[0-9]*[kMG]*B\s*$,,g' | head -n -1
+}
+
+# Grab all resources from k8s namespace
+function kubectlgetall() {
+  for i in $(kubectl api-resources --verbs=list --namespaced -o name | grep -v "events.events.k8s.io" | grep -v "events" | sort | uniq); do
+    echo "Resource:" $i
+    kubectl -n ${1} get --ignore-not-found ${i}
+  done
+}
+
+# Shutting down keybase
+function kbdown () {
+  if killall Keybase &> /dev/null
+  then
+    echo Shutting down Keybase GUI...
+  fi
+  if fusermount -uz /keybase &> /dev/null
+  then
+    echo Unmounting /keybase...
+  fi
+  if killall kbfsfuse &> /dev/null
+  then
+    echo Shutting down kbfsfuse...
+  fi
+  if killall keybase &> /dev/null
+  then
+    echo Shutting down keybase service...
+  fi
+}
+
+function aws-ctx() {
+  export AWS_PROFILE="$(aws configure list-profiles | fzf)"
+  echo "Switched to profile ""$AWS_PROFILE""."
+}
+
+function kube-ctx() {
+  kubectl config use-context "$(kubectl config get-contexts -o name | fzf)"
+}
+
+function kube-ns() {
+  kubectl config set-context --current --namespace="$(kubectl get ns -o name | cut -d/ -f2 | fzf)"
+}
+
+# https://code.claude.com/docs/en/vs-code#using-third-party-providers
+# https://unsloth.ai/docs/basics/claude-code
+function gcmc() {
+  # MODEL=qwen2.5-coder:7b
+  MODEL=glm-4.7-flash:latest
+  local diff=$(git diff --cached)
+  if [ -z "$diff" ]; then
+    echo "❌ No staged changes found. Use 'git add' first."
+    return 1
+  fi
+
+  echo "🤖 Generating commit message using Claude Code and Ollama (model: $MODEL)..."
+
+  local msg=$(echo "$diff" | claude --model $MODEL "Write a one-line conventional commit message for these changes. Output ONLY the message, no quotes.")
+
+  echo -e "\nProposed message: $msg"
+
+  # ZSH specific prompt syntax: "var?prompt"
+  read "REPLY?Commit with this message? (y/n): "
+
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    git commit -m "$msg"
+  else
+    echo "Commit aborted."
+  fi
+}
+
+# function gcmc() {
+#   local diff=$(git diff --cached)
+#   if [ -z "$diff" ]; then
+#     echo "❌ No staged changes found. Use 'git add' first."
+#     return 1
+#   fi
+
+#   echo "🤖 Generating commit message..."
+
+#   # We add a strict instruction to avoid those markdown backticks
+#   local prompt="Review this git diff and write a one-line conventional commit message.
+#   Output ONLY the raw text. Do NOT use markdown, backticks, or quotes.
+
+#   Diff:
+#   $diff"
+
+#   local msg=$(echo "$prompt" | claude)
+
+#   # Clean up any accidental backticks or quotes if the model ignores instructions
+#   msg=$(echo "$msg" | sed "s/^\`//; s/\`$//; s/^'//; s/'$//; s/^\"//; s/\"$//")
+
+#   echo -e "\nProposed message: \033[0;32m$msg\033[0m"
+
+#   # ZSH specific prompt syntax: "var?prompt"
+#   read "REPLY?Commit with this message? (y/n): "
+
+#   if [[ $REPLY =~ ^[Yy]$ ]]; then
+#     git commit -m "$msg"
+#   else
+#     echo "Commit aborted."
+#   fi
+# }
+
+# Default model for copilot CLI functions (override with COPILOT_MODEL env var or -m flag)
+COPILOT_MODEL="${COPILOT_MODEL:-gpt-4.1}"
+
+# Generate a commit message from staged/unstaged changes
+# Usage: ghcm [-m model] [-c] [--install | --uninstall]
+#   -c          commit staged changes with the generated message
+#   --install   install prepare-commit-msg hook in current repo
+#   --uninstall remove the hook from current repo
+function ghcm() {
+  # Handle --install / --uninstall before getopts
+  if [[ "$1" == "--install" ]]; then
+    if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+      echo "Not a git repository."
+      return 1
+    fi
+    local hook="$(git rev-parse --git-dir)/hooks/prepare-commit-msg"
+    if [[ -f "$hook" ]]; then
+      echo "Hook already exists at $hook"
+      echo -n "Overwrite? [y/N] "
+      read -r answer
+      [[ ! "$answer" =~ ^[Yy]$ ]] && return 0
+    fi
+    mkdir -p "$(dirname "$hook")"
+    cat > "$hook" << 'HOOKEOF'
+#!/usr/bin/env zsh
+# AI commit message via ghcm (copilot CLI)
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="$2"
+[[ -n "$COMMIT_SOURCE" ]] && exit 0
+[[ ! -x "$HOME/.local/bin/copilot" ]] && exit 0
+COPILOT_MODEL="${COPILOT_MODEL:-gpt-4.1}"
+branch=$(git branch --show-current)
+ticket=""
+if [[ "$branch" =~ /([A-Za-z]+-[0-9]+)/ ]]; then
+  ticket="${(U)match[1]}"
+fi
+ticket_instruction=""
+if [[ -n "$ticket" ]]; then
+  ticket_instruction="Prefix the message with [$ticket], e.g.: [$ticket] <type>: <description>."
+fi
+msg=$($HOME/.local/bin/copilot -s -p \
+  "Run 'git diff --cached' and generate a concise conventional commit message.
+${ticket_instruction}
+Allowed types: feat, fix, docs, style, refactor, perf, test, chore, build, ci, revert.
+Do NOT add any Co-authored-by or Signed-off-by trailers.
+Output ONLY the commit message, nothing else." \
+  --model "$COPILOT_MODEL" --allow-tool 'shell(git:*)' 2>/dev/null)
+if [[ -n "$msg" ]]; then
+  existing=$(cat "$COMMIT_MSG_FILE")
+  printf '%s\n\n%s' "$msg" "$existing" > "$COMMIT_MSG_FILE"
+fi
+HOOKEOF
+    chmod +x "$hook"
+    echo "✅ Installed prepare-commit-msg hook at $hook"
+    return 0
+  fi
+
+  if [[ "$1" == "--uninstall" ]]; then
+    if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+      echo "Not a git repository."
+      return 1
+    fi
+    local hook="$(git rev-parse --git-dir)/hooks/prepare-commit-msg"
+    if [[ -f "$hook" ]] && grep -q "ghcm" "$hook"; then
+      rm "$hook"
+      echo "✅ Removed prepare-commit-msg hook."
+    else
+      echo "No ghcm hook found."
+    fi
+    return 0
+  fi
+
+  local model="$COPILOT_MODEL"
+  local do_commit=0
+  while getopts "m:c" opt; do
+    case $opt in
+      m) model="$OPTARG" ;;
+      c) do_commit=1 ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+  OPTIND=1
+
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo "Not a git repository."
+    return 1
+  fi
+
+  if [[ -z "$(git diff --cached)" && -z "$(git diff)" ]]; then
+    echo "No changes to generate a commit message for."
+    return 1
+  fi
+
+  local branch
+  branch=$(git branch --show-current)
+
+  local ticket=""
+  if [[ "$branch" =~ /([A-Za-z]+-[0-9]+)/ ]]; then
+    ticket="${(U)match[1]}"
+  fi
+
+  local ticket_instruction=""
+  if [[ -n "$ticket" ]]; then
+    ticket_instruction="Prefix the message with [$ticket], e.g.: [$ticket] <type>: <description>."
+  fi
+
+  local msg
+  msg=$($HOME/.local/bin/copilot -s -p \
+    "Run 'git diff --cached' (or 'git diff' if nothing is staged) and generate a concise conventional commit message.
+${ticket_instruction}
+Allowed types: feat, fix, docs, style, refactor, perf, test, chore, build, ci, revert.
+Do NOT add any Co-authored-by or Signed-off-by trailers.
+Output ONLY the commit message, nothing else." \
+    --model "$model" --allow-tool 'shell(git:*)')
+
+  echo "$msg"
+
+  if [[ "$do_commit" -eq 1 ]]; then
+    if [[ -z "$(git diff --cached)" ]]; then
+      echo "Nothing staged. Stage changes first (git add) before using -c."
+      return 1
+    fi
+    echo -n "Commit with this message? [y/N] "
+    read -r answer
+    if [[ "$answer" =~ ^[Yy]$ ]]; then
+      git commit -m "$msg"
+    else
+      echo "Skipped."
+    fi
+  fi
+}
+
+# Generate a PR title and description for the current branch
+# Usage: ghpr [-m model] [target-branch]
+function ghpr() {
+  local model="$COPILOT_MODEL"
+  while getopts "m:" opt; do
+    case $opt in
+      m) model="$OPTARG" ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+  OPTIND=1
+
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo "Not a git repository."
+    return 1
+  fi
+
+  local target="${1:-main}"
+  local branch
+  branch=$(git branch --show-current)
+  if [[ "$branch" == "$target" ]]; then
+    echo "Already on $target, nothing to describe."
+    return 1
+  fi
+
+  local ticket=""
+  if [[ "$branch" =~ /([A-Za-z]+-[0-9]+)/ ]]; then
+    ticket="${(U)match[1]}"
+  fi
+
+  local ticket_instruction=""
+  if [[ -n "$ticket" ]]; then
+    ticket_instruction="The PR title MUST be the FIRST line and follow this EXACT format: [${ticket}] <type>(<optional-scope>): <description>
+Allowed types: feat, fix, docs, style, refactor, perf, test, chore, build, ci, revert.
+CORRECT examples:
+  [${ticket}] feat(auth): add user authentication
+  [${ticket}] fix: correct token expiry calculation
+WRONG (do NOT do this):
+  feat(${ticket}): description
+  ${ticket} feat: description"
+  else
+    ticket_instruction="The PR title MUST be the FIRST line as: <type>(<optional-scope>): <description>
+Allowed types: feat, fix, docs, style, refactor, perf, test, chore, build, ci, revert."
+  fi
+
+  local template_instruction=""
+  local git_root
+  git_root=$(git rev-parse --show-toplevel)
+  if [[ -f "$git_root/.github/PULL_REQUEST_TEMPLATE.md" ]]; then
+    template_instruction="
+The repository has a PR template at .github/PULL_REQUEST_TEMPLATE.md. Read it with 'cat .github/PULL_REQUEST_TEMPLATE.md'. The description MUST follow that template structure exactly, filling in each section and checking the applicable boxes with [x] based on the changes. Keep all static text, headings, and paragraphs from the template VERBATIM - only fill in the placeholder sections and check the boxes. Do NOT shorten, paraphrase, or omit any part of the template."
+  fi
+
+  local tmpfile
+  tmpfile=$(mktemp)
+
+  cat > "$tmpfile" <<PROMPT_EOF
+Generate a pull request title and description in Markdown for branch '$branch' against '$target'.
+Run 'git log --oneline $target..$branch' and 'git diff --stat $target...$branch' to see the changes.
+
+${ticket_instruction}
+${template_instruction}
+In the description, clearly explain:
+- WHY these changes are being made (motivation, problem being solved)
+- WHAT the expected gain or improvement is (performance, reliability, developer experience, etc.)
+- WHAT was changed (summary of key changes)
+Output ONLY the PR title on the first line, then a blank line, then the description body.
+PROMPT_EOF
+
+  local output
+  output=$($HOME/.local/bin/copilot -s -p "$(cat "$tmpfile")" \
+    --model "$model" --allow-tool 'shell(git:*)' --allow-tool 'shell(cat:*)')
+  rm -f "$tmpfile"
+
+  if [[ -z "$output" ]]; then
+    echo "Failed to generate PR description."
+    return 1
+  fi
+
+  echo "$output"
+  echo ""
+
+  local pr_title
+  pr_title=$(echo "$output" | head -1)
+  local pr_body
+  pr_body=$(echo "$output" | tail -n +3)
+
+  echo -n "Update PR title on GitHub? [y/N] "
+  read -r answer_title
+  echo -n "Update PR description on GitHub? [y/N] "
+  read -r answer_body
+
+  if [[ "$answer_title" =~ ^[Yy]$ || "$answer_body" =~ ^[Yy]$ ]]; then
+    if ! gh pr view "$branch" &>/dev/null; then
+      echo "No open PR found for branch '$branch'."
+      return 1
+    fi
+    local gh_args=()
+    if [[ "$answer_title" =~ ^[Yy]$ ]]; then
+      gh_args+=(--title "$pr_title")
+    fi
+    if [[ "$answer_body" =~ ^[Yy]$ ]]; then
+      gh_args+=(--body "$pr_body")
+    fi
+    gh pr edit "$branch" "${gh_args[@]}"
+    echo "✅ PR updated on GitHub."
+  else
+    echo "Skipped."
+  fi
+}
+
+# Resolve all open review threads on the current branch's PR
+# Usage: ghcoms [branch]
+function ghcoms() {
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo "Not a git repository."
+    return 1
+  fi
+
+  local branch="${1:-$(git branch --show-current)}"
+  local owner repo
+  owner=$(gh repo view --json owner -q '.owner.login')
+  repo=$(gh repo view --json name -q '.name')
+
+  local pr_number
+  pr_number=$(GH_PAGER=cat gh pr view "$branch" --json number -q '.number' 2>/dev/null)
+  if [[ -z "$pr_number" ]]; then
+    echo "No open PR found for branch '$branch'."
+    return 1
+  fi
+
+  local thread_ids
+  thread_ids=$(GH_PAGER=cat gh api graphql -f query="
+    {
+      repository(owner: \"$owner\", name: \"$repo\") {
+        pullRequest(number: $pr_number) {
+          reviewThreads(first: 100) {
+            nodes {
+              id
+              isResolved
+            }
+          }
+        }
+      }
+    }" -q '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false) | .id')
+
+  if [[ -z "$thread_ids" ]]; then
+    echo "No unresolved review threads on PR #$pr_number."
+    return 0
+  fi
+
+  local count
+  count=$(echo "$thread_ids" | wc -l | tr -d ' ')
+  echo "Found $count unresolved review thread(s) on PR #$pr_number."
+  echo -n "Resolve all? [y/N] "
+  read -r answer
+  if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+    echo "Skipped."
+    return 0
+  fi
+
+  local resolved=0
+  while IFS= read -r tid; do
+    GH_PAGER=cat gh api graphql -f query="mutation { resolveReviewThread(input: { threadId: \"$tid\" }) { thread { isResolved } } }" &>/dev/null
+    ((resolved++))
+  done <<< "$thread_ids"
+
+  echo "✅ Resolved $resolved review thread(s)."
+}

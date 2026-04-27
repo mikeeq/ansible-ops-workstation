@@ -1,0 +1,18 @@
+---
+- name: "[BREW] Install formulae"
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+    path: "{{ brew_install_path }}/bin"
+  loop: "{{ brew_pkgs }}"
+  become: false
+
+- name: "[BREW] Install casks"
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+    # path: "~/Applications"
+    install_options: 'appdir=~/Applications'
+    accept_external_apps: true
+  loop: "{{ brew_cask_pkgs }}"
+  become: false

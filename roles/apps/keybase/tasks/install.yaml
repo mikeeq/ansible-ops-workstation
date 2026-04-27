@@ -11,7 +11,7 @@
 
 - name: Install keybase on Fedora
   ansible.builtin.dnf:
-    name: "https://prerelease.keybase.io/keybase_{{ package_name }}.rpm"
+    name: "https://prerelease.keybase.io/keybase_amd64.rpm"
     state: present
     disable_gpg_check: true
   when:
@@ -20,7 +20,7 @@
 
 - name: Install keybase on Ubuntu
   ansible.builtin.apt:
-    deb: "https://prerelease.keybase.io/keybase_{{ package_name }}.deb"
+    deb: "https://prerelease.keybase.io/keybase_amd64.deb"
     state: present
   when:
     - keybase_installed.rc != 0
@@ -32,11 +32,11 @@
     creates: /keybase
 
 # https://github.com/keybase/client/issues/24688
-- name: Fix keybase on newer Fedoras
-  ansible.builtin.lineinfile:
-    path: /usr/lib/systemd/user/keybase.gui.service
-    regexp: '^ExecStart=/opt/keybase/Keybase'
-    line: "ExecStart=/opt/keybase/Keybase --disable-seccomp-filter-sandbox"
+# - name: Fix keybase on newer Fedoras
+#   ansible.builtin.lineinfile:
+#     path: /usr/lib/systemd/user/keybase.gui.service
+#     regexp: '^ExecStart=/opt/keybase/Keybase'
+#     line: "ExecStart=/opt/keybase/Keybase --disable-seccomp-filter-sandbox"
 
 # curl --remote-name https://prerelease.keybase.io/keybase_{{ package_name }}.deb
 # sudo apt install ./keybase_{{ package_name }}.deb

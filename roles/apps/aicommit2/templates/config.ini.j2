@@ -1,0 +1,41 @@
+[OLLAMA]
+model[]=gemma3:4b
+# Limit the number of tokens sent to avoid context overflow
+max-tokens=2048
+# Increase timeout for large diffs
+timeout=60000
+# Exclude large/noisy files by default
+exclude[]=package-lock.json
+exclude[]=pnpm-lock.yaml
+exclude[]=yarn.lock
+exclude[]=composer.lock
+exclude[]=Cargo.lock
+exclude[]=poetry.lock
+exclude[]=go.sum
+exclude[]=Gemfile.lock
+exclude[]=Pipfile.lock
+exclude[]=*.min.js
+exclude[]=*.min.css
+exclude[]=*.map
+exclude[]=*.snap
+exclude[]=*.svg
+exclude[]=*.png
+exclude[]=*.jpg
+exclude[]=*.jpeg
+exclude[]=*.gif
+exclude[]=*.ico
+exclude[]=*.woff
+exclude[]=*.woff2
+exclude[]=*.ttf
+exclude[]=*.eot
+exclude[]=*.pdf
+exclude[]=dist/*
+exclude[]=build/*
+exclude[]=vendor/*
+exclude[]=node_modules/*
+exclude[]=*.pyc
+exclude[]=*.pyo
+exclude[]=__pycache__/*
+exclude[]=*.tfstate
+exclude[]=*.tfstate.backup
+exclude[]=.terraform.lock.hcl

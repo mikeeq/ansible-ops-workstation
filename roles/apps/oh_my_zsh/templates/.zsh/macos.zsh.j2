@@ -1,0 +1,26 @@
+# macOS: Homebrew
+#eval "$($HOME/.homebrew/bin/brew shellenv)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# macOS: VS Code
+export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+
+#export PATH=$PATH:$HOME/Library/Python/3.9/bin:/opt/homebrew/bin:$HOME/.docker/bin:$HOME/Applications/Ollama.app/Contents/Resources/ollama
+export REQUESTS_CA_BUNDLE=
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="$HOME/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+#export PATH="$PATH:$HOME/.local/bin:$HOME/.local/pipx/venvs/ansible/bin/"
+export PATH="$PATH:$HOME/.local/bin"
+
+# pip3 install certifi
+# CA_CERT_PATH=$(python3 -c "import certifi; print(certifi.where())")
+export SSL_CERT_FILE="$HOME/Documents/certs_ca/ca.pem"
+export REQUESTS_CA_BUNDLE="$SSL_CERT_FILE"
+export PIP_CERT="$SSL_CERT_FILE"
+export CURL_CA_BUNDLE="$SSL_CERT_FILE"
+export GIT_SSL_CAINFO="$SSL_CERT_FILE"
+export NODE_EXTRA_CA_CERTS="$SSL_CERT_FILE"
+export NPM_CONFIG_CAFILE="$SSL_CERT_FILE"

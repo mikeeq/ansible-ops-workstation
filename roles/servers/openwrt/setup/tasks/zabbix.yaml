@@ -26,6 +26,24 @@
         )|length > 0 else None
       }}
 
+- name: Create zabbix group
+  ansible.builtin.raw: |
+    grep -q '^zabbix:' /etc/group || echo 'zabbix:x:53:' >> /etc/group
+  become: true
+  changed_when: false
+
+- name: Create zabbix user
+  ansible.builtin.raw: |
+    grep -q '^zabbix:' /etc/passwd || echo 'zabbix:x:53:53:zabbix:/var/run/zabbix:/bin/false' >> /etc/passwd
+  become: true
+  changed_when: false
+
+- name: Create zabbix-agent user
+  ansible.builtin.raw: |
+    grep -q '^zabbix-agent:' /etc/passwd || echo 'zabbix-agent:x:53:53:zabbix-agent:/var/run/zabbix-agent:/bin/false' >> /etc/passwd
+  become: true
+  changed_when: false
+
 - name: Create Zabbix agent configuration file
   ansible.builtin.template:
     src: "zabbix_agentd.conf.j2"

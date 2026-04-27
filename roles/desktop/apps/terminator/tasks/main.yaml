@@ -45,6 +45,30 @@
     group: "{{ user_name }}"
   register: font_download
 
+- name: "Download Font - MesloLGS_NF_Bold"
+  ansible.builtin.get_url:
+    url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf'
+    dest: "~{{ user_name }}/.local/share/fonts/MesloLGS_NF_Bold.ttf"
+    mode: '0664'
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: "Download Font - MesloLGS_NF_Italic"
+  ansible.builtin.get_url:
+    url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf'
+    dest: "~{{ user_name }}/.local/share/fonts/MesloLGS_NF_Italic.ttf"
+    mode: '0664'
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: "Download Font - MesloLGS_NF_Bold_Italic"
+  ansible.builtin.get_url:
+    url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf'
+    dest: "~{{ user_name }}/.local/share/fonts/MesloLGS_NF_Bold_Italic.ttf"
+    mode: '0664'
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
 - name: Refresh Fonts
   become: true
   become_user: "{{ user_name }}"

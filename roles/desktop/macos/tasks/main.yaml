@@ -1,0 +1,41 @@
+---
+- name: "[MACOS] Directory for P10K font"
+  ansible.builtin.file:
+    path: "~{{ user_name }}/Library/Fonts/"
+    state: directory
+    mode: "0755"
+  # become: true
+  # become_user: "{{ user_name }}"
+
+- name: "[MACOS] Download Font - MesloLGS_NF_Regular"
+  ansible.builtin.get_url:
+    url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf'
+    dest: "~{{ user_name }}/Library/Fonts/MesloLGS_NF_Regular.ttf"
+    mode: '0644'
+  # become: true
+  # become_user: "{{ user_name }}"
+  register: font_download
+
+- name: "[MACOS] Download Font - MesloLGS_NF_Bold"
+  ansible.builtin.get_url:
+    url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf'
+    dest: "~{{ user_name }}/Library/Fonts/MesloLGS_NF_Bold.ttf"
+    mode: '0644'
+  # become: true
+  # become_user: "{{ user_name }}"
+
+- name: "[MACOS] Download Font - MesloLGS_NF_Italic"
+  ansible.builtin.get_url:
+    url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf'
+    dest: "~{{ user_name }}/Library/Fonts/MesloLGS_NF_Italic.ttf"
+    mode: '0644'
+  # become: true
+  # become_user: "{{ user_name }}"
+
+- name: "[MACOS] Download Font - MesloLGS_NF_Bold_Italic"
+  ansible.builtin.get_url:
+    url: 'https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf'
+    dest: "~{{ user_name }}/Library/Fonts/MesloLGS_NF_Bold_Italic.ttf"
+    mode: '0644'
+  # become: true
+  # become_user: "{{ user_name }}"

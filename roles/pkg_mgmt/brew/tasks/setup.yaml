@@ -1,0 +1,25 @@
+---
+- name: "[BREW] Check if brew is installed"
+  ansible.builtin.command: "{{ brew_install_path }}/bin/brew --version"
+  register: brew_which
+  changed_when: false
+  failed_when: false
+  become: false
+
+- name: "[BREW] Create Homebrew prefix directory"
+  ansible.builtin.file:
+    path: "{{ brew_install_path }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_user_id }}"
+  when: brew_which.rc != 0
+  become: true
+
+- name: "[BREW] Install Homebrew to non-root prefix via tarball"
+  ansible.builtin.shell: >
+    curl -fsSL https://github.com/Homebrew/brew/tarball/master |
+    tar xz --strip-components 1 -C "{{ brew_install_path }}"
+  when: brew_which.rc != 0
+  become: false
+  args:
+    creates: "{{ brew_install_path }}/bin/brew"

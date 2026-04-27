@@ -12,6 +12,7 @@
       - "SmartHome"
       - "Tasmota"
       - 'Private'
+      - 'InternetProvider'
       - 'Not Monitored'
 
 - name: Download Zabbix sensor files
@@ -222,5 +223,25 @@
         port: 10050
   loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
             | selectattr('tags', 'contains', 'not_monitored') | list }}"
+  loop_control:
+    label: "{{ item.hostname }}"
+
+- name: "Add/update Zabbix hosts with tag 'internet_provider'"
+  become: false
+  community.zabbix.zabbix_host:
+    host_name: "{{ item.hostname }}"
+    host_groups:
+      - 'InternetProvider'
+    link_templates:
+      - 'ICMP Ping'
+    interfaces:
+      - type: 1
+        main: 1
+        useip: 1
+        ip: "{{ item.ip }}"
+        dns: ""
+        port: 10050
+  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
+            | selectattr('tags', 'contains', 'internet_provider') | list }}"
   loop_control:
     label: "{{ item.hostname }}"

@@ -14,10 +14,20 @@ flatpak_apps:
   #   remote: flathub
   # - name: com.slack.Slack
   #   remote: flathub
-  - name: com.github.debauchee.barrier
-    remote: flathub
+  # - name: com.github.debauchee.barrier
+  #   remote: flathub
   # - name: com.discordapp.Discord
   #   remote: flathub
+  # - name: com.obsproject.Studio
+  #   remote: flathub
+  # - name: io.github.input_leap.input-leap
+  #   remote: flathub
+  - name: io.github.peazip.PeaZip
+    remote: flathub
+  - name: com.bitwarden.desktop
+    remote: flathub
+  - name: org.deskflow.deskflow
+    remote: flathub
 
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins: []

@@ -1,0 +1,13 @@
+---
+- name: Check if GitHub Copilot CLI is already installed
+  ansible.builtin.stat:
+    path: "~{{ user_name }}/.local/bin/copilot"
+  register: copilot_cli_installed
+
+- name: Install GitHub Copilot CLI via installer script
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: curl -fsSL https://gh.io/copilot-install | bash
+  args:
+    executable: /bin/bash
+  when: not copilot_cli_installed.stat.exists
