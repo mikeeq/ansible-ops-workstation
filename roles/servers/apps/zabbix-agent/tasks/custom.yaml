@@ -11,6 +11,22 @@
     mode: '0755'
   become: true
 
+- name: Install speedtest-cli
+  ansible.builtin.package:
+    name: speedtest-cli
+    state: present
+  become: true
+
+- name: Deploy speedtest script
+  ansible.builtin.template:
+    src: speedtest.sh.j2
+    dest: /etc/zabbix/scripts/speedtest.sh
+    owner: zabbix
+    group: zabbix
+    mode: '0755'
+  become: true
+  notify: restart zabbix-agent
+
 - name: Download Zabbix scripts
   ansible.builtin.get_url:
     url: "{{ item.url }}"

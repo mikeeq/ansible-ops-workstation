@@ -7,3 +7,4 @@ ServerActive={{ zabbix_server_active | default('127.0.0.1') }}
 Hostname={{ ansible_hostname }}
 Include=/etc/zabbix/zabbix_agent2.d/*.conf
 ControlSocket=/tmp/agent.sock
+Timeout=30

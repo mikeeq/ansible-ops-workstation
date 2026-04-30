@@ -6,6 +6,8 @@ LogFileSize=0
 Server=127.0.0.1,192.168.0.0/16,172.16.0.0/12
 ServerActive=127.0.0.1
 
+UnsafeUserParameters=1
 Include=/etc/zabbix_agentd.userparams.conf
 
 Hostname={{ zabbix_hostname }}
+Timeout=30

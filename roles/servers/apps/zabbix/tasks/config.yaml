@@ -39,6 +39,7 @@
     - template_file: /tmp/template_md_raid.yaml
     - template_file: /tmp/template_lm_sensors.yaml
     - template_file: icmp_template.yaml
+    - template_file: speedtest_template.yaml
 
 - name: Import Zabbix xml template
   become: false
@@ -111,6 +112,7 @@
       - 'Template Lm-sensors'
       - 'Template_Sensors'
       - 'MD RAID'
+      - 'Speedtest'
       - 'Zabbix server health'
     interfaces:
       - type: 1
