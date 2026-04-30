@@ -1,4 +1,4 @@
-FROM fedora:43
+FROM fedora:44
 
 # ENV container docker
 ENV FEDORA_USERNAME=mikee
