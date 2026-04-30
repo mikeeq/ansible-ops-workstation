@@ -45,7 +45,7 @@ dnf_pkgs:
   - flatpak
   - fuse-exfat
   - hunspell-pl
-  - java-21-openjdk
+  - java-latest-openjdk
   - lm_sensors
   # - policycoreutils-python
   - python3-devel
