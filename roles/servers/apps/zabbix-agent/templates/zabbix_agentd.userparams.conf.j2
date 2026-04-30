@@ -15,4 +15,7 @@ UserParameter=mdraid.degraded[*],cat /sys/block/$1/md/degraded
 UserParameter=mdraid.sync_speed[*],echo $(($(cat /sys/block/$1/md/sync_speed | sed s/none/0/g)*1024))
 UserParameter=mdraid.level[*],cat /sys/block/$1/md/level
 UserParameter=mdraid.state[*],cat /sys/block/$1/md/array_state
+
+# Speedtest
+UserParameter=speedtest[*],/etc/zabbix/scripts/speedtest.sh $1
 {% endraw %}

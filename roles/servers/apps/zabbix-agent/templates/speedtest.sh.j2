@@ -1,0 +1,58 @@
+#!/bin/bash
+# Zabbix speedtest monitoring script
+# Runs speedtest-cli and caches results to avoid running it too frequently
+# Cache duration: 30 minutes (1800 seconds)
+
+CACHE_FILE="/tmp/zabbix_speedtest_result.json"
+CACHE_MAX_AGE=1800
+METRIC="${1:-all}"
+
+run_speedtest() {
+    /usr/bin/speedtest-cli --json --secure 2>/dev/null > "${CACHE_FILE}.tmp"
+    if [ $? -eq 0 ] && [ -s "${CACHE_FILE}.tmp" ]; then
+        mv "${CACHE_FILE}.tmp" "${CACHE_FILE}"
+    else
+        rm -f "${CACHE_FILE}.tmp"
+        exit 1
+    fi
+}
+
+# Check if cache exists and is fresh enough
+if [ -f "${CACHE_FILE}" ]; then
+    CACHE_AGE=$(( $(date +%s) - $(stat -c %Y "${CACHE_FILE}") ))
+    if [ "${CACHE_AGE}" -ge "${CACHE_MAX_AGE}" ]; then
+        run_speedtest
+    fi
+else
+    run_speedtest
+fi
+
+if [ ! -f "${CACHE_FILE}" ]; then
+    echo "0"
+    exit 1
+fi
+
+case "${METRIC}" in
+    download)
+        # Output in bits per second
+        python3 -c "import json; print(json.load(open('${CACHE_FILE}'))['download'])"
+        ;;
+    upload)
+        # Output in bits per second
+        python3 -c "import json; print(json.load(open('${CACHE_FILE}'))['upload'])"
+        ;;
+    ping)
+        # Output in milliseconds
+        python3 -c "import json; print(json.load(open('${CACHE_FILE}'))['ping'])"
+        ;;
+    server_name)
+        python3 -c "import json; d=json.load(open('${CACHE_FILE}')); print(d['server']['sponsor'] + ' - ' + d['server']['name'])"
+        ;;
+    all)
+        cat "${CACHE_FILE}"
+        ;;
+    *)
+        echo "Usage: $0 {download|upload|ping|server_name|all}"
+        exit 1
+        ;;
+esac

@@ -1,0 +1,68 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: 5351fa8f1e2e4ba78d946d8c710cc643
+      template: 'Speedtest'
+      name: 'Speedtest'
+      groups:
+        - name: Templates
+      items:
+        - uuid: 2ac1241cbb6a455bbf2d1d2d7809b5f5
+          name: 'Speedtest - Download speed'
+          key: 'speedtest[download]'
+          delay: 30m
+          value_type: FLOAT
+          units: bps
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '1'
+          tags:
+            - tag: Application
+              value: Speedtest
+        - uuid: 02e8ecf6353b43bb953a023cd148511a
+          name: 'Speedtest - Upload speed'
+          key: 'speedtest[upload]'
+          delay: 30m
+          value_type: FLOAT
+          units: bps
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '1'
+          tags:
+            - tag: Application
+              value: Speedtest
+        - uuid: 3fc558f2bb454f24a8542bc79445c9cc
+          name: 'Speedtest - Ping latency'
+          key: 'speedtest[ping]'
+          delay: 30m
+          value_type: FLOAT
+          units: ms
+          tags:
+            - tag: Application
+              value: Speedtest
+        - uuid: 0c433590e9d440e1af6fd2abf8dbb002
+          name: 'Speedtest - Server name'
+          key: 'speedtest[server_name]'
+          delay: 30m
+          value_type: TEXT
+          tags:
+            - tag: Application
+              value: Speedtest
+  triggers:
+    - uuid: 17b3e4be24fe4009a2b18a430a483b7b
+      expression: 'last(/Speedtest/speedtest[download])<10000000'
+      name: 'Speedtest download speed is below 10 Mbps'
+      priority: WARNING
+    - uuid: 4aee604768994c57bb97765da3437d81
+      expression: 'last(/Speedtest/speedtest[upload])<5000000'
+      name: 'Speedtest upload speed is below 5 Mbps'
+      priority: WARNING
+    - uuid: 2ac93d9c13e743d583e3b771c653d6c9
+      expression: 'last(/Speedtest/speedtest[ping])>50'
+      name: 'Speedtest ping is above 50 ms'
+      priority: WARNING
