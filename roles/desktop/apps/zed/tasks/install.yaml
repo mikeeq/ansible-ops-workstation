@@ -46,10 +46,17 @@
     state: link
   when: installed_zed_version.stdout != zed_version
 
-- name: Install Zed desktop file
+# - name: Install Zed desktop file
+#   ansible.builtin.copy:
+#     src: /opt/zed/share/applications/dev.zed.Zed.desktop
+#     dest: /usr/share/applications/dev.zed.Zed.desktop
+#     remote_src: true
+#     mode: "0644"
+#   when: installed_zed_version.stdout != zed_version
+
+- name: Copy Zed share files to /usr/share
   ansible.builtin.copy:
-    src: /opt/zed/share/applications/dev.zed.Zed.desktop
-    dest: /usr/share/applications/dev.zed.Zed.desktop
+    src: /opt/zed/share/
+    dest: /usr/share/
     remote_src: true
-    mode: "0644"
-  when: installed_zed_version.stdout != zed_version
+  # when: installed_zed_version.stdout != zed_version

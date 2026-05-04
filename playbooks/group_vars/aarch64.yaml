@@ -34,3 +34,8 @@ krew_plugins: []
 #   - hns
 
 aws_cli_session_manager_plugin_architecture_common_name: "arm64"
+
+# TODO: revert winrm-elevated when fixed in upstream
+vagrant_embedded_plugins:
+  - winrm
+  # - winrm-elevated

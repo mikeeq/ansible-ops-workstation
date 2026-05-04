@@ -1,3 +1,4 @@
+---
 zabbix_export:
   version: '7.4'
   template_groups:
