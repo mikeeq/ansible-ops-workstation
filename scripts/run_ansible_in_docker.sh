@@ -2,9 +2,6 @@
 
 DOCKER_IMAGE=${DOCKER_IMAGE:-fedora_systemd}
 ANSIBLE_PLAYBOOK=${ANSIBLE_PLAYBOOK:-fedora.yaml}
-
-docker build -t ${DOCKER_IMAGE} -f Dockerfile .
-
 docker run \
   --name ${DOCKER_IMAGE} \
   -d \
@@ -27,8 +24,8 @@ docker exec \
   ${DOCKER_IMAGE} /bin/bash -c " \
     ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yaml ${ANSIBLE_PLAYBOOK}"
 
-# ansible_exitcode=$?
+ansible_exitcode=$?
 
-# docker stop ${DOCKER_IMAGE}
+docker stop ${DOCKER_IMAGE}
 
-# exit $ansible_exitcode
+exit $ansible_exitcode
