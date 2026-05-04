@@ -1,0 +1,11 @@
+---
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: vars.yaml
+
+- name: Test playbook
+  become: true
+  hosts:
+    - "{{ hosts_to_deploy | default('local') }}"
+    # - mikeeClevo
+  roles:
+    - desktop/apps/zed
