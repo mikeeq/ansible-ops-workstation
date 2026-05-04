@@ -54,6 +54,13 @@
     backup: true
   become: true
 
+- name: Set Zabbix server timeout for long-running checks
+  ansible.builtin.lineinfile:
+    path: "{{ install_path }}/env_vars/.env_srv"
+    regexp: '^ZBX_TIMEOUT='
+    line: 'ZBX_TIMEOUT=30'
+  become: true
+
 - name: Replace lineinfile http port
   ansible.builtin.lineinfile:
     path: "{{ install_path }}/.env"

@@ -16,10 +16,10 @@ zabbix_export:
           delay: 30m
           value_type: FLOAT
           units: bps
-          preprocessing:
-            - type: MULTIPLIER
-              parameters:
-                - '1'
+          # preprocessing:
+          #   - type: MULTIPLIER
+          #     parameters:
+          #       - '1'
           tags:
             - tag: Application
               value: Speedtest
@@ -29,10 +29,10 @@ zabbix_export:
           delay: 30m
           value_type: FLOAT
           units: bps
-          preprocessing:
-            - type: MULTIPLIER
-              parameters:
-                - '1'
+          # preprocessing:
+          #   - type: MULTIPLIER
+          #     parameters:
+          #       - '1'
           tags:
             - tag: Application
               value: Speedtest

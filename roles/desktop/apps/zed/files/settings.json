@@ -1,0 +1,16 @@
+{
+  "project_panel": {
+    "dock": "left"
+  },
+  "agent": {
+    "default_model": {
+      "provider": "ollama",
+      "model": "gpt-oss:20b",
+      "enable_thinking": true
+    },
+    "sidebar_side": "right",
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  }
+}

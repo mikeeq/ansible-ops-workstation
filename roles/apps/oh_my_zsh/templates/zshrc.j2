@@ -37,8 +37,10 @@ source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
 # VScode terminal integration
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 
+{% if item != 'root' %}
 # Mise activate
 eval "$(mise activate zsh)"
+{% endif %}
 
 # Load autocompletion
 autoload -U +X bashcompinit && bashcompinit

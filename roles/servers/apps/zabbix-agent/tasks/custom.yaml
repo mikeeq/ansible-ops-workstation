@@ -11,6 +11,15 @@
     mode: '0755'
   become: true
 
+- name: Create Zabbix cache directory
+  ansible.builtin.file:
+    path: /var/lib/zabbix
+    state: directory
+    owner: zabbix
+    group: zabbix
+    mode: '0755'
+  become: true
+
 - name: Install speedtest-cli
   ansible.builtin.package:
     name: speedtest-cli

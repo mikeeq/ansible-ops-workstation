@@ -33,6 +33,7 @@
     - apps/oh_my_zsh
     - desktop/macos
     - desktop/apps/vscode
+    - desktop/apps/zed
     - apps/claude-code
     - apps/github-copilot-cli
     # - apps/antidote
