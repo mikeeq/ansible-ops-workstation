@@ -8,4 +8,5 @@
     - "{{ hosts_to_deploy | default('local') }}"
     # - mikeeClevo
   roles:
-    - desktop/apps/zed
+    # - desktop/apps/zed
+    - apps/oh_my_zsh
