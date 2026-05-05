@@ -33,7 +33,7 @@
     backup: true
     mode: "0600"
     owner: "{{ item }}"
-    group: "{{ item }}"
+    group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
   with_items: "{{ oh_my_zsh_users }}"
 
 - name: Create directory for zsh files
@@ -41,7 +41,7 @@
     path: "~{{ item }}/.zsh"
     state: directory
     owner: "{{ item }}"
-    group: "{{ item }}"
+    group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
   with_items: "{{ oh_my_zsh_users }}"
 
 - name: zshrc
@@ -51,7 +51,7 @@
     backup: true
     mode: "0600"
     owner: "{{ item }}"
-    group: "{{ item }}"
+    group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
   with_items: "{{ oh_my_zsh_users }}"
 
 - name: "zsh configs"
@@ -61,7 +61,7 @@
     backup: true
     mode: "0600"
     owner: "{{ item.0 }}"
-    group: "{{ item.0 }}"
+    group: "{{ 'root' if item.0 == 'root' else (user_group_name | default(item.0)) }}"
   loop: "{{ oh_my_zsh_users | product(lookup('fileglob', 'templates/.zsh/*.j2', wantlist=True) | map('basename') | list) | list }}"
 
 - name: Add folder for fzf key-bindings
