@@ -34,7 +34,7 @@ jobs:
       - name: Install pre-commit hooks
         run: pre-commit install --install-hooks
       - name: Install ansible-galaxy requirements
-        run: ansible-galaxy install -r requirements.yaml --force
+        run: ansible-galaxy collection install -r requirements.yaml --force
       - name: Run pre-commit
         run: pre-commit run --all-files --show-diff-on-failure --color=always
   # This workflow contains a single job called "build"
@@ -131,6 +131,15 @@ jobs:
           sudo -u mikee WORKSPACE_DIR="${{ github.workspace }}" GITHUB_TOKEN="${GITHUB_TOKEN}" -i bash /tmp/setup-mise.sh
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Install ansible-galaxy requirements
+        run: |
+          cat > /tmp/install-collections.sh << 'EOF'
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/bin:$HOME/.local/share/mise/shims:$PATH"
+          cd "$WORKSPACE_DIR"
+          mise exec -- ansible-galaxy collection install -r requirements.yaml
+          EOF
+          sudo -u mikee WORKSPACE_DIR="${{ github.workspace }}" -i bash /tmp/install-collections.sh
 
       - name: Run Ansible
         run: |
