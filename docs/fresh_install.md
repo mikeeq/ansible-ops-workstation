@@ -74,6 +74,9 @@
 
 9. Reboot
 
+10. Go to power settings, disable automatic suspend
+11. Disable suspend on power button, display lid
+
 ## Main issues with F44
 
 Wayland clipboard sync doesn't work:

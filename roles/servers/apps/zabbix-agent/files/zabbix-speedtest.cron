@@ -1,0 +1,2 @@
+# Zabbix speedtest cache - runs as root, writes to zabbix scripts dir
+*/30 * * * * root /usr/bin/speedtest-cli --json --secure > /etc/zabbix/scripts/speedtest_result.json 2>/dev/null
