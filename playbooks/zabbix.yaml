@@ -1,9 +1,9 @@
 ---
-# - name: Zabbix
-#   hosts: mikeeClevo
-#   become: true
-#   roles:
-#     - servers/apps/zabbix
+- name: Zabbix
+  hosts: mikeeClevo
+  become: true
+  roles:
+    - servers/apps/zabbix
 
 - name: Zabbix agent
   hosts:
