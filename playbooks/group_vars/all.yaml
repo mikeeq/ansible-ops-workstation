@@ -1,5 +1,4 @@
 ---
-user_name: 'mikee'
 # ansible.builtin.hostname: "mikeeMac19"
 
 git_modules_path: '/opt/git_modules'

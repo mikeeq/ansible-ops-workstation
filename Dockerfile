@@ -22,17 +22,20 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
-# Install mise
+RUN useradd ${FEDORA_USERNAME} && usermod -aG wheel ${FEDORA_USERNAME} \
+    && echo "${FEDORA_USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# Install mise as user
 ENV MISE_YES=1
-RUN curl https://mise.run | sh \
-    && ln -s /root/.local/bin/mise /usr/local/bin/mise
+USER ${FEDORA_USERNAME}
+RUN curl https://mise.run | sh
 
 # Install tools via mise
-COPY mise.toml /root/.config/mise/config.toml
-RUN mise install && mise reshim
-ENV PATH="/root/.local/share/mise/shims:${PATH}"
+COPY --chown=${FEDORA_USERNAME} mise.toml /home/${FEDORA_USERNAME}/.config/mise/config.toml
+RUN ~/.local/bin/mise install && ~/.local/bin/mise reshim
+ENV PATH="/home/${FEDORA_USERNAME}/.local/share/mise/shims:/home/${FEDORA_USERNAME}/.local/bin:${PATH}"
 
-RUN useradd ${FEDORA_USERNAME} && usermod -aG wheel ${FEDORA_USERNAME}
+USER root
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]

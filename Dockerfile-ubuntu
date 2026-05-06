@@ -12,16 +12,19 @@ RUN apt-get update \
       sudo \
     && apt-get clean all
 
-# Install mise
+RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME} \
+    && echo "${UBUNTU_USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# Install mise as user
 ENV MISE_YES=1
-RUN curl https://mise.run | sh \
-    && ln -s /root/.local/bin/mise /usr/local/bin/mise
+USER ${UBUNTU_USERNAME}
+RUN curl https://mise.run | sh
 
 # Install tools via mise
-COPY mise.toml /root/.config/mise/config.toml
-RUN mise install && mise reshim
-ENV PATH="/root/.local/share/mise/shims:${PATH}"
+COPY --chown=${UBUNTU_USERNAME} mise.toml /home/${UBUNTU_USERNAME}/.config/mise/config.toml
+RUN ~/.local/bin/mise install && ~/.local/bin/mise reshim
+ENV PATH="/home/${UBUNTU_USERNAME}/.local/share/mise/shims:/home/${UBUNTU_USERNAME}/.local/bin:${PATH}"
 
-RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME}
+USER root
 
 CMD ["/usr/bin/sleep", "infinity"]
