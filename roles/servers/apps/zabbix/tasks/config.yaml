@@ -61,24 +61,24 @@
     - template_file: /tmp/zbx_template_tasmota.xml
     - template_file: /tmp/template_sensors_6.4.xml
 
-- name: "Add/update hosts"
-  community.zabbix.zabbix_host:
-    host_name: "192.168.1.121"
-    # host_groups: "{{ group_names + ['Linux servers'] }}"
-    host_groups:
-      - 'Linux servers'
-    # link_templates: "{{ x_templates + ['Linux by Zabbix agent'] }}"
-    link_templates:
-      - 'Linux by Zabbix agent'
-      - 'ICMP Ping'
-      - 'Template Lm-sensors'
-      - 'MD RAID'
-    interfaces:
-      - type: agent
-        main: 1
-        useip: 1
-        ip: "192.168.1.121"
-    state: present
+# - name: "Add/update hosts"
+#   community.zabbix.zabbix_host:
+#     host_name: "192.168.1.121"
+#     # host_groups: "{{ group_names + ['Linux servers'] }}"
+#     host_groups:
+#       - 'Linux servers'
+#     # link_templates: "{{ x_templates + ['Linux by Zabbix agent'] }}"
+#     link_templates:
+#       - 'Linux by Zabbix agent'
+#       - 'ICMP Ping'
+#       - 'Template Lm-sensors'
+#       - 'MD RAID'
+#     interfaces:
+#       - type: agent
+#         main: 1
+#         useip: 1
+#         ip: "192.168.1.121"
+#     state: present
 
 - name: "Remove default Zabbix server host"
   become: false
