@@ -1,0 +1,20 @@
+---
+driver:
+  name: docker
+platforms:
+  - name: fedora
+    image: fedora:44
+    command: /usr/sbin/init
+    privileged: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    pre_build_image: true
+  - name: ubuntu
+    image: ubuntu:26.04
+    command: /bin/bash
+    pre_build_image: true
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

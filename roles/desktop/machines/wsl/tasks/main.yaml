@@ -10,10 +10,10 @@
     state: absent
   when: kubectl_symlink.stat.islnk is not defined
 
-- name: Add specified repository into sources list
-  ansible.builtin.apt_repository:
-    repo: ppa:deadsnakes/ppa
-    state: present
+# - name: Add specified repository into sources list
+#   ansible.builtin.apt_repository:
+#     repo: ppa:deadsnakes/ppa
+#     state: present
 
 - name: Update all packages to the latest version
   ansible.builtin.apt:
