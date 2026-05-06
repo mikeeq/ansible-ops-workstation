@@ -12,12 +12,12 @@ RUN apt-get update \
       sudo \
     && apt-get clean all
 
-RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME} \
+RUN useradd -m ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME} \
     && echo "${UBUNTU_USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Install mise as user
-ENV MISE_YES=1
 USER ${UBUNTU_USERNAME}
+ENV MISE_YES=1
 RUN curl https://mise.run | sh
 
 # Install tools via mise

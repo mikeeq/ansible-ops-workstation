@@ -10,6 +10,7 @@ RUN dnf clean all \
       systemd \
       curl \
       git \
+      sudo \
     && dnf clean all
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
@@ -22,12 +23,12 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
-RUN useradd ${FEDORA_USERNAME} && usermod -aG wheel ${FEDORA_USERNAME} \
+RUN useradd -m ${FEDORA_USERNAME} && usermod -aG wheel ${FEDORA_USERNAME} \
     && echo "${FEDORA_USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Install mise as user
-ENV MISE_YES=1
 USER ${FEDORA_USERNAME}
+ENV MISE_YES=1
 RUN curl https://mise.run | sh
 
 # Install tools via mise
