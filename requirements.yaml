@@ -12,3 +12,12 @@ collections:
   # https://github.com/ansible-collections/community.zabbix/releases
   - name: community.zabbix
     version: 4.2.0
+  # https://github.com/ansible-collections/ansible.posix/releases
+  - name: ansible.posix
+    version: 2.1.0
+  # https://github.com/ansible-collections/ansible.utils/releases
+  - name: ansible.utils
+    version: 6.0.2
+  # https://github.com/ansible-collections/ansible.netcommon/releases
+  - name: ansible.netcommon
+    version: 8.5.1

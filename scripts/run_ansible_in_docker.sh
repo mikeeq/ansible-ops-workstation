@@ -17,6 +17,11 @@ docker run \
 docker exec \
   -t \
   ${DOCKER_IMAGE} /bin/bash -c " \
+    ansible-galaxy collection install -r ../requirements.yaml"
+
+docker exec \
+  -t \
+  ${DOCKER_IMAGE} /bin/bash -c " \
     ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yaml ${ANSIBLE_PLAYBOOK}"
 
 docker exec \

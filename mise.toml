@@ -14,7 +14,11 @@ pipx = "1.11.2"
 # "pipx:ansible" = { version = "latest", postinstall = "pipx inject ansible passlib" }
 #"pipx:ansible" = "latest"
 # https://pypi.org/project/ansible/
-"pipx:ansible" = { version = "13.6.0", pipx_args = "--include-deps --preinstall passlib --preinstall pywinrm --preinstall bcrypt" }
+#"pipx:ansible" = { version = "13.6.0", pipx_args = "--include-deps --preinstall passlib --preinstall pywinrm --preinstall bcrypt" }
+
+# https://pypi.org/project/ansible-core/
+"pipx:ansible-core" = { version = "2.20.5", pipx_args = "--include-deps --preinstall passlib --preinstall pywinrm --preinstall bcrypt" }
+
 # https://pypi.org/project/ansible-lint/
 "pipx:ansible-lint" = "26.4.0"
 "pipx:yamllint" = "1.38.0"

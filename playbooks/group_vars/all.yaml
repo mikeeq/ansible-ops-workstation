@@ -55,8 +55,8 @@ dnf_pkgs:
   - setroubleshoot-server
   - ShellCheck
   - smartmontools
-  - python3.12
-  - python3.12-devel
+  - python3.14
+  - python3.14-devel
   - cargo
   - python3-argcomplete
   - python3-psutil

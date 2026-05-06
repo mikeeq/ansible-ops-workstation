@@ -16,8 +16,8 @@
   ansible.builtin.package:
     name: pipx
     state: present
-  when:
-    - ansible_facts['distribution'] == "Fedora"
+  # when:
+  #   - ansible_facts['distribution'] == "Fedora"
 
 
 - name: Install PIP Apps globally
