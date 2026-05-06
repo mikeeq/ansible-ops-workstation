@@ -1,2 +1,5 @@
 # Zabbix speedtest cache - runs as root, writes to zabbix scripts dir
-*/30 * * * * root /usr/bin/speedtest-cli --json --secure > /etc/zabbix/scripts/speedtest_result.json 2>/dev/null
+# */30 * * * * root /usr/bin/speedtest-cli --json --secure > /etc/zabbix/scripts/speedtest_result.json 2>/dev/null
+
+# Debug version - logs all output
+*/30 * * * * root /usr/bin/speedtest-cli --json --secure > /etc/zabbix/scripts/speedtest_result.json 2>/etc/zabbix/scripts/speedtest_debug.log; echo "exit: $?" >> /etc/zabbix/scripts/speedtest_debug.log
