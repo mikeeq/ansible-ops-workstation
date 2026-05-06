@@ -19,6 +19,9 @@ pipx = "1.11.2"
 "pipx:ansible-lint" = "26.4.0"
 "pipx:yamllint" = "1.38.0"
 
+# https://pypi.org/project/molecule/
+"pipx:molecule" = { version = "26.4.0", pipx_args = "--include-deps --preinstall molecule-plugins[docker]" }
+
 ## Security scanning
 
 # https://github.com/aquasecurity/trivy/releases
@@ -43,7 +46,7 @@ hadolint = "2.14.0"
 wait-for-gh-rate-limit = "latest"
 shellcheck = "latest"
 shfmt = "latest"
-prettier = "3"
+# prettier = "3"
 git-cliff = "latest"
 actionlint = "latest"
 
