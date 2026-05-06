@@ -110,15 +110,21 @@ Contributions are what make the open source community such an amazing place to b
 
 ### Fedora
 
-1. Install git, python, ansible
+1. Install git and curl
 
    ```bash
-   sudo -i
-   dnf install -y git python3-pip curl sudo
-   pip3 install ansible
+   sudo dnf install -y git curl
    ```
 
-2. Clone repository
+2. Install [mise](https://mise.jdx.dev/)
+
+   ```bash
+   curl https://mise.run | sh
+   echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
+   source ~/.bashrc
+   ```
+
+3. Clone repository
 
    ```bash
    # Create directory for github repository
@@ -129,20 +135,26 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-3. Change `user_name` in `playbooks/group_vars/all.yaml` to your Fedora username and run Ansible
+4. Install tools and collections
 
    ```bash
-   # Go to repository directory
-   cd ansible-ops-workstation/playbooks
+   cd ansible-ops-workstation
+   mise install
+   ansible-galaxy collection install -r requirements.yaml
+   ```
 
+5. Change `user_name` in `playbooks/group_vars/all.yaml` to your Fedora username and run Ansible
+
+   ```bash
    # Edit playbooks/group_vars/all.yaml, change user_name
-   vi group_vars/all.yaml
+   vi playbooks/group_vars/all.yaml
 
    # Run Ansible
+   cd playbooks
    ansible-playbook -i ../inventory/hosts.yaml fedora.yaml -K
    ```
 
-4. Reboot your machine to apply all changes
+6. Reboot your machine to apply all changes
 
 #### Optional
 
@@ -182,12 +194,12 @@ Contributions are what make the open source community such an amazing place to b
    apt-get upgrade
    ```
 
-3. Install git, python, ansible
+3. Install [mise](https://mise.jdx.dev/)
 
    ```bash
-   sudo -i
-   apt-get install -y git python3-pip curl sudo
-   pip3 install --break-system-packages ansible
+   curl https://mise.run | sh
+   echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
+   source ~/.bashrc
    ```
 
 4. Clone repository
@@ -201,16 +213,22 @@ Contributions are what make the open source community such an amazing place to b
    git clone https://github.com/mikeeq/ansible-ops-workstation.git
    ```
 
-5. Change `user_name` in `playbooks/group_vars/all.yaml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L2)) and run Ansible
+5. Install tools and collections
 
    ```bash
-   # Go to repository directory
-   cd ansible-ops-workstation/playbooks
+   cd ansible-ops-workstation
+   mise install
+   ansible-galaxy collection install -r requirements.yaml
+   ```
 
+6. Change `user_name` in `playbooks/group_vars/all.yaml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L2)) and run Ansible
+
+   ```bash
    # Edit playbooks/group_vars/all.yaml, change user_name
-   vi group_vars/all.yaml
+   vi playbooks/group_vars/all.yaml
 
    # Run Ansible
+   cd playbooks
    ansible-playbook -i ../inventory/hosts.yaml wsl-ubuntu.yaml -K
    ```
 
