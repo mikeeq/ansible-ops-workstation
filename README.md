@@ -33,7 +33,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/mikeeq/ansible-ops-workstation">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Ansible_logo.svg/1664px-Ansible_logo.svg.png" alt="Logo" width="80" height="80">
+    <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Ansible_logo.svg/1664px-Ansible_logo.svg.png" alt="Logo" width="80" height="80"> -->
   </a>
 
   <h3 align="center">ansible-ops-workstation</h3>
@@ -143,13 +143,9 @@ Contributions are what make the open source community such an amazing place to b
    ansible-galaxy collection install -r requirements.yaml
    ```
 
-5. Change `user_name` in `playbooks/group_vars/all.yaml` to your Fedora username and run Ansible
+5. Run Ansible
 
    ```bash
-   # Edit playbooks/group_vars/all.yaml, change user_name
-   vi playbooks/group_vars/all.yaml
-
-   # Run Ansible
    cd playbooks
    ansible-playbook -i ../inventory/hosts.yaml fedora.yaml -K
    ```
@@ -177,9 +173,7 @@ Contributions are what make the open source community such an amazing place to b
 1. Install
 
    - VSCode - <https://code.visualstudio.com/download>
-   - Ubuntu 24.04 WSL2
-     - <https://apps.microsoft.com/store/detail/windows-subsystem-for-linux/9P9TQF7MRM4R>
-     - <https://apps.microsoft.com/detail/9nz3klhxdjp5?hl=en-gb&gl=PL>
+   - Ubuntu 26.04 WSL2
      - <https://docs.microsoft.com/en-us/windows/wsl/install>
    - Docker Desktop for Windows - <https://docs.docker.com/desktop/windows/install/>
    - Windows Terminal
@@ -221,34 +215,30 @@ Contributions are what make the open source community such an amazing place to b
    ansible-galaxy collection install -r requirements.yaml
    ```
 
-6. Change `user_name` in `playbooks/group_vars/all.yaml` to your WSL username ([link](https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L2)) and run Ansible
+6. Run Ansible
 
    ```bash
-   # Edit playbooks/group_vars/all.yaml, change user_name
-   vi playbooks/group_vars/all.yaml
-
-   # Run Ansible
    cd playbooks
    ansible-playbook -i ../inventory/hosts.yaml wsl-ubuntu.yaml -K
    ```
 
-6. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
+7. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
 
-7. Copy Windows Terminal config from - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/roles/desktop/machines/wsl/templates/settings.json>
+8. Copy Windows Terminal config from - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/roles/desktop/machines/wsl/templates/settings.json>
 
    - and paste it here - `C:\Users\${WINDOWS_USER_NAME}\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState`
 
-8. Copy VScode config file from - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/roles/desktop/apps/vscode/files/settings.json>
+9. Copy VScode config file from - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/roles/desktop/apps/vscode/files/settings.json>
 
    - and paste it here - `C:/Users/${WINDOWS_USER_NAME}/AppData/Roaming/Code/User/settings.json`
 
-9. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
+10. You can also install VScode extensions manually from the list here - <https://github.com/mikeeq/ansible-ops-workstation/blob/main/playbooks/group_vars/all.yaml#L146-L173>, by finding them in the VScode UI and clicking install or via CLI by executing:
 
    ```bash
    code --install-extension ${EXTENSION_NAME}
    ```
 
-10. Restart your VScode/Windows Terminal to see your new oh-my-zsh :)
+11. Restart your VScode/Windows Terminal to see your new oh-my-zsh :)
 
 > Remember to use VScode with Remote WSL extension and store all your unix/git files/repositories under WSL2 to not encounter any issues with file permissions, etc.
 >> I also recommend to use builtin terminal in VSCode as it also really configurable and works like a charm with oh-my-zsh and P10K
