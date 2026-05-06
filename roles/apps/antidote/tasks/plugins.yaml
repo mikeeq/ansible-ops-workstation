@@ -32,4 +32,4 @@
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
     dest: /usr/share/doc/fzf/examples/key-bindings.zsh
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_facts['distribution'] == "Ubuntu"

@@ -17,7 +17,7 @@
 
 - name: Download Zed
   ansible.builtin.get_url:
-    url: "https://github.com/zed-industries/zed/releases/download/v{{ zed_version }}/zed-linux-{{ ansible_architecture }}.tar.gz"
+    url: "https://github.com/zed-industries/zed/releases/download/v{{ zed_version }}/zed-linux-{{ ansible_facts['architecture'] }}.tar.gz"
     dest: /tmp/zed.tar.gz
   when: installed_zed_version.stdout != zed_version
 

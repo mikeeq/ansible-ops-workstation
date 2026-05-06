@@ -1,6 +1,6 @@
 ---
 - ansible.builtin.include_tasks: apt.yaml
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: netcore sdk
   ansible.builtin.package:

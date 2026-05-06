@@ -1,6 +1,6 @@
 ---
 - name: Add OS vars
-  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}.yaml"
+  ansible.builtin.include_vars: "{{ ansible_facts['distribution'] | lower }}.yaml"
 
 - name: Check if installed
   ansible.builtin.shell: |
@@ -16,7 +16,7 @@
     disable_gpg_check: true
   when:
     - keybase_installed.rc != 0
-    - ansible_distribution == "Fedora"
+    - ansible_facts['distribution'] == "Fedora"
 
 - name: Install keybase on Ubuntu
   ansible.builtin.apt:
@@ -24,7 +24,7 @@
     state: present
   when:
     - keybase_installed.rc != 0
-    - ansible_distribution == "Ubuntu"
+    - ansible_facts['distribution'] == "Ubuntu"
 
 - name: Run keybase
   ansible.builtin.shell: run_keybase

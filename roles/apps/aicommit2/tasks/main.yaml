@@ -8,12 +8,12 @@
 
 - name: Ensure aicommit2 config directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config/aicommit2"
+    path: "{{ ansible_facts['env']['HOME'] }}/.config/aicommit2"
     state: directory
     mode: "0755"
 
 - name: Deploy aicommit2 configuration
   ansible.builtin.template:
     src: config.ini.j2
-    dest: "{{ ansible_env.HOME }}/.config/aicommit2/config.ini"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/aicommit2/config.ini"
     mode: "0644"
