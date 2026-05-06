@@ -31,6 +31,9 @@ USER ${FEDORA_USERNAME}
 ENV MISE_YES=1
 RUN curl https://mise.run | sh
 
+# Fix PAM error in container - https://github.com/geerlingguy/docker-fedora41-ansible/issues/2
+RUN chmod 400 /etc/shadow
+
 # Install tools via mise
 COPY --chown=${FEDORA_USERNAME} mise.toml /home/${FEDORA_USERNAME}/.config/mise/config.toml
 RUN ~/.local/bin/mise install && ~/.local/bin/mise reshim

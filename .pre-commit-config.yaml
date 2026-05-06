@@ -86,6 +86,7 @@ repos:
         entry: scripts/convert_yml_to_yaml.sh
         language: system
         files: \.yml$
+        exclude: "molecule/"
 
       - id: gitleaks
         name: gitleaks

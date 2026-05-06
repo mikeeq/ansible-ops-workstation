@@ -23,7 +23,7 @@ antidote load
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.cargo/bin:/opt/azure_functions_core_tools:$HOME/.local/bin:$PATH"
 {% endif %}
 
-{% if ansible_system == 'Darwin' %}
+{% if ansible_facts['system'] == 'Darwin' %}
 # macOS: Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -110,7 +110,7 @@ alias git_current_branch='$(git branch --show-current)'
 autoload -U +X bashcompinit && bashcompinit
 
 # Azure CLI autocompletion
-{% if ansible_system == 'Darwin' %}
+{% if ansible_facts['system'] == 'Darwin' %}
 source /opt/homebrew/etc/bash_completion.d/az
 {% elif skip_azure_cli_autocompletion is not defined %}
 source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
