@@ -9,7 +9,7 @@
   loop:
     - Code
     - "Code\\ -\\ Insiders"
-  when: ansible_system != 'Darwin'
+  when: ansible_facts['system'] != 'Darwin'
 
 - name: "[LINUX] Install vscode user config"
   become: true
@@ -24,7 +24,7 @@
   loop:
     - settings.json
     - keybindings.json
-  when: ansible_system != 'Darwin'
+  when: ansible_facts['system'] != 'Darwin'
 
 - name: "[LINUX] Install vscode insiders user config"
   become: true
@@ -39,13 +39,13 @@
   loop:
     - settings.json
     - keybindings.json
-  when: ansible_system != 'Darwin'
+  when: ansible_facts['system'] != 'Darwin'
 
 - name: "[LINUX] Enable better file watch in VScode by changing amount of concurrent open files in kernel params"
   ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
     line: 'fs.inotify.max_user_watches=524288'
-  when: ansible_system != 'Darwin'
+  when: ansible_facts['system'] != 'Darwin'
 
 # macOS
 - name: "[MACOS] Directory for VScode config"
@@ -58,7 +58,7 @@
   loop:
     - Code
     - "Code - Insiders"
-  when: ansible_system == 'Darwin'
+  when: ansible_facts['system'] == 'Darwin'
 
 - name: "[MACOS] Install vscode user config"
   become: true
@@ -71,7 +71,7 @@
   loop:
     - settings.json
     - keybindings.json
-  when: ansible_system == 'Darwin'
+  when: ansible_facts['system'] == 'Darwin'
 
 - name: "[MACOS] Install vscode insiders user config"
   become: true
@@ -84,4 +84,4 @@
   loop:
     - settings.json
     - keybindings.json
-  when: ansible_system == 'Darwin'
+  when: ansible_facts['system'] == 'Darwin'
