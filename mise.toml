@@ -40,6 +40,13 @@ dive = "0.13.1"
 # https://github.com/hadolint/hadolint/releases
 hadolint = "2.14.0"
 
+wait-for-gh-rate-limit = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+prettier = "3"
+git-cliff = "latest"
+actionlint = "latest"
+
 [env]
 # pipx:ansible only shims ansible-community; expose the full ansible venv bin dir
 # exec falls back to /dev/null when ansible is not yet installed (harmless)

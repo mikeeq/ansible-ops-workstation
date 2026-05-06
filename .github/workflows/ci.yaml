@@ -29,7 +29,8 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           echo "$HOME/.local/share/mise/shims" >> "$GITHUB_PATH"
       - name: Install mise tools
-        run: mise install
+        run: |
+          mise install
       - name: Install pre-commit hooks
         run: pre-commit install --install-hooks
       - name: Install ansible-galaxy requirements

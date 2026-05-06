@@ -27,6 +27,7 @@ rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # Install mise
+ENV MISE_YES=1
 RUN curl https://mise.run | sh \
     && ln -s /root/.local/bin/mise /usr/local/bin/mise
 

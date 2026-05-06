@@ -15,6 +15,7 @@ RUN apt-get update \
     && apt-get clean all
 
 # Install mise
+ENV MISE_YES=1
 RUN curl https://mise.run | sh \
     && ln -s /root/.local/bin/mise /usr/local/bin/mise
 
