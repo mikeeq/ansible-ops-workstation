@@ -1,24 +1,33 @@
 ---
 repos:
+  # https://github.com/pre-commit/pre-commit-hooks/releases
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        args:
-          - --markdown-linebreak-ext=md
+        args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
         exclude: "zabbix_agent_custom_who(?:2)?\\.pp"
-
       - id: check-yaml
+        args: [--allow-multiple-documents]
         exclude: (^|/)templates/.*\.ya?ml$|^roles/servers/apps/home-assistant/files/config/.*\.ya?ml$
+      # - id: check-json
+      - id: check-toml
       - id: check-added-large-files
+        args: ["--maxkb=500"]
       - id: check-case-conflict
       - id: check-merge-conflict
+      - id: check-symlinks
       - id: detect-private-key
         exclude: roles/apps/openvpn-client/files/client.ovpn
       - id: check-executables-have-shebangs
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: no-commit-to-branch
+        args: [--branch, main, --branch, master, --branch, develop]
+
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.37.1
+    rev: v1.38.0
     hooks:
       - id: yamllint
         name: yamllint
@@ -29,6 +38,7 @@ repos:
           - file
           - yaml
         # exclude: '(^|/)templates/.*\.ya?ml$'
+
   # - repo: https://github.com/lyz-code/yamlfix
   #   rev: 1.16.1
   #   hooks:
@@ -42,20 +52,33 @@ repos:
   #       exclude: (^|/)templates/.*\.ya?ml$
   #       args:
   #         - -c .yamlfix.toml
-  - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.27.2
+
+  # - repo: https://github.com/zricethezav/gitleaks
+  #   rev: v8.27.2
+  #   hooks:
+  #     - id: gitleaks
+
+  - repo: https://gitlab.com/bmares/check-json5
+    rev: v1.0.1
     hooks:
-      - id: gitleaks
+      - id: check-json5
 
   - repo: https://github.com/ansible/ansible-lint
-    rev: v25.6.1
+    rev: v26.4.0
     hooks:
       - id: ansible-lint
 
-  # - repo: https://github.com/koalaman/shellcheck-precommit
-  #   rev: v0.10.0
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+
+  # - repo: https://github.com/shellcheck-py/shellcheck-py
+  #   rev: v0.11.0.1
   #   hooks:
   #     - id: shellcheck
+  #       args: [--severity=warning]
+
   - repo: local
     hooks:
       - id: convert-yml-to-yaml
@@ -63,3 +86,9 @@ repos:
         entry: scripts/convert_yml_to_yaml.sh
         language: system
         files: \.yml$
+
+      - id: gitleaks
+        name: gitleaks
+        entry: gitleaks detect --no-git --redact --verbose --config=gitleaks.toml
+        language: system
+        pass_filenames: false

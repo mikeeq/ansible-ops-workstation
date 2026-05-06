@@ -8,39 +8,20 @@ RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
       python3-pip \
-      # pipx \
       python3-venv \
+      curl \
+      git \
       sudo \
     && apt-get clean all
 
-### Workaround for old pipx package in Ubuntu 24.04 repos: https://github.com/pypa/pipx/issues/1481
-# RUN pipx ensurepath \
-# && pipx install pipx \
-# && apt remove -y pipx
+# Install mise
+RUN curl https://mise.run | sh \
+    && ln -s /root/.local/bin/mise /usr/local/bin/mise
 
-# RUN ~/.local/bin/pipx install pipx --global \
-# && pipx uninstall pipx
-
-# RUN pipx ensurepath \
-# && pipx ensurepath --global
-RUN pip3 install --break-system-packages --no-cache-dir pipx
-###
-
-# https://pypi.org/project/pip/
-# rm -rfv /usr/lib/*/EXTERNALLY-MANAGED
-# RUN pip3 install --break-system-packages --no-cache-dir --upgrade pip==24.3.1 && \
-# https://pypi.org/project/pip/
-# pipx install --global --include-deps --force --preinstall ansible-lint --preinstall pywinrm ansible
-RUN pipx install --global --force --include-deps \
-      # https://pypi.org/project/ansible-lint/
-      ansible-lint
-RUN pipx install --global --force --include-deps \
-      # https://pypi.org/project/ansible/
-      ansible
-RUN pipx install --global --force --include-deps \
-      # https://pypi.org/project/yamllint/
-      yamllint
-
+# Install tools via mise
+COPY mise.toml /root/.config/mise/config.toml
+RUN mise install && mise reshim
+ENV PATH="/root/.local/share/mise/shims:${PATH}"
 
 RUN useradd ${UBUNTU_USERNAME} && usermod -aG sudo ${UBUNTU_USERNAME}
 
