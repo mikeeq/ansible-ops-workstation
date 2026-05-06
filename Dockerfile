@@ -7,13 +7,9 @@ RUN dnf clean all \
     && dnf update -y \
     && dnf upgrade -y \
     && dnf install -y \
-      python3-pip \
       systemd \
       curl \
       git \
-      ShellCheck \
-      python3-argcomplete \
-      python3-psutil \
     && dnf clean all
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
