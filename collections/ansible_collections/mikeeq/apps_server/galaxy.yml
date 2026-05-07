@@ -1,0 +1,20 @@
+---
+namespace: mikeeq
+name: apps_server
+version: 1.0.0
+readme: README.md
+authors:
+  - mikeeq
+description: Server applications and services (zabbix, prometheus, nginx, home-assistant, etc.)
+license:
+  - GPL-3.0-or-later
+repository: https://github.com/mikeeq/ansible-ops-workstation
+tags:
+  - server
+  - services
+  - homelab
+  - monitoring
+dependencies: {}
+build_ignore:
+  - molecule
+  - "*.tar.gz"

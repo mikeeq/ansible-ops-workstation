@@ -62,8 +62,8 @@
     # - name: Clean DNF
     #   ansible.builtin.shell: dnf clean all
 
-    - ansible.builtin.import_tasks: ../roles/pkg_mgmt/dnf/tasks/dnf5.yaml
-    - ansible.builtin.import_tasks: ../roles/pkg_mgmt/dnf/tasks/update.yaml
+    - ansible.builtin.import_tasks: ../collections/ansible_collections/mikeeq/utils/roles/dnf/tasks/dnf5.yaml
+    - ansible.builtin.import_tasks: ../collections/ansible_collections/mikeeq/utils/roles/dnf/tasks/update.yaml
 
     - name: Check if reboot required
       ansible.builtin.stat:
@@ -82,8 +82,8 @@
     - clevo:!openwrt_office
   become: true
   roles:
-    - servers/bootstrap
-    - servers/apps/zabbix-agent
+    - mikeeq.servers.bootstrap
+    - mikeeq.apps_server.zabbix_agent
 
 - name: Set variables on an imported playbook
   ansible.builtin.import_playbook: generic-core.yaml
@@ -95,51 +95,51 @@
     - dns1
   become: true
   roles:
-    - servers/network-static-dns
-    - apps/docker
-    - servers/apps/coredns
-    - servers/apps/letsencrypt-coredns
+    - mikeeq.servers.network_static_dns
+    - mikeeq.apps.docker
+    - mikeeq.apps_server.coredns
+    - mikeeq.apps_server.letsencrypt_coredns
 
 - name: Provision DNS2
   hosts:
     - dns2
   become: true
   roles:
-    - servers/network-static-dns
-    - apps/docker
-    - servers/apps/adguard-home
+    - mikeeq.servers.network_static_dns
+    - mikeeq.apps.docker
+    - mikeeq.apps_server.adguard_home
 
 # - name: Provision GW1
 #   hosts:
 #     - gw1
 #   become: true
 #   roles:
-#     - servers/network-static-dns
-#     - apps/openvpn-client
-#     - servers/apps/vpn-gw
+#     - mikeeq.servers.network_static_dns
+#     - mikeeq.apps.openvpn_client
+#     - mikeeq.apps_server.vpn_gw
 
 # - name: Provision VPN1
 #   hosts:
 #     - vpn1
 #   become: true
 #   roles:
-#     - servers/network-static-dns
-#     - servers/apps/openvpn
-#     - servers/apps/vpn-gw
+#     - mikeeq.servers.network_static_dns
+#     - mikeeq.apps_server.openvpn
+#     - mikeeq.apps_server.vpn_gw
 
 - name: Provision mikeeClevo
   hosts:
     - mikeeClevo
   become: true
   roles:
-    - desktop/machines/clevo_p170sm/tuxedo
-    - servers/apps/nginx
-    # - servers/apps/home-assistant
-    # - servers/apps/immich
-    # - servers/apps/frigate
-    - servers/apps/ollama-docker
-    - servers/apps/jenkins
-    - servers/apps/prometheus
+    - mikeeq.machines.clevo_p170sm_tuxedo
+    - mikeeq.apps_server.nginx
+    # - mikeeq.apps_server.home_assistant
+    # - mikeeq.apps_server.immich
+    # - mikeeq.apps_server.frigate
+    - mikeeq.apps_server.ollama_docker
+    - mikeeq.apps_server.jenkins
+    - mikeeq.apps_server.prometheus
   tasks:
     - name: Prevent multiple packages from being updated
       community.general.dnf_versionlock:

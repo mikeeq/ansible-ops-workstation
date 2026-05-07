@@ -9,7 +9,7 @@
   #   - ansible.builtin.debug:
   #       var: hostvars[inventory_hostname]
   roles:
-    - desktop/machines/wsl
+    - mikeeq.machines.wsl
 
 - name: Include a playbook for generic-core provisioning
   ansible.builtin.import_playbook: generic-core.yaml

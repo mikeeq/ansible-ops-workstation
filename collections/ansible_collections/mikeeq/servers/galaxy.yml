@@ -1,0 +1,20 @@
+---
+namespace: mikeeq
+name: servers
+version: 1.0.0
+readme: README.md
+authors:
+  - mikeeq
+description: Server infrastructure and provisioning (bootstrap, libvirt, networking, openwrt)
+license:
+  - GPL-3.0-or-later
+repository: https://github.com/mikeeq/ansible-ops-workstation
+tags:
+  - infrastructure
+  - libvirt
+  - openwrt
+  - networking
+dependencies: {}
+build_ignore:
+  - molecule
+  - "*.tar.gz"

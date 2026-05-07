@@ -1,0 +1,20 @@
+---
+namespace: mikeeq
+name: machines
+version: 1.0.0
+readme: README.md
+authors:
+  - mikeeq
+description: OS and hardware-specific roles (fedora, gnome, macos, machine configs)
+license:
+  - GPL-3.0-or-later
+repository: https://github.com/mikeeq/ansible-ops-workstation
+tags:
+  - fedora
+  - macos
+  - gnome
+  - hardware
+dependencies: {}
+build_ignore:
+  - molecule
+  - "*.tar.gz"

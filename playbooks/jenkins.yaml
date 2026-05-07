@@ -4,4 +4,4 @@
   hosts: mikeeClevo
   become: true
   roles:
-    - servers/apps/jenkins
+    - mikeeq.apps_server.jenkins

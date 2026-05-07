@@ -8,7 +8,7 @@
   hosts: "{{ hosts_to_deploy | default('local') }}"
   become: true
   roles:
-    - role: desktop/apps/amdgpu-power-management
+    - role: mikeeq.apps_desktop.amdgpu_power_management
       # when: ansible_facts['devices']['amdgpu'] is defined
 
 # If you need to run this on specific hosts only, uncomment and modify:

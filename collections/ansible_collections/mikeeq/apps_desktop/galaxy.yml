@@ -1,0 +1,20 @@
+---
+namespace: mikeeq
+name: apps_desktop
+version: 1.0.0
+readme: README.md
+authors:
+  - mikeeq
+description: Desktop GUI applications (vscode, chrome, zed, sublime, etc.)
+license:
+  - GPL-3.0-or-later
+repository: https://github.com/mikeeq/ansible-ops-workstation
+tags:
+  - desktop
+  - gui
+  - vscode
+  - chrome
+dependencies: {}
+build_ignore:
+  - molecule
+  - "*.tar.gz"

@@ -5,7 +5,7 @@
   become: true
   gather_facts: false
   roles:
-    - servers/openwrt/bootstrap-ansible
+    - mikeeq.servers.openwrt_bootstrap_ansible
 
 - name: Setup dynamic SQM on OpenWRT
   hosts:
@@ -13,4 +13,4 @@
   become: true
   gather_facts: true
   roles:
-    - servers/openwrt/dynamic-sqm-lte
+    - mikeeq.servers.openwrt_dynamic_sqm_lte

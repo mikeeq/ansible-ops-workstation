@@ -4,7 +4,7 @@
   become: false
   gather_facts: false
   roles:
-    - servers/huawei-lte
+    - mikeeq.servers.huawei_lte
   vars:
     huawei_dynamic_task: "set-net-mode.yaml"
     # huawei_lteband: "80000"               # 800

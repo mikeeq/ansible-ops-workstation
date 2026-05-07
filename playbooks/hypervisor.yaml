@@ -6,6 +6,6 @@
     # - ansible.builtin.debug:
     #     var: hostvars[inventory_hostname]
   roles:
-    - servers/network-static-dns
-    - servers/network-bridge
-    - servers/libvirt
+    - mikeeq.servers.network_static_dns
+    - mikeeq.servers.network_bridge
+    - mikeeq.servers.libvirt

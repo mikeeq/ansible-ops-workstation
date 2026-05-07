@@ -4,6 +4,6 @@
   become: false
   gather_facts: false
   roles:
-    - servers/apps/steam
+    - mikeeq.apps_server.steam
   vars:
     steam_action: "start"
