@@ -1,0 +1,9 @@
+FROM {{ item.image }}
+
+{% if 'fedora' in item.image %}
+RUN dnf install -y python3 sudo && dnf clean all
+{% elif 'ubuntu' in item.image %}
+RUN apt-get update && apt-get install -y python3 sudo curl && rm -rf /var/lib/apt/lists/*
+{% endif %}
+
+CMD {{ item.command }}

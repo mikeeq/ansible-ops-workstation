@@ -12,9 +12,16 @@
     mode: "0644"
   when: ansible_facts['os_family'] == "RedHat"
 
+- name: Install gpg via package manager (Debian)
+  ansible.builtin.package:
+    name: gpg
+    state: present
+  when: ansible_facts['os_family'] == "Debian"
+
+
 - name: Add GitHub CLI GPG key (Debian/Ubuntu)
   ansible.builtin.shell: |
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
     chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
   args:
     creates: /usr/share/keyrings/githubcli-archive-keyring.gpg
