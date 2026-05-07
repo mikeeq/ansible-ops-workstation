@@ -52,9 +52,7 @@
   </p>
 </p>
 
-[![CI](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml/badge.svg)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml)
-
-[![CircleCI](https://circleci.com/gh/mikeeq/ansible-ops-workstation.svg?style=svg)](https://circleci.com/gh/mikeeq/ansible-ops-workstation)
+![CI Github Actions (main)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml/badge.svg?branch=main)
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">

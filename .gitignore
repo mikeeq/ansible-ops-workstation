@@ -11,3 +11,4 @@ __pycache__
 *.bak
 collections/
 !collections/ansible_collections/mikeeq/
+.ruff_cache
