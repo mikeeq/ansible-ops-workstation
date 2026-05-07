@@ -9,4 +9,5 @@
     # - mikeeClevo
   roles:
     # - mikeeq.apps_desktop.zed
-    - mikeeq.apps.oh_my_zsh
+    # - mikeeq.apps.oh_my_zsh
+    - mikeeq.machines.gnome

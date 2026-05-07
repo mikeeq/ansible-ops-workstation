@@ -4,3 +4,8 @@ playbooks/dnf5
 .ansible
 .onnx
 plans
+__pycache__
+*.pyc
+*.log
+*.tmp
+*.bak

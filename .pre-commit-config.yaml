@@ -63,11 +63,6 @@ repos:
     hooks:
       - id: check-json5
 
-  - repo: https://github.com/ansible/ansible-lint
-    rev: v26.4.0
-    hooks:
-      - id: ansible-lint
-
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.12
     hooks:
@@ -78,6 +73,13 @@ repos:
   #   hooks:
   #     - id: shellcheck
   #       args: [--severity=warning]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
 
   - repo: local
     hooks:
@@ -93,3 +95,9 @@ repos:
         entry: gitleaks detect --no-git --redact --verbose --config=gitleaks.toml
         language: system
         pass_filenames: false
+
+
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v26.4.0
+    hooks:
+      - id: ansible-lint

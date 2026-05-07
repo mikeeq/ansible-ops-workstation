@@ -132,7 +132,7 @@
     - mikeeClevo
   become: true
   roles:
-    - mikeeq.machines.clevo_p170sm_tuxedo
+    - mikeeq.machines.clevo_p170sm
     - mikeeq.apps_server.nginx
     # - mikeeq.apps_server.home_assistant
     # - mikeeq.apps_server.immich
