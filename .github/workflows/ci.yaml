@@ -45,7 +45,7 @@ jobs:
       fail-fast: false
       matrix:
         role:
-          - collections/ansible_collections/mikeeq/apps/roles/github_cli/
+          - collections/ansible_collections/mikeeq/apps/roles/github_cli
     steps:
       - uses: actions/checkout@v6
       - name: Install mise
@@ -56,7 +56,7 @@ jobs:
       - name: Install mise tools
         run: mise install
       - name: Install ansible-galaxy requirements
-        run: ansible-galaxy collection install -r requirements.yaml --force
+        run: ansible-galaxy collection install -r requirements.yaml --force -p ~/.ansible/collections
       - name: Run Molecule
         run: |
           cd ${{ matrix.role }}

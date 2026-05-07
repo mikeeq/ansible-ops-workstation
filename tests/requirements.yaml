@@ -1,0 +1,4 @@
+---
+collections:
+  - name: https://github.com/mikeeq/ansible-ops-workstation.git#collections/ansible_collections/mikeeq/apps
+    type: git

@@ -1,0 +1,35 @@
+---
+- name: Test playbook - install collections from git and run roles
+  hosts: localhost
+  connection: local
+  become: true
+
+  collections:
+    - mikeeq.apps
+
+  pre_tasks:
+    - name: Install test requirements
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install -r {{ playbook_dir }}/requirements.yaml --force
+      changed_when: true
+
+    - name: Gather facts
+      ansible.builtin.setup:
+
+  roles:
+    - role: mikeeq.apps.github_cli
+
+  post_tasks:
+    - name: Smoke test - verify gh is installed
+      ansible.builtin.command:
+        cmd: gh --version
+      register: gh_version
+      changed_when: false
+
+    - name: Assert gh CLI is functional
+      ansible.builtin.assert:
+        that:
+          - gh_version.rc == 0
+          - "'gh version' in gh_version.stdout"
+        fail_msg: "GitHub CLI is not properly installed"
+        success_msg: "GitHub CLI {{ gh_version.stdout_lines[0] }} is working"
