@@ -45,7 +45,7 @@ jobs:
       fail-fast: false
       matrix:
         role:
-          - roles/apps/github-cli
+          - collections/ansible_collections/mikeeq/apps/roles/github_cli/
     steps:
       - uses: actions/checkout@v6
       - name: Install mise
