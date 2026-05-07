@@ -5,4 +5,24 @@
   become: false
   gather_facts: true
   pre_tasks:
-    - ansible.builtin.include_vars: group_vars/{{ ansible_architecture }}.yaml
+    - ansible.builtin.include_vars: group_vars/{{ ansible_facts['architecture'] }}.yaml
+
+    - name: Get current user name
+      ansible.builtin.command: id -un
+      register: current_user
+      changed_when: false
+
+    - name: Fail if running as root
+      ansible.builtin.fail:
+        msg: "This playbook must not be run as root. Please run as a regular user."
+      when: current_user.stdout == "root"
+
+    - name: Get current user group
+      ansible.builtin.command: id -gn
+      register: current_group
+      changed_when: false
+
+    - name: Set user facts
+      ansible.builtin.set_fact:
+        user_name: "{{ current_user.stdout }}"
+        user_group_name: "{{ current_group.stdout }}"

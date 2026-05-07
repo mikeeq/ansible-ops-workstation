@@ -1,23 +1,16 @@
-FROM fedora:43
+FROM fedora:44
 
 # ENV container docker
 ENV FEDORA_USERNAME=mikee
-
-# https://github.com/wagoodman/dive/releases
-ARG DIVE_VERSION=0.12.0
-# https://github.com/hadolint/hadolint/releases
-ARG HADOLINT_VERSION=2.12.0
 
 RUN dnf clean all \
     && dnf update -y \
     && dnf upgrade -y \
     && dnf install -y \
-      python3-pip \
       systemd \
-      pipx \
-      ShellCheck \
-      python3-argcomplete \
-      python3-psutil \
+      curl \
+      git \
+      sudo \
     && dnf clean all
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
@@ -30,30 +23,24 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
-# pipx install --global --include-deps --force --preinstall ansible-lint --preinstall pywinrm ansible
-# https://pypi.org/project/pip/
-RUN pipx install --global --force --include-deps \
-      # https://pypi.org/project/ansible-lint/
-      ansible-lint
-RUN pipx install --global --force --include-deps \
-      # https://pypi.org/project/ansible/
-      ansible
-RUN pipx install --global --force --include-deps \
-      # https://pypi.org/project/yamllint/
-      yamllint
+RUN useradd -m ${FEDORA_USERNAME} && usermod -aG wheel ${FEDORA_USERNAME} \
+    && echo "${FEDORA_USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-# Dive
-RUN curl -LO https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.tar.gz && \
-    tar -xf dive_${DIVE_VERSION}_linux_amd64.tar.gz && \
-    mv ./dive /usr/local/bin/dive && \
-    rm -rf dive_${DIVE_VERSION}_linux_amd64.tar.gz
+# Fix PAM error in container - https://github.com/geerlingguy/docker-fedora41-ansible/issues/2
+RUN chmod 400 /etc/shadow
 
-# Hadolint
-RUN curl -L "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-x86_64" \
-      -o /usr/local/bin/hadolint \
-    && chmod +x /usr/local/bin/hadolint
+# Install mise as user
+USER ${FEDORA_USERNAME}
+ENV MISE_YES=1
+RUN curl https://mise.run | sh
 
-RUN useradd ${FEDORA_USERNAME} && usermod -aG wheel ${FEDORA_USERNAME}
+
+# Install tools via mise
+COPY --chown=${FEDORA_USERNAME} mise.toml /home/${FEDORA_USERNAME}/.config/mise/config.toml
+RUN ~/.local/bin/mise install && ~/.local/bin/mise reshim
+ENV PATH="/home/${FEDORA_USERNAME}/.local/share/mise/shims:/home/${FEDORA_USERNAME}/.local/bin:${PATH}"
+
+USER root
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]

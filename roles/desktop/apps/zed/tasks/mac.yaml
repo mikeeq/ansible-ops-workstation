@@ -1,0 +1,6 @@
+---
+- name: Install Zed editor via Homebrew
+  community.general.homebrew_cask:
+    name: zed
+    state: present
+  become: false

@@ -2,7 +2,7 @@
 # roles/servers/apps/zabbix-agent/templates/zabbix_agentd.conf.j2
 
 - ansible.builtin.debug:
-    msg: "Zabbix agent setup for OpenWrt - {{ ansible_default_ipv4.address }}"
+    msg: "Zabbix agent setup for OpenWrt - {{ ansible_facts['default_ipv4']['address'] }}"
 
 - ansible.builtin.debug:
     msg: "Zabbix agent setup for OpenWrt - {{ hostvars[inventory_hostname]['ansible_host'] }}"

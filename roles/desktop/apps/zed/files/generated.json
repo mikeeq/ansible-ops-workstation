@@ -1,0 +1,86 @@
+{
+  "agent": {
+    "dock": "right",
+    "default_model": {
+      "provider": "ollama",
+      "model": "gemma4:31b",
+      "enable_thinking": true
+    },
+    "sidebar_side": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "project_panel": {
+    "dock": "left"
+  },
+  "tabs": {
+    "close_position": "right"
+  },
+  "agent_servers": {
+    "github-copilot-cli": {
+      "type": "registry"
+    }
+  },
+  "base_keymap": "VSCode",
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "telemetry": {
+    "metrics": false,
+    "diagnostics": false
+  },
+  "theme": "One Dark",
+  "buffer_font_size": 14,
+  "terminal": {
+    "font_size": 14,
+    "font_family": "MesloLGS NF"
+  },
+  "tab_size": 2,
+  "format_on_save": "off",
+  "ensure_final_newline_on_save": true,
+  "remove_trailing_whitespace_on_save": true,
+  "auto_install_extensions": {
+    "ansible": true,
+    "docker-compose": true,
+    "dockerfile": true,
+    "git-firefly": true,
+    "html": true,
+    "json": true,
+    "make": true,
+    "python": true,
+    "toml": true,
+    "yaml": true
+  },
+  "language_models": {
+    "ollama": {
+      "api_url": "http://localhost:11434",
+      "available_models": [
+        {
+          "provider": "ollama",
+          "name": "qwen3:latest",
+          "display_name": "Qwen3",
+          "max_tokens": 32768
+        },
+        {
+          "provider": "ollama",
+          "name": "deepseek-coder-v2:latest",
+          "display_name": "DeepSeek Coder V2",
+          "max_tokens": 16384
+        },
+        {
+          "provider": "ollama",
+          "name": "codellama:latest",
+          "display_name": "Code Llama",
+          "max_tokens": 16384
+        }
+      ]
+    }
+  },
+  "assistant": {
+    "version": "2",
+    "default_model": {
+      "provider": "ollama",
+      "model": "qwen3:latest"
+    }
+  }
+}

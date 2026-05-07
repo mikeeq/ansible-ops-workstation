@@ -31,6 +31,18 @@
     - url: https://raw.githubusercontent.com/blind-oracle/zabbix-sensors/refs/heads/master/template_sensors_6.4.xml
       dest: /tmp/template_sensors_6.4.xml
 
+- name: Copy local template files to /tmp
+  become: false
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  loop:
+    - src: icmp_template.yaml
+      dest: /tmp/icmp_template.yaml
+    - src: speedtest_template.yaml
+      dest: /tmp/speedtest_template.yaml
+
 - name: Import Zabbix yaml template
   become: false
   community.zabbix.zabbix_template:
@@ -38,7 +50,8 @@
   loop:
     - template_file: /tmp/template_md_raid.yaml
     - template_file: /tmp/template_lm_sensors.yaml
-    - template_file: icmp_template.yaml
+    - template_file: /tmp/icmp_template.yaml
+    - template_file: /tmp/speedtest_template.yaml
 
 - name: Import Zabbix xml template
   become: false
@@ -111,6 +124,7 @@
       - 'Template Lm-sensors'
       - 'Template_Sensors'
       - 'MD RAID'
+      - 'Speedtest'
       - 'Zabbix server health'
     interfaces:
       - type: 1

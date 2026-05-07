@@ -1,0 +1,37 @@
+{
+  "edit_predictions": {
+    "ollama": {
+      // "model": "qwen2.5-coder:7b-base"
+      "model": "qwen2.5-coder:7b",
+    },
+    "provider": "ollama",
+  },
+  "project_panel": {
+    "dock": "left",
+  },
+  "agent": {
+    "tool_permissions": {
+      "tools": {
+        "create_directory": {
+          "always_allow": [
+            {
+              "pattern": "^mikee/ansible\\-ops\\-workstation/roles/apps/",
+            },
+          ],
+        },
+      },
+    },
+    "default_model": {
+      "provider": "ollama",
+      "model": "qwen3-coder:30b",
+      "enable_thinking": false,
+    },
+    "sidebar_side": "right",
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": [],
+  },
+  "terminal": {
+    "font_family": "MesloLGS NF",
+  },
+}

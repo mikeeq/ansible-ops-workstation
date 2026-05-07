@@ -5,12 +5,12 @@
       {{
         (
           (dhcp + static_devices)
-          | selectattr('ip', '==', ansible_default_ipv4.address)
+          | selectattr('ip', '==', ansible_facts['default_ipv4']['address'])
           | map(attribute='hostname')
           | list
         )[0] if (
           (dhcp + static_devices)
-          | selectattr('ip', '==', ansible_default_ipv4.address)
+          | selectattr('ip', '==', ansible_facts['default_ipv4']['address'])
           | list
         )|length > 0 else None
       }}

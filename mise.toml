@@ -6,15 +6,30 @@
 # mise plugins ls-remote | grep aws
 # mise ls-remote aws-cli
 
-python = "3.14"
-pipx = "latest"
+# https://www.python.org/downloads/
+python = "3.14.4"
+# https://github.com/pypa/pipx/releases
+pipx = "1.11.2"
+
 # "pipx:ansible" = { version = "latest", postinstall = "pipx inject ansible passlib" }
-"pipx:ansible" = "latest"
+#"pipx:ansible" = "latest"
+# https://pypi.org/project/ansible/
+#"pipx:ansible" = { version = "13.6.0", pipx_args = "--include-deps --preinstall passlib --preinstall pywinrm --preinstall bcrypt" }
+
+# https://pypi.org/project/ansible-core/
+"pipx:ansible-core" = { version = "2.20.5", pipx_args = "--include-deps --preinstall passlib --preinstall pywinrm --preinstall bcrypt" }
+
+# https://pypi.org/project/ansible-lint/
+"pipx:ansible-lint" = "26.4.0"
+"pipx:yamllint" = "1.38.0"
+
+# https://pypi.org/project/molecule/
+"pipx:molecule" = { version = "26.4.0", pipx_args = "--include-deps --preinstall molecule-plugins[docker]" }
 
 ## Security scanning
 
 # https://github.com/aquasecurity/trivy/releases
-trivy = "v0.69.3"
+trivy = "v0.70.0"
 
 # https://github.com/gitleaks/gitleaks/releases
 gitleaks = "8.30.1"
@@ -24,16 +39,31 @@ gitleaks = "8.30.1"
 # https://github.com/pre-commit/pre-commit/releases
 pre-commit = "latest"
 
+## Docker tooling
+
+# https://github.com/wagoodman/dive/releases
+dive = "0.13.1"
+
+# https://github.com/hadolint/hadolint/releases
+hadolint = "2.14.0"
+
+wait-for-gh-rate-limit = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+# prettier = "3"
+git-cliff = "latest"
+actionlint = "latest"
+
 [env]
 # pipx:ansible only shims ansible-community; expose the full ansible venv bin dir
 # exec falls back to /dev/null when ansible is not yet installed (harmless)
-#_.path = { path = ["{{ tools['pipx:ansible'].path }}/venvs/ansible/bin"], tools = true }
-_.path = { path = ["{{ exec(command='mise where pipx:ansible 2>/dev/null || echo /dev/null') }}/venvs/ansible/bin"], tools = true }
+# _.path = { path = ["{{ tools['pipx:ansible'].path }}/venvs/ansible/bin"], tools = true }
+# _.path = { path = ["{{ exec(command='mise where pipx:ansible 2>/dev/null || echo /dev/null') }}/venvs/ansible/bin"], tools = true }
 
 [tasks.pre-commit]
 description = "Run pre-commit checks on all files"
 run = "pre-commit run --all-files --show-diff-on-failure --color=always"
 
-[tasks.ansible-setup]
-description = "Inject passlib into ansible pipx environment"
-run = "pipx inject ansible passlib"
+#[tasks.ansible-setup]
+#description = "Inject passlib into ansible pipx environment"
+#run = "pipx inject ansible passlib"

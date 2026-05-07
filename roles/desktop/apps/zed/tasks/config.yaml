@@ -1,0 +1,63 @@
+---
+# Linux
+- name: "[LINUX] Directory for Zed config"
+  ansible.builtin.file:
+    path: "~{{ user_name }}/.config/zed"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+  when: ansible_facts['system'] != 'Darwin'
+
+- name: "[LINUX] Install Zed settings"
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.copy:
+    src: settings.json
+    dest: "~/.config/zed/settings.json"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: "0664"
+    backup: true
+  when: ansible_facts['system'] != 'Darwin'
+
+- name: "[LINUX] Install Zed keymap"
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.copy:
+    src: keymap.json
+    dest: "~/.config/zed/keymap.json"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: "0664"
+    backup: true
+  when: ansible_facts['system'] != 'Darwin'
+
+# macOS
+- name: "[MACOS] Directory for Zed config"
+  ansible.builtin.file:
+    path: "~{{ user_name }}/.config/zed"
+    state: directory
+    mode: "0755"
+  become: true
+  become_user: "{{ user_name }}"
+  when: ansible_facts['system'] == 'Darwin'
+
+- name: "[MACOS] Install Zed settings"
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.copy:
+    src: settings.json
+    dest: "~/.config/zed/settings.json"
+    mode: "0644"
+    backup: true
+  when: ansible_facts['system'] == 'Darwin'
+
+- name: "[MACOS] Install Zed keymap"
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.copy:
+    src: keymap.json
+    dest: "~/.config/zed/keymap.json"
+    mode: "0644"
+    backup: true
+  when: ansible_facts['system'] == 'Darwin'

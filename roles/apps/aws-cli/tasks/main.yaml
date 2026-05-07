@@ -23,14 +23,14 @@
     state: present
     disable_gpg_check: true
   when:
-    - ansible_distribution == "Fedora"
+    - ansible_facts['distribution'] == "Fedora"
 
 - name: Install Session Manager plugin  on Ubuntu
   ansible.builtin.apt:
     deb: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.deb"
     state: present
   when:
-    - ansible_distribution == "Ubuntu"
+    - ansible_facts['distribution'] == "Ubuntu"
 
 - name: Create a symbolic link for aws-cli
   ansible.builtin.file:

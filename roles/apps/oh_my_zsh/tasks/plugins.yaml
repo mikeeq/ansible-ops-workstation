@@ -32,12 +32,16 @@
     dest: "~{{ item }}/.p10k.zsh"
     backup: true
     mode: "0600"
+    owner: "{{ item }}"
+    group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
   with_items: "{{ oh_my_zsh_users }}"
 
 - name: Create directory for zsh files
   ansible.builtin.file:
     path: "~{{ item }}/.zsh"
     state: directory
+    owner: "{{ item }}"
+    group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
   with_items: "{{ oh_my_zsh_users }}"
 
 - name: zshrc
@@ -46,6 +50,8 @@
     dest: "~{{ item }}/.zshrc"
     backup: true
     mode: "0600"
+    owner: "{{ item }}"
+    group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
   with_items: "{{ oh_my_zsh_users }}"
 
 - name: "zsh configs"
@@ -54,20 +60,22 @@
     dest: "~{{ item.0 }}/.zsh/{{ item.1 | regex_replace('\\.j2$', '') }}"
     backup: true
     mode: "0600"
+    owner: "{{ item.0 }}"
+    group: "{{ 'root' if item.0 == 'root' else (user_group_name | default(item.0)) }}"
   loop: "{{ oh_my_zsh_users | product(lookup('fileglob', 'templates/.zsh/*.j2', wantlist=True) | map('basename') | list) | list }}"
 
 - name: Add folder for fzf key-bindings
   ansible.builtin.file:
     path: "/usr/share/doc/fzf/examples"
     state: directory
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 # Fixing apt-get fzf package
 - name: Download fzf key-bindings
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
     dest: /usr/share/doc/fzf/examples/key-bindings.zsh
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: "Download zsh-completion"
   become: "{{ (item != user_name) | bool }}"

@@ -8,6 +8,7 @@
 
 exclude_paths:
   - roles/servers/apps/home-assistant/files/config
+  # - "**/molecule/"
 
 skip_list:
   - name

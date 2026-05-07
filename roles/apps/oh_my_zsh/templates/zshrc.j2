@@ -20,7 +20,7 @@ export ANTHROPIC_BASE_URL=http://localhost:11434
 WORK_PROFILES_PATH="$HOME/.work_profiles"
 
 # Sources
-{% if ansible_system == 'Darwin' %}
+{% if ansible_facts['system'] == 'Darwin' %}
 source $HOME/.zsh/macos.zsh
 {% endif %}
 source $HOME/.zsh/aliases.zsh
@@ -28,7 +28,7 @@ source $HOME/.zsh/functions.zsh
 [[ -n $WORK_PROFILE ]] && source $WORK_PROFILES_PATH/.zshrc
 # [[ ! -f $WORK_PROFILES_PATH/.zshrc ]] || source $WORK_PROFILES_PATH/.zshrc
 
-{% if ansible_system == 'Darwin' %}
+{% if ansible_facts['system'] == 'Darwin' %}
 source /opt/homebrew/etc/bash_completion.d/az
 {% elif skip_azure_cli_autocompletion is not defined %}
 source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
@@ -37,8 +37,10 @@ source /opt/pipx/venvs/azure-cli/bin/az.completion.sh
 # VScode terminal integration
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 
+{% if item != 'root' %}
 # Mise activate
 eval "$(mise activate zsh)"
+{% endif %}
 
 # Load autocompletion
 autoload -U +X bashcompinit && bashcompinit

@@ -1,0 +1,19 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Check gh CLI is installed
+      ansible.builtin.command: gh --version
+      changed_when: false
+      register: gh_version
+
+    - name: Print gh version
+      ansible.builtin.debug:
+        var: gh_version.stdout
+
+    - name: Assert gh is functional
+      ansible.builtin.assert:
+        that:
+          - gh_version.rc == 0
+          - "'gh version' in gh_version.stdout"

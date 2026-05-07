@@ -2,13 +2,22 @@
 collections:
   # https://github.com/ansible-collections/community.general/releases
   - name: community.general
-    version: 11.0.0
+    version: 12.6.0
   # https://github.com/ansible-collections/community.crypto/releases
   - name: community.crypto
-    version: 2.26.3
+    version: 3.2.0
   # https://github.com/ansible-collections/community.libvirt/releases
   - name: community.libvirt
-    version: 1.4.0
+    version: 2.2.0
   # https://github.com/ansible-collections/community.zabbix/releases
   - name: community.zabbix
-    version: 4.0.0
+    version: 4.2.0
+  # https://github.com/ansible-collections/ansible.posix/releases
+  - name: ansible.posix
+    version: 2.1.0
+  # https://github.com/ansible-collections/ansible.utils/releases
+  - name: ansible.utils
+    version: 6.0.2
+  # https://github.com/ansible-collections/ansible.netcommon/releases
+  - name: ansible.netcommon
+    version: 8.5.1

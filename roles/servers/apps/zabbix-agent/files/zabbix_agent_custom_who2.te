@@ -1,0 +1,13 @@
+module zabbix_agent_custom_who2 1.0;
+
+require {
+        type systemd_logind_sessions_t;
+        type zabbix_agent_t;
+        type kernel_t;
+        class file { open read };
+        class unix_stream_socket connectto;
+}
+
+#============= zabbix_agent_t ==============
+allow zabbix_agent_t systemd_logind_sessions_t:file { open read };
+allow zabbix_agent_t kernel_t:unix_stream_socket connectto;
