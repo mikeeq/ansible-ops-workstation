@@ -1,3 +1,4 @@
+#!/bin/bash
 # dnf install -y cmake gcc-c++ freetype freetype-devel protobuf-devel
 
 # python3 -m virtualenv venv2
@@ -23,7 +24,7 @@ pip install git+https://github.com/Deci-AI/super-gradients.git
 # 4. OPTIONAL: install extra packages if needed (e.g., jupyter, opencv)
 # pip install jupyter opencv-python
 
-docker run -i -t --gpus all -v $(pwd):/repo -w /repo --entrypoint= ghcr.io/blakeblackshear/frigate:stable-tensorrt bash
+docker run -i -t --gpus all -v "$(pwd)":/repo -w /repo --entrypoint= ghcr.io/blakeblackshear/frigate:stable-tensorrt bash
 
 apt update
 

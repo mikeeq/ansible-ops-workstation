@@ -4,13 +4,13 @@ set -e
 
 # If filenames are passed as arguments (pre-commit --all-files), use them.
 if [[ $# -gt 0 ]]; then
-  files="$@"
+  files=("$@")
 else
   # Otherwise, find all staged .yml files
-  files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.yml$' || true)
+  mapfile -t files < <(git diff --cached --name-only --diff-filter=ACM | grep '\.yml$' || true)
 fi
 
-for file in $files; do
+for file in "${files[@]}"; do
   # Skip if file does not exist (could be deleted or moved)
   [[ -f "$file" ]] || continue
   yaml_file="${file%.yml}.yaml"

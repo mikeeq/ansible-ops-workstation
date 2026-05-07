@@ -6,7 +6,7 @@ output_video="output_sharpened.mp4"
 frames_dir="frames"
 WorkingDir=~/Videos/
 
-cd $WorkingDir
+cd "$WorkingDir" || exit
 
 # Create frames directory
 mkdir -p $frames_dir
@@ -38,7 +38,7 @@ EOF
 
 # Recompile sharpened frames into video (same frame rate as input)
 fps=$(ffprobe -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate "$input_video")
-ffmpeg -framerate $(echo "$fps" | bc -l) -i $frames_dir/frame_%04d.png -c:v h264_v4l2m2m -pix_fmt yuv420p $output_video
+ffmpeg -framerate "$(echo "$fps" | bc -l)" -i "$frames_dir/frame_%04d.png" -c:v h264_v4l2m2m -pix_fmt yuv420p "$output_video"
 
 # Clean up frames if desired
 # rm -r $frames_dir

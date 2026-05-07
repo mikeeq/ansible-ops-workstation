@@ -34,7 +34,7 @@ jobs:
       - name: Install pre-commit hooks
         run: pre-commit install --install-hooks
       - name: Install ansible-galaxy requirements
-        run: ansible-galaxy collection install -r requirements.yaml --force
+        run: ansible-galaxy collection install -r requirements.yaml --force -p ~/.ansible/collections
       - name: Run pre-commit
         run: pre-commit run --all-files --show-diff-on-failure --color=always
 

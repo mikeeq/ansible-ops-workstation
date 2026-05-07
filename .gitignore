@@ -9,3 +9,5 @@ __pycache__
 *.log
 *.tmp
 *.bak
+collections/
+!collections/ansible_collections/mikeeq/

@@ -7,7 +7,7 @@ docker run \
   -d \
   -t \
   --privileged \
-  -v $(pwd):/repo \
+  -v "$(pwd)":/repo \
   -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
   --cgroupns host \
   -w /repo/playbooks \

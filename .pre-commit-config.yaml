@@ -68,11 +68,12 @@ repos:
     hooks:
       - id: actionlint
 
-  # - repo: https://github.com/shellcheck-py/shellcheck-py
-  #   rev: v0.11.0.1
-  #   hooks:
-  #     - id: shellcheck
-  #       args: [--severity=warning]
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+        args: [--severity=warning]
+        exclude: collections/ansible_collections/mikeeq/servers/roles/openwrt_dynamic_sqm_lte/
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.12
@@ -89,6 +90,13 @@ repos:
         language: system
         files: \.yml$
         exclude: "molecule/|meta/|galaxy\\.yml"
+
+      # - id: shellcheck
+      #   name: shellcheck
+      #   entry: shellcheck --severity=warning
+      #   language: system
+      #   types:
+      #     - shell
 
       - id: gitleaks
         name: gitleaks
