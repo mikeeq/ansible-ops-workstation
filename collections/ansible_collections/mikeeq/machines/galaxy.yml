@@ -10,10 +10,9 @@ license:
   - GPL-3.0-or-later
 repository: https://github.com/mikeeq/ansible-ops-workstation
 tags:
-  - fedora
-  - macos
-  - gnome
-  - hardware
+  - linux
+  - infrastructure
+  - tools
 dependencies: {}
 build_ignore:
   - molecule

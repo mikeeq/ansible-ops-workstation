@@ -10,7 +10,7 @@ repos:
         exclude: "zabbix_agent_custom_who(?:2)?\\.pp"
       - id: check-yaml
         args: [--allow-multiple-documents]
-        exclude: (^|/)templates/.*\.ya?ml$|^roles/servers/apps/home-assistant/files/config/.*\.ya?ml$
+        exclude: (^|/)templates/.*\.ya?ml$|^collections/ansible_collections/mikeeq/apps_server/roles/home_assistant/files/config/.*\.ya?ml$
       # - id: check-json
       - id: check-toml
       - id: check-added-large-files
@@ -19,7 +19,7 @@ repos:
       - id: check-merge-conflict
       - id: check-symlinks
       - id: detect-private-key
-        exclude: roles/apps/openvpn-client/files/client.ovpn
+        exclude: collections/ansible_collections/mikeeq/apps/roles/openvpn_client/files/client.ovpn
       - id: check-executables-have-shebangs
       - id: mixed-line-ending
         args: [--fix=lf]
@@ -86,7 +86,7 @@ repos:
         entry: scripts/convert_yml_to_yaml.sh
         language: system
         files: \.yml$
-        exclude: "molecule/"
+        exclude: "molecule/|meta/|galaxy\\.yml"
 
       - id: gitleaks
         name: gitleaks

@@ -708,6 +708,15 @@ dnf downgrade mutter
   - Install X11 back on F43: https://copr.fedorainfracloud.org/coprs/frantisekz/GNOME-X11/
 - Sticky keys as above
 
+33. Molecule expects only .yml files (don't work with .yaml)
+
+```
+# https://github.com/ansible/molecule/issues/3849
+
+CRITICAL 'molecule/default/molecule.yml' glob failed.
+
+```
+
 ## TODO
 
 - consider switching from oh-my-zsh to antidote

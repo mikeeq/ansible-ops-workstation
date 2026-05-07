@@ -3,4 +3,4 @@
   hosts: all
   become: true
   roles:
-    - role: apps/github-cli
+    - role: mikeeq.apps.github_cli

@@ -20,7 +20,7 @@ docker exec \
   -t \
   -u ${CONTAINER_USER} \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-galaxy collection install -r ../requirements.yaml"
+    ansible-galaxy collection install -r ../requirements.yaml -p ~/.ansible/collections"
 
 docker exec \
   -t \

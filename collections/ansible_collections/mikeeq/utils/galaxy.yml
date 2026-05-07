@@ -10,11 +10,9 @@ license:
   - GPL-3.0-or-later
 repository: https://github.com/mikeeq/ansible-ops-workstation
 tags:
-  - package-management
-  - utilities
-  - dnf
-  - brew
-  - flatpak
+  - linux
+  - tools
+  - infrastructure
 dependencies: {}
 build_ignore:
   - molecule

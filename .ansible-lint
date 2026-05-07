@@ -7,8 +7,8 @@
 #   - fqcn
 
 exclude_paths:
-  - roles/servers/apps/home-assistant/files/config
-  # - "**/molecule/"
+  - collections/ansible_collections/mikeeq/apps_server/roles/home_assistant/files/config
+  - "**/molecule/"
 
 skip_list:
   - name
@@ -24,6 +24,7 @@ skip_list:
   - literal-compare
   - package-latest
   - ignore-errors
+  - galaxy[no-changelog]
   # - yaml[line-length]
 #   - tags:formatting,yaml
 
