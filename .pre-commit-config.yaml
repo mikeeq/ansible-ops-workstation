@@ -110,8 +110,8 @@ repos:
         language: system
         pass_filenames: false
 
-
   - repo: https://github.com/ansible/ansible-lint
     rev: v26.4.0
     hooks:
       - id: ansible-lint
+        # args: [--config-file=playbooks/.ansible-lint, --yamllint-file=.yamllint]

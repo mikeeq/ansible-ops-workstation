@@ -65,6 +65,7 @@ git-cliff = "latest"
 actionlint = "latest"
 
 [env]
+ANSIBLE_CONFIG = "playbooks/ansible.cfg"
 # pipx:ansible only shims ansible-community; expose the full ansible venv bin dir
 # exec falls back to /dev/null when ansible is not yet installed (harmless)
 # _.path = { path = ["{{ tools['pipx:ansible'].path }}/venvs/ansible/bin"], tools = true }
