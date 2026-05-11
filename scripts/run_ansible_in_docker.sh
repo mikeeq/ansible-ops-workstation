@@ -20,7 +20,7 @@ docker exec \
   -t \
   -u 0 \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    mkdir -p /home/${CONTAINER_USER}/.ansible && chown -R ${CONTAINER_USER}:${CONTAINER_USER} /home/${CONTAINER_USER}/.ansible"
+    mkdir -p /repo/.ansible && chown -R ${CONTAINER_USER}:${CONTAINER_USER} /repo/.ansible"
 
 docker exec \
   -t \
