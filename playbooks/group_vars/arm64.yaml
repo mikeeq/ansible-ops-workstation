@@ -43,4 +43,5 @@ brew_cask_pkgs:
   - spotify
   - utm
   - ollama
+  # - session-manager-plugin
   # - rancher-desktop
