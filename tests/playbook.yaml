@@ -2,7 +2,7 @@
 - name: Test playbook - install from git and run roles
   hosts: localhost
   connection: local
-  gather_facts: false
+  gather_facts: true
   become: false
 
   tasks:
