@@ -72,7 +72,7 @@ jobs:
           echo "$HOME/.local/share/mise/shims" >> "$GITHUB_PATH"
       - name: Install mise tools
         run: mise install
-      - name: Run Molecule
+      - name: Run ansible-galaxy and playbook tests
         run: |
           cd tests/
           mise unset ANSIBLE_CONFIG
