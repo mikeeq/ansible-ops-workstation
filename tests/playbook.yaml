@@ -1,12 +1,8 @@
 ---
-- name: Test playbook - install collections from git and run roles
+- name: Test playbook - install from git and run roles
   hosts: localhost
   connection: local
   become: true
-
-  collections:
-    - mikeeq.apps
-
   pre_tasks:
     - name: Install test requirements
       ansible.builtin.command:
