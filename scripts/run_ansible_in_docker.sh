@@ -20,7 +20,7 @@ docker exec \
   -t \
   -u ${CONTAINER_USER} \
   ${DOCKER_IMAGE} /bin/bash -c " \
-    mise install --silent --yes"
+    mise install"
 
 docker exec \
   -t \
