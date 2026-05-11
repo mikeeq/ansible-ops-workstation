@@ -7,8 +7,12 @@
 #   - fqcn
 
 exclude_paths:
+  - .git
+  - .ansible
+  - tests/.ansible
   - collections/ansible_collections/mikeeq/apps_server/roles/home_assistant/files/config
   - "**/molecule/"
+  - playbooks/requirements.yaml
 
 skip_list:
   - name

@@ -13,7 +13,8 @@ tags:
   - linux
   - infrastructure
   - tools
-dependencies: {}
+dependencies:
+  community.general: ">=12.0.0"
 build_ignore:
   - molecule
   - "*.tar.gz"

@@ -14,7 +14,10 @@ tags:
   - libvirt
   - openwrt
   - networking
-dependencies: {}
+dependencies:
+  community.general: ">=10.0.0"
+  community.libvirt: ">=2.0.0"
+  ansible.utils: ">=5.0.0"
 build_ignore:
   - molecule
   - "*.tar.gz"

@@ -14,7 +14,8 @@ tags:
   - services
   - homelab
   - monitoring
-dependencies: {}
+dependencies:
+  community.zabbix: ">=4.0.0"
 build_ignore:
   - molecule
   - "*.tar.gz"

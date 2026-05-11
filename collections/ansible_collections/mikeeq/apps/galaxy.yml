@@ -16,7 +16,8 @@ tags:
   - docker
   - kubernetes
   - terraform
-dependencies: {}
+dependencies:
+  community.general: ">=12.0.0"
 build_ignore:
   - molecule
   - "*.tar.gz"

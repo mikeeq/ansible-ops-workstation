@@ -4,6 +4,6 @@ sudo dnf install -y git python ansible libselinux-python ;
 sudo systemctl disable firewalld ;
 sudo setenforce 0 ;
 
-ansible-galaxy collection install -r requirements.yaml
+mise install
 
 ansible-playbook -i inventory/hosts fedora.yaml -K

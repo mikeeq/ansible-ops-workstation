@@ -34,10 +34,9 @@ USER ${FEDORA_USERNAME}
 ENV MISE_YES=1
 RUN curl https://mise.run | sh
 
-
 # Install tools via mise
-COPY --chown=${FEDORA_USERNAME} mise.toml /home/${FEDORA_USERNAME}/.config/mise/config.toml
-RUN ~/.local/bin/mise install && ~/.local/bin/mise reshim
+#COPY --chown=${FEDORA_USERNAME} mise.toml /home/${FEDORA_USERNAME}/.config/mise/config.toml
+#RUN ~/.local/bin/mise install && ~/.local/bin/mise reshim
 ENV PATH="/home/${FEDORA_USERNAME}/.local/share/mise/shims:/home/${FEDORA_USERNAME}/.local/bin:${PATH}"
 
 USER root

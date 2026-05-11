@@ -71,7 +71,7 @@ actionlint = "latest"
 # _.path = { path = ["{{ exec(command='mise where pipx:ansible 2>/dev/null || echo /dev/null') }}/venvs/ansible/bin"], tools = true }
 
 [hooks]
-postinstall = "ansible-galaxy install -r requirements.yaml"
+postinstall = "cd playbooks && ansible-galaxy install -r requirements.yaml"
 
 [tasks.pre-commit]
 description = "Run pre-commit checks on all files"
