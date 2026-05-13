@@ -1,6 +1,10 @@
 [[ -n "${ZSH_DEBUGRC+1}" ]] && zmodload zsh/zprof
 
-source $HOME/.zsh/oh_my_zsh_p10k.zsh
+if [[ "$TERM" == "linux" ]]; then
+  PROMPT='%F{green}%n@%m%f %F{blue}%~%f %# '
+else
+  source $HOME/.zsh/oh_my_zsh_p10k.zsh
+fi
 
 # Global env vars
 {% if item != 'root' %}
