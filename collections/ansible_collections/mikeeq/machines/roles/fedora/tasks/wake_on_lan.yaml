@@ -7,7 +7,6 @@
       Description=Wake-on-LAN for %i
       Requires=network.target
       After=network.target
-    mode: "0644"
 
       [Service]
       ExecStart=/usr/sbin/ethtool -s %i wol g
@@ -15,6 +14,7 @@
 
       [Install]
       WantedBy=multi-user.target
+    mode: "0644"
     dest: /etc/systemd/system/wol@.service
   register: fedora_wol_reg
 

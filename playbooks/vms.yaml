@@ -56,7 +56,8 @@
     hosts_to_deploy: mikeeClevo
 
 - name: Update all clevo libvirt_vms and host
-  hosts: clevo!openwrt_office
+  hosts:
+    - clevo:!openwrt_office
   become: true
   tasks:
     # - name: Clean DNF
@@ -86,19 +87,33 @@
   roles:
     - mikeeq.servers.bootstrap
     - mikeeq.apps_server.zabbix_agent
+  vars:
+    user_name: "mikee"
 
 - name: Set variables on an imported playbook
   ansible.builtin.import_playbook: generic-core.yaml
   vars:
-    hosts_to_deploy: libvirt_vms
+    hosts_to_deploy: vms
+    oh_my_zsh_users:
+      - "mikee"
+      - "root"
+
+- name: Provision DNS VMs
+  hosts:
+    - dns1
+    - dns2
+  become: true
+  roles:
+    - mikeeq.servers.network_static_dns
+    - mikeeq.apps.docker
+  vars:
+    user_name: "mikee"
 
 - name: Provision DNS1
   hosts:
     - dns1
   become: true
   roles:
-    - mikeeq.servers.network_static_dns
-    - mikeeq.apps.docker
     - mikeeq.apps_server.coredns
     - mikeeq.apps_server.letsencrypt_coredns
 
@@ -107,8 +122,6 @@
     - dns2
   become: true
   roles:
-    - mikeeq.servers.network_static_dns
-    - mikeeq.apps.docker
     - mikeeq.apps_server.adguard_home
 
 # - name: Provision GW1
