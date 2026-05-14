@@ -7,7 +7,7 @@
     owner: "{{ item }}"
     group: "{{ item }}"
   with_items:
-    - mikee
+    - "{{ user_name }}"
     - deploy
     # - root
 
@@ -20,7 +20,7 @@
     owner: "{{ item }}"
     group: "{{ item }}"
   with_items:
-    - mikee
+    - "{{ user_name }}"
     - deploy
     # - root
 
