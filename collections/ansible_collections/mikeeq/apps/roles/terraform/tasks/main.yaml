@@ -27,6 +27,7 @@
   ansible.builtin.get_url:
     url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_{{ architecture_common_name }}.zip"
     dest: /tmp/terraform.zip
+    mode: "0644"
   when: terraform_installed_version.stdout != terraform_version
 
 - name: Unarchive a file that is already on the remote machine

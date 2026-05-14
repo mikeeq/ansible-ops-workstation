@@ -8,6 +8,7 @@
   ansible.builtin.file:
     path: "{{ certs_path }}/{{ item }}"
     state: directory
+    mode: "0755"
   loop: "{{ certs | map(attribute='cn') }}"
 
 - name: Copy certs

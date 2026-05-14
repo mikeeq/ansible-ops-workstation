@@ -18,6 +18,7 @@
   ansible.builtin.file:
     path: "{{ letsencrypt_coredns_certs_path }}"
     state: directory
+    mode: "0755"
 
 - name: Generate cert
   ansible.builtin.include_tasks: cert.yaml
@@ -32,6 +33,7 @@
   ansible.builtin.file:
     path: "{{ letsencrypt_coredns_certs_path }}/{{ item }}"
     state: directory
+    mode: "0755"
   delegate_to: 127.0.0.1
   loop: "{{ letsencrypt_coredns_certs | map(attribute='cn') }}"
 

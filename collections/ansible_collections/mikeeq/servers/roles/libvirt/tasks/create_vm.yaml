@@ -11,6 +11,7 @@
     state: directory
     owner: qemu
     group: qemu
+    mode: "0755"
 
 - name: Render vm config
   ansible.builtin.template:

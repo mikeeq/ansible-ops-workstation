@@ -24,6 +24,7 @@
       ansible.builtin.file:
         path: "{{ playbook_dir }}/tmp/bin"
         state: directory
+        mode: "0755"
 
   roles:
     - role: mikeeq.apps.github_copilot_cli

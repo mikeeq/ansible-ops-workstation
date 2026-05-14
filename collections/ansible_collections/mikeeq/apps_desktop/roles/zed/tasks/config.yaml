@@ -6,6 +6,7 @@
     state: directory
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
+    mode: "0755"
   when: ansible_facts['system'] != 'Darwin'
 
 - name: "[LINUX] Install Zed settings"

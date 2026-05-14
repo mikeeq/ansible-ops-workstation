@@ -51,6 +51,7 @@
   ansible.builtin.copy:
     src: facetimehd.conf
     dest: /etc/modules-load.d/facetimehd.conf
+    mode: "0644"
 
 # modprobe -r facetimehd; sudo modprobe facetimehd
 

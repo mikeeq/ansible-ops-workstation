@@ -58,6 +58,7 @@
   ansible.builtin.file:
     path: ~/.config/remote-desktop
     state: directory
+    mode: "0755"
 
 - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
   become: true

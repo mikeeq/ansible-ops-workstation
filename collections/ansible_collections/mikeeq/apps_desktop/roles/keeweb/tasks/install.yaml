@@ -16,6 +16,7 @@
   ansible.builtin.file:
     path: /opt/keeweb
     state: directory
+    mode: "0755"
 
 - name: Get latest version
   ansible.builtin.shell: curl -Is "https://github.com/keeweb/keeweb/releases/latest" | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
@@ -30,6 +31,7 @@
   ansible.builtin.get_url:
     url: "https://github.com/keeweb/keeweb/releases/download/v{{ keeweb_version_tag.stdout }}/KeeWeb-{{ keeweb_version_tag.stdout }}.linux.x64.zip"
     dest: /tmp/keeweb.zip
+    mode: "0644"
   when: keeweb_installed_version.stdout != keeweb_version_tag.stdout
 
 - name: Remove old KeeWeb
@@ -49,6 +51,7 @@
   ansible.builtin.copy:
     src: keeweb.desktop
     dest: /usr/share/applications/keeweb.desktop
+    mode: "0644"
 
 - name: Add version file
   ansible.builtin.shell: echo '{{ keeweb_version_tag.stdout }}' > /opt/keeweb/version.tag

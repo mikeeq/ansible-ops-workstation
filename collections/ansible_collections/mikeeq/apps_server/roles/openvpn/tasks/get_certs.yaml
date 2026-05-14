@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: "{{ openvpn_pull_client_config_path }}"
     state: directory
+    mode: "0755"
   delegate_to: localhost
   become: false
 
@@ -25,5 +26,6 @@
   ansible.builtin.template:
     src: client.conf.j2
     dest: "{{ openvpn_pull_client_config_path }}/client.conf"
+    mode: "0644"
   delegate_to: localhost
   become: false

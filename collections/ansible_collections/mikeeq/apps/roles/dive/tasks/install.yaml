@@ -3,11 +3,13 @@
   ansible.builtin.file:
     path: /tmp/dive
     state: directory
+    mode: "0755"
 
 - name: Download dive binary
   ansible.builtin.get_url:
     url: "https://github.com/wagoodman/dive/releases/download/v{{ dive_version }}/dive_{{ dive_version }}_linux_{{ architecture_common_name }}.tar.gz"
     dest: /tmp/dive/dive.tar.gz
+    mode: "0644"
 
 - name: Unarchive a file that is already on the remote machine
   ansible.builtin.unarchive:

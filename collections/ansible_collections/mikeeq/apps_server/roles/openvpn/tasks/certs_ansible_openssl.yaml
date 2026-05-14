@@ -17,6 +17,7 @@
   ansible.builtin.file:
     path: "{{ openvpn_ssl_path }}"
     state: directory
+    mode: "0700"
 
 - name: Import "openssl/ca.yaml"
   ansible.builtin.import_tasks: "openssl/ca.yaml"

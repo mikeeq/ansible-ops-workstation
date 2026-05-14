@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: "{{ letsencrypt_coredns_account_path }}"
     state: directory
+    mode: "0700"
 
 - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
   community.crypto.openssl_privatekey:

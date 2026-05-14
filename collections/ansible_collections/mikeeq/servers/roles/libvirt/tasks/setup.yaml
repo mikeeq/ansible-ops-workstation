@@ -5,6 +5,7 @@
     state: directory
     owner: qemu
     group: qemu
+    mode: "0755"
   loop:
     - "{{ libvirt_cloud_init_src_dir }}"
     - "{{ libvirt_cloud_init_iso_dir }}"

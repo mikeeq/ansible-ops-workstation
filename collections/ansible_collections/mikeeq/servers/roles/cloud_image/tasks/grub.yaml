@@ -79,9 +79,11 @@
     src: "{{ cloud_image_image_path }}"
     dest: "{{ cloud_image_base_image_path }}"
     remote_src: true
+    mode: "0644"
 
 - name: Copy image with date
   ansible.builtin.copy:
     src: "{{ cloud_image_image_path }}"
     dest: "{{ cloud_image_base_image_path }}.{{ ansible_date_time.date }}"
     remote_src: true
+    mode: "0644"

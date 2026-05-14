@@ -20,6 +20,7 @@
   ansible.builtin.get_url:
     url: "https://github.com/zed-industries/zed/releases/download/v{{ zed_version }}/zed-linux-{{ ansible_facts['architecture'] }}.tar.gz"
     dest: /tmp/zed.tar.gz
+    mode: "0644"
   when: zed_installed_version.stdout != zed_version
 
 - name: Create /opt/zed directory
@@ -60,4 +61,5 @@
     src: /opt/zed/share/
     dest: /usr/share/
     remote_src: true
+    mode: "0644"
   # when: zed_installed_version.stdout != zed_version

@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: "{{ jenkins_install_path }}"
     state: directory
+    mode: "0755"
 
 - name: Ensure jenkins_home dir exists
   ansible.builtin.file:
@@ -10,6 +11,7 @@
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_uid }}"
     state: directory
+    mode: "0755"
 
 - name: Configure docker-compose for Jenkins
   ansible.builtin.template:

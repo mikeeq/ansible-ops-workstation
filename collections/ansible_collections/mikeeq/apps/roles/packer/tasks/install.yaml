@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: /tmp/packer
     state: directory
+    mode: "0755"
 
 # https://releases.hashicorp.com/packer/1.8.6/packer_1.8.6_linux_amd64.zip
 
@@ -10,6 +11,7 @@
   ansible.builtin.get_url:
     url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_{{ architecture_common_name }}.zip"
     dest: /tmp/packer/packer.zip
+    mode: "0644"
 
 - name: Unarchive a file that is already on the remote machine
   ansible.builtin.unarchive:

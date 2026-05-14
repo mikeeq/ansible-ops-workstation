@@ -3,6 +3,7 @@
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ libvirt_cloud_init_src_dir }}/{{ vm.name }}/{{ item.dest }}"
+    mode: "0644"
   loop: "{{ libvirt_cloud_init_config_files }}"
 
 - name: Create CD-ROM ISO with cloud-init config

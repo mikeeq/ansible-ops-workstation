@@ -18,6 +18,7 @@
     url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/{{ architecture_common_name }}/kubectl"
     dest: /usr/local/bin/kubectl
     force: true
+    mode: "0755"
   when: kubectl_installed_version.stdout != kubectl_version
 
 - name: Set permissions kubectl

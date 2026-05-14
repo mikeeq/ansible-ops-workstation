@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: "{{ letsencrypt_coredns_cert_path }}"
     state: directory
+    mode: "0755"
 
 - name: Create certificate key
   community.crypto.openssl_privatekey:

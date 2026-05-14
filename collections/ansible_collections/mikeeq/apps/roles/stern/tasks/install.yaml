@@ -3,11 +3,13 @@
   ansible.builtin.file:
     path: /tmp/stern
     state: directory
+    mode: "0755"
 
 - name: Download stern
   ansible.builtin.get_url:
     url: "https://github.com/stern/stern/releases/download/v{{ stern_version }}/stern_{{ stern_version }}_linux_{{ architecture_common_name }}.tar.gz"
     dest: /tmp/stern/stern.tar.gz
+    mode: "0644"
 
 - name: Unarchive a file that is already on the remote machine
   ansible.builtin.unarchive:

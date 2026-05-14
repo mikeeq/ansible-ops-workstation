@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: "{{ openvpn_client_cert_path }}/{{ item }}"
     state: directory
+    mode: "0700"
 
 - name: Generating CLIENT private key
   community.crypto.openssl_privatekey:

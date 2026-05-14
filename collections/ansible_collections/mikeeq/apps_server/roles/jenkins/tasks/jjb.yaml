@@ -10,6 +10,7 @@
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
     state: directory
+    mode: "0755"
 
 - name: Configure jjb
   ansible.builtin.template:
@@ -25,6 +26,7 @@
     dest: "{{ jenkins_home }}/jjb/jobs/"
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
+    mode: "0644"
   with_fileglob:
     - ../templates/jjb/jobs/*
   register: jenkins_jjb_copy

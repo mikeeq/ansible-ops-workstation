@@ -51,6 +51,7 @@
       ansible.builtin.get_url:
         url: https://extensions.gnome.org{{ item.item.json.download_url }}
         dest: "{{ gnome_extension_download_dir.path }}/{{ item.item.json.uuid }}.zip"
+        mode: "0644"
       loop: "{{ gnome_st_existing_extensions.results }}"
       loop_control:
         label: "{{ item.item.json.name }}"

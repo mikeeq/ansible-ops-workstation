@@ -38,4 +38,5 @@
   ansible.builtin.copy:
     dest: "{{ jenkins_home }}/secrets/adminAccountRemoved"
     content: "removed"
+    mode: "0644"
   when: jenkins_admin_account_status == "200"
