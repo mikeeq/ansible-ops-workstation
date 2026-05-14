@@ -1,13 +1,13 @@
 ---
-- name: Get latest version of kail  # noqa: var-naming[no-role-prefix]
+- name: Get latest kail_version of kail
   ansible.builtin.shell: curl -Is https://github.com/boz/kail/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+  register: kail_version
   changed_when: false
 
-- name: "Latest version of kail:"
+- name: "Latest kail_version of kail:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: kail_version.stdout
 
-- name: "Set fact with latest version of kail"
+- name: "Set fact with latest kail_version of kail"
   ansible.builtin.set_fact:
-    kail_version: "{{ version.stdout }}"
+    kail_version: "{{ kail_version.stdout }}"

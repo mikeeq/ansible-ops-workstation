@@ -1,14 +1,14 @@
 ---
 # https://github.com/gruntwork-io/terragrunt/releases/download/v0.31.8/terragrunt_linux_amd64
-- name: Get installed version  # noqa: var-naming[no-role-prefix]
-  ansible.builtin.shell: terragrunt --version | head -n 1 | grep v | cut -d'v' -f3
-  register: installed_terragrunt_version
+- name: Get installed terragrunt_version
+  ansible.builtin.shell: terragrunt --terragrunt_version | head -n 1 | grep v | cut -d'v' -f3
+  register: terragrunt_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of terragrunt:"
+- name: "Installed terragrunt_version of terragrunt:"
   ansible.builtin.debug:
-    var: installed_terragrunt_version.stdout
+    var: terragrunt_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -21,4 +21,4 @@
     mode: "0755"
     owner: root
     group: root
-  when: installed_terragrunt_version.stdout != terragrunt_version
+  when: terragrunt_installed_version.stdout != terragrunt_version

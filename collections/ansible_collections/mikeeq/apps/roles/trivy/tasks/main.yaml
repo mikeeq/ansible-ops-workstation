@@ -1,15 +1,15 @@
 ---
-- name: Get installed version  # noqa: var-naming[no-role-prefix]
+- name: Get installed trivy_version
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: trivy version | awk '{print $3}' | cut -f2 -d'v'
-  register: installed_trivy_version
+  ansible.builtin.shell: trivy trivy_version | awk '{print $3}' | cut -f2 -d'v'
+  register: trivy_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of trivy:"
+- name: "Installed trivy_version of trivy:"
   ansible.builtin.debug:
-    var: installed_trivy_version.stdout
+    var: trivy_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -17,4 +17,4 @@
 
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
-  when: installed_trivy_version.stdout != trivy_version
+  when: trivy_installed_version.stdout != trivy_version

@@ -4,16 +4,16 @@
     name: gnome-shell
     state: present
 
-- name: Parse Gnome Shell version  # noqa: var-naming[no-role-prefix]
+- name: Parse Gnome Shell version
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: gnome-shell --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'
-  register: parse_gnome_shell_version
+  register: gnome_parse_shell_version
   changed_when: false
 
 - name: Set fact variables
   ansible.builtin.set_fact:
-    gnome_shell_version: "{{ parse_gnome_shell_version.stdout }}"
+    gnome_shell_version: "{{ gnome_parse_shell_version.stdout }}"
 
 - name: Get Gnome Shell extension info
   become: true
@@ -35,27 +35,27 @@
 
 - name: Block
   block:
-    - name: Check for Gnome Shell extensions already installed  # noqa: var-naming[no-role-prefix]
+    - name: Check for Gnome Shell extensions already installed
       become: true
       become_user: "{{ user_name }}"
       ansible.builtin.stat:
         path: ~/.local/share/gnome-shell/extensions/{{ item.json.uuid }}
-      register: st_existing_extensions
+      register: gnome_st_existing_extensions
       loop: "{{ gnome_shell_extension_info.results }}"
       loop_control:
         label: "{{ item.json.name }}"
 
-    - name: Download Gnome Shell extensions  # noqa: var-naming[no-role-prefix]
+    - name: Download Gnome Shell extensions
       become: true
       become_user: "{{ user_name }}"
       ansible.builtin.get_url:
         url: https://extensions.gnome.org{{ item.item.json.download_url }}
         dest: "{{ gnome_extension_download_dir.path }}/{{ item.item.json.uuid }}.zip"
-      loop: "{{ st_existing_extensions.results }}"
+      loop: "{{ gnome_st_existing_extensions.results }}"
       loop_control:
         label: "{{ item.item.json.name }}"
       when: not item.stat.exists
-      register: download_gnome_shell_extensions
+      register: gnome_download_shell_extensions
 
     - name: Create install directories
       ansible.builtin.file:
@@ -64,7 +64,7 @@
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
         mode: "0775"
-      loop: "{{ download_gnome_shell_extensions.results }}"
+      loop: "{{ gnome_download_shell_extensions.results }}"
       loop_control:
         label: "{{ item.item.item.json.name }}"
       when: not item is skipped
@@ -76,7 +76,7 @@
         src: "{{ item.dest }}"
         dest: ~/.local/share/gnome-shell/extensions/{{ item.item.item.json.uuid }}
         remote_src: true
-      loop: "{{ download_gnome_shell_extensions.results }}"
+      loop: "{{ gnome_download_shell_extensions.results }}"
       loop_control:
         label: "{{ item.item.item.json.name }}"
       when: not item is skipped
@@ -87,7 +87,7 @@
       ansible.builtin.shell: glib-compile-schemas .
       args:
         chdir: ~/.local/share/gnome-shell/extensions/{{ item.item.item.json.uuid }}/schemas
-      loop: "{{ download_gnome_shell_extensions.results }}"
+      loop: "{{ gnome_download_shell_extensions.results }}"
       loop_control:
         label: "{{ item.item.item.json.name }}"
       when: not item is skipped
@@ -97,7 +97,7 @@
       become: true
       become_user: "{{ user_name }}"
       ansible.builtin.shell: gnome-extensions enable "{{ item.item.item.json.uuid }}"
-      loop: "{{ download_gnome_shell_extensions.results }}"
+      loop: "{{ gnome_download_shell_extensions.results }}"
       loop_control:
         label: "{{ item.item.item.json.name }}"
       when: not item is skipped
@@ -108,7 +108,7 @@
   #   become_user: "{{ user_name }}"
   #   ansible.builtin.command: gnome-shell-extension-tool --enable-extension {{ item.item.item.json.uuid }}
   #   register: enable_gnome_shell_extensions
-  #   loop: "{{ download_gnome_shell_extensions.results }}"
+  #   loop: "{{ gnome_download_shell_extensions.results }}"
   #   loop_control:
   #     label: "{{ item.item.item.json.name }}"
   #   when: not item is skipped

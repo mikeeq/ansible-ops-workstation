@@ -1,7 +1,7 @@
 ---
 - name: Install Zabbix repository package
   ansible.builtin.dnf:
-    name: "https://repo.zabbix.com/zabbix/{{ zabbix_main_version }}/stable/rhel/10/x86_64/zabbix-agent2-{{ zabbix_version }}-release1.el10.x86_64.rpm"
+    name: "https://repo.zabbix.com/zabbix/{{ zabbix_agent_zabbix_main_version }}/stable/rhel/10/x86_64/zabbix-agent2-{{ zabbix_agent_zabbix_version }}-release1.el10.x86_64.rpm"
     state: present
     disable_gpg_check: true
   become: true

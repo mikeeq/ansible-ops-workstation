@@ -2,7 +2,7 @@
 - platform: virtual
   name: ogrzewanie_pompy
 
-{% for i in home_assistant.climate %}
+{% for i in home_assistant_home_assistant.climate %}
 - platform: virtual
   name: ogrzewanie_{{ i.name }}
 {% endfor %}
@@ -10,7 +10,7 @@
 - platform: group
   name: group_ogrzewanie_podlogowe
   entities:
-{% for i in home_assistant.climate %}
+{% for i in home_assistant_home_assistant.climate %}
     - "{{ i.switch }}"
 {% endfor %}
 

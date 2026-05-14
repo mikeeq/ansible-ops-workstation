@@ -4,19 +4,19 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ install_path }}/config"
-    - "{{ install_path }}/config/automations"
-    - "{{ install_path }}/config/sensors"
-    - "{{ install_path }}/config/.storage"
-    - "{{ install_path }}/config/mqtt/binary_sensors"
-    - "{{ install_path }}/config/mqtt/sensors"
-    - "{{ install_path }}/config/mqtt/lights"
-    - "{{ install_path }}/config/mqtt/switches"
+    - "{{ home_assistant_install_path }}/config"
+    - "{{ home_assistant_install_path }}/config/automations"
+    - "{{ home_assistant_install_path }}/config/sensors"
+    - "{{ home_assistant_install_path }}/config/.storage"
+    - "{{ home_assistant_install_path }}/config/mqtt/binary_sensors"
+    - "{{ home_assistant_install_path }}/config/mqtt/sensors"
+    - "{{ home_assistant_install_path }}/config/mqtt/lights"
+    - "{{ home_assistant_install_path }}/config/mqtt/switches"
 
 - name: Configure config files
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/"
+    dest: "{{ home_assistant_install_path }}/config/"
     mode: "0664"
     backup: true
   with_fileglob:
@@ -25,7 +25,7 @@
 - name: Configure config templates
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/"
+    dest: "{{ home_assistant_install_path }}/config/"
     mode: "0664"
     backup: true
   with_fileglob:
@@ -35,7 +35,7 @@
 - name: Configure config/automations
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/automations/"
+    dest: "{{ home_assistant_install_path }}/config/automations/"
     mode: "0664"
     backup: true
   with_fileglob:
@@ -45,7 +45,7 @@
 - name: Configure config/sensors
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/sensors/"
+    dest: "{{ home_assistant_install_path }}/config/sensors/"
     mode: "0664"
     backup: true
   with_fileglob:
@@ -55,7 +55,7 @@
 - name: Configure config/mqtt/sensors
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/sensors/"
+    dest: "{{ home_assistant_install_path }}/config/mqtt/sensors/"
     mode: "0664"
     backup: true
   with_fileglob:
@@ -64,7 +64,7 @@
 - name: Configure config/mqtt/binary_sensors
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/binary_sensors/"
+    dest: "{{ home_assistant_install_path }}/config/mqtt/binary_sensors/"
     mode: "0664"
     backup: true
   with_fileglob:
@@ -73,7 +73,7 @@
 - name: Configure config/mqtt/lights
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/lights/"
+    dest: "{{ home_assistant_install_path }}/config/mqtt/lights/"
     mode: "0664"
     backup: true
   with_fileglob:
@@ -82,7 +82,7 @@
 - name: Configure config/mqtt/switches
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/switches/"
+    dest: "{{ home_assistant_install_path }}/config/mqtt/switches/"
     mode: "0664"
     backup: true
   with_fileglob:
@@ -91,31 +91,31 @@
 - name: Configure config/mqtt/water_heater
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/mqtt/water_heater/"
+    dest: "{{ home_assistant_install_path }}/config/mqtt/water_heater/"
     mode: "0664"
     backup: true
   with_fileglob:
     - ../templates/config/mqtt/water_heater/*
 
-- name: Check that the .storage exists  # noqa: var-naming[no-role-prefix]
+- name: Check that the .storage exists
   ansible.builtin.stat:
-    path: "{{ install_path }}/config/.storage/onboarding"
-  register: storage_result
+    path: "{{ home_assistant_install_path }}/config/.storage/onboarding"
+  register: home_assistant_storage_result
 
 - name: Configure .storage
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/.storage"
+    dest: "{{ home_assistant_install_path }}/config/.storage"
     mode: "0664"
     backup: true
-  when: not storage_result.stat.exists
+  when: not home_assistant_storage_result.stat.exists
   with_fileglob:
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/.storage/*"
 
 - name: Configure config init
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: "{{ install_path }}/config/"
+    dest: "{{ home_assistant_install_path }}/config/"
     mode: "0664"
     backup: true
     force: false

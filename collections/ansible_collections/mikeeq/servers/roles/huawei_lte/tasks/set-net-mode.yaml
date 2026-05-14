@@ -2,9 +2,9 @@
 - name: Import get-net-mode.yaml
   ansible.builtin.import_tasks: get-net-mode.yaml
 
-- name: "Set LTE band to /api/net/net-mode API call - {{ huawei_lteband }}"  # noqa: var-naming[no-role-prefix]
+- name: "Set LTE band to /api/net/net-mode API call - {{ huawei_lte_huawei_lteband }}"
   ansible.builtin.uri:
-    url: "{{ huawei_url }}/api/net/net-mode"
+    url: "{{ huawei_lte_huawei_url }}/api/net/net-mode"
     return_content: true
     method: POST
     timeout: 30
@@ -13,15 +13,15 @@
       <request>
         <NetworkMode>03</NetworkMode>
         <NetworkBand>2000004400000</NetworkBand>
-        <LTEBand>{{ huawei_lteband }}</LTEBand>
+        <LTEBand>{{ huawei_lte_huawei_lteband }}</LTEBand>
       </request>
     headers:
       Content-Type: text/xml
-      Cookie: "{{ login_request.cookies_string }}"
-      __RequestVerificationToken: "{{ login_request.__requestverificationtokenone }}"
-  register: set_net_mode_request
-  failed_when: '"<error>" in set_net_mode_request.content'
-  changed_when: set_net_mode_request.content == ""
+      Cookie: "{{ huawei_lte_login_request.cookies_string }}"
+      __RequestVerificationToken: "{{ huawei_lte_login_request.__requestverificationtokenone }}"
+  register: huawei_lte_set_net_mode_request
+  failed_when: '"<error>" in huawei_lte_set_net_mode_request.content'
+  changed_when: huawei_lte_set_net_mode_request.content == ""
 
 - name: Import get-net-mode.yaml
   ansible.builtin.import_tasks: get-net-mode.yaml

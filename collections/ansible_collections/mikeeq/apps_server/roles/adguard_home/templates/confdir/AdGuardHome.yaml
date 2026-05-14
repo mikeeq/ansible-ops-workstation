@@ -69,11 +69,11 @@ dns:
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576
   cache_time: 30
-{% if private_dns_entries == [] %}
+{% if adguard_home_private_dns_entries == [] %}
   rewrites: []
 {% else %}
   rewrites:
-{% for i in private_dns_entries %}
+{% for i in adguard_home_private_dns_entries %}
     - domain: {{ i.source }}
       answer: {{ i.destination }}
 {% endfor %}
@@ -206,7 +206,7 @@ user_rules:
   - '@@||sentry.io^$important'
   - '@@||adidas.onelink.me^$important'
   - ""
-dhcp:
+adguard_home_dhcp:
   enabled: true
   interface_name: wlp229s0
   local_domain_name: lan
@@ -228,7 +228,7 @@ clients:
     whois: true
     arp: true
     rdns: true
-    dhcp: true
+    adguard_home_dhcp: true
     hosts: true
   persistent: []
 log_file: ""

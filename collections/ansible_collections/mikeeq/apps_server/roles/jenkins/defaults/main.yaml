@@ -24,11 +24,11 @@ jenkins_users_to_delete:
   - "testuser"
   - "admin"
 
-jjb_username: jjb  # noqa: var-naming[no-role-prefix]
-jjb_password: "{{ jenkins_users | selectattr('name', 'equalto', jjb_username) | map(attribute='password') | join }}"  # noqa: var-naming[no-role-prefix]
+jenkins_jjb_username: jjb
+jenkins_jjb_password: "{{ jenkins_users | selectattr('name', 'equalto', jenkins_jjb_username) | map(attribute='password') | join }}"
 
-jenkins_admin_username: "{{ jjb_username }}"
-jenkins_admin_password: "{{ jjb_password }}"
+jenkins_admin_username: "{{ jenkins_jjb_username }}"
+jenkins_admin_password: "{{ jenkins_jjb_password }}"
 
 jenkins_cleanup: true
 jenkins_update: true

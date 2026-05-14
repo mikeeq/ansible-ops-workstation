@@ -1,5 +1,5 @@
 ---
-- name: Set record variables  # noqa: var-naming[no-role-prefix]
+- name: Set record variables
   ansible.builtin.set_fact:
     record_full: "{{ item.value['dns-01'].record }}"
     record_without_acme: "{{ item.value['dns-01'].record | regex_replace('_acme-challenge.') }}"

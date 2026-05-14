@@ -4,40 +4,40 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ install_path }}"
-    - "{{ install_path }}/config"
+    - "{{ nginx_install_path }}"
+    - "{{ nginx_install_path }}/config"
 
-- name: Configure docker-compose file  # noqa: var-naming[no-role-prefix]
+- name: Configure docker-compose file
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
+    dest: "{{ nginx_install_path }}/{{ item }}"
     mode: "0664"
     backup: true
   loop:
     - docker-compose.yaml
     - config/nginx.conf
     - config/backend-not-found.html
-  register: config_flag
+  register: nginx_config_flag
 
 - name: Import config.yaml
   ansible.builtin.import_tasks: config.yaml
 
-- name: Pull Docker image using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
+  changed_when: nginx_pull_result.stderr_lines | length > 2
+  register: nginx_pull_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ nginx_install_path }}"
 
-- name: Run using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Run using docker-compose
   ansible.builtin.shell: docker-compose up -d 2>&1
-  changed_when: '"Started" in up_result.stdout'
-  register: up_result
+  changed_when: '"Started" in nginx_up_result.stdout'
+  register: nginx_up_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ nginx_install_path }}"
 
 - name: Restart using docker-compose
   ansible.builtin.command: docker-compose restart
   args:
-    chdir: "{{ install_path }}"
-  when: cert_flag.changed or config_flag.changed
+    chdir: "{{ nginx_install_path }}"
+  when: nginx_cert_flag.changed or nginx_config_flag.changed

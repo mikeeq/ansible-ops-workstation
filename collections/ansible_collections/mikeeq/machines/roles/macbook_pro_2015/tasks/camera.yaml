@@ -23,24 +23,24 @@
     chdir: "{{ git_modules_path }}/bcwc_pcie/firmware"
     creates: /usr/lib/firmware/facetimehd/firmware.bin
 
-- name: DKMS add  # noqa: var-naming[no-role-prefix]
+- name: DKMS add
   ansible.builtin.shell: dkms add .
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
     creates: /usr/src/facetimehd-0.1
-  register: keyboard_add
+  register: macbook_pro_2015_keyboard_add
 
 - name: DKMS build
   ansible.builtin.shell: dkms build facetimehd/0.1
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
-  when: keyboard_add.changed
+  when: macbook_pro_2015_keyboard_add.changed
 
 - name: DKMS install
   ansible.builtin.shell: dkms install facetimehd/0.1
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
-  when: keyboard_add.changed
+  when: macbook_pro_2015_keyboard_add.changed
 
 # - name: Remove repo
 #   ansible.builtin.file:

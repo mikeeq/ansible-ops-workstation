@@ -1,2 +1,2 @@
 ---
-virtualenv_install_path: "/opt/virtualenv"  # noqa: var-naming[no-role-prefix]
+pip_virtualenv_install_path: "/opt/virtualenv"

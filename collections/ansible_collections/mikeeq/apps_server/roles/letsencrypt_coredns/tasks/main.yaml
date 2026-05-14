@@ -14,26 +14,26 @@
 - name: Import account_key.yaml
   ansible.builtin.import_tasks: account_key.yaml
 
-- name: "Create dir for certs - {{ certs_path }}"
+- name: "Create dir for letsencrypt_coredns_certs - {{ letsencrypt_coredns_certs_path }}"
   ansible.builtin.file:
-    path: "{{ certs_path }}"
+    path: "{{ letsencrypt_coredns_certs_path }}"
     state: directory
 
 - name: Generate cert
   ansible.builtin.include_tasks: cert.yaml
-  loop: "{{ certs }}"
+  loop: "{{ letsencrypt_coredns_certs }}"
   loop_control:
     loop_var: cert
   vars:
     dns_task_path: dns_coredns.yaml
     domain_name: "{{ cert.domain_name }}"
 
-- name: Create directories for certs
+- name: Create directories for letsencrypt_coredns_certs
   ansible.builtin.file:
-    path: "{{ certs_path }}/{{ item }}"
+    path: "{{ letsencrypt_coredns_certs_path }}/{{ item }}"
     state: directory
   delegate_to: 127.0.0.1
-  loop: "{{ certs | map(attribute='cn') }}"
+  loop: "{{ letsencrypt_coredns_certs | map(attribute='cn') }}"
 
 - name: Import copy_certs.yaml
   ansible.builtin.import_tasks: copy_certs.yaml

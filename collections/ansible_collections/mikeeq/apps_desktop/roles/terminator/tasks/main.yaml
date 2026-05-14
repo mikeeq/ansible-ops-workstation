@@ -36,14 +36,14 @@
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
 
-- name: "Download Font - MesloLGS_NF_Regular"  # noqa: var-naming[no-role-prefix]
+- name: "Download Font - MesloLGS_NF_Regular"
   ansible.builtin.get_url:
     url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
     dest: "~{{ user_name }}/.local/share/fonts/MesloLGS_NF_Regular.ttf"
     mode: "0664"
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
-  register: font_download
+  register: terminator_font_download
 
 - name: "Download Font - MesloLGS_NF_Bold"
   ansible.builtin.get_url:
@@ -73,7 +73,7 @@
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: "fc-cache -f -v"
-  when: font_download.changed
+  when: terminator_font_download.changed
 
 - name: Directory for terminator config
   ansible.builtin.file:

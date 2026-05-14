@@ -30,16 +30,16 @@
 
 # - ansible.builtin.import_tasks: config.yaml
 
-- name: Pull Docker image using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
+  changed_when: ollama_docker_pull_result.stderr_lines | length > 2
+  register: ollama_docker_pull_result
   args:
     chdir: "{{ ollama_docker_install_path }}"
 
-- name: Run using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Run using docker-compose
   ansible.builtin.command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 2
-  register: up_result
+  changed_when: ollama_docker_up_result.stderr_lines | length > 2
+  register: ollama_docker_up_result
   args:
     chdir: "{{ ollama_docker_install_path }}"

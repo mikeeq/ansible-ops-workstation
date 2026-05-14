@@ -1,7 +1,7 @@
 ---
-huawei_ip: "192.168.8.1"  # noqa: var-naming[no-role-prefix]
-huawei_username: "admin"  # noqa: var-naming[no-role-prefix]
-huawei_password: "admin"  # noqa: var-naming[no-role-prefix]
+huawei_lte_huawei_ip: "192.168.8.1"
+huawei_lte_huawei_username: "admin"
+huawei_lte_huawei_password: "admin"
 
-huawei_url: "http://{{ huawei_ip }}"  # noqa: var-naming[no-role-prefix]
-huawei_lteband: "80005"  # noqa: var-naming[no-role-prefix]
+huawei_lte_huawei_url: "http://{{ huawei_lte_huawei_ip }}"
+huawei_lte_huawei_lteband: "80005"

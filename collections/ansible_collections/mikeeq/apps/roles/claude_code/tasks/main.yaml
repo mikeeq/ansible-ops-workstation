@@ -10,10 +10,10 @@
     owner: "{{ user_name }}"
     group: "{{ user_group_name | default(user_name) }}"
 
-- name: Check if Claude is already installed  # noqa: var-naming[no-role-prefix]
+- name: Check if Claude is already installed
   ansible.builtin.stat:
     path: "~{{ user_name }}/.local/bin/claude"
-  register: claude_installed
+  register: claude_code_claude_installed
 
 - name: Install Claude Code via installer script
   become: true
@@ -21,7 +21,7 @@
   ansible.builtin.shell: curl -fsSL https://claude.ai/install.sh | bash -s -- stable
   args:
     executable: /bin/bash
-  when: not claude_installed.stat.exists
+  when: not claude_code_claude_installed.stat.exists
 
 - name: Ensure Claude Code configuration directory exists
   ansible.builtin.file:

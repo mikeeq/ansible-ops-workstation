@@ -1,13 +1,13 @@
 ---
-- name: Get latest version argocd  # noqa: var-naming[no-role-prefix]
+- name: Get latest argocd_version argocd
   ansible.builtin.shell: curl -Is https://github.com/argoproj/argo-cd/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -d'"' -f1
-  register: version
+  register: argocd_version
   changed_when: false
 
-- name: "Latest version of argocd:"
+- name: "Latest argocd_version of argocd:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: argocd_version.stdout
 
-- name: "Set fact with latest version of argocd"
+- name: "Set fact with latest argocd_version of argocd"
   ansible.builtin.set_fact:
-    argocd_version: "{{ version.stdout }}"
+    argocd_version: "{{ argocd_version.stdout }}"

@@ -1,13 +1,13 @@
 ---
-- name: Get latest version of stern  # noqa: var-naming[no-role-prefix]
+- name: Get latest stern_version of stern
   ansible.builtin.shell: curl -Is https://github.com/stern/stern/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+  register: stern_version
   changed_when: false
 
-- name: "Latest version of stern:"
+- name: "Latest stern_version of stern:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: stern_version.stdout
 
-- name: "Set fact with latest version of stern"
+- name: "Set fact with latest stern_version of stern"
   ansible.builtin.set_fact:
-    stern_version: "{{ version.stdout }}"
+    stern_version: "{{ stern_version.stdout }}"

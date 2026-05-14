@@ -22,20 +22,20 @@
 
 # TODO: Add jenkins user to local machine
 
-- name: Check if docker image is present  # noqa: var-naming[no-role-prefix]
+- name: Check if docker image is present
   ansible.builtin.shell: |
     docker images --format {% raw %}'table {{.ID}}\t{{.Repository}}:{{.Tag}}\t{{.Size}}'{% endraw %} | grep -q {{ jenkins_image_name }}
-  register: docker_image_exists
+  register: jenkins_docker_image_exists
   ignore_errors: true
   changed_when: false
 
 - name: Include update.yaml
   ansible.builtin.include_tasks: update.yaml
-  when: docker_image_exists.rc != 0 or jenkins_update
+  when: jenkins_docker_image_exists.rc != 0 or jenkins_update
 
-- name: Run Jenkins using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Run Jenkins using docker-compose
   ansible.builtin.command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 1
-  register: up_result
+  changed_when: jenkins_up_result.stderr_lines | length > 1
+  register: jenkins_up_result
   args:
     chdir: "{{ jenkins_install_path }}"

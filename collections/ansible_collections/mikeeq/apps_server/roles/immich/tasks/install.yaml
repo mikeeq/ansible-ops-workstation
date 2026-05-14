@@ -4,35 +4,35 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ install_path }}"
-    # - "{{ install_path }}/confdir"
-    # - "{{ install_path }}/workdir"
+    - "{{ immich_install_path }}"
+    # - "{{ immich_install_path }}/confdir"
+    # - "{{ immich_install_path }}/workdir"
 
 - name: Configure docker-compose file
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
+    dest: "{{ immich_install_path }}/{{ item }}"
     mode: "0664"
     backup: true
   loop:
     - docker-compose.yaml
     - .env
 
-- name: Pull Docker image using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
+  changed_when: immich_pull_result.stderr_lines | length > 2
+  register: immich_pull_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ immich_install_path }}"
 
-- name: Run using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Run using docker-compose
   ansible.builtin.command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 2
-  register: up_result
+  changed_when: immich_up_result.stderr_lines | length > 2
+  register: immich_up_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ immich_install_path }}"
 
 # - name: Restart using docker-compose
 #   ansible.builtin.command: docker-compose restart
 #   args:
-#     chdir: "{{ install_path }}"
+#     chdir: "{{ immich_install_path }}"

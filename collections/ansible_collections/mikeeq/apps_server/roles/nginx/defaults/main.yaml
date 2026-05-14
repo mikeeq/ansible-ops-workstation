@@ -1,5 +1,5 @@
 ---
-install_path: "/opt/nginx"  # noqa: var-naming[no-role-prefix]
+nginx_install_path: "/opt/nginx"
 
 nginx_sites:
   - source_url: "http://localhost:8080"

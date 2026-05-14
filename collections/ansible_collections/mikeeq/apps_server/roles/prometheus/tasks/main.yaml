@@ -1,14 +1,14 @@
 ---
-- name: Check docker-compose executable is present  # noqa: var-naming[no-role-prefix]
+- name: Check docker-compose executable is present
   ansible.builtin.shell: "which docker-compose"
-  register: docker_compose_result
+  register: prometheus_docker_compose_result
   ignore_errors: true
   changed_when: false
 
 - name: Fail on condition
   ansible.builtin.fail:
     msg: "docker-compose is not found! You need to install it first."
-  when: docker_compose_result.rc != 0
+  when: prometheus_docker_compose_result.rc != 0
 
 - name: Ensure passlib is installed
   delegate_to: localhost

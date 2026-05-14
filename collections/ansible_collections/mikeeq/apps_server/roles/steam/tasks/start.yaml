@@ -1,5 +1,5 @@
 ---
-- name: Run Steam and battle.net  # noqa: var-naming[no-role-prefix]
+- name: Run Steam and battle.net
   ansible.builtin.shell: |
     if ps -ef | grep -v grep | grep -w "Battle.net.exe"; then
       echo "Steam is already running"
@@ -15,18 +15,18 @@
         sleep 1
       done
     fi
-  register: battle_flag
+  register: steam_battle_flag
   async: 360
   poll: 0
 
-- name: Check battle_flag sync status  # noqa: var-naming[no-role-prefix]
+- name: Check steam_battle_flag sync status
   ansible.builtin.async_status:
-    jid: "{{ battle_flag.ansible_job_id }}"
-  register: battle_flag_results
-  until: battle_flag_results.finished
+    jid: "{{ steam_battle_flag.ansible_job_id }}"
+  register: steam_battle_flag_results
+  until: steam_battle_flag_results.finished
   retries: 30
 
-- name: Run Steam and Epic Games Launcher  # noqa: var-naming[no-role-prefix]
+- name: Run Steam and Epic Games Launcher
   ansible.builtin.shell: |
     if ps -ef | grep -v grep | grep -i "epic"; then
       echo "Steam is already running"
@@ -42,14 +42,14 @@
         sleep 1
       done
     fi
-  register: epic_flag
-  # changed_when: '"Wait for Steam" in epic_flag.stdout'
+  register: steam_epic_flag
+  # changed_when: '"Wait for Steam" in steam_epic_flag.stdout'
   async: 360
   poll: 0
 
-- name: Check epic_flag sync status  # noqa: var-naming[no-role-prefix]
+- name: Check steam_epic_flag sync status
   ansible.builtin.async_status:
-    jid: "{{ epic_flag.ansible_job_id }}"
-  register: epic_flag_results
-  until: epic_flag_results.finished
+    jid: "{{ steam_epic_flag.ansible_job_id }}"
+  register: steam_epic_flag_results
+  until: steam_epic_flag_results.finished
   retries: 30

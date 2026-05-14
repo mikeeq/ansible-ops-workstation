@@ -72,7 +72,7 @@ ANSIBLE_CONFIG = "playbooks/ansible.cfg"
 # _.path = { path = ["{{ exec(command='mise where pipx:ansible 2>/dev/null || echo /dev/null') }}/venvs/ansible/bin"], tools = true }
 
 [hooks]
-postinstall = "cd {{config_root}}/playbooks && ansible-galaxy install -r requirements.yaml"
+postinstall = "cd '{{config_root}}/playbooks' && ansible-galaxy install -r requirements.yaml"
 
 [tasks.pre-commit]
 description = "Run pre-commit checks on all files"

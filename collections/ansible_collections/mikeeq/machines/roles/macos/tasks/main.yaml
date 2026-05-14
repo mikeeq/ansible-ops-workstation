@@ -7,14 +7,14 @@
   # become: true
   # become_user: "{{ user_name }}"
 
-- name: "[MACOS] Download Font - MesloLGS_NF_Regular"  # noqa: var-naming[no-role-prefix]
+- name: "[MACOS] Download Font - MesloLGS_NF_Regular"
   ansible.builtin.get_url:
     url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
     dest: "~{{ user_name }}/Library/Fonts/MesloLGS_NF_Regular.ttf"
     mode: "0644"
   # become: true
   # become_user: "{{ user_name }}"
-  register: font_download
+  register: macos_font_download
 
 - name: "[MACOS] Download Font - MesloLGS_NF_Bold"
   ansible.builtin.get_url:

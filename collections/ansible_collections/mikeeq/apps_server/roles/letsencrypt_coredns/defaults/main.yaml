@@ -1,26 +1,26 @@
 ---
-account_path: "/etc/ssl/le/account"  # noqa: var-naming[no-role-prefix]
-account_key_path: "{{ account_path }}/account.key"  # noqa: var-naming[no-role-prefix]
+letsencrypt_coredns_account_path: "/etc/ssl/le/account"
+letsencrypt_coredns_account_key_path: "{{ letsencrypt_coredns_account_path }}/account.key"
 
-certs_path: "/etc/ssl/le/certs"  # noqa: var-naming[no-role-prefix]
-cert_path: "{{ certs_path }}/{{ cert.cn }}"  # noqa: var-naming[no-role-prefix]
-cert_key_path: "{{ cert_path }}/cert.key"  # noqa: var-naming[no-role-prefix]
-cert_csr_path: "{{ cert_path }}/cert.csr"  # noqa: var-naming[no-role-prefix]
-cert_crt_path: "{{ cert_path }}/cert.crt"  # noqa: var-naming[no-role-prefix]
-cert_pfx_path: "{{ cert_path }}/cert.pfx"  # noqa: var-naming[no-role-prefix]
-cert_fullchain_path: "{{ cert_path }}/cert.fullchain"  # noqa: var-naming[no-role-prefix]
-cert_chain_path: "{{ cert_path }}/cert.chain"  # noqa: var-naming[no-role-prefix]
+letsencrypt_coredns_certs_path: "/etc/ssl/le/certs"
+letsencrypt_coredns_cert_path: "{{ letsencrypt_coredns_certs_path }}/{{ cert.cn }}"
+letsencrypt_coredns_cert_key_path: "{{ letsencrypt_coredns_cert_path }}/cert.key"
+letsencrypt_coredns_cert_csr_path: "{{ letsencrypt_coredns_cert_path }}/cert.csr"
+letsencrypt_coredns_cert_crt_path: "{{ letsencrypt_coredns_cert_path }}/cert.crt"
+letsencrypt_coredns_cert_pfx_path: "{{ letsencrypt_coredns_cert_path }}/cert.pfx"
+letsencrypt_coredns_cert_fullchain_path: "{{ letsencrypt_coredns_cert_path }}/cert.fullchain"
+letsencrypt_coredns_cert_chain_path: "{{ letsencrypt_coredns_cert_path }}/cert.chain"
 
 # letsencrypt_api: "https://acme-v02.api.letsencrypt.org/directory"
-letsencrypt_api: "https://acme-staging-v02.api.letsencrypt.org/directory"  # noqa: var-naming[no-role-prefix]
-letsencrypt_api_version: 2  # noqa: var-naming[no-role-prefix]
-letsencrypt_email: "test@mail.com"  # noqa: var-naming[no-role-prefix]
-letsencrypt_days: 30  # noqa: var-naming[no-role-prefix]
+letsencrypt_coredns_letsencrypt_api: "https://acme-staging-v02.api.letsencrypt.org/directory"
+letsencrypt_coredns_letsencrypt_api_version: 2
+letsencrypt_coredns_letsencrypt_email: "test@mail.com"
+letsencrypt_coredns_letsencrypt_days: 30
 
-key_size: "4096"  # noqa: var-naming[no-role-prefix]
-force_cert_creation: "false"  # noqa: var-naming[no-role-prefix]
+letsencrypt_coredns_key_size: "4096"
+letsencrypt_coredns_force_cert_creation: "false"
 
-certs:  # noqa: var-naming[no-role-prefix]
+letsencrypt_coredns_certs:
   - cn: "example.com"
     domain_name: "example.com"
     sans:

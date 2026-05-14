@@ -1,14 +1,14 @@
 ---
-- name: Check if kubectl is a symlink  # noqa: var-naming[no-role-prefix]
+- name: Check if kubectl is a symlink
   ansible.builtin.stat:
     path: /usr/local/bin/kubectl
-  register: kubectl_symlink
+  register: wsl_kubectl_symlink
 
 - name: Remove linked kubectl, from docker-desktop
   ansible.builtin.file:
     path: /usr/local/bin/kubectl
     state: absent
-  when: kubectl_symlink.stat.islnk is not defined
+  when: wsl_kubectl_symlink.stat.islnk is not defined
 
 # - name: Add specified repository into sources list
 #   ansible.builtin.apt_repository:

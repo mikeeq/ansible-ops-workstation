@@ -1,13 +1,13 @@
 ---
-- name: Get latest version  # noqa: var-naming[no-role-prefix]
+- name: Get latest tflint_version
   ansible.builtin.shell: curl -Is https://github.com/terraform-linters/tflint/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+  register: tflint_version
   changed_when: false
 
-- name: "Latest version of tflint:"
+- name: "Latest tflint_version of tflint:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: tflint_version.stdout
 
-- name: "Set fact with latest version of tflint"
+- name: "Set fact with latest tflint_version of tflint"
   ansible.builtin.set_fact:
-    tflint_version: "{{ version.stdout }}"
+    tflint_version: "{{ tflint_version.stdout }}"

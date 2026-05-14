@@ -1,13 +1,13 @@
 ---
-- name: Get latest version of trivy  # noqa: var-naming[no-role-prefix]
+- name: Get latest trivy_version of trivy
   ansible.builtin.shell: curl -Is https://github.com/aquasecurity/trivy/releases/latest | grep -i 'location:' | cut -f3 -d'v' | cut -f1 -d'"'
-  register: version
+  register: trivy_version
   changed_when: false
 
-- name: "Latest version of trivy:"
+- name: "Latest trivy_version of trivy:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: trivy_version.stdout
 
-- name: "Set fact with latest version of trivy"
+- name: "Set fact with latest trivy_version of trivy"
   ansible.builtin.set_fact:
-    trivy_version: "{{ version.stdout }}"
+    trivy_version: "{{ trivy_version.stdout }}"

@@ -1,16 +1,16 @@
 ---
 # zed-linux-x86_64.tar.gz / zed-linux-aarch64.tar.gz
-- name: Get installed version  # noqa: var-naming[no-role-prefix]
-  ansible.builtin.shell: zed --version | cut -d ' ' -f2
+- name: Get installed zed_version
+  ansible.builtin.shell: zed --zed_version | cut -d ' ' -f2
   environment:
     ZED_ALLOW_ROOT: "true"
-  register: installed_zed_version
+  register: zed_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of zed:"
+- name: "Installed zed_version of zed:"
   ansible.builtin.debug:
-    var: installed_zed_version.stdout
+    var: zed_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -20,7 +20,7 @@
   ansible.builtin.get_url:
     url: "https://github.com/zed-industries/zed/releases/download/v{{ zed_version }}/zed-linux-{{ ansible_facts['architecture'] }}.tar.gz"
     dest: /tmp/zed.tar.gz
-  when: installed_zed_version.stdout != zed_version
+  when: zed_installed_version.stdout != zed_version
 
 - name: Create /opt/zed directory
   ansible.builtin.file:
@@ -29,7 +29,7 @@
     mode: "0755"
     owner: root
     group: root
-  when: installed_zed_version.stdout != zed_version
+  when: zed_installed_version.stdout != zed_version
 
 - name: Unarchive Zed
   ansible.builtin.unarchive:
@@ -38,14 +38,14 @@
     remote_src: true
     extra_opts:
       - --strip-components=1
-  when: installed_zed_version.stdout != zed_version
+  when: zed_installed_version.stdout != zed_version
 
 - name: Symlink zed binary to /usr/local/bin
   ansible.builtin.file:
     src: /opt/zed/bin/zed
     dest: /usr/local/bin/zed
     state: link
-  when: installed_zed_version.stdout != zed_version
+  when: zed_installed_version.stdout != zed_version
 
 # - name: Install Zed desktop file
 #   ansible.builtin.copy:
@@ -53,11 +53,11 @@
 #     dest: /usr/share/applications/dev.zed.Zed.desktop
 #     remote_src: true
 #     mode: "0644"
-#   when: installed_zed_version.stdout != zed_version
+#   when: zed_installed_version.stdout != zed_version
 
 - name: Copy Zed share files to /usr/share
   ansible.builtin.copy:
     src: /opt/zed/share/
     dest: /usr/share/
     remote_src: true
-  # when: installed_zed_version.stdout != zed_version
+  # when: zed_installed_version.stdout != zed_version

@@ -55,7 +55,7 @@
   vars:
     hosts_to_deploy: mikeeClevo
 
-- name: Update all clevo vms and host
+- name: Update all clevo libvirt_vms and host
   hosts: clevo!openwrt_office
   become: true
   tasks:
@@ -90,7 +90,7 @@
 - name: Set variables on an imported playbook
   ansible.builtin.import_playbook: generic-core.yaml
   vars:
-    hosts_to_deploy: vms
+    hosts_to_deploy: libvirt_vms
 
 - name: Provision DNS1
   hosts:

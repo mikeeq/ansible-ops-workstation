@@ -1,13 +1,13 @@
 ---
-- name: Get latest version  # noqa: var-naming[no-role-prefix]
+- name: Get latest packer_version
   ansible.builtin.shell: curl -Ls https://releases.hashicorp.com/packer/ | grep packer | grep -v alpha | grep -v beta | cut -d'_' -f2 | cut -d'<' -f1 | head -n1
-  register: version
+  register: packer_version
   changed_when: false
 
-- name: "Latest version of packer:"
+- name: "Latest packer_version of packer:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: packer_version.stdout
 
-- name: "Set fact with latest version of packer"
+- name: "Set fact with latest packer_version of packer"
   ansible.builtin.set_fact:
-    packer_version: "{{ version.stdout }}"
+    packer_version: "{{ packer_version.stdout }}"

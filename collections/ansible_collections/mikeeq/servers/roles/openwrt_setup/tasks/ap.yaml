@@ -4,14 +4,14 @@
     name: dnsmasq
     enabled: false
     state: stopped
-  when: not openwrt_ap_only_flag
+  when: not openwrt_setup_openwrt_ap_only_flag
 
 - name: Disable service firewall
   community.general.openwrt_init:
     name: firewall
     enabled: false
     state: stopped
-  when: openwrt_ap_only_flag | default(false)
+  when: openwrt_setup_openwrt_ap_only_flag | default(false)
 
 # - name: Install ap dependencies
 #   community.general.apk:

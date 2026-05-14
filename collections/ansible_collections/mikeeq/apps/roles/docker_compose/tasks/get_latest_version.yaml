@@ -1,13 +1,13 @@
 ---
-- name: Get latest version docker_compose  # noqa: var-naming[no-role-prefix]
+- name: Get latest docker_compose_version docker_compose
   ansible.builtin.shell: curl -Is https://github.com/docker/compose/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -d'"' -f1
-  register: version
+  register: docker_compose_version
   changed_when: false
 
-- name: "Latest version of docker_compose:"
+- name: "Latest docker_compose_version of docker_compose:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: docker_compose_version.stdout
 
-- name: "Set fact with latest version of docker_compose"
+- name: "Set fact with latest docker_compose_version of docker_compose"
   ansible.builtin.set_fact:
-    docker_compose_version: "{{ version.stdout }}"
+    docker_compose_version: "{{ docker_compose_version.stdout }}"

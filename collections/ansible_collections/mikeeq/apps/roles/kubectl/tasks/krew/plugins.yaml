@@ -1,10 +1,10 @@
 ---
-- name: Grab list of install kubectl krew plugins  # noqa: var-naming[no-role-prefix]
+- name: Grab list of install kubectl krew plugins
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: |
     ~/.krew/bin/kubectl-krew list | awk '{print $1}'
-  register: krew_installed_plugins
+  register: kubectl_krew_installed_plugins
   changed_when: false
 
 - name: Install plugins
@@ -14,4 +14,4 @@
     ~/.krew/bin/kubectl-krew install {{ item }}
   with_items:
     - "{{ krew_plugins }}"
-  when: item not in krew_installed_plugins.stdout_lines
+  when: item not in kubectl_krew_installed_plugins.stdout_lines

@@ -28,36 +28,36 @@
     group: "root"
     mode: "0755"
 
-- name: Set vars to enable SQM  # noqa: var-naming[no-role-prefix]
+- name: Set vars to enable SQM
   ansible.builtin.set_fact:
     cake_service: "start"
     sqm_enabled: "1"
-  when: dynamic_sqm_enabled == "true"
+  when: openwrt_dynamic_sqm_lte_dynamic_sqm_enabled == "true"
 
-- name: Set vars to disable SQM  # noqa: var-naming[no-role-prefix]
+- name: Set vars to disable SQM
   ansible.builtin.set_fact:
     cake_service: "stop"
     sqm_enabled: "0"
-  when: dynamic_sqm_enabled == "false"
+  when: openwrt_dynamic_sqm_lte_dynamic_sqm_enabled == "false"
 
-- name: Change config SQM  # noqa: var-naming[no-role-prefix]
+- name: Change config SQM
   ansible.builtin.lineinfile:
     regexp: "option\\senabled"
     # \s{8}option\senabled\s.\d.
     line: "        option enabled '{{ sqm_enabled }}'"
     path: /etc/config/sqm
-  register: sqm_config
+  register: openwrt_dynamic_sqm_lte_sqm_config
 
 - name: Restart SQM service
   ansible.builtin.shell: service sqm restart
-  when: sqm_config.changed
+  when: openwrt_dynamic_sqm_lte_sqm_config.changed
 
-- name: Check Dynamic SQM service status  # noqa: var-naming[no-role-prefix]
+- name: Check Dynamic SQM service status
   ansible.builtin.shell: service cake-autorate status
-  register: dynamic_sqm_status
+  register: openwrt_dynamic_sqm_lte_dynamic_sqm_status
   changed_when: false
   failed_when: false
 
 - name: "Change Dynamic SQM ansible.builtin.service: {{ cake_service }}"
   ansible.builtin.shell: service cake-autorate {{ cake_service }}
-  when: (dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (dynamic_sqm_status.stdout == "inactive" and cake_service == "start")
+  when: (openwrt_dynamic_sqm_lte_dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (openwrt_dynamic_sqm_lte_dynamic_sqm_status.stdout == "inactive" and cake_service == "start")

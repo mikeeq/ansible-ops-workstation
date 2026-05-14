@@ -1,13 +1,13 @@
 ---
-- name: Get latest version  # noqa: var-naming[no-role-prefix]
+- name: Get latest ctop_version
   ansible.builtin.shell: curl -Is https://github.com/bcicen/ctop/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+  register: ctop_version
   changed_when: false
 
-- name: "Latest version of ctop:"
+- name: "Latest ctop_version of ctop:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: ctop_version.stdout
 
-- name: "Set fact with latest version of ctop"
+- name: "Set fact with latest ctop_version of ctop"
   ansible.builtin.set_fact:
-    ctop_version: "{{ version.stdout }}"
+    ctop_version: "{{ ctop_version.stdout }}"

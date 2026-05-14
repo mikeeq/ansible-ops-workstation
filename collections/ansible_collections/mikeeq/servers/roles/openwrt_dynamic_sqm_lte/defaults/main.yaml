@@ -1,2 +1,2 @@
 ---
-dynamic_sqm_enabled: "true"  # noqa: var-naming[no-role-prefix]
+openwrt_dynamic_sqm_lte_dynamic_sqm_enabled: "true"

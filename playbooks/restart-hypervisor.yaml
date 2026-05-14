@@ -1,5 +1,5 @@
 ---
-- name: Update all clevo vms and host
+- name: Update all clevo libvirt_vms and host
   hosts: mikeeClevo
   become: true
   tasks:

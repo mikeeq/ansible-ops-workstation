@@ -5,12 +5,12 @@
 
 - name: Include create_vm.yaml
   ansible.builtin.include_tasks: create_vm.yaml
-  loop: "{{ vms }}"
+  loop: "{{ libvirt_vms }}"
   loop_control:
     loop_var: vm
 
 - name: Include destroy_vm.yaml
   ansible.builtin.include_tasks: destroy_vm.yaml
-  loop: "{{ vms_to_remove }}"
+  loop: "{{ libvirt_vms_to_remove }}"
   loop_control:
     loop_var: vm

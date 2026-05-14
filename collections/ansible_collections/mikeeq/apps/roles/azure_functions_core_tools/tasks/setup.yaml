@@ -1,15 +1,15 @@
 ---
-- name: Get installed version of azure_functions_core_tools  # noqa: var-naming[no-role-prefix]
+- name: Get installed azure_functions_core_tools_version of azure_functions_core_tools
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: /opt/azure_functions_core_tools/func --version
-  register: installed_azure_functions_core_tools_version
+  ansible.builtin.shell: /opt/azure_functions_core_tools/func --azure_functions_core_tools_version
+  register: azure_functions_core_tools_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of azure_functions_core_tools:"
+- name: "Installed azure_functions_core_tools_version of azure_functions_core_tools:"
   ansible.builtin.debug:
-    var: installed_azure_functions_core_tools_version.stdout
+    var: azure_functions_core_tools_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -17,4 +17,4 @@
 
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
-  when: installed_azure_functions_core_tools_version.stdout != azure_functions_core_tools_version
+  when: azure_functions_core_tools_installed_version.stdout != azure_functions_core_tools_version

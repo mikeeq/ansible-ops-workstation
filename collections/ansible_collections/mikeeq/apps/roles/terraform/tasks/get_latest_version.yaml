@@ -1,13 +1,13 @@
 ---
-- name: Get latest version  # noqa: var-naming[no-role-prefix]
+- name: Get latest terraform_version
   ansible.builtin.shell: curl -Is https://github.com/hashicorp/terraform/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+  register: terraform_version
   changed_when: false
 
-- name: "Latest version of terraform:"
+- name: "Latest terraform_version of terraform:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: terraform_version.stdout
 
-- name: "Set fact with latest version of terraform"
+- name: "Set fact with latest terraform_version of terraform"
   ansible.builtin.set_fact:
-    terraform_version: "{{ version.stdout }}"
+    terraform_version: "{{ terraform_version.stdout }}"

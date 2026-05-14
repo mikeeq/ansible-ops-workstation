@@ -1,13 +1,13 @@
 ---
-- name: Get latest version of krew  # noqa: var-naming[no-role-prefix]
+- name: Get latest kubectl_version of krew
   ansible.builtin.shell: curl -Is https://github.com/kubernetes-sigs/krew/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+  register: kubectl_version
   changed_when: false
 
-- name: "Latest version of krew:"
+- name: "Latest kubectl_version of krew:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: kubectl_version.stdout
 
-- name: "Set fact with latest version of krew"  # noqa: var-naming[no-role-prefix]
+- name: "Set fact with latest kubectl_version of krew"
   ansible.builtin.set_fact:
-    krew_version: "{{ version.stdout }}"
+    krew_version: "{{ kubectl_version.stdout }}"

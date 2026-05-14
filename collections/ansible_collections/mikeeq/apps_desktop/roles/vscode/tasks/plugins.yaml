@@ -1,9 +1,9 @@
 ---
-- name: List installed extensions  # noqa: var-naming[no-role-prefix]
+- name: List installed extensions
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: code --list-extensions
-  register: installed_extensions
+  register: vscode_installed_extensions
   changed_when: false
 
 # - name: Remove extensions
@@ -11,12 +11,12 @@
 #   become_user: "{{ user_name }}"
 #   ansible.builtin.shell: code --uninstall-extension {{ item }}
 #   with_items:
-#     - "{{ installed_extensions.stdout_lines }}"
+#     - "{{ vscode_installed_extensions.stdout_lines }}"
 
 - name: Install extensions
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: code --ignore-certificate-errors --install-extension {{ item }}
-  when: item not in installed_extensions.stdout_lines
+  when: item not in vscode_installed_extensions.stdout_lines
   with_items:
     - "{{ vscode_extensions }}"

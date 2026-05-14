@@ -1,15 +1,15 @@
 ---
-- name: Get installed version  # noqa: var-naming[no-role-prefix]
+- name: Get installed stern_version
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: stern -v | grep -i version | awk '{print $2}'
-  register: installed_stern_version
+  ansible.builtin.shell: stern -v | grep -i stern_version | awk '{print $2}'
+  register: stern_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of stern:"
+- name: "Installed stern_version of stern:"
   ansible.builtin.debug:
-    var: installed_stern_version.stdout
+    var: stern_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -17,4 +17,4 @@
 
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
-  when: installed_stern_version.stdout != stern_version
+  when: stern_installed_version.stdout != stern_version

@@ -1,14 +1,14 @@
 ---
-- name: Get installed version of docker_compose  # noqa: var-naming[no-role-prefix]
+- name: Get installed docker_compose_version of docker_compose
   become: true
-  ansible.builtin.shell: docker-compose version --short | cut -d'v' -f2
-  register: installed_docker_compose_version
+  ansible.builtin.shell: docker-compose docker_compose_version --short | cut -d'v' -f2
+  register: docker_compose_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of docker_compose:"
+- name: "Installed docker_compose_version of docker_compose:"
   ansible.builtin.debug:
-    var: installed_docker_compose_version.stdout
+    var: docker_compose_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -16,4 +16,4 @@
 
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
-  when: installed_docker_compose_version.stdout != docker_compose_version
+  when: docker_compose_installed_version.stdout != docker_compose_version

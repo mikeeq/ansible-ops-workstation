@@ -1,13 +1,13 @@
 ---
-- name: Get installed version  # noqa: var-naming[no-role-prefix]
-  ansible.builtin.shell: kubectl version --short --client=true | grep -i client | cut -d'v' -f2
-  register: installed_kubectl_version
+- name: Get installed kubectl_version
+  ansible.builtin.shell: kubectl kubectl_version --short --client=true | grep -i client | cut -d'v' -f2
+  register: kubectl_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of kubectl:"
+- name: "Installed kubectl_version of kubectl:"
   ansible.builtin.debug:
-    var: installed_kubectl_version.stdout
+    var: kubectl_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -18,7 +18,7 @@
     url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/{{ architecture_common_name }}/kubectl"
     dest: /usr/local/bin/kubectl
     force: true
-  when: installed_kubectl_version.stdout != kubectl_version
+  when: kubectl_installed_version.stdout != kubectl_version
 
 - name: Set permissions kubectl
   ansible.builtin.file:

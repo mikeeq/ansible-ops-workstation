@@ -1,5 +1,5 @@
 ---
-install_path: "/opt/vaultwarden"  # noqa: var-naming[no-role-prefix]
+vaultwarden_install_path: "/opt/vaultwarden"
 
 vaultwarden_clean: false
 vaultwarden_templates_path: templates

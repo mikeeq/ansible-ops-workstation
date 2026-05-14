@@ -4,10 +4,10 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ install_path }}"
-    - "{{ install_path }}/env_vars"
-    - "{{ install_path }}/env_vars/mysql_init"
-    # - "{{ install_path }}/config"
+    - "{{ zabbix_install_path }}"
+    - "{{ zabbix_install_path }}/env_vars"
+    - "{{ zabbix_install_path }}/env_vars/mysql_init"
+    # - "{{ zabbix_install_path }}/config"
 
 # https://github.com/zabbix/zabbix-docker
 - name: Download files
@@ -18,37 +18,37 @@
     force: false
   loop:
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/docker-compose_v3_alpine_mysql_latest.yaml"
-      dest: "{{ install_path }}/docker-compose.yaml"
+      dest: "{{ zabbix_install_path }}/docker-compose.yaml"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/compose_databases.yaml"
-      dest: "{{ install_path }}/compose_databases.yaml"
+      dest: "{{ zabbix_install_path }}/compose_databases.yaml"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/compose_additional_components.yaml"
-      dest: "{{ install_path }}/compose_additional_components.yaml"
+      dest: "{{ zabbix_install_path }}/compose_additional_components.yaml"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/compose_zabbix_components.yaml"
-      dest: "{{ install_path }}/compose_zabbix_components.yaml"
+      dest: "{{ zabbix_install_path }}/compose_zabbix_components.yaml"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/.env"
-      dest: "{{ install_path }}/.env"
+      dest: "{{ zabbix_install_path }}/.env"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/.env_db_mysql"
-      dest: "{{ install_path }}/env_vars/.env_db_mysql"
+      dest: "{{ zabbix_install_path }}/env_vars/.env_db_mysql"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/.env_web"
-      dest: "{{ install_path }}/env_vars/.env_web"
+      dest: "{{ zabbix_install_path }}/env_vars/.env_web"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/.env_srv"
-      dest: "{{ install_path }}/env_vars/.env_srv"
+      dest: "{{ zabbix_install_path }}/env_vars/.env_srv"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/.env_agent"
-      dest: "{{ install_path }}/env_vars/.env_agent"
+      dest: "{{ zabbix_install_path }}/env_vars/.env_agent"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/.MYSQL_USER"
-      dest: "{{ install_path }}/env_vars/.MYSQL_USER"
+      dest: "{{ zabbix_install_path }}/env_vars/.MYSQL_USER"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/.MYSQL_PASSWORD"
-      dest: "{{ install_path }}/env_vars/.MYSQL_PASSWORD"
+      dest: "{{ zabbix_install_path }}/env_vars/.MYSQL_PASSWORD"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/.MYSQL_ROOT_USER"
-      dest: "{{ install_path }}/env_vars/.MYSQL_ROOT_USER"
+      dest: "{{ zabbix_install_path }}/env_vars/.MYSQL_ROOT_USER"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/.MYSQL_ROOT_PASSWORD"
-      dest: "{{ install_path }}/env_vars/.MYSQL_ROOT_PASSWORD"
+      dest: "{{ zabbix_install_path }}/env_vars/.MYSQL_ROOT_PASSWORD"
     - src: "https://raw.githubusercontent.com/zabbix/zabbix-docker/refs/tags/{{ zabbix_version }}/env_vars/mysql_init/init_proxy_db.sql"
-      dest: "{{ install_path }}/env_vars/mysql_init/init_proxy_db.sql"
+      dest: "{{ zabbix_install_path }}/env_vars/mysql_init/init_proxy_db.sql"
 
 - name: Replace lineinfile more ping threads
   ansible.builtin.lineinfile:
-    path: "{{ install_path }}/env_vars/.env_srv"
+    path: "{{ zabbix_install_path }}/env_vars/.env_srv"
     regexp: "^ZBX_STARTPINGERS="
     line: "ZBX_STARTPINGERS=4"
     backup: true
@@ -56,14 +56,14 @@
 
 - name: Set Zabbix server timeout for long-running checks
   ansible.builtin.lineinfile:
-    path: "{{ install_path }}/env_vars/.env_srv"
+    path: "{{ zabbix_install_path }}/env_vars/.env_srv"
     regexp: "^ZBX_TIMEOUT="
     line: "ZBX_TIMEOUT=30"
   become: true
 
 - name: Replace lineinfile http port
   ansible.builtin.lineinfile:
-    path: "{{ install_path }}/.env"
+    path: "{{ zabbix_install_path }}/.env"
     regexp: "^ZABBIX_WEB_NGINX_HTTP_PORT="
     line: "ZABBIX_WEB_NGINX_HTTP_PORT=18080"
     backup: true
@@ -71,7 +71,7 @@
 
 - name: Replace lineinfile https port
   ansible.builtin.lineinfile:
-    path: "{{ install_path }}/.env"
+    path: "{{ zabbix_install_path }}/.env"
     regexp: "^ZABBIX_WEB_NGINX_HTTPS_PORT="
     line: "ZABBIX_WEB_NGINX_HTTPS_PORT=18443"
     backup: true
@@ -80,7 +80,7 @@
 # - name: Configure docker-compose file
 #   ansible.builtin.template:
 #     src: "{{ item }}"
-#     dest: "{{ install_path }}/{{ item }}"
+#     dest: "{{ zabbix_install_path }}/{{ item }}"
 #     mode: "0664"
 #   loop:
 #     - docker-compose.yaml
@@ -88,16 +88,16 @@
 
 # - ansible.builtin.import_tasks: config.yaml
 
-- name: Pull Docker image using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
+  changed_when: zabbix_pull_result.stderr_lines | length > 2
+  register: zabbix_pull_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ zabbix_install_path }}"
 
-- name: Run using docker-compose  # noqa: var-naming[no-role-prefix]
+- name: Run using docker-compose
   ansible.builtin.command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 2
-  register: up_result
+  changed_when: zabbix_up_result.stderr_lines | length > 2
+  register: zabbix_up_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ zabbix_install_path }}"

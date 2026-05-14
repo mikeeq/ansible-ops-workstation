@@ -1,18 +1,18 @@
 ---
-# ~/.local/share/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version
-# /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version | grep -i synergy-core | awk '{print $2}' | cut -d'-' -f1
-- name: Get installed version of synergy  # noqa: var-naming[no-role-prefix]
+# ~/.local/share/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --synergy_version
+# /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --synergy_version | grep -i synergy-core | awk '{print $2}' | cut -d'-' -f1
+- name: Get installed synergy_version of synergy
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --version | grep -i synergy-core | awk '{print
+  ansible.builtin.shell: /var/lib/flatpak/app/com.symless.Synergy/current/active/files/bin/synergy-core server --synergy_version | grep -i synergy-core | awk '{print
     $2}' | cut -d'-' -f3 | cut -d',' -f1
-  register: installed_synergy_version
+  register: synergy_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of synergy:"
+- name: "Installed synergy_version of synergy:"
   ansible.builtin.debug:
-    var: installed_synergy_version.stdout
+    var: synergy_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -21,4 +21,4 @@
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
   when:
-    - installed_synergy_version.stdout != synergy_version
+    - synergy_installed_version.stdout != synergy_version

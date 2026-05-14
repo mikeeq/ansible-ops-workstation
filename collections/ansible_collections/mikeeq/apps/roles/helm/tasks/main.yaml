@@ -1,13 +1,13 @@
 ---
-- name: Get installed version  # noqa: var-naming[no-role-prefix]
-  ansible.builtin.shell: helm version -c | cut -d'v' -f3 | cut -f1 -d'"'
-  register: installed_helm_version
+- name: Get installed helm_version
+  ansible.builtin.shell: helm helm_version -c | cut -d'v' -f3 | cut -f1 -d'"'
+  register: helm_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of helm:"
+- name: "Installed helm_version of helm:"
   ansible.builtin.debug:
-    var: installed_helm_version.stdout
+    var: helm_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -15,4 +15,4 @@
 
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
-  when: installed_helm_version.stdout != helm_version
+  when: helm_installed_version.stdout != helm_version

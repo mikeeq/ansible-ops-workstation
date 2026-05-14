@@ -15,8 +15,8 @@
     follow_redirects: all
     return_content: true
     headers:
-      Jenkins-Crumb: '{{ crumb.content.split(":")[1] }}'
-      Cookie: "{{ crumb.set_cookie }}"
+      Jenkins-Crumb: '{{ jenkins_crumb.content.split(":")[1] }}'
+      Cookie: "{{ jenkins_crumb.set_cookie }}"
     body: "Submit"
   loop: "{{ jenkins_users_to_delete }}"
   loop_control:
@@ -24,7 +24,7 @@
   failed_when: false
   register: jenkins_deleted_users
 
-- name: Add status if admin account was removed  # noqa: var-naming[no-role-prefix]
+- name: Add status if admin account was removed
   ansible.builtin.set_fact:
     admin_account_status: "{{ jenkins_deleted_users.results | selectattr('item', 'equalto', 'admin') | map(attribute='status') | join }}"
 

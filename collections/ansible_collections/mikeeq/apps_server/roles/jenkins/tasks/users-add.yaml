@@ -9,15 +9,15 @@
     path: "{{ jenkins_home }}/secrets/initialAdminPassword"
   when: jenkins_admin_account_removed_flag.stat.exists == false
 
-- name: JENKINS-PASSTOKEN | Get initial authentication token  # noqa: var-naming[no-role-prefix]
+- name: JENKINS-PASSTOKEN | Get initial authentication token
   ansible.builtin.shell: "cat {{ jenkins_home }}/secrets/initialAdminPassword"
-  register: admin_auth_token
+  register: jenkins_admin_auth_token
   when: jenkins_admin_account_removed_flag.stat.exists == false
 
 - name: Set admin vars - if initial user exists
   ansible.builtin.set_fact:
     jenkins_used_admin_username: "admin"
-    jenkins_used_admin_password: "{{ admin_auth_token.stdout }}"
+    jenkins_used_admin_password: "{{ jenkins_admin_auth_token.stdout }}"
   when: jenkins_admin_account_removed_flag.stat.exists == false
 
 - name: Set admin vars - if initial user is removed
@@ -41,8 +41,8 @@
     force_basic_auth: true
     follow_redirects: all
     headers:
-      Jenkins-Crumb: '{{ crumb.content.split(":")[1] }}'
-      Cookie: "{{ crumb.set_cookie }}"
+      Jenkins-Crumb: '{{ jenkins_crumb.content.split(":")[1] }}'
+      Cookie: "{{ jenkins_crumb.set_cookie }}"
     body: "username={{ item.name }}&password1={{ item.password }}&password2={{ item.password }}&fullname={{ item.name }}&email={{ item.email }}"
   loop: "{{ jenkins_users }}"
   loop_control:

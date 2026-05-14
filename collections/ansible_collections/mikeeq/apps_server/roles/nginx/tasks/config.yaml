@@ -1,7 +1,7 @@
 ---
 - name: Generate DH Parameters with a different size (2048 bits)
   community.crypto.openssl_dhparam:
-    path: "{{ install_path }}/config/dhparam.pem"
+    path: "{{ nginx_install_path }}/config/dhparam.pem"
     size: 2048
 
 - name: Create directories for certs
@@ -10,7 +10,7 @@
     state: directory
   loop: "{{ certs | map(attribute='cn') }}"
 
-- name: Copy certs  # noqa: var-naming[no-role-prefix]
+- name: Copy certs
   ansible.builtin.copy:
     src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
     dest: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
@@ -20,4 +20,4 @@
   with_nested:
     - "{{ certs | map(attribute='cn') }}"
     - ["cert.key", "cert.crt", "cert.fullchain"]
-  register: cert_flag
+  register: nginx_cert_flag

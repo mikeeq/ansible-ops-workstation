@@ -1,14 +1,14 @@
 ---
-- name: Check docker-compose executable is present  # noqa: var-naming[no-role-prefix]
+- name: Check docker-compose executable is present
   ansible.builtin.shell: "which docker-compose"
-  register: docker_compose_result
+  register: adguard_home_docker_compose_result
   ignore_errors: true
   changed_when: false
 
 - name: Fail on condition
   ansible.builtin.fail:
     msg: "docker-compose is not found! You need to install it first."
-  when: docker_compose_result.rc != 0
+  when: adguard_home_docker_compose_result.rc != 0
 
 - name: Ensure passlib is installed
   delegate_to: localhost
@@ -24,5 +24,5 @@
 - name: Import install.yaml
   ansible.builtin.import_tasks: install.yaml
 
-- name: Import dhcp.yaml
-  ansible.builtin.import_tasks: dhcp.yaml
+- name: Import adguard_home_dhcp.yaml
+  ansible.builtin.import_tasks: adguard_home_dhcp.yaml

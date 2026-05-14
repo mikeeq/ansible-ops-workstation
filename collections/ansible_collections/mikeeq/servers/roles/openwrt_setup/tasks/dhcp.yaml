@@ -2,7 +2,7 @@
 # https://github.com/flyoverhead/ansible-openwrt/blob/main/roles/dhcp/tasks/dhcp.yaml
 # https://github.com/gekmihesg/ansible-openwrt/blob/master/library/uci.py
 
-- name: Configure dhcp config  # noqa: var-naming[no-role-prefix]
+- name: Configure dhcp config
   ansible.builtin.template:
     src: "dhcp.j2"
     dest: "/etc/config/dhcp"
@@ -10,7 +10,7 @@
     group: "root"
     mode: "0600"
     backup: true
-  register: dhcp_flag
+  register: openwrt_setup_dhcp_flag
   # notify:
   #   - reload_dnsmasq
 
@@ -19,5 +19,5 @@
     name: dnsmasq
     state: reloaded
   when:
-    - dhcp_flag.changed
-    - openwrt_router_flag or openwrt_ap_only_flag
+    - openwrt_setup_dhcp_flag.changed
+    - openwrt_setup_openwrt_router_flag or openwrt_setup_openwrt_ap_only_flag

@@ -21,7 +21,7 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ install_path }}"
+    - "{{ zabbix_install_path }}"
 
 - name: Include config.yaml
   ansible.builtin.include_tasks: config.yaml

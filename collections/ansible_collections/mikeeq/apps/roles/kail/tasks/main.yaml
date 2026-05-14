@@ -1,15 +1,15 @@
 ---
-- name: Get installed version  # noqa: var-naming[no-role-prefix]
+- name: Get installed kail_version
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: kail version | awk '{print $1}' | cut -d'v' -f2
-  register: installed_kail_version
+  ansible.builtin.shell: kail kail_version | awk '{print $1}' | cut -d'v' -f2
+  register: kail_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of kail:"
+- name: "Installed kail_version of kail:"
   ansible.builtin.debug:
-    var: installed_kail_version.stdout
+    var: kail_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -17,4 +17,4 @@
 
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
-  when: installed_kail_version.stdout != kail_version
+  when: kail_installed_version.stdout != kail_version

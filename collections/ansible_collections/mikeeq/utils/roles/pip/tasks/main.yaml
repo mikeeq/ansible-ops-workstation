@@ -31,7 +31,7 @@
 #   ansible.builtin.pip:
 #     name: "{{ item.name }}"
 #     state: absent
-#     virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
+#     virtualenv: "{{ pip_virtualenv_install_path }}/{{ item.name }}"
 #   with_items:
 #     - "{{ pip_apps }}"
 #   when: item.virtualenv_enabled
@@ -40,7 +40,7 @@
   ansible.builtin.pip:
     name: "{{ item.name }}"
     state: present
-    virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
+    virtualenv: "{{ pip_virtualenv_install_path }}/{{ item.name }}"
     virtualenv_python: "{{ item.virtualenv_python | default(omit) }}"
   with_items:
     - "{{ pip_apps }}"
@@ -58,7 +58,7 @@
   with_items:
     - "{{ pipx_apps }}"
 
-- name: Install PIPx injected apps globally  # noqa: var-naming[no-role-prefix]
+- name: Install PIPx injected apps globally
   community.general.pipx:
     name: "{{ item.name }}"
     state: inject
@@ -70,7 +70,7 @@
     inject_packages: "{{ item.inject_packages | default(omit) }}"
     # force: true
   when: item.inject_packages is defined
-  register: pipx_inject
+  register: pip_pipx_inject
   ignore_errors: true
   with_items:
     - "{{ pipx_apps }}"

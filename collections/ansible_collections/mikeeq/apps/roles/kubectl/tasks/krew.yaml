@@ -7,17 +7,17 @@
   ansible.builtin.include_tasks: krew/update.yaml
   when: krew_version is not defined
 
-- name: Get installed version  # noqa: var-naming[no-role-prefix]
+- name: Get installed kubectl_version
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: ~/.krew/bin/kubectl-krew version | grep GitTag | awk '{print $2}' | cut -d'v' -f2
-  register: installed_krew_version
+  ansible.builtin.shell: ~/.krew/bin/kubectl-krew kubectl_version | grep GitTag | awk '{print $2}' | cut -d'v' -f2
+  register: kubectl_installed_krew_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of krew:"
+- name: "Installed kubectl_version of krew:"
   ansible.builtin.debug:
-    var: installed_krew_version.stdout
+    var: kubectl_installed_krew_version.stdout
 
 - name: Include krew/get_latest_version.yaml
   ansible.builtin.include_tasks: krew/get_latest_version.yaml
@@ -25,7 +25,7 @@
 
 - name: Include krew/install.yaml
   ansible.builtin.include_tasks: krew/install.yaml
-  when: installed_krew_version.stdout != krew_version
+  when: kubectl_installed_krew_version.stdout != krew_version
 
 - name: Import krew/plugins.yaml
   ansible.builtin.import_tasks: krew/plugins.yaml

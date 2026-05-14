@@ -1,15 +1,15 @@
 ---
-- name: Get installed version of dive  # noqa: var-naming[no-role-prefix]
+- name: Get installed dive_version of dive
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: dive version | awk '{print $2}'
-  register: installed_dive_version
+  ansible.builtin.shell: dive dive_version | awk '{print $2}'
+  register: dive_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of dive:"
+- name: "Installed dive_version of dive:"
   ansible.builtin.debug:
-    var: installed_dive_version.stdout
+    var: dive_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -17,4 +17,4 @@
 
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
-  when: installed_dive_version.stdout != dive_version
+  when: dive_installed_version.stdout != dive_version

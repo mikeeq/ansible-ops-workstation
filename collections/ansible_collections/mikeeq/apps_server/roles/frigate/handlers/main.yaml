@@ -2,4 +2,4 @@
 - name: Restart_docker_compose
   ansible.builtin.command: docker-compose restart
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ frigate_install_path }}"

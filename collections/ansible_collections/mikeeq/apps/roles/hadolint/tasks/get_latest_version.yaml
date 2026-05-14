@@ -1,13 +1,13 @@
 ---
-- name: Get latest version hadolint  # noqa: var-naming[no-role-prefix]
+- name: Get latest hadolint_version hadolint
   ansible.builtin.shell: curl -Is https://github.com/hadolint/hadolint/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -d'"' -f1
-  register: version
+  register: hadolint_version
   changed_when: false
 
-- name: "Latest version of hadolint:"
+- name: "Latest hadolint_version of hadolint:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: hadolint_version.stdout
 
-- name: "Set fact with latest version of hadolint"
+- name: "Set fact with latest hadolint_version of hadolint"
   ansible.builtin.set_fact:
-    hadolint_version: "{{ version.stdout }}"
+    hadolint_version: "{{ hadolint_version.stdout }}"

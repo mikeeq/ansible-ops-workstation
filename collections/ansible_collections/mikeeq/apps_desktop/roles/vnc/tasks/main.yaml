@@ -1,14 +1,14 @@
 ---
-- name: Get latest version  # noqa: var-naming[no-role-prefix]
+- name: Get latest vnc_version
   ansible.builtin.shell: curl -s https://www.realvnc.com/en/connect/download/viewer/linux/ | grep VNC-Viewer | cut -d'-' -f3 | head -n1
-  register: version
+  register: vnc_version
   changed_when: false
 
-- name: "Latest version of VNC-Viewer:"
+- name: "Latest vnc_version of VNC-Viewer:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: vnc_version.stdout
 
 - name: Install VNC-Viewer
   ansible.builtin.dnf:
-    name: "https://www.realvnc.com/download/file/viewer.files/VNC-Viewer-{{ version.stdout }}-Linux-x64.rpm"
+    name: "https://www.realvnc.com/download/file/viewer.files/VNC-Viewer-{{ vnc_version.stdout }}-Linux-x64.rpm"
     state: present

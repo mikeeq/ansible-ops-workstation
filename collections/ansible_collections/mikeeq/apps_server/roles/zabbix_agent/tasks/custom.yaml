@@ -71,10 +71,10 @@
   loop:
     - zabbix_agent_custom_who2.pp
 
-- name: List existing SELinux modules  # noqa: var-naming[no-role-prefix]
+- name: List existing SELinux modules
   ansible.builtin.command: semodule -l
   become: true
-  register: existing_policies
+  register: zabbix_agent_existing_policies
   changed_when: false
   when: ansible_selinux.status == "enabled"
 
@@ -85,4 +85,4 @@
   become: true
   when:
     - ansible_selinux.status == "enabled"
-    - (item | regex_replace('\\.pp$', '')) not in existing_policies.stdout
+    - (item | regex_replace('\\.pp$', '')) not in zabbix_agent_existing_policies.stdout

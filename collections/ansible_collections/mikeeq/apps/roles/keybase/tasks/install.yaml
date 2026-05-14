@@ -4,7 +4,7 @@
 
 - name: Check if installed
   ansible.builtin.shell: |
-    {{ package_manager }} list --installed | grep keybase
+    {{ keybase_package_manager }} list --installed | grep keybase
   register: keybase_installed
   changed_when: false
   ignore_errors: true

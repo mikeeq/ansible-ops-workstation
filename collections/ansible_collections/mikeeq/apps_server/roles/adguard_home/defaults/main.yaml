@@ -1,5 +1,5 @@
 ---
-install_path: "/opt/adguardhome"  # noqa: var-naming[no-role-prefix]
+adguard_home_install_path: "/opt/adguardhome"
 
 adguard_home_clean: false
 
@@ -7,7 +7,7 @@ adguard_home_user: testuser
 adguard_home_password: pass_tes1
 adguard_home_templates_path: templates
 
-dhcp:  # noqa: var-naming[no-role-prefix]
+adguard_home_dhcp:
   - hostname: sony-ps5
     mac: 5c:96:66:2a:5a:ad
     ip: 192.168.1.41
@@ -15,7 +15,7 @@ dhcp:  # noqa: var-naming[no-role-prefix]
     mac: 28:16:a8:ca:fa:61
     ip: 192.168.1.43
 
-private_dns_entries:  # noqa: var-naming[no-role-prefix]
+adguard_home_private_dns_entries:
   - source: test.com
     destination: 192.168.1.10
   - source: test2.com

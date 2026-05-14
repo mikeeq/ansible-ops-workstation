@@ -1,15 +1,15 @@
 ---
-- name: "Get installed version of kubescore"  # noqa: var-naming[no-role-prefix]
+- name: "Get installed kubescore_version of kubescore"
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: kube-score version --help | awk '{print $3}' | cut -d',' -f1
-  register: installed_kubescore_version
+  ansible.builtin.shell: kube-score kubescore_version --help | awk '{print $3}' | cut -d',' -f1
+  register: kubescore_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of kubescore:"
+- name: "Installed kubescore_version of kubescore:"
   ansible.builtin.debug:
-    var: installed_kubescore_version.stdout
+    var: kubescore_installed_version.stdout
 
 - name: Include get_latest_version.yaml
   ansible.builtin.include_tasks: get_latest_version.yaml
@@ -17,4 +17,4 @@
 
 - name: Include install.yaml
   ansible.builtin.include_tasks: install.yaml
-  when: installed_kubescore_version.stdout != kubescore_version
+  when: kubescore_installed_version.stdout != kubescore_version

@@ -9,7 +9,7 @@
 
     - name: Create variable with tasmota devices
       ansible.builtin.set_fact:
-        tasmota_devices: "{{ dhcp | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'tasmota') | list }}"
+        tasmota_devices: "{{ adguard_home_dhcp | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'tasmota') | list }}"
 
     - name: Display tasmota devices found
       ansible.builtin.debug:

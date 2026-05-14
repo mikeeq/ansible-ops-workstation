@@ -1,5 +1,5 @@
 ---
-- name: Set hostname fact if IP matches  # noqa: var-naming[no-role-prefix]
+- name: Set hostname fact if IP matches
   ansible.builtin.set_fact:
     zabbix_hostname: >-
       {{

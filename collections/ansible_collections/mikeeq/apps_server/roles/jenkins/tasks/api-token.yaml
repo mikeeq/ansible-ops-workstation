@@ -1,13 +1,13 @@
 ---
-- name: JENKINS-CREDENTIALS | Create CRUMB authentication request  # noqa: var-naming[no-role-prefix]
+- name: JENKINS-CREDENTIALS | Create CRUMB authentication request
   ansible.builtin.uri:
-    url: '{{ jenkins_url }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
+    url: '{{ jenkins_url }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//jenkins_crumb)'
     user: "{{ jenkins_crumb_admin_username }}"
     password: "{{ jenkins_crumb_admin_password }}"
     force_basic_auth: true
     return_content: true
-  register: crumb
+  register: jenkins_crumb
   no_log: false
   retries: 10
   delay: 10
-  until: crumb.status == 200
+  until: jenkins_crumb.status == 200

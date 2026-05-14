@@ -1,20 +1,20 @@
 ---
-- name: Grab cert from dns1 - slurp  # noqa: var-naming[no-role-prefix]
+- name: Grab cert from dns1 - slurp
   ansible.builtin.slurp:
-    src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
+    src: "{{ letsencrypt_coredns_certs_path }}/{{ item.0 }}/{{ item.1 }}"
   with_nested:
-    - "{{ certs | map(attribute='cn') }}"
+    - "{{ letsencrypt_coredns_certs | map(attribute='cn') }}"
     - ["cert.key", "cert.crt", "cert.fullchain"]
-  register: slurp_res
+  register: letsencrypt_coredns_slurp_res
 
-- name: Make sure that path for certs exists on localhost
+- name: Make sure that path for letsencrypt_coredns_certs exists on localhost
   ansible.builtin.file:
-    path: "{{ certs_path }}/{{ item }}"
+    path: "{{ letsencrypt_coredns_certs_path }}/{{ item }}"
     state: directory
-  loop: "{{ certs | map(attribute='cn') }}"
+  loop: "{{ letsencrypt_coredns_certs | map(attribute='cn') }}"
   delegate_to: 127.0.0.1
 
-- name: Copy certs to localhost
+- name: Copy letsencrypt_coredns_certs to localhost
   ansible.builtin.copy:
     content: "{{ item.content | b64decode }}"
     dest: "{{ item.source }}"
@@ -22,6 +22,6 @@
     group: root
     mode: "0644"
   delegate_to: 127.0.0.1
-  loop: "{{ slurp_res.results }}"
+  loop: "{{ letsencrypt_coredns_slurp_res.results }}"
   loop_control:
     label: "{{ item.item[0] }} - {{ item.item[1] }}"
