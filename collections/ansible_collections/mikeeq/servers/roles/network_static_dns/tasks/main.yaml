@@ -1,13 +1,17 @@
 ---
-- name: Populate service facts
-  ansible.builtin.service_facts:
+# - name: Populate service facts
+#   ansible.builtin.service_facts:
 
 - name: Disable and stop systemd-resolved
   ansible.builtin.service:
-    name: systemd-resolved
+    name: "{{ item }}"
     state: stopped
     enabled: false
-  when: services['systemd-resolved.service'].status != "not-found"
+  # when: services[item].status != "not-found"
+  loop:
+    - systemd-resolved-varlink.socket
+    - systemd-resolved-monitor.socket
+    - systemd-resolved.service
 
 - name: Disable modification of /etc/resolv.conf by NetworkManager
   ansible.builtin.lineinfile:

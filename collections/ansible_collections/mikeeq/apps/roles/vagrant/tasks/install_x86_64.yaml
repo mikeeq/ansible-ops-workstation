@@ -13,7 +13,7 @@
 # ruby: error while loading shared libraries: libcrypt.so.1: cannot open shared object ansible.builtin.file: No such file or directory
 
 - name: Get installed vagrant_version
-  ansible.builtin.shell: vagrant --vagrant_version | awk '{print $2}'
+  ansible.builtin.shell: vagrant --version | awk '{print $2}'
   register: vagrant_installed_version
   changed_when: false
   ignore_errors: true

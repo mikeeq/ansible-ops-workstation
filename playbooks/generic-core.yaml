@@ -10,3 +10,4 @@
     - mikeeq.apps.oh_my_zsh
     - mikeeq.apps.dive
     - mikeeq.apps.docker_compose
+    - mikeeq.apps.mise

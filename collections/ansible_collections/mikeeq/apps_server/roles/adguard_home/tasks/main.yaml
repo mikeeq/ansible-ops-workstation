@@ -10,12 +10,13 @@
     msg: "docker-compose is not found! You need to install it first."
   when: adguard_home_docker_compose_result.rc != 0
 
-- name: Ensure passlib is installed
-  delegate_to: localhost
-  ansible.builtin.pip:
-    name:
-      - passlib
-    state: present
+# - name: Ensure passlib is installed
+#   delegate_to: localhost
+#   ansible.builtin.pip:
+#     name:
+#       - passlib
+#       - bcrypt==4.3.0
+#     state: present
 
 - name: Include cleanup.yaml
   ansible.builtin.include_tasks: cleanup.yaml

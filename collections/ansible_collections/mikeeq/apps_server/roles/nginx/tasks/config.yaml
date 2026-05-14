@@ -6,19 +6,19 @@
 
 - name: Create directories for certs
   ansible.builtin.file:
-    path: "{{ certs_path }}/{{ item }}"
+    path: "{{ nginx_certs_path }}/{{ item }}"
     state: directory
     mode: "0755"
-  loop: "{{ certs | map(attribute='cn') }}"
+  loop: "{{ nginx_certs | map(attribute='cn') }}"
 
 - name: Copy certs
   ansible.builtin.copy:
-    src: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
-    dest: "{{ certs_path }}/{{ item.0 }}/{{ item.1 }}"
+    src: "{{ nginx_certs_path }}/{{ item.0 }}/{{ item.1 }}"
+    dest: "{{ nginx_certs_path }}/{{ item.0 }}/{{ item.1 }}"
     owner: root
     group: root
     mode: "0644"
   with_nested:
-    - "{{ certs | map(attribute='cn') }}"
+    - "{{ nginx_certs | map(attribute='cn') }}"
     - ["cert.key", "cert.crt", "cert.fullchain"]
   register: nginx_cert_flag

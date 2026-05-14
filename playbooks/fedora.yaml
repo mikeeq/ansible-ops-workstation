@@ -33,7 +33,6 @@
     - mikeeq.apps_desktop.vscode
     - mikeeq.apps_desktop.zed
     - mikeeq.machines.fedora
-    - mikeeq.apps.mise
     # - mikeeq.apps.ollama
     # - mikeeq.apps.nordvpn
     # - mikeeq.apps_desktop.keeweb

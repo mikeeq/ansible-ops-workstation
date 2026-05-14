@@ -18,6 +18,24 @@
   loop:
     - docker-compose.yaml
 
+- name: Install httpd-tools
+  ansible.builtin.package:
+    name: httpd-tools
+    state: present
+
+# https://github.com/pyca/bcrypt/issues/1082
+- name: Generate bcrypt hash for adguard_home password
+  ansible.builtin.command:
+    cmd: "htpasswd -nbBC 10 '' '{{ adguard_home_password }}'"
+  register: adguard_home_password_bcrypt_result
+  changed_when: false
+  no_log: true
+
+- name: Set adguard_home_password_bcrypt fact
+  ansible.builtin.set_fact:
+    adguard_home_password_bcrypt: "{{ adguard_home_password_bcrypt_result.stdout | regex_replace('^:', '') }}"
+  no_log: true
+
 - name: Configure confdir/AdGuardHome.yaml file
   ansible.builtin.template:
     src: "{{ adguard_home_templates_path }}/{{ item }}"

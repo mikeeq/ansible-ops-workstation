@@ -448,8 +448,8 @@ Contributions are what make the open source community such an amazing place to b
     dracut -f
 
     # Install drivers without graphical installer
-    bash NVIDIA-Linux-x86_64-590.44.01.run --silent --dkms --accept-license --disable-nouveau --no-nouveau-check --rebuild-initramfs --run-nvidia-xconfig
-    bash cuda_13.1.0_590.44.01_linux.run --silent --toolkit --override
+    bash NVIDIA-Linux-x86_64-595.71.05.run  --silent --dkms --accept-license --disable-nouveau --no-nouveau-check --rebuild-initramfs --run-nvidia-xconfig
+    bash cuda_13.2.1_595.58.03_linux.run --silent --toolkit --override
 
     nvidia-smi
     #  NVIDIA-SMI 590.44.01              Driver Version: 590.44.01      CUDA Version: 13.1
@@ -732,6 +732,9 @@ CRITICAL 'molecule/default/molecule.yml' glob failed.
 
 - consider switching from oh-my-zsh to antidote
 - consider switching from p10k to starship
+- cleanup openwrt_setup vars
+- cleanup openwrt config files
+- make sure dhcp var is correct
 
 
 <!-- LICENSE -->

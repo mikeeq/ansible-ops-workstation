@@ -55,7 +55,7 @@
     mode: "0640"
     backup: true
   become: true
-  notify: restart zabbix-agent
+  notify: Restart zabbix-agent
 
 # - name: Create Zabbix agent log directory
 #   ansible.builtin.file:

@@ -12,7 +12,7 @@
 
 - name: Set fact variables
   ansible.builtin.set_fact:
-    adguard_home_dhcp_config: "{{ adguard_home_dhcp_status.content }}"
+    adguard_home_dhcp_config: "{{ adguard_home_dhcp_status.content | from_json }}"
 
 - name: "Display var 'adguard_home_dhcp_config.static_leases'"
   ansible.builtin.debug:
@@ -29,21 +29,16 @@
 
 - name: "Create var 'adguard_home_dhcp_to_create'"
   ansible.builtin.set_fact:
-    adguard_home_dhcp_to_create: >-
-      {{ adguard_home_dhcp_to_create + entry }}
+    adguard_home_dhcp_to_create: "{{ adguard_home_dhcp_to_create + entry }}"
   when: old_entry_ip != item.ip or old_entry_hostname != item.hostname
   vars:
     old_entry_ip: "{{ adguard_home_dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
     old_entry_hostname: "{{ adguard_home_dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
-    entry: >-
-      [
-        {
-          'hostname': '{{ item.hostname }}',
-          'ip': '{{ item.ip }}',
-          'mac': '{{ item.mac }}'
-        }
-      ]
-  loop: "{{ adguard_home_dhcp }}"
+    entry:
+      - hostname: "{{ item.hostname }}"
+        ip: "{{ item.ip }}"
+        mac: "{{ item.mac }}"
+  loop: "{{ dhcp }}"
 
 - name: "Print the 'adguard_home_dhcp_to_create' var"
   ansible.builtin.debug:
@@ -58,14 +53,10 @@
   vars:
     new_entry_ip: "{{ adguard_home_dhcp | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
     new_entry_hostname: "{{ adguard_home_dhcp | selectattr('mac', 'equalto', item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
-    entry: >-
-      [
-        {
-          'hostname': '{{ item.hostname }}',
-          'ip': '{{ item.ip }}',
-          'mac': '{{ item.mac }}'
-        }
-      ]
+    entry:
+      - hostname: "{{ item.hostname }}"
+        ip: "{{ item.ip }}"
+        mac: "{{ item.mac }}"
   loop: "{{ adguard_home_dhcp_config.static_leases }}"
 
 - name: "Print the 'adguard_home_dhcp_to_delete' var"

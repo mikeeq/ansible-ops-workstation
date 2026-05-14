@@ -12,3 +12,8 @@ nginx_error_page:
   cert:
     crt_path: "/etc/ssl/cert.crt"
     key_path: "/etc/ssl/cert.key"
+
+nginx_certs:
+  - cn: "web.example.com"
+    domain_name: "web.example.com"
+nginx_certs_path: "/etc/ssl/certs"
