@@ -217,7 +217,13 @@ Contributions are what make the open source community such an amazing place to b
 
    ```bash
    cd playbooks
-   ansible-playbook -i ../inventory/hosts.yaml wsl-ubuntu.yaml -K
+   ansible-playbook wsl-ubuntu.yaml -K
+
+   # When there will be a problem with sudo ("timed out waiting for become success"), enable NOPASSWD temporarily:
+   echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER && sudo chmod 0440 /etc/sudoers.d/$USER
+   ansible-playbook wsl-ubuntu.yaml
+   # After provisioning is done, remove NOPASSWD:
+   sudo rm /etc/sudoers.d/$USER
    ```
 
 7. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
