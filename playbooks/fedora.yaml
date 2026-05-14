@@ -4,7 +4,7 @@
 
 - name: Fedora bootstrap
   hosts:
-    - "{{ hosts_to_deploy | default('local') }}"
+    - "{{ hosts_to_deploy | default('localhost') }}"
     # - mikeeClevo
   become: true
   pre_tasks:

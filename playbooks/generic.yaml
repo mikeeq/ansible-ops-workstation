@@ -3,7 +3,7 @@
   ansible.builtin.import_playbook: vars.yaml
 
 - name: Generic bootstrap
-  hosts: "{{ hosts_to_deploy | default('local') }}"
+  hosts: "{{ hosts_to_deploy | default('localhost') }}"
   become: true
   roles:
     - mikeeq.utils.pip
