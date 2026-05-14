@@ -61,5 +61,7 @@
     src: /opt/zed/share/
     dest: /usr/share/
     remote_src: true
-    mode: "0644"
+    # mode: "0644"
+  tags:
+    - skip_ansible_lint
   # when: zed_installed_version.stdout != zed_version
