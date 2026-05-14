@@ -33,9 +33,6 @@
     - mikeeq.apps_desktop.vscode
     - mikeeq.apps_desktop.zed
     - mikeeq.machines.fedora
-    - mikeeq.apps.github_cli
-    - mikeeq.apps.github_copilot_cli
-    - mikeeq.apps.claude_code
     - mikeeq.apps.mise
     - mikeeq.apps.ollama
     # - mikeeq.apps.nordvpn

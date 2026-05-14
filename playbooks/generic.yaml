@@ -24,3 +24,6 @@
     - mikeeq.apps.tflint
     - mikeeq.apps.trivy
     - mikeeq.apps.azure_functions_core_tools
+    - mikeeq.apps.github_cli
+    - mikeeq.apps.github_copilot_cli
+    - mikeeq.apps.claude_code
