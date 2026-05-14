@@ -9,6 +9,7 @@ __pycache__
 *.log
 *.tmp
 *.bak
-collections/
+collections/ansible_collections/*
 !collections/ansible_collections/mikeeq/
 .ruff_cache
+tests/tmp

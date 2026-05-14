@@ -1,7 +1,7 @@
 ---
 - name: Include architecture specifc group_vars
   hosts:
-    - "{{ hosts_to_deploy | default('local') }}"
+    - "{{ hosts_to_deploy | default('localhost') }}"
   become: false
   gather_facts: true
   pre_tasks:

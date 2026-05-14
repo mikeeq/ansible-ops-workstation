@@ -1,8 +1,15 @@
 ---
 collections:
-  # - name: https://github.com/mikeeq/ansible-ops-workstation.git#collections/ansible_collections/mikeeq/apps
+  # - name: https://github.com/mikeeq/ansible-ops-workstation.git#/collections/ansible_collections/mikeeq/apps/
   #   type: git
+  #   version: feature/molecule_testing
 
   # directory containing the collection
   - name: ../collections/ansible_collections/mikeeq/apps
     type: dir
+
+# roles:
+#   # Install a role from Ansible Galaxy.
+#   - name: https://github.com/mikeeq/ansible-ops-workstation.git#/collections/ansible_collections/mikeeq/apps/github_copilot_cli
+#     # version: "1.9.6" # note that ranges are not supported for roles
+#     type: git

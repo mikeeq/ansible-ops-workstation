@@ -75,9 +75,7 @@ jobs:
       - name: Run ansible-galaxy and playbook tests
         run: |
           cd tests/
-          mise unset ANSIBLE_CONFIG
-          ansible-galaxy collection install -r requirements.yaml --force
-          ansible-playbook playbook.yaml
+          ./run_tests.sh
         env:
           ANSIBLE_FORCE_COLOR: "1"
 
