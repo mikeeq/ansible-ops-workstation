@@ -1,6 +1,6 @@
 ---
 - name: Get installed kubectl_version
-  ansible.builtin.shell: kubectl version --client=true | awk '{print $3}' | head -n1
+  ansible.builtin.shell: kubectl version --client=true | awk '{print $3}' | head -n1 | cut -d'v' -f2
   register: kubectl_installed_version
   changed_when: false
   ignore_errors: true
