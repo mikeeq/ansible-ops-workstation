@@ -1,2 +1,2 @@
 ---
-# github_copilot_cli_install_dir is derived at runtime in tasks/main.yaml
+github_copilot_cli_install_dir: "{{ user_home_dir }}/.local"

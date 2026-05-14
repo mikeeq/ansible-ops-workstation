@@ -1,18 +1,13 @@
 ---
-- name: Get user home directory
-  ansible.builtin.shell: "echo ~{{ user_name }}"
-  register: user_home
-  changed_when: false
-
 - name: Check if GitHub Copilot CLI is already installed
   ansible.builtin.stat:
-    path: "{{ user_home.stdout }}/.local/bin/copilot"
+    path: "{{ github_copilot_cli_install_dir }}/bin/copilot"
   register: copilot_cli_installed
 
 - name: Install GitHub Copilot CLI via installer script
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: curl -fsSL https://gh.io/copilot-install | PREFIX="$HOME/.local" bash
+  ansible.builtin.shell: curl -fsSL https://gh.io/copilot-install | PREFIX="{{ github_copilot_cli_install_dir }}" bash
   args:
     executable: /bin/bash
   when: not copilot_cli_installed.stat.exists
