@@ -7,14 +7,10 @@ source venv2/bin/activate
 # 2. Upgrade pip
 # pip install --upgrade pip
 
-
 pip install git+https://github.com/Deci-AI/super-gradients.git
-
 
 # sed -i 's/sghub.deci.ai/sg-hub-nv.s3.amazonaws.com/' /usr/local/lib/python3.11/dist-packages/super_gradients/training/pretrained_models.py
 # sed -i 's/sghub.deci.ai/sg-hub-nv.s3.amazonaws.com/' /usr/local/lib/python3.11/dist-packages/super_gradients/training/utils/checkpoint_utils.py
-
-
 
 ## Temp
 

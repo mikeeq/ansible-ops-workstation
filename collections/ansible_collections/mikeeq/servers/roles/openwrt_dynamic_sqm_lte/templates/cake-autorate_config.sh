@@ -3,7 +3,7 @@
 # *** STANDARD CONFIGURATION OPTIONS ***
 
 dl_if=ifb4wan # download interface
-ul_if=wan # upload interface
+ul_if=wan     # upload interface
 
 # list of reflectors to use and number of pingers to initiate
 # pingers will be initiated with reflectors in the order specified in the list
@@ -17,7 +17,7 @@ reflectors=("1.1.1.1" "1.0.0.1" "8.8.8.8" "8.8.4.4" "9.9.9.9" "9.9.9.10")
 # to avoid excessive CPU use (proportional with ping interval / number of pingers)
 # and to avoid abusive network activity (excessive ICMP frequency to one reflector)
 # The author has found an ICMP rate of 1/(0.2/4) = 20 Hz to give satisfactory performance on 4G
-no_pingers=6 # number of pingers to maintain
+no_pingers=6                   # number of pingers to maintain
 reflector_ping_interval_s=0.15 # (seconds, e.g. 0.2s or 2s)
 
 # delay threshold in ms is the extent of RTT increase to classify as a delay
@@ -26,20 +26,20 @@ reflector_ping_interval_s=0.15 # (seconds, e.g. 0.2s or 2s)
 dl_delay_thr_ms=75 # (milliseconds)
 ul_delay_thr_ms=75 # (milliseconds)
 
-min_dl_shaper_rate_kbps=20000  # minimum bandwidth for download (Kbit/s)
+min_dl_shaper_rate_kbps=20000   # minimum bandwidth for download (Kbit/s)
 base_dl_shaper_rate_kbps=100000 # steady state bandwidth for download (Kbit/s)
 max_dl_shaper_rate_kbps=180000  # maximum bandwidth for download (Kbit/s)
 
 min_ul_shaper_rate_kbps=2000  # minimum bandwidth for upload (Kbit/s)
 base_ul_shaper_rate_kbps=5000 # steady state bandwidth for upload (KBit/s)
-max_ul_shaper_rate_kbps=10000  # maximum bandwidth for upload (Kbit/s)
+max_ul_shaper_rate_kbps=10000 # maximum bandwidth for upload (Kbit/s)
 
 # *** ADVANCED CONFIGURATION OPTIONS ***
 
 # bufferbloat is detected when (bufferbloat_detection_thr) samples
 # out of the last (bufferbloat detection window) samples are delayed
-bufferbloat_detection_window=6  # number of samples to retain in detection window
-bufferbloat_detection_thr=2     # number of delayed samples for bufferbloat detection
+bufferbloat_detection_window=6 # number of samples to retain in detection window
+bufferbloat_detection_thr=2    # number of delayed samples for bufferbloat detection
 
 # rate adjustment parameters
 # bufferbloat adjustment works with the lower of the adjusted achieved rate and adjusted shaper rate

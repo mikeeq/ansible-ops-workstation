@@ -37,15 +37,15 @@ delay_thr_ms=75 # (milliseconds)
 
 min_dl_shaper_rate_kbps=10000  # minimum bandwidth for download (Kbit/s)
 base_dl_shaper_rate_kbps=50000 # steady state bandwidth for download (Kbit/s)
-max_dl_shaper_rate_kbps=180000  # maximum bandwidth for download (Kbit/s)
+max_dl_shaper_rate_kbps=180000 # maximum bandwidth for download (Kbit/s)
 
 min_ul_shaper_rate_kbps=2000  # minimum bandwidth for upload (Kbit/s)
 base_ul_shaper_rate_kbps=5000 # steady state bandwidth for upload (KBit/s)
-max_ul_shaper_rate_kbps=15000  # maximum bandwidth for upload (Kbit/s)
+max_ul_shaper_rate_kbps=15000 # maximum bandwidth for upload (Kbit/s)
 
 # sleep functionality saves unecessary pings and CPU cycles by
 # pausing all active pingers when connection is not in active use
-enable_sleep_function=1 # enable (1) or disable (0) sleep functonality
+enable_sleep_function=1        # enable (1) or disable (0) sleep functonality
 connection_active_thr_kbps=500 # threshold in Kbit/s below which dl/ul is considered idle
 sustained_idle_sleep_thr_s=60  # time threshold to put pingers to sleep on sustained dl/ul achieved rate < idle_thr (seconds)
 
@@ -60,8 +60,8 @@ monitor_achieved_rates_interval_ms=200 # (milliseconds)
 
 # bufferbloat is detected when (bufferbloat_detection_thr) samples
 # out of the last (bufferbloat detection window) samples are delayed
-bufferbloat_detection_window=6  # number of samples to retain in detection window
-bufferbloat_detection_thr=2     # number of delayed samples for bufferbloat detection
+bufferbloat_detection_window=6 # number of samples to retain in detection window
+bufferbloat_detection_thr=2    # number of delayed samples for bufferbloat detection
 
 # RTT baseline against which to measure delays
 # the idea is that the baseline is allowed to increase slowly to allow for path changes
@@ -90,7 +90,7 @@ high_load_thr=0.75   # % of currently set bandwidth for detecting high load
 # average time it would take to replace the bufferbloat
 # detection window with new samples upon a bufferbloat event
 bufferbloat_refractory_period_ms=300 # (milliseconds)
-decay_refractory_period_ms=1000 # (milliseconds)
+decay_refractory_period_ms=1000      # (milliseconds)
 
 # interval for checking reflector health
 reflector_health_check_interval_s=1 # (seconds)
@@ -108,7 +108,6 @@ global_ping_response_timeout_s=10 # timeout to set shaper rates to min on no pin
 
 if_up_check_interval_s=10 # time to wait before re-checking if rx/tx bytes files exist (e.g. from boot state)
 
-
 # Starlink satellite switch (sss) compensation options
 sss_compensation=1 # enable (1) or disable (0) Starlink handling
 # satellite switch compensation start times in seconds of each minute
@@ -116,33 +115,32 @@ sss_times_s=("12.0" "27.0" "42.0" "57.0")
 sss_compensation_pre_duration_ms=300
 sss_compensation_post_duration_ms=200
 
-
 # verify these are correct using 'cat /sys/class/...'
 case "${dl_if}" in
-    \veth*)
-        rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
-        ;;
-    \ifb*)
-        rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
-        ;;
-    *)
-        rx_bytes_path="/sys/class/net/${dl_if}/statistics/rx_bytes"
-        ;;
+\veth*)
+	rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
+	;;
+\ifb*)
+	rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
+	;;
+*)
+	rx_bytes_path="/sys/class/net/${dl_if}/statistics/rx_bytes"
+	;;
 esac
 
 case "${ul_if}" in
-    \veth*)
-        tx_bytes_path="/sys/class/net/${ul_if}/statistics/rx_bytes"
-        ;;
-    \ifb*)
-        tx_bytes_path="/sys/class/net/${ul_if}/statistics/rx_bytes"
-        ;;
-    *)
-        tx_bytes_path="/sys/class/net/${ul_if}/statistics/tx_bytes"
-        ;;
+\veth*)
+	tx_bytes_path="/sys/class/net/${ul_if}/statistics/rx_bytes"
+	;;
+\ifb*)
+	tx_bytes_path="/sys/class/net/${ul_if}/statistics/rx_bytes"
+	;;
+*)
+	tx_bytes_path="/sys/class/net/${ul_if}/statistics/tx_bytes"
+	;;
 esac
 
-if (( $debug )) ; then
-    echo "DEBUG: rx_bytes_path: $rx_bytes_path"
-    echo "DEBUG: tx_bytes_path: $tx_bytes_path"
+if (($debug)); then
+	echo "DEBUG: rx_bytes_path: $rx_bytes_path"
+	echo "DEBUG: tx_bytes_path: $tx_bytes_path"
 fi

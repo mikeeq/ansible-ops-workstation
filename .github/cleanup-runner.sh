@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-function info () {
-    echo >&2 "===]> Info: $* ";
+function info() {
+	echo >&2 "===]> Info: $* "
 }
 
 info "Remove unneeded stuff from GitHub Actions Runner..."
-
 
 # 11,2 GiB [###################################] /android
 info "Removing Android SDK from /usr/local/lib/android..."

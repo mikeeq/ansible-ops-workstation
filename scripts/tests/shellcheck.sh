@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SHELLCHECK_PATH=${1:-$(find . -type f -name "*.sh" |  tr '\n' ' ')}
+SHELLCHECK_PATH=${1:-$(find . -type f -name "*.sh" | tr '\n' ' ')}
 
 echo "Linting bash scripts - shellcheck..."
 docker run \

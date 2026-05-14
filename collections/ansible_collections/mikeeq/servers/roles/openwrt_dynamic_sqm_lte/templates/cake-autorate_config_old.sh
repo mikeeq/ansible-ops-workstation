@@ -27,7 +27,7 @@ log_file_max_size_KB=2000 # maximum KB (i.e. bytes/1024) worth of log lines betw
 # *** STANDARD CONFIGURATION OPTIONS ***
 
 dl_if=ifb4wan # download interface
-ul_if=wan # upload interface
+ul_if=wan     # upload interface
 
 # pinger selection can be any of:
 # fping - round robin pinging (rtts)
@@ -42,19 +42,19 @@ pinger_binary=fping
 # and the remaining 2 reflectors in the list will be used in the event any of the first 4 go bad
 # a bad reflector will go to the back of the queue on reflector rotation
 reflectors=(
-"1.1.1.1" "1.0.0.1"  # Cloudflare
-"8.8.8.8" "8.8.4.4"  # Google
-"9.9.9.9" "9.9.9.10" "9.9.9.11" # Quad9
-"94.140.14.15" "94.140.14.140" "94.140.14.141" "94.140.15.15" "94.140.15.16" # AdGuard
-"64.6.65.6" "156.154.70.1" "156.154.70.2" "156.154.70.3" "156.154.70.4" "156.154.70.5" "156.154.71.1" "156.154.71.2" "156.154.71.3" "156.154.71.4" "156.154.71.5" # Neustar
-"208.67.220.2" "208.67.220.123" "208.67.220.220" "208.67.222.2" "208.67.222.123" # OpenDNS
-"185.228.168.9" "185.228.168.10" "185.228.169.11" "185.228.169.9" "185.228.169.168" # CleanBrowsing
+	"1.1.1.1" "1.0.0.1"                                                                                                                                               # Cloudflare
+	"8.8.8.8" "8.8.4.4"                                                                                                                                               # Google
+	"9.9.9.9" "9.9.9.10" "9.9.9.11"                                                                                                                                   # Quad9
+	"94.140.14.15" "94.140.14.140" "94.140.14.141" "94.140.15.15" "94.140.15.16"                                                                                      # AdGuard
+	"64.6.65.6" "156.154.70.1" "156.154.70.2" "156.154.70.3" "156.154.70.4" "156.154.70.5" "156.154.71.1" "156.154.71.2" "156.154.71.3" "156.154.71.4" "156.154.71.5" # Neustar
+	"208.67.220.2" "208.67.220.123" "208.67.220.220" "208.67.222.2" "208.67.222.123"                                                                                  # OpenDNS
+	"185.228.168.9" "185.228.168.10" "185.228.169.11" "185.228.169.9" "185.228.169.168"                                                                               # CleanBrowsing
 )
 # Think carefully about the following settings
 # to avoid excessive CPU use (proportional with ping interval / number of pingers)
 # and to avoid abusive network activity (excessive ICMP frequency to one reflector)
 # The author has found an ICMP rate of 1/(0.2/4) = 20 Hz to give satisfactory performance on 4G
-no_pingers=10 # number of pingers to maintain
+no_pingers=10                 # number of pingers to maintain
 reflector_ping_interval_s=0.5 # (seconds, e.g. 0.2s or 2s)
 
 # delay threshold in ms is the extent of OWD increase to classify as a delay
@@ -68,19 +68,19 @@ ul_delay_thr_ms=25 # (milliseconds)
 adjust_dl_shaper_rate=1 # enable (1) or disable (0) actually changing the dl shaper rate
 adjust_ul_shaper_rate=1 # enable (1) or disable (0) actually changing the ul shaper rate
 
-min_dl_shaper_rate_kbps=20000  # minimum bandwidth for download (Kbit/s)
+min_dl_shaper_rate_kbps=20000   # minimum bandwidth for download (Kbit/s)
 base_dl_shaper_rate_kbps=100000 # steady state bandwidth for download (Kbit/s)
 max_dl_shaper_rate_kbps=180000  # maximum bandwidth for download (Kbit/s)
 
 min_ul_shaper_rate_kbps=2000  # minimum bandwidth for upload (Kbit/s)
 base_ul_shaper_rate_kbps=5000 # steady state bandwidth for upload (KBit/s)
-max_ul_shaper_rate_kbps=10000  # maximum bandwidth for upload (Kbit/s)
+max_ul_shaper_rate_kbps=10000 # maximum bandwidth for upload (Kbit/s)
 
 # sleep functionality saves unecessary pings and CPU cycles by
 # pausing all active pingers when connection is not in active use
-enable_sleep_function=1 # enable (1) or disable (0) sleep functonality
-connection_active_thr_kbps=500   # threshold in Kbit/s below which dl/ul is considered idle
-sustained_idle_sleep_thr_s=60.0  # time threshold to put pingers to sleep on sustained dl/ul achieved rate < idle_thr (seconds)
+enable_sleep_function=1         # enable (1) or disable (0) sleep functonality
+connection_active_thr_kbps=500  # threshold in Kbit/s below which dl/ul is considered idle
+sustained_idle_sleep_thr_s=60.0 # time threshold to put pingers to sleep on sustained dl/ul achieved rate < idle_thr (seconds)
 
 startup_wait_s=0.0 # number of seconds to wait on startup (e.g. to wait for things to settle on router reboot)
 
@@ -112,15 +112,15 @@ monitor_achieved_rates_interval_ms=200 # (milliseconds)
 
 # bufferbloat is detected when (bufferbloat_detection_thr) samples
 # out of the last (bufferbloat detection window) samples are delayed
-bufferbloat_detection_window=6   # number of samples to retain in detection window
-bufferbloat_detection_thr=3      # number of delayed samples for bufferbloat detection
+bufferbloat_detection_window=6 # number of samples to retain in detection window
+bufferbloat_detection_thr=3    # number of delayed samples for bufferbloat detection
 
 # RTT baseline against which to measure delays
 # the idea is that the baseline is allowed to increase slowly to allow for path changes
 # and slowly enough such that bufferbloat will be corrected well before the baseline increases,
 # but it will decrease very rapidly to ensure delays are measured against the shortest path
-alpha_baseline_increase=0.001  # how rapidly baseline RTT is allowed to increase
-alpha_baseline_decrease=0.9  # how rapidly baseline RTT is allowed to decrease
+alpha_baseline_increase=0.001 # how rapidly baseline RTT is allowed to increase
+alpha_baseline_decrease=0.9   # how rapidly baseline RTT is allowed to decrease
 
 # rate adjustment parameters
 # bufferbloat adjustment works with the lower of the adjusted achieved rate and adjusted shaper rate
@@ -142,7 +142,7 @@ high_load_thr=0.75   # % of currently set bandwidth for detecting high load
 # average time it would take to replace the bufferbloat
 # detection window with new samples upon a bufferbloat event
 bufferbloat_refractory_period_ms=300 # (milliseconds)
-decay_refractory_period_ms=1000 # (milliseconds)
+decay_refractory_period_ms=1000      # (milliseconds)
 
 # interval for checking reflector health
 reflector_health_check_interval_s=1.0 # (seconds)
@@ -175,27 +175,27 @@ sss_compensation_post_duration_ms=200
 
 # verify these are correct using 'cat /sys/class/...'
 case "${dl_if}" in
-    \veth*)
-        rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
-        ;;
-    \ifb*)
-        rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
-        ;;
-    *)
-        rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
-        ;;
+\veth*)
+	rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
+	;;
+\ifb*)
+	rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
+	;;
+*)
+	rx_bytes_path="/sys/class/net/${dl_if}/statistics/tx_bytes"
+	;;
 esac
 
 case "${ul_if}" in
-    \veth*)
-        tx_bytes_path="/sys/class/net/${ul_if}/statistics/rx_bytes"
-        ;;
-    \ifb*)
-        tx_bytes_path="/sys/class/net/${ul_if}/statistics/rx_bytes"
-        ;;
-    *)
-        tx_bytes_path="/sys/class/net/${ul_if}/statistics/tx_bytes"
-        ;;
+\veth*)
+	tx_bytes_path="/sys/class/net/${ul_if}/statistics/rx_bytes"
+	;;
+\ifb*)
+	tx_bytes_path="/sys/class/net/${ul_if}/statistics/rx_bytes"
+	;;
+*)
+	tx_bytes_path="/sys/class/net/${ul_if}/statistics/tx_bytes"
+	;;
 esac
 
 config_file_check="cake-autorate"
