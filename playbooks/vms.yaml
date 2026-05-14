@@ -22,7 +22,8 @@
 # TODO: add tasmota Update
 # TODO: add zabbix install
 
-- hosts: clevo
+- name: Show info about host groups
+  hosts: clevo
   gather_facts: false
   tasks:
     # - name: Display all host groups
