@@ -12,5 +12,6 @@
     state: present
     install_deps: true
     global: true
+    executable: /usr/bin/pipx
     python: "python3.14"
     force: true
