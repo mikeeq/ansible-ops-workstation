@@ -1,2 +1,2 @@
 ---
-github_copilot_cli_install_dir: "~{{ user_name }}/.local"
+github_copilot_cli_install_dir: "/home/{{ user_name }}/.local"
