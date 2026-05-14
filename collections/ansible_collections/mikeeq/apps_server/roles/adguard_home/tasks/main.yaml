@@ -24,5 +24,5 @@
 - name: Import install.yaml
   ansible.builtin.import_tasks: install.yaml
 
-- name: Import adguard_home_dhcp.yaml
-  ansible.builtin.import_tasks: adguard_home_dhcp.yaml
+- name: Import dhcp.yaml
+  ansible.builtin.import_tasks: dhcp.yaml
