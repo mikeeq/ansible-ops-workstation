@@ -62,8 +62,10 @@
     # - name: Clean DNF
     #   ansible.builtin.shell: dnf clean all
 
-    - ansible.builtin.import_tasks: ../collections/ansible_collections/mikeeq/utils/roles/dnf/tasks/dnf5.yaml
-    - ansible.builtin.import_tasks: ../collections/ansible_collections/mikeeq/utils/roles/dnf/tasks/update.yaml
+    - name: Import ../collections/ansible_collections/mikeeq/utils/roles/dnf/tasks/dnf5.yaml
+      ansible.builtin.import_tasks: ../collections/ansible_collections/mikeeq/utils/roles/dnf/tasks/dnf5.yaml
+    - name: Import ../collections/ansible_collections/mikeeq/utils/roles/dnf/tasks/update.yaml
+      ansible.builtin.import_tasks: ../collections/ansible_collections/mikeeq/utils/roles/dnf/tasks/update.yaml
 
     - name: Check if reboot required
       ansible.builtin.stat:

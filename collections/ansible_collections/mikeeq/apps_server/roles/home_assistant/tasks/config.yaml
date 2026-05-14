@@ -52,7 +52,6 @@
     - ../templates/config/sensors/*
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config/sensors/*"
 
-
 - name: Configure config/mqtt/sensors
   ansible.builtin.template:
     src: "{{ item }}"
@@ -98,7 +97,7 @@
   with_fileglob:
     - ../templates/config/mqtt/water_heater/*
 
-- name: Check that the .storage exists
+- name: Check that the .storage exists  # noqa: var-naming[no-role-prefix]
   ansible.builtin.stat:
     path: "{{ install_path }}/config/.storage/onboarding"
   register: storage_result

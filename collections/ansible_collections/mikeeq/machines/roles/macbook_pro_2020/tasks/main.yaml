@@ -1,3 +1,5 @@
 ---
-- ansible.builtin.import_tasks: keyboard.yaml
-- ansible.builtin.import_tasks: turbo_boost_off.yaml
+- name: Import keyboard.yaml
+  ansible.builtin.import_tasks: keyboard.yaml
+- name: Import turbo_boost_off.yaml
+  ansible.builtin.import_tasks: turbo_boost_off.yaml

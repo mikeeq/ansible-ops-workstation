@@ -1,5 +1,5 @@
 ---
-- name: Set hostname fact if IP matches
+- name: Set hostname fact if IP matches  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     zabbix_hostname: >-
       {{
@@ -16,5 +16,7 @@
       }}
 
 
-- ansible.builtin.import_tasks: zabbix_agent.yaml
-- ansible.builtin.import_tasks: custom.yaml
+- name: Import zabbix_agent.yaml
+  ansible.builtin.import_tasks: zabbix_agent.yaml
+- name: Import custom.yaml
+  ansible.builtin.import_tasks: custom.yaml

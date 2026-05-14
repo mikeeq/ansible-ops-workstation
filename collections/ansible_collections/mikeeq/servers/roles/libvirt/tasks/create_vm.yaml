@@ -1,5 +1,5 @@
 ---
-- name: Set vars
+- name: Set vars  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     vm_config_path: "{{ libvirt_images_dir }}/{{ vm.name }}.xml"
     vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
@@ -12,7 +12,7 @@
     owner: qemu
     group: qemu
 
-- name: Render vm config
+- name: Render vm config  # noqa: var-naming[no-role-prefix]
   ansible.builtin.template:
     src: vm.xml.j2
     dest: "{{ vm_config_path }}"
@@ -21,13 +21,15 @@
     mode: "0600"
   register: vm_config
 
-- ansible.builtin.include_tasks: cloud-init.yaml
+- name: Include cloud-init.yaml
+  ansible.builtin.include_tasks: cloud-init.yaml
   when: vm_config.changed or vm_force_recreation == true or vm_force_cloud_init_recreation == true
 
-- ansible.builtin.include_tasks: destroy_vm.yaml
+- name: Include destroy_vm.yaml
+  ansible.builtin.include_tasks: destroy_vm.yaml
   when: vm_force_recreation == true
 
-- name: Check if storage exists
+- name: Check if storage exists  # noqa: var-naming[no-role-prefix]
   ansible.builtin.stat:
     path: "{{ vm_disk_path }}"
   register: qcow_check
@@ -65,7 +67,7 @@
     virt-resize --expand /dev/sda3 "{{ libvirt_images_dir }}/{{ cloud_image_name }}" {{ vm_disk_path }}
   when: vm_force_recreation == true or qcow_check.stat.exists == false
 
-- name: Check VM state
+- name: Check VM state  # noqa: var-naming[no-role-prefix]
   community.libvirt.virt:
     name: "{{ vm.name }}"
     command: status
@@ -82,7 +84,7 @@
     state: shutdown
   when: vm_state.exception is not defined and ((vm_config.changed and vm_force_recreation == false) or vm_force_cloud_init_recreation == true)
 
-- name: Wait for shutdown of the VM
+- name: Wait for shutdown of the VM  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: virsh list | grep -w "{{ vm.name }}"
   register: shutdown_res
   failed_when: shutdown_res.rc == 0 or shutdown_res.rc >= 2
@@ -97,7 +99,7 @@
     command: undefine
   when: (vm_config.changed or vm_force_recreation == true) and vm_state.exception is not defined
 
-- name: Wait for undefine of the VM
+- name: Wait for undefine of the VM  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: virsh list --all | grep -w "{{ vm.name }}"
   failed_when: undefine_res.rc == 0 or undefine_res.rc >= 2
   register: undefine_res
@@ -106,7 +108,7 @@
   when:
     - vm_config.changed
 
-- name: Define the domain with XML specification
+- name: Define the domain with XML specification  # noqa: var-naming[no-role-prefix]
   community.libvirt.virt:
     command: define
     xml: "{{ lookup('template', 'vm.xml.j2') }}"

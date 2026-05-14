@@ -1,5 +1,5 @@
 ---
-install_path: "/opt/frigate"
+install_path: "/opt/frigate"  # noqa: var-naming[no-role-prefix]
 
 frigate_clean: false
 frigate_templates_path: templates

@@ -1,5 +1,5 @@
 ---
-- name: Stop Jenkins using docker-compose
+- name: Stop Jenkins using docker-compose  # noqa: var-naming[no-role-prefix]
   ansible.builtin.command: docker-compose stop
   changed_when: up_result.stderr_lines | length > 1
   register: up_result

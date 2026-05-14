@@ -2,13 +2,13 @@
 # /usr/share/applications/sublime_text.desktop
 # https://github.com/keeweb/keeweb/releases/download/v1.6.3/KeeWeb-1.6.3.linux.x64.zip
 
-- name: Get installed version
+- name: Get installed version  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: cat /opt/keeweb/version.tag
   register: installed_version
   changed_when: false
   ignore_errors: true
 
-- name: 'Installed version of keeweb:'
+- name: "Installed version of keeweb:"
   ansible.builtin.debug:
     var: installed_version.stdout
 
@@ -17,7 +17,7 @@
     path: /opt/keeweb
     state: directory
 
-- name: Get latest version
+- name: Get latest version  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: curl -Is "https://github.com/keeweb/keeweb/releases/latest" | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
   register: version_tag
   changed_when: version_tag.stdout != installed_version.stdout

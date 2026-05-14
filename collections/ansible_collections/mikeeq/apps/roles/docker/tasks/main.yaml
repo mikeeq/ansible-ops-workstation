@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.import_tasks: install.yaml
+- name: Import install.yaml
+  ansible.builtin.import_tasks: install.yaml
 
 - name: Populate service facts
   ansible.builtin.service_facts:

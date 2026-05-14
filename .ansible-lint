@@ -18,10 +18,10 @@ exclude_paths:
   - playbooks/requirements.yaml
 
 skip_list:
-  - name
-  - var-naming
+  # - name
+  # - var-naming
   - risky-file-permissions
-  - role-name[path]
+  # - role-name[path]
   - no-changed-when
   - risky-shell-pipe
   - command-instead-of-shell
@@ -34,7 +34,6 @@ skip_list:
   - galaxy[no-changelog]
   # - yaml[line-length]
 #   - tags:formatting,yaml
-
 
 # To skip task from verifying
 # add comment # noqa: command-instead-of-module

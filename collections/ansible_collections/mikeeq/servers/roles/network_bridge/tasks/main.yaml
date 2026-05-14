@@ -18,18 +18,19 @@
 #   ansible.builtin.debug:
 #     var: nic_name
 
-- name: Set var nic_name
+- name: Set var nic_name  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     nic_name: "{{ baremetal_lan_interface }}"
 
-- name: Set vars bridge_name and bridge_slave_name
+- name: Set vars bridge_name and bridge_slave_name  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     bridge_name: "br-vm-{{ nic_name }}"
     bridge_slave_name: "br-vm-slave-{{ nic_name }}"
 
-- name: check active connection
+- name: Check active connection  # noqa: var-naming[no-role-prefix]
   # ansible.builtin.shell: nmcli con show --active | grep -i ethernet | grep -w {{ nic_name }} | awk '{print $1}' | head -n1
-  ansible.builtin.shell: nmcli -t -f NAME,TYPE,DEVICE c show --active | grep -v {{ bridge_slave_name }} | grep -w {{ nic_name }} | grep -i ethernet | cut -d':' -f1
+  ansible.builtin.shell: nmcli -t -f NAME,TYPE,DEVICE c show --active | grep -v {{ bridge_slave_name }} | grep -w {{ nic_name }} | grep -i ethernet | cut -d':'
+    -f1
   register: nmcli_active
   changed_when: false
 
@@ -53,7 +54,7 @@
     hairpin: false
     autoconnect: true
 
-- name: Allow ip forwarding for bridge network
+- name: Allow ip forwarding for bridge network  # noqa: var-naming[no-role-prefix]
   ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
     line: "{{ item }}"

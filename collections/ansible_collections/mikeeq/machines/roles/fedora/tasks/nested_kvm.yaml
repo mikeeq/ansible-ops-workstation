@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.set_fact:
+- name: Set fact variables
+  ansible.builtin.set_fact:  # noqa: var-naming[no-role-prefix]
     check_cpu: >-
       {%- if ansible_facts['processor'] | regex_search('Intel') -%}
         Intel
@@ -13,12 +14,12 @@
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/kvm.conf
     line: options kvm_intel nested=1
-    regexp: '^options\skvm_intel\snested'
+    regexp: "^options\\skvm_intel\\snested"
   when: check_cpu == "Intel"
 
 - name: Add nested virt for AMD CPUs
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/kvm.conf
     line: options kvm_amd nested=1
-    regexp: '^options\skvm_amd\snested'
+    regexp: "^options\\skvm_amd\\snested"
   when: check_cpu == "AMD"

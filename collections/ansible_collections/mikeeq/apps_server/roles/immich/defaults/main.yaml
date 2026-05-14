@@ -1,4 +1,4 @@
 ---
-install_path: "/opt/immich"
+install_path: "/opt/immich"  # noqa: var-naming[no-role-prefix]
 
 immich_home_clean: false

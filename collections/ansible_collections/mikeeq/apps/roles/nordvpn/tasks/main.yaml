@@ -1,5 +1,5 @@
 ---
-- name: Check if NordVPN repo is installed
+- name: Check if NordVPN repo is installed  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: dnf repolist | grep -iq nordvpn
   register: repo_exists
   changed_when: repo_exists.rc != 0

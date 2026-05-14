@@ -8,7 +8,7 @@
   #       curl -s "http://192.168.4.58/cm?cmnd=Module" | jq -r ".Module.[]"
   vars:
     tasmota_firmware_url: "http://ota.tasmota.com/tasmota/release/tasmota.bin.gz"
-    update_firmware: false  # Set to true to enable firmware updates
+    update_firmware: false # Set to true to enable firmware updates
     latest_firmware_version: "15.1.0.1(bab6914-tasmota)"
   tasks:
     - name: Create variable with tasmota devices

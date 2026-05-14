@@ -1,5 +1,5 @@
 ---
-- name: Set vars
+- name: Set vars  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
 

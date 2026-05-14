@@ -1,5 +1,5 @@
 ---
-- name: Get latest version synergy
+- name: Get latest version synergy  # noqa: var-naming[no-role-prefix]
   # ansible.builtin.shell: basename $(curl -Is https://github.com/symless/synergy-core/releases/latest | grep -i 'location:' | awk '{print $2}')
   # ansible.builtin.shell: curl -Ls https://github.com/symless/synergy-core/releases | grep -i 'a href' | grep -i tag | grep -i releases | cut -d">" -f3 | cut -d"<" -f1 | head -n1
   ansible.builtin.shell: |

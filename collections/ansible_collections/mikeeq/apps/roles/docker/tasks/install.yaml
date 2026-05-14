@@ -41,7 +41,6 @@
   when: docker_check.rc != 0
   # changed_when:
 
-
 - name: Check if docker-repo is installed
   ansible.builtin.shell: |
     dnf repolist | grep docker-ce
@@ -49,7 +48,8 @@
   ignore_errors: true
   changed_when: docker_repo_check.rc != 0
 
-- ansible.builtin.include_tasks: repo.yaml
+- name: Include repo.yaml
+  ansible.builtin.include_tasks: repo.yaml
   when: docker_repo_check.rc != 0
 
 - name: Install Docker

@@ -1,5 +1,5 @@
 ---
-- name: Refresh apk repos on OpenWRT
+- name: Refresh apk repos on OpenWRT  # noqa: var-naming[no-role-prefix]
   ansible.builtin.raw: |
     apk update
   register: opkg_update
@@ -7,7 +7,7 @@
   changed_when: false
   failed_when: '"OK" not in opkg_update.stdout'
 
-- name: Install Ansible dependencies on OpenWRT
+- name: Install Ansible dependencies on OpenWRT  # noqa: var-naming[no-role-prefix]
   ansible.builtin.raw: |
     apk add {{ opkgs | join(' ') }}
   vars:

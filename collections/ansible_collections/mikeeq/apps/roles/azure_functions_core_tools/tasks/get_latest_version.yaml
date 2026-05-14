@@ -1,5 +1,5 @@
 ---
-- name: Get latest version azure_functions_core_tools
+- name: Get latest version azure_functions_core_tools  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: curl -Is https://github.com/Azure/azure-functions-core-tools/releases/latest | grep -i 'location:' | rev | cut -d'/' -f1 | rev
   register: version
   changed_when: false

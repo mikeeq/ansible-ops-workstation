@@ -34,7 +34,7 @@
   become_user: "{{ user_name }}"
   ansible.builtin.get_url:
     url: "https://packagecontrol.io/Package%20Control.sublime-package"
-    dest: '~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package'
+    dest: "~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package"
 
 - name: Add sublime preferences
   become: true

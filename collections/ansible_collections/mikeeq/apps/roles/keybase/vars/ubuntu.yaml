@@ -1,2 +1,2 @@
 ---
-package_manager: apt
+package_manager: apt  # noqa: var-naming[no-role-prefix]

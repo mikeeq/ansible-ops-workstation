@@ -1,5 +1,5 @@
 ---
-- name: List installed extensions
+- name: List installed extensions  # noqa: var-naming[no-role-prefix]
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: code --list-extensions

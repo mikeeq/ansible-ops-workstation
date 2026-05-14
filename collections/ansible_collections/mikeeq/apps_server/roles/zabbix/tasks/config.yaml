@@ -11,16 +11,16 @@
       - "OpenWRT"
       - "SmartHome"
       - "Tasmota"
-      - 'Private'
-      - 'InternetProvider'
-      - 'Not Monitored'
+      - "Private"
+      - "InternetProvider"
+      - "Not Monitored"
 
 - name: Download Zabbix sensor files
   become: false
   ansible.builtin.get_url:
     url: "{{ item.url }}"
     dest: "{{ item.dest }}"
-    mode: '0644'
+    mode: "0644"
   loop:
     - url: https://raw.githubusercontent.com/pfoo/zabbix-mdraid/refs/heads/master/Template%20MD%20RAID.yaml
       dest: /tmp/template_md_raid.yaml
@@ -36,7 +36,7 @@
   ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: '0644'
+    mode: "0644"
   loop:
     - src: icmp_template.yaml
       dest: /tmp/icmp_template.yaml
@@ -91,13 +91,13 @@
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
-      - 'Linux servers'
+      - "Linux servers"
     link_templates:
-      - 'Linux by Zabbix agent'
-      - 'ICMP Ping'
-      - 'Template Lm-sensors'
-      - 'Template_Sensors'
-      - 'MD RAID'
+      - "Linux by Zabbix agent"
+      - "ICMP Ping"
+      - "Template Lm-sensors"
+      - "Template_Sensors"
+      - "MD RAID"
     inventory_mode: automatic
     interfaces:
       - type: 1
@@ -106,8 +106,7 @@
         ip: "{{ item.ip }}"
         dns: ""
         port: 10050
-  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
-            | selectattr('tags', 'contains', 'server') | list }}"
+  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'server') | list }}"
   loop_control:
     label: "{{ item.hostname }}"
   when: item.hostname != 'clevo-lan-25g'
@@ -117,15 +116,15 @@
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
-      - 'Linux servers'
+      - "Linux servers"
     link_templates:
-      - 'Linux by Zabbix agent'
-      - 'ICMP Ping'
-      - 'Template Lm-sensors'
-      - 'Template_Sensors'
-      - 'MD RAID'
-      - 'Speedtest'
-      - 'Zabbix server health'
+      - "Linux by Zabbix agent"
+      - "ICMP Ping"
+      - "Template Lm-sensors"
+      - "Template_Sensors"
+      - "MD RAID"
+      - "Speedtest"
+      - "Zabbix server health"
     interfaces:
       - type: 1
         main: 1
@@ -133,8 +132,7 @@
         ip: "{{ item.ip }}"
         dns: ""
         port: 10050
-  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
-            | selectattr('tags', 'contains', 'server') | list }}"
+  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'server') | list }}"
   loop_control:
     label: "{{ item.hostname }}"
   when: item.hostname == 'clevo-lan-25g'
@@ -144,13 +142,13 @@
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
-      - 'OpenWRT'
+      - "OpenWRT"
     link_templates:
-      - 'Linux by Zabbix agent'
-      - 'ICMP Ping'
-      - 'Template Lm-sensors'
-      - 'Template_Sensors'
-      - 'MD RAID'
+      - "Linux by Zabbix agent"
+      - "ICMP Ping"
+      - "Template Lm-sensors"
+      - "Template_Sensors"
+      - "MD RAID"
     interfaces:
       - type: 1
         main: 1
@@ -158,8 +156,7 @@
         ip: "{{ item.ip }}"
         dns: ""
         port: 10050
-  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
-            | selectattr('tags', 'contains', 'openwrt') | list }}"
+  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'openwrt') | list }}"
   loop_control:
     label: "{{ item.hostname }}"
 
@@ -168,9 +165,9 @@
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
-      - 'SmartHome'
+      - "SmartHome"
     link_templates:
-      - 'ICMP Ping'
+      - "ICMP Ping"
     interfaces:
       - type: 1
         main: 1
@@ -178,8 +175,7 @@
         ip: "{{ item.ip }}"
         dns: ""
         port: 10050
-  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
-            | selectattr('tags', 'contains', 'smarthome') | list }}"
+  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'smarthome') | list }}"
   loop_control:
     label: "{{ item.hostname }}"
 
@@ -225,9 +221,9 @@
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
-      - 'Not Monitored'
+      - "Not Monitored"
     link_templates:
-      - 'ICMP Ping without alerts'
+      - "ICMP Ping without alerts"
     interfaces:
       - type: 1
         main: 1
@@ -235,8 +231,7 @@
         ip: "{{ item.ip }}"
         dns: ""
         port: 10050
-  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
-            | selectattr('tags', 'contains', 'not_monitored') | list }}"
+  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'not_monitored') | list }}"
   loop_control:
     label: "{{ item.hostname }}"
 
@@ -245,9 +240,9 @@
   community.zabbix.zabbix_host:
     host_name: "{{ item.hostname }}"
     host_groups:
-      - 'InternetProvider'
+      - "InternetProvider"
     link_templates:
-      - 'ICMP Ping'
+      - "ICMP Ping"
     interfaces:
       - type: 1
         main: 1
@@ -255,7 +250,6 @@
         ip: "{{ item.ip }}"
         dns: ""
         port: 10050
-  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined')
-            | selectattr('tags', 'contains', 'internet_provider') | list }}"
+  loop: "{{ (dhcp + static_devices) | selectattr('tags', 'defined') | selectattr('tags', 'contains', 'internet_provider') | list }}"
   loop_control:
     label: "{{ item.hostname }}"

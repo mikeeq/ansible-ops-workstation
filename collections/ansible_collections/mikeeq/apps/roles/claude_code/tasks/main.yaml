@@ -10,7 +10,7 @@
     owner: "{{ user_name }}"
     group: "{{ user_group_name | default(user_name) }}"
 
-- name: Check if Claude is already installed
+- name: Check if Claude is already installed  # noqa: var-naming[no-role-prefix]
   ansible.builtin.stat:
     path: "~{{ user_name }}/.local/bin/claude"
   register: claude_installed

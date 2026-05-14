@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.include_tasks: api-token.yaml
+- name: Include api-token.yaml
+  ansible.builtin.include_tasks: api-token.yaml
   vars:
     jenkins_crumb_admin_username: "{{ jenkins_admin_username }}"
     jenkins_crumb_admin_password: "{{ jenkins_admin_password }}"
@@ -7,7 +8,7 @@
 - name: JENKINS-CREDENTIALS | Remove admin Jenkins account
   ansible.builtin.uri:
     method: POST
-    url: '{{ jenkins_url }}/securityRealm/user/{{ item }}/doDelete'
+    url: "{{ jenkins_url }}/securityRealm/user/{{ item }}/doDelete"
     user: "{{ jenkins_admin_username }}"
     password: "{{ jenkins_admin_password }}"
     force_basic_auth: true
@@ -15,15 +16,15 @@
     return_content: true
     headers:
       Jenkins-Crumb: '{{ crumb.content.split(":")[1] }}'
-      Cookie: '{{ crumb.set_cookie }}'
-    body: 'Submit'
+      Cookie: "{{ crumb.set_cookie }}"
+    body: "Submit"
   loop: "{{ jenkins_users_to_delete }}"
   loop_control:
     label: "{{ item }}"
   failed_when: false
   register: jenkins_deleted_users
 
-- name: Add status if admin account was removed
+- name: Add status if admin account was removed  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     admin_account_status: "{{ jenkins_deleted_users.results | selectattr('item', 'equalto', 'admin') | map(attribute='status') | join }}"
 

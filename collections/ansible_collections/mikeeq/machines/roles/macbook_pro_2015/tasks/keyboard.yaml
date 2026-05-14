@@ -3,10 +3,10 @@
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.git:
-    repo: 'https://github.com/free5lot/hid-apple-patched.git'
+    repo: "https://github.com/free5lot/hid-apple-patched.git"
     dest: "{{ git_modules_path }}/hid-apple-patched"
 
-- name: DKMS add
+- name: DKMS add  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: dkms add .
   args:
     chdir: "{{ git_modules_path }}/hid-apple-patched"
@@ -25,7 +25,7 @@
     chdir: "{{ git_modules_path }}/hid-apple-patched"
   when: camera_add.changed
 
-- name: copy hid_apple config
+- name: Copy hid_apple config
   ansible.builtin.copy:
     src: hid_apple.conf
     dest: /etc/modprobe.d/hid_apple.conf

@@ -26,7 +26,8 @@
 
     - name: Enrich tasmota_devices with actual module data
       ansible.builtin.set_fact:
-        tasmota_devices_enriched: "{{ tasmota_devices_enriched | default([]) + [item.item | combine({'actual_module': actual_module, 'online': item.status == 200})] }}"
+        tasmota_devices_enriched: "{{ tasmota_devices_enriched | default([]) + [item.item | combine({'actual_module': actual_module, 'online': item.status == 200})]
+          }}"
       vars:
         actual_module: "{{ (item.content | from_json).Module.values() | first if item.status == 200 else 'Offline' }}"
       loop: "{{ tasmota_response.results }}"

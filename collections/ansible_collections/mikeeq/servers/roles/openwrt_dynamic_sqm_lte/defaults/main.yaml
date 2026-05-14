@@ -1,2 +1,2 @@
 ---
-dynamic_sqm_enabled: "true"
+dynamic_sqm_enabled: "true"  # noqa: var-naming[no-role-prefix]

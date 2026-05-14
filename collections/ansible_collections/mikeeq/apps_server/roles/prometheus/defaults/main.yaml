@@ -1,4 +1,4 @@
 ---
-install_path: "/opt/prometheus"
+install_path: "/opt/prometheus"  # noqa: var-naming[no-role-prefix]
 
 prometheus_clean: false

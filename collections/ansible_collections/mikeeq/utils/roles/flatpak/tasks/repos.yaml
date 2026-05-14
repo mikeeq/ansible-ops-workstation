@@ -1,5 +1,5 @@
 ---
-- name: Check if flathub remote needs to be recreated
+- name: Check if flathub remote needs to be recreated  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: flatpak remotes | grep -i flathub | grep -i filter
   register: flathub_recreate
   changed_when: false

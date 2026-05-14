@@ -20,13 +20,12 @@
     - code
     - code-insiders
 
-- name: List installed extensions
+- name: List installed extensions  # noqa: var-naming[no-role-prefix]
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: code-insiders --list-extensions
   register: installed_insiders_extensions
   changed_when: false
-
 
 - name: Install extensions
   become: true

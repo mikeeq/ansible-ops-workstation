@@ -20,7 +20,7 @@
     dest: /tmp/krew
     remote_src: true
 
-- name: change permissions krew
+- name: Change permissions krew
   ansible.builtin.file:
     path: /tmp/krew
     state: directory

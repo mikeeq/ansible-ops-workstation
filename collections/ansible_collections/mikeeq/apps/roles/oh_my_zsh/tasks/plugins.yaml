@@ -3,7 +3,7 @@
   become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"
   ansible.builtin.git:
-    repo: 'https://github.com/zsh-users/zsh-autosuggestions'
+    repo: "https://github.com/zsh-users/zsh-autosuggestions"
     dest: "~{{ item }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
     update: true
   with_items: "{{ oh_my_zsh_users }}"
@@ -12,7 +12,7 @@
   become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"
   ansible.builtin.git:
-    repo: 'https://github.com/zsh-users/zsh-syntax-highlighting'
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting"
     dest: "~{{ item }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
     update: true
   with_items: "{{ oh_my_zsh_users }}"
@@ -21,12 +21,12 @@
   become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"
   ansible.builtin.git:
-    repo: 'https://github.com/romkatv/powerlevel10k'
+    repo: "https://github.com/romkatv/powerlevel10k"
     dest: "~{{ item }}/.oh-my-zsh/custom/themes/powerlevel10k"
     update: true
   with_items: "{{ oh_my_zsh_users }}"
 
-- name: "p10k config"
+- name: "P10k config"
   ansible.builtin.copy:
     src: templates/p10k.zsh.j2
     dest: "~{{ item }}/.p10k.zsh"
@@ -44,7 +44,7 @@
     group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
   with_items: "{{ oh_my_zsh_users }}"
 
-- name: zshrc
+- name: Zshrc
   ansible.builtin.template:
     src: zshrc.j2
     dest: "~{{ item }}/.zshrc"
@@ -54,7 +54,7 @@
     group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
   with_items: "{{ oh_my_zsh_users }}"
 
-- name: "zsh configs"
+- name: "Zsh configs"
   ansible.builtin.template:
     src: ".zsh/{{ item.1 }}"
     dest: "~{{ item.0 }}/.zsh/{{ item.1 | regex_replace('\\.j2$', '') }}"
@@ -81,7 +81,7 @@
   become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"
   ansible.builtin.git:
-    repo: 'https://github.com/zsh-users/zsh-completions'
+    repo: "https://github.com/zsh-users/zsh-completions"
     dest: "~{{ item }}/.oh-my-zsh/custom/plugins/zsh-completions"
     update: true
   with_items: "{{ oh_my_zsh_users }}"
@@ -90,7 +90,7 @@
   become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"
   ansible.builtin.git:
-    repo: 'https://github.com/lincheney/fzf-tab-completion.git'
+    repo: "https://github.com/lincheney/fzf-tab-completion.git"
     dest: "~{{ item }}/.oh-my-zsh/custom/plugins/fzf-tab-completion"
     update: true
   with_items: "{{ oh_my_zsh_users }}"
@@ -99,7 +99,7 @@
   become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"
   ansible.builtin.git:
-    repo: 'https://github.com/Aloxaf/fzf-tab'
+    repo: "https://github.com/Aloxaf/fzf-tab"
     dest: "~{{ item }}/.oh-my-zsh/custom/plugins/fzf-tab"
     update: true
   with_items: "{{ oh_my_zsh_users }}"

@@ -11,7 +11,6 @@ model_list:
       api_base: http://ollama:11434
       stream: true
 
-
 # module level litellm settings - https://github.com/BerriAI/litellm/blob/main/litellm/__init__.py
 litellm_settings:
 
@@ -19,14 +18,14 @@ litellm_settings:
   max_budget: 100
   budget_duration: 30d
 
-  cache: true          # set cache responses to true, litellm defaults to using a redis cache
-  cache_params:         # cache_params are optional
-    type: "redis"  # The type of cache to initialize. Can be "local" or "redis". Defaults to "local".
+  cache: true # set cache responses to true, litellm defaults to using a redis cache
+  cache_params: # cache_params are optional
+    type: "redis" # The type of cache to initialize. Can be "local" or "redis". Defaults to "local".
     # Optional configurations
-    supported_call_types: ["acompletion", "completion", "embedding", "aembedding"]  # defaults to all litellm call types
+    supported_call_types: ["acompletion", "completion", "embedding", "aembedding"] # defaults to all litellm call types
 
 general_settings:
-  master_key: sk-1234  # [OPTIONAL] Only use this if you to require all calls to contain this key (Authorization: Bearer sk-1234)
+  master_key: sk-1234 # [OPTIONAL] Only use this if you to require all calls to contain this key (Authorization: Bearer sk-1234)
   # database_url: "postgresql://<user>:<password>@<host>:<port>/<dbname>" # [OPTIONAL] use for token-based auth to proxy
 
 environment_variables:

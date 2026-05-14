@@ -1,12 +1,12 @@
 ---
 # TODO
-- name: Get installed version
+- name: Get installed version  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: cat /opt/qnapi/version.tag
   register: installed_version
   changed_when: false
   ignore_errors: true
 
-- name: 'Installed version of keeweb:'
+- name: "Installed version of keeweb:"
   ansible.builtin.debug:
     var: installed_version.stdout
 
@@ -15,7 +15,7 @@
     path: /opt/qnapi
     state: directory
 
-- name: Get latest version
+- name: Get latest version  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: curl -Is https://github.com/QNapi/qnapi/releases/latest | grep -i 'location:' | cut -d'"' -f2 | cut -d'/' -f8
   register: version_tag
   changed_when: version_tag.stdout != installed_version.stdout

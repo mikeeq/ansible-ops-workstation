@@ -81,7 +81,7 @@
     csr_path: ~/.config/remote-desktop/tls.csr
     provider: selfsigned
 
-- name: Download grd_rdp_credentials.c
+- name: Download grd_rdp_credentials.c  # noqa: var-naming[no-role-prefix]
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.get_url:
@@ -103,7 +103,7 @@
     chdir: ~/.config/remote-desktop
   when: grd_rdp_credentials_download.changed
 
-- name: Decrypt password
+- name: Decrypt password  # noqa: var-naming[no-role-prefix]
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: openssl enc -aes-256-cbc -pbkdf2 -salt -d -in rdp_credentials -k '{{ rdp_username }}:{{ rdp_password }}'

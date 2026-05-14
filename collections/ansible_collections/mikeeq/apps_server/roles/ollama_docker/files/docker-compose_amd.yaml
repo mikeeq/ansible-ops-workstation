@@ -5,7 +5,6 @@ version: "3.9"
 
 networks:
   ollama:
-
 services:
   ollama:
     image: ollama/ollama:rocm
@@ -37,7 +36,7 @@ services:
     ports:
       - 3002:8080
     environment:
-      - 'OLLAMA_API_BASE_URL=http://ollama:11434/api'
+      - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
       - MCP_API_URL=http://mcpo:8081
       # - DATABASE_URL=postgresql://mcpo_user:mcpo_pass@postgres:5432/mcpo_db
     extra_hosts:
@@ -69,7 +68,6 @@ services:
       # - ./mcpo/node:/usr/bin/node
       # - ./mcpo/npm:/root/.npm
       # - ./mcpo/venv:/app/.venv
-
 
   postgres:
     image: postgres:15

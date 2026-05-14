@@ -23,7 +23,8 @@
   loop:
     - "{{ install_path }}"
 
-- ansible.builtin.include_tasks: config.yaml
+- name: Include config.yaml
+  ansible.builtin.include_tasks: config.yaml
   vars:
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
@@ -33,7 +34,7 @@
     ansible_httpapi_use_ssl: false
     ansible_httpapi_validate_certs: false
     # Docker Compose zabbix has no suffix at the end of URL
-    ansible_zabbix_url_path: ''
+    ansible_zabbix_url_path: ""
     # ansible_httpapi_url: http://192.168.1.10
     # ansible_zabbix_url_path: http://192.168.1.10
     # ansible_host: 192.168.1.10

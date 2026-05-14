@@ -1,3 +1,5 @@
 ---
-- ansible.builtin.import_tasks: get_image.yaml
-- ansible.builtin.import_tasks: grub.yaml
+- name: Import get_image.yaml
+  ansible.builtin.import_tasks: get_image.yaml
+- name: Import grub.yaml
+  ansible.builtin.import_tasks: grub.yaml

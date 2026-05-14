@@ -2,7 +2,7 @@
 all:
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    ansible_ssh_common_args: '-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ControlMaster=auto -o ControlPersist=60s'
+    ansible_ssh_common_args: "-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ControlMaster=auto -o ControlPersist=60s"
     # ansible_user: user
     # ansible_ssh_pass: pass
     # ansible_sudo_pass: "{{ ansible_ssh_pass }}"
@@ -28,7 +28,6 @@ all:
                     vpngateway:
                     cloudflaregateway:
                     openvpn:
-
 local:
   hosts:
     localhost:
@@ -53,15 +52,12 @@ vms:
 publicdns:
   hosts:
     dns1:
-
 privatedns:
   hosts:
     dns2:
-
 vpngateway:
   hosts:
     gw1:
-
 # cloudflaregateway:
 #   hosts:
 #     gw2:

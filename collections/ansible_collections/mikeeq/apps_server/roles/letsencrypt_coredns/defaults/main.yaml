@@ -1,26 +1,26 @@
 ---
-account_path: "/etc/ssl/le/account"
-account_key_path: "{{ account_path }}/account.key"
+account_path: "/etc/ssl/le/account"  # noqa: var-naming[no-role-prefix]
+account_key_path: "{{ account_path }}/account.key"  # noqa: var-naming[no-role-prefix]
 
-certs_path: "/etc/ssl/le/certs"
-cert_path: "{{ certs_path }}/{{ cert.cn }}"
-cert_key_path: "{{ cert_path }}/cert.key"
-cert_csr_path: "{{ cert_path }}/cert.csr"
-cert_crt_path: "{{ cert_path }}/cert.crt"
-cert_pfx_path: "{{ cert_path }}/cert.pfx"
-cert_fullchain_path: "{{ cert_path }}/cert.fullchain"
-cert_chain_path: "{{ cert_path }}/cert.chain"
+certs_path: "/etc/ssl/le/certs"  # noqa: var-naming[no-role-prefix]
+cert_path: "{{ certs_path }}/{{ cert.cn }}"  # noqa: var-naming[no-role-prefix]
+cert_key_path: "{{ cert_path }}/cert.key"  # noqa: var-naming[no-role-prefix]
+cert_csr_path: "{{ cert_path }}/cert.csr"  # noqa: var-naming[no-role-prefix]
+cert_crt_path: "{{ cert_path }}/cert.crt"  # noqa: var-naming[no-role-prefix]
+cert_pfx_path: "{{ cert_path }}/cert.pfx"  # noqa: var-naming[no-role-prefix]
+cert_fullchain_path: "{{ cert_path }}/cert.fullchain"  # noqa: var-naming[no-role-prefix]
+cert_chain_path: "{{ cert_path }}/cert.chain"  # noqa: var-naming[no-role-prefix]
 
 # letsencrypt_api: "https://acme-v02.api.letsencrypt.org/directory"
-letsencrypt_api: "https://acme-staging-v02.api.letsencrypt.org/directory"
-letsencrypt_api_version: 2
-letsencrypt_email: "test@mail.com"
-letsencrypt_days: 30
+letsencrypt_api: "https://acme-staging-v02.api.letsencrypt.org/directory"  # noqa: var-naming[no-role-prefix]
+letsencrypt_api_version: 2  # noqa: var-naming[no-role-prefix]
+letsencrypt_email: "test@mail.com"  # noqa: var-naming[no-role-prefix]
+letsencrypt_days: 30  # noqa: var-naming[no-role-prefix]
 
-key_size: "4096"
-force_cert_creation: "false"
+key_size: "4096"  # noqa: var-naming[no-role-prefix]
+force_cert_creation: "false"  # noqa: var-naming[no-role-prefix]
 
-certs:
+certs:  # noqa: var-naming[no-role-prefix]
   - cn: "example.com"
     domain_name: "example.com"
     sans:

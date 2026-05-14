@@ -1,6 +1,6 @@
 ---
 # zed-linux-x86_64.tar.gz / zed-linux-aarch64.tar.gz
-- name: Get installed version
+- name: Get installed version  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: zed --version | cut -d ' ' -f2
   environment:
     ZED_ALLOW_ROOT: "true"
@@ -12,7 +12,8 @@
   ansible.builtin.debug:
     var: installed_zed_version.stdout
 
-- ansible.builtin.include_tasks: get_latest_version.yaml
+- name: Include get_latest_version.yaml
+  ansible.builtin.include_tasks: get_latest_version.yaml
   when: zed_version is not defined
 
 - name: Download Zed

@@ -28,21 +28,21 @@
     group: "root"
     mode: "0755"
 
-- name: Set vars to enable SQM
+- name: Set vars to enable SQM  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     cake_service: "start"
     sqm_enabled: "1"
   when: dynamic_sqm_enabled == "true"
 
-- name: Set vars to disable SQM
+- name: Set vars to disable SQM  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     cake_service: "stop"
     sqm_enabled: "0"
   when: dynamic_sqm_enabled == "false"
 
-- name: Change config SQM
+- name: Change config SQM  # noqa: var-naming[no-role-prefix]
   ansible.builtin.lineinfile:
-    regexp: 'option\senabled'
+    regexp: "option\\senabled"
     # \s{8}option\senabled\s.\d.
     line: "        option enabled '{{ sqm_enabled }}'"
     path: /etc/config/sqm
@@ -52,7 +52,7 @@
   ansible.builtin.shell: service sqm restart
   when: sqm_config.changed
 
-- name: Check Dynamic SQM service status
+- name: Check Dynamic SQM service status  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: service cake-autorate status
   register: dynamic_sqm_status
   changed_when: false

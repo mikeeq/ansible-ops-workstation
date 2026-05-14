@@ -1,5 +1,5 @@
 ---
-- name: Reboot device - /api/device/control API Call
+- name: Reboot device - /api/device/control API Call  # noqa: var-naming[no-role-prefix]
   ansible.builtin.uri:
     url: "{{ huawei_url }}/api/device/control"
     return_content: true

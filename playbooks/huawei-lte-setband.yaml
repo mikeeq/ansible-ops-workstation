@@ -14,7 +14,7 @@
     # huawei_lteband: "40"                  # 2600
     # huawei_lteband: "80005"
     # huawei_lteband: "45"                  # 1800+2100+2600
-    huawei_lteband: "80045"               # 800+1800+2100+2600
+    huawei_lteband: "80045" # 800+1800+2100+2600
     # huawei_lteband: "80125"
     # huawei_lteband: "125"                 # 900+1800+2100+2600
     # huawei_lteband: "5"                   # 1800+2100

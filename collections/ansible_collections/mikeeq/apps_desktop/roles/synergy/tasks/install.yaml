@@ -11,7 +11,7 @@
     version: "{{ synergy_version }}"
     depth: 1
 
-- name: Check if fix for flatpak is needed
+- name: Check if fix for flatpak is needed  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: git config --global -l | grep -q 'protocol.file.allow=always'
   register: flatpak_fix
 

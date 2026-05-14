@@ -36,7 +36,6 @@
   tags:
     - update
 
-
 # TASK [pkg_mgmt/pip : Update virtualenv PIP apps] ******************************************************************
 # Monday 25 May 2020  11:15:24 +0200 (0:00:08.506)       0:01:05.474 ************
 # skipping: [localhost] => (item={'name': 'ansible', 'virtualenv_enabled': false})

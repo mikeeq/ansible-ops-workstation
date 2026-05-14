@@ -3,8 +3,8 @@
   hosts: mikeeClevo
   become: true
   pre_tasks:
-    # - ansible.builtin.debug:
-    #     var: hostvars[inventory_hostname]
+  # - ansible.builtin.debug:
+  #     var: hostvars[inventory_hostname]
   roles:
     - mikeeq.servers.network_static_dns
     - mikeeq.servers.network_bridge

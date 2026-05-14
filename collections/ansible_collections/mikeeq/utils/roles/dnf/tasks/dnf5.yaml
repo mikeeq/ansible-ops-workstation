@@ -7,7 +7,7 @@
 # - ansible.builtin.debug:
 #     var: dnf_symlink
 
-- name: Bootstrap a host without python3-libdnf5 installed
+- name: Bootstrap a host without python3-libdnf5 installed  # noqa: var-naming[no-role-prefix]
   ansible.builtin.raw: if dnf list --installed | grep -q -i python3-libdnf5; then echo -n "exists"; else dnf install -y python3-libdnf5; fi
   changed_when: '"exists" not in python3_libdnf5_installed.stdout'
   register: python3_libdnf5_installed

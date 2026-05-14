@@ -1,5 +1,5 @@
 ---
-- name: Check if GitHub Copilot CLI is already installed
+- name: Check if GitHub Copilot CLI is already installed  # noqa: var-naming[no-role-prefix]
   ansible.builtin.stat:
     path: "{{ github_copilot_cli_install_dir }}/bin/copilot"
   register: copilot_cli_installed

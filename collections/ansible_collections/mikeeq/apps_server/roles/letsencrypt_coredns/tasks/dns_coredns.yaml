@@ -1,5 +1,5 @@
 ---
-- name: Set record variables
+- name: Set record variables  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     record_full: "{{ item.value['dns-01'].record }}"
     record_without_acme: "{{ item.value['dns-01'].record | regex_replace('_acme-challenge.') }}"
@@ -9,7 +9,7 @@
 # name: "{{ record_without_acme }}"
 # content: "0 issue 'letsencrypt.org'"
 
-- name: "Create LE challenge TXT record - {{ record_state }} - {{ record_full }}"
+- name: "Create LE challenge TXT record - - " - {{ record_state }} {{ record_full }}
   ansible.builtin.lineinfile:
     path: "/opt/coredns/config/{{ coredns_zone_filename }}"
     regexp: "^{{ record_without_domain }}"

@@ -12,8 +12,8 @@
 - name: Disable modification of /etc/resolv.conf by NetworkManager
   ansible.builtin.lineinfile:
     path: /etc/NetworkManager/NetworkManager.conf
-    regexp: '^dns'
-    insertafter: '^\[main\]'
+    regexp: "^dns"
+    insertafter: "^\\[main\\]"
     line: dns=none
 
 - name: Set resolv.conf

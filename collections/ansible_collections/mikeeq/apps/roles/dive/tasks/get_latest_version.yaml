@@ -1,5 +1,5 @@
 ---
-- name: Get latest version dive
+- name: Get latest version dive  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: curl -Is https://github.com/wagoodman/dive/releases/latest | grep -i 'location:' | cut -f3 -d'v' | cut -f1 -d'"'
   register: version
   changed_when: false

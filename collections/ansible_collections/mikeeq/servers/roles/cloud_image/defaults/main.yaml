@@ -1,6 +1,6 @@
 ---
-image_path: "/tmp/CentOS-7-x86_64-GenericCloud.qcow2"
-kdump_mem: "0M"
-centos_qcow2_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
-image_root_password: "pass123"
-base_image_path: "/var/lib/libvirt/images"
+image_path: "/tmp/CentOS-7-x86_64-GenericCloud.qcow2"  # noqa: var-naming[no-role-prefix]
+kdump_mem: "0M"  # noqa: var-naming[no-role-prefix]
+centos_qcow2_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"  # noqa: var-naming[no-role-prefix]
+image_root_password: "pass123"  # noqa: var-naming[no-role-prefix]
+base_image_path: "/var/lib/libvirt/images"  # noqa: var-naming[no-role-prefix]

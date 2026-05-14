@@ -1,5 +1,5 @@
 ---
-- name: Grab list of install kubectl krew plugins
+- name: Grab list of install kubectl krew plugins  # noqa: var-naming[no-role-prefix]
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: |

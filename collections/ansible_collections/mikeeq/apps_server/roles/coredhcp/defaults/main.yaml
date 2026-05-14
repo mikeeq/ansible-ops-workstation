@@ -1,2 +1,2 @@
 ---
-install_path: "/opt/coredhcp"
+install_path: "/opt/coredhcp"  # noqa: var-naming[no-role-prefix]

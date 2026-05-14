@@ -1,5 +1,5 @@
 ---
-- name: Adding modules to initramfs
+- name: Adding modules to initramfs  # noqa: var-naming[no-role-prefix]
   ansible.builtin.lineinfile:
     path: /etc/dracut.conf
     line: 'add_drivers+="hid_apple"'

@@ -1,6 +1,8 @@
 ---
-- ansible.builtin.include_tasks: linux.yaml
+- name: Include linux.yaml
+  ansible.builtin.include_tasks: linux.yaml
   when: ansible_facts['os_family'] != "Darwin"
 
-- ansible.builtin.include_tasks: mac.yaml
+- name: Include mac.yaml
+  ansible.builtin.include_tasks: mac.yaml
   when: ansible_facts['os_family'] == "Darwin"

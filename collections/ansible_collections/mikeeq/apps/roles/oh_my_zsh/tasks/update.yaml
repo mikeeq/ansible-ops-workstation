@@ -1,5 +1,5 @@
 ---
-- name: "Update oh-my-zsh"
+- name: "Update oh-my-zsh"  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: git pull --rebase --stat origin master | head -n1
   become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"

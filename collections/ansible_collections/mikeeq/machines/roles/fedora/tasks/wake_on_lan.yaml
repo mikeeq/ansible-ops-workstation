@@ -1,6 +1,6 @@
 ---
 # erp ready/power saving option needs to be disabled in bios
-- name: Create wol systemd service
+- name: Create wol systemd service  # noqa: var-naming[no-role-prefix]
   ansible.builtin.copy:
     content: |
       [Unit]

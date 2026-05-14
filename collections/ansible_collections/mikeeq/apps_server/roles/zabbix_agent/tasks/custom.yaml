@@ -71,7 +71,7 @@
   loop:
     - zabbix_agent_custom_who2.pp
 
-- name: List existing SELinux modules
+- name: List existing SELinux modules  # noqa: var-naming[no-role-prefix]
   ansible.builtin.command: semodule -l
   become: true
   register: existing_policies

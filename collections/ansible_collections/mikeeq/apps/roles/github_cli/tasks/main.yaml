@@ -18,7 +18,6 @@
     state: present
   when: ansible_facts['os_family'] == "Debian"
 
-
 - name: Add GitHub CLI GPG key (Debian/Ubuntu)
   ansible.builtin.shell: |
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
@@ -29,7 +28,8 @@
 
 - name: Add GitHub CLI repo (Debian/Ubuntu)
   ansible.builtin.apt_repository:
-    repo: "deb [arch={{ ansible_facts['architecture'] | regex_replace('x86_64', 'amd64') | regex_replace('aarch64', 'arm64') }} signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
+    repo: "deb [arch={{ ansible_facts['architecture'] | regex_replace('x86_64', 'amd64') | regex_replace('aarch64', 'arm64') }} signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg]
+      https://cli.github.com/packages stable main"
     filename: github-cli
     state: present
   when: ansible_facts['os_family'] == "Debian"

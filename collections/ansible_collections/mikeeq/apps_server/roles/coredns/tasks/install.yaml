@@ -17,9 +17,10 @@
     - docker-compose.yaml
     - config/Corefile
 
-- ansible.builtin.import_tasks: config.yaml
+- name: Import config.yaml
+  ansible.builtin.import_tasks: config.yaml
 
-- name: Pull Docker image using docker-compose
+- name: Pull Docker image using docker-compose  # noqa: var-naming[no-role-prefix]
   become: true
   ansible.builtin.command: docker-compose pull
   changed_when: pull_result.stderr_lines | length > 2
@@ -27,7 +28,7 @@
   args:
     chdir: "{{ install_path }}"
 
-- name: Run using docker-compose
+- name: Run using docker-compose  # noqa: var-naming[no-role-prefix]
   become: true
   ansible.builtin.command: docker-compose up -d
   changed_when: up_result.stderr_lines | length > 2

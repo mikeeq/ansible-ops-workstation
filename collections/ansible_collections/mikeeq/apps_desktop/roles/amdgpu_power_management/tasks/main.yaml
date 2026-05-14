@@ -6,7 +6,7 @@
     owner: root
     group: root
     mode: "0755"
-    validate: 'test -x %s'
+    validate: "test -x %s"
 
 - name: "Ensure amdgpu-power-setup service exists"
   ansible.builtin.copy:

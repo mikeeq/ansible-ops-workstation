@@ -25,7 +25,6 @@
     subject_alt_name:
       - "DNS: {{ item }}.{{ openvpn_certs_common_name }}"
 
-
 - name: Generate CLIENT certificate
   community.crypto.x509_certificate:
     path: "{{ openvpn_client_cert_path }}/{{ item }}/client.crt"

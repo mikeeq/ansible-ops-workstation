@@ -1,5 +1,5 @@
 ---
-- name: Stop Steam
+- name: Stop Steam  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: |
     if ps -ef | grep -v grep | grep -i "steam"; then
       echo "Killing Steam"

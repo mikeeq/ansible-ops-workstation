@@ -3,7 +3,7 @@
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.git:
-    repo: 'https://github.com/patjak/bcwc_pcie'
+    repo: "https://github.com/patjak/bcwc_pcie"
     dest: "{{ git_modules_path }}/bcwc_pcie"
 
 # - name: copy dkms config
@@ -23,7 +23,7 @@
     chdir: "{{ git_modules_path }}/bcwc_pcie/firmware"
     creates: /usr/lib/firmware/facetimehd/firmware.bin
 
-- name: DKMS add
+- name: DKMS add  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: dkms add .
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
@@ -47,7 +47,7 @@
 #     path: /tmp/bcwc_pcie
 #     state: absent
 
-- name: copy dkms config
+- name: Copy dkms config
   ansible.builtin.copy:
     src: facetimehd.conf
     dest: /etc/modules-load.d/facetimehd.conf

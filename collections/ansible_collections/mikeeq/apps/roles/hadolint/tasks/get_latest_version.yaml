@@ -1,5 +1,5 @@
 ---
-- name: Get latest version hadolint
+- name: Get latest version hadolint  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: curl -Is https://github.com/hadolint/hadolint/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -d'"' -f1
   register: version
   changed_when: false

@@ -1,5 +1,5 @@
 ---
-- name: Get latest version
+- name: Get latest version  # noqa: var-naming[no-role-prefix]
   ansible.builtin.shell: curl -Is https://github.com/terraform-linters/tflint/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
   register: version
   changed_when: false

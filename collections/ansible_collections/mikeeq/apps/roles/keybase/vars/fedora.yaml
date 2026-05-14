@@ -1,2 +1,2 @@
 ---
-package_manager: dnf
+package_manager: dnf  # noqa: var-naming[no-role-prefix]

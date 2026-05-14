@@ -19,7 +19,6 @@
   # when:
   #   - ansible_facts['distribution'] == "Fedora"
 
-
 - name: Install PIP Apps globally
   ansible.builtin.pip:
     name: "{{ item.name }}"
@@ -59,7 +58,7 @@
   with_items:
     - "{{ pipx_apps }}"
 
-- name: Install PIPx injected apps globally
+- name: Install PIPx injected apps globally  # noqa: var-naming[no-role-prefix]
   community.general.pipx:
     name: "{{ item.name }}"
     state: inject
@@ -76,10 +75,10 @@
   with_items:
     - "{{ pipx_apps }}"
 
-- ansible.builtin.import_tasks: update.yaml
+- name: Import update.yaml
+  ansible.builtin.import_tasks: update.yaml
   tags:
     - update
-
 
 # curl -Ls https://raw.githubusercontent.com/ansible-collections/azure/refs/tags/v3.6.0/requirements.txt -O requirements.txt
 

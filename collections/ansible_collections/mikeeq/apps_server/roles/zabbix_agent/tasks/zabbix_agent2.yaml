@@ -18,7 +18,7 @@
     dest: /etc/zabbix/zabbix_agent2.conf
     owner: root
     group: zabbix
-    mode: '0640'
+    mode: "0640"
     backup: true
   become: true
   notify: restart zabbix-agent2
@@ -29,7 +29,7 @@
     state: directory
     owner: zabbix
     group: zabbix
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: Start and enable Zabbix agent service

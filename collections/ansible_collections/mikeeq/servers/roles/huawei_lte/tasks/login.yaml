@@ -1,29 +1,29 @@
 ---
-- name: Grab Session Cookie and Token - /api/webserver/SesTokInfo API call
+- name: Grab Session Cookie and Token - /api/webserver/SesTokInfo API call  # noqa: var-naming[no-role-prefix]
   ansible.builtin.uri:
     url: "{{ huawei_url }}/api/webserver/SesTokInfo"
     return_content: true
   register: info_request
 
-- name: Transform info_request from XML to YAML
+- name: Transform info_request from XML to YAML  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     info_yaml: "{{ info_request.content | ansible.utils.from_xml }}"
 
-- name: Extract cookie and token from YAML and transform password to the form acceptable by Huawei router
+- name: Extract cookie and token from YAML and transform password to the form acceptable by Huawei router  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     session_cookie: "{{ info_yaml.response.SesInfo }}"
     session_token: "{{ info_yaml.response.TokInfo }}"
     huawei_password_b64: "{{ huawei_password | hash('sha256') | b64encode }}"
 
-- name: Prepare a payload with a password acceptable by login API call
+- name: Prepare a payload with a password acceptable by login API call  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     huawei_login_payload: "{{ huawei_username }}{{ huawei_password_b64 }}{{ session_token }}"
 
-- name: Transform password to the password_type - 4
+- name: Transform password to the password_type - 4  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     huawei_login_payload_b64: "{{ huawei_login_payload | hash('sha256') | b64encode }}"
 
-- name: Grab Session ID cookie, perform login - /api/user/login API call
+- name: Grab Session ID cookie, perform login - /api/user/login API call  # noqa: var-naming[no-role-prefix]
   ansible.builtin.uri:
     url: "{{ huawei_url }}/api/user/login"
     return_content: true

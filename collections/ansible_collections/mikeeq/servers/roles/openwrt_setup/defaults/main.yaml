@@ -1,4 +1,4 @@
 ---
-openwrt_router_flag: false
-openwrt_ap_only_flag: false
-openwrt_bpir4: false
+openwrt_router_flag: false  # noqa: var-naming[no-role-prefix]
+openwrt_ap_only_flag: false  # noqa: var-naming[no-role-prefix]
+openwrt_bpir4: false  # noqa: var-naming[no-role-prefix]

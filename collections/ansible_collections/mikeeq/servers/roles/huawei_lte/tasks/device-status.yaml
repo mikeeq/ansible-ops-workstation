@@ -1,5 +1,5 @@
 ---
-- name: Grab device status
+- name: Grab device status  # noqa: var-naming[no-role-prefix]
   ansible.builtin.uri:
     url: "{{ huawei_url }}/api/monitoring/status"
     return_content: true
@@ -10,7 +10,7 @@
   register: device_status_request
   failed_when: '"<error>" in device_status_request.content'
 
-- name: Transform device_status_request from XML to YAML
+- name: Transform device_status_request from XML to YAML  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     device_status_request_yaml: "{{ device_status_request.content | ansible.utils.from_xml }}"
 

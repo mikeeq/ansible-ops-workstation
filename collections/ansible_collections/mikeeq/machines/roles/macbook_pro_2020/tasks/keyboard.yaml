@@ -1,5 +1,5 @@
 ---
-- name: copy hid_apple config
+- name: Copy hid_apple config  # noqa: var-naming[no-role-prefix]
   ansible.builtin.copy:
     src: hid_apple.conf
     dest: /etc/modprobe.d/hid_apple.conf

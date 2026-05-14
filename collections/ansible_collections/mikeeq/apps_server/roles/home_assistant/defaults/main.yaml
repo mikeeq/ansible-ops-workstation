@@ -1,5 +1,5 @@
 ---
-install_path: "/opt/homeassistant"
+install_path: "/opt/homeassistant"  # noqa: var-naming[no-role-prefix]
 
 home_assistant_clean: false
 # home_assistant_clean: true
@@ -31,38 +31,38 @@ home_assistant_custom_components:
   #   repo: https://github.com/twrecked/hass-virtual
 
 home_assistant_custom_lovelace_plugins:
-  - name: 'lovelace-multiple-entity-row'
-    entity_name: 'multiple-entity-row.js'
+  - name: "lovelace-multiple-entity-row"
+    entity_name: "multiple-entity-row.js"
     repo: https://github.com/benct/lovelace-multiple-entity-row
     version: v4.5.1
-  - name: 'button-card'
-    entity_name: 'button-card.js'
+  - name: "button-card"
+    entity_name: "button-card.js"
     repo: https://github.com/custom-cards/button-card
     release: true
     version: v6.0.0
-  - name: 'vacuum-card'
-    entity_name: 'vacuum-card.js'
+  - name: "vacuum-card"
+    entity_name: "vacuum-card.js"
     repo: https://github.com/denysdovhan/vacuum-card
     release: true
     version: v2.11.0
-  - name: 'advanced-camera-card'
-    entity_name: 'advanced-camera-card.zip'
+  - name: "advanced-camera-card"
+    entity_name: "advanced-camera-card.zip"
     repo: https://github.com/dermotduffy/advanced-camera-card
     release: true
     version: v7.19.1
     zip_mode: true
-  - name: 'apexcharts-card'
-    repo: 'https://github.com/RomRider/apexcharts-card'
-    entity_name: 'apexcharts-card.js'
+  - name: "apexcharts-card"
+    repo: "https://github.com/RomRider/apexcharts-card"
+    entity_name: "apexcharts-card.js"
     release: true
     version: v2.2.3
-  - name: 'mini-graph-card'
-    repo: 'https://github.com/kalkih/mini-graph-card'
-    entity_name: 'mini-graph-card-bundle.js'
+  - name: "mini-graph-card"
+    repo: "https://github.com/kalkih/mini-graph-card"
+    entity_name: "mini-graph-card-bundle.js"
     release: true
     version: v0.13.0
 
-home_assistant:
+home_assistant:  # noqa: var-naming[no-role-prefix]
   automations:
     inching:
       - entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
@@ -106,7 +106,6 @@ home_assistant:
     # - name: serwerownia
     #   switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_korytarz
 
-
   mqtt:
     zigbee_coordinator_base_topic: "tasmota_10B490"
     sonoff:
@@ -126,16 +125,16 @@ home_assistant:
         # - name: przedpokoj
 
       button: []
-        # - name: dol_1
+      # - name: dol_1
       door: []
-        # - name: garaz_brama
-        # - name: dwor_brama
+      # - name: garaz_brama
+      # - name: dwor_brama
       zbmini: []
-        # - name: sypialnia_gora
+      # - name: sypialnia_gora
       power_plug: []
-        # - name: salon
+    # - name: salon
     ikea:
       button: []
-        # - name: kuchnia
+      # - name: kuchnia
       tradfri_single_dimm: []
         # - name: kuchnia_szafki

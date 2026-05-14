@@ -1,5 +1,5 @@
 ---
-- name: Check if kubectl is a symlink
+- name: Check if kubectl is a symlink  # noqa: var-naming[no-role-prefix]
   ansible.builtin.stat:
     path: /usr/local/bin/kubectl
   register: kubectl_symlink

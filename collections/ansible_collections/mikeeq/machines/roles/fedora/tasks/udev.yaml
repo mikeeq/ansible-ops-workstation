@@ -6,7 +6,7 @@
 
 - name: Copy using inline content
   ansible.builtin.copy:
-    content: 'i2c-dev'
+    content: "i2c-dev"
     dest: /etc/modules-load.d/i2c.conf
 
 - name: Copy using inline content

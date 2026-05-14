@@ -1,5 +1,5 @@
 ---
-- name: Grab traffic status
+- name: Grab traffic status  # noqa: var-naming[no-role-prefix]
   ansible.builtin.uri:
     url: "{{ huawei_url }}/api/monitoring/traffic-statistics"
     return_content: true
@@ -10,7 +10,7 @@
   register: traffic_status_request
   failed_when: '"<error>" in traffic_status_request.content'
 
-- name: Transform traffic_status_request from XML to YAML
+- name: Transform traffic_status_request from XML to YAML  # noqa: var-naming[no-role-prefix]
   ansible.builtin.set_fact:
     traffic_status_request_yaml: "{{ traffic_status_request.content | ansible.utils.from_xml }}"
 

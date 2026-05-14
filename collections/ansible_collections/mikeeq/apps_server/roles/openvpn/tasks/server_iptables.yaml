@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.iptables:
+- name: Configure iptables rule
+  ansible.builtin.iptables:
     table: nat
     chain: POSTROUTING
     in_interface: eth0
@@ -11,7 +12,8 @@
     comment: Redirect web traffic to port 8600
   become: true
 
-- ansible.builtin.iptables:
+- name: Configure iptables rule
+  ansible.builtin.iptables:
     table: filter
     chain: FORWARD
     # protocol: udp
@@ -25,7 +27,8 @@
   become: true
 
 # -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-- ansible.builtin.iptables:
+- name: Configure iptables rule
+  ansible.builtin.iptables:
     table: filter
     chain: FORWARD
     # protocol: udp
@@ -36,7 +39,8 @@
     action: insert
   become: true
 
-- ansible.builtin.iptables:
+- name: Configure iptables rule
+  ansible.builtin.iptables:
     table: filter
     chain: INPUT
     protocol: tcp
@@ -48,7 +52,8 @@
     action: insert
   become: true
 
-- ansible.builtin.iptables:
+- name: Configure iptables rule
+  ansible.builtin.iptables:
     table: filter
     chain: INPUT
     protocol: tcp
@@ -60,7 +65,8 @@
     action: insert
   become: true
 
-- ansible.builtin.iptables:
+- name: Configure iptables rule
+  ansible.builtin.iptables:
     table: filter
     chain: INPUT
     protocol: tcp
@@ -71,7 +77,8 @@
     state: absent
   become: true
 
-- ansible.builtin.iptables:
+- name: Configure iptables rule
+  ansible.builtin.iptables:
     table: nat
     chain: POSTROUTING
     jump: MASQUERADE
