@@ -1,10 +1,13 @@
 #!/bin/bash
 # grab_zscaler_certs.sh - Run from WSL to extract Zscaler certs via Windows PowerShell
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command '
+SCRIPT_FILE=$(mktemp /tmp/zscaler_certs_XXXXXX.ps1)
+
+cat > "$SCRIPT_FILE" << 'EOF'
 $certs = Get-ChildItem -Path Cert:\LocalMachine\Root | Where-Object { $_.Subject -like "*Zscaler*" }
 
-$outputDir = [Environment]::GetFolderPath("MyDocuments")
+$outputDir = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "zscaler_certs"
+if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir | Out-Null }
 $nameCount = @{}
 
 if (-not $certs) {
@@ -13,7 +16,7 @@ if (-not $certs) {
 }
 
 foreach ($cert in $certs) {
-    $name = $cert.Subject -replace "[\\\\/:*?\"<>|]", "_"
+    $name = $cert.Subject -replace '[\\/:*?"<>|]', '_'
 
     if ($nameCount.ContainsKey($name)) {
         $nameCount[$name]++
@@ -29,4 +32,8 @@ foreach ($cert in $certs) {
 }
 
 Write-Host "`nDone. $($certs.Count) certificate(s) exported to $outputDir"
-'
+EOF
+
+WIN_SCRIPT=$(wslpath -w "$SCRIPT_FILE")
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WIN_SCRIPT"
+rm -f "$SCRIPT_FILE"
