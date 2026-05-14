@@ -35,7 +35,7 @@ Write-Host "`nDone. $($certs.Count) certificate(s) exported to $outputDir"
 EOF
 
 WIN_SCRIPT=$(wslpath -w "$SCRIPT_FILE")
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WIN_SCRIPT"
+powershell.exe -NoProfile -Command "& {Get-Content '$WIN_SCRIPT' -Raw | Invoke-Expression}"
 EXIT_CODE=$?
 rm -f "$SCRIPT_FILE"
 exit $EXIT_CODE
