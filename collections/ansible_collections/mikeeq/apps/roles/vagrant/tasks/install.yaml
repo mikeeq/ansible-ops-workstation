@@ -4,7 +4,7 @@
     name: libxcrypt-compat
     state: present
 
-- name: Include "install_{{ ansible_facts['architecture'] }}.yaml"
+- name: Include architecture-specific install tasks
   ansible.builtin.include_tasks: "install_{{ ansible_facts['architecture'] }}.yaml"
 
 - name: Import get_plugins_version.yaml

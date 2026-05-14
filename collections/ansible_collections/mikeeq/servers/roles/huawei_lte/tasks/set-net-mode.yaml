@@ -2,7 +2,7 @@
 - name: Import get-net-mode.yaml
   ansible.builtin.import_tasks: get-net-mode.yaml
 
-- name: "Set LTE band to - , /api/net/net-mode API call" - {{ huawei_lteband }}  # noqa: var-naming[no-role-prefix]
+- name: "Set LTE band to /api/net/net-mode API call - {{ huawei_lteband }}"  # noqa: var-naming[no-role-prefix]
   ansible.builtin.uri:
     url: "{{ huawei_url }}/api/net/net-mode"
     return_content: true

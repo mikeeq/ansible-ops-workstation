@@ -9,7 +9,7 @@
 # name: "{{ record_without_acme }}"
 # content: "0 issue 'letsencrypt.org'"
 
-- name: "Create LE challenge TXT record - - " - {{ record_state }} {{ record_full }}
+- name: "Create LE challenge TXT record - {{ record_state ~ ' ' ~ record_full }}"
   ansible.builtin.lineinfile:
     path: "/opt/coredns/config/{{ coredns_zone_filename }}"
     regexp: "^{{ record_without_domain }}"

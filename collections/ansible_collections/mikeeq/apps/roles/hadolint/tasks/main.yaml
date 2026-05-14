@@ -7,7 +7,7 @@
   changed_when: false
   ignore_errors: true
 
-- name: Include vars "{{ ansible_facts['architecture'] }}.yaml"
+- name: Include architecture-specific vars
   ansible.builtin.include_vars: "{{ ansible_facts['architecture'] }}.yaml"
 
 - name: "Installed version of hadolint:"

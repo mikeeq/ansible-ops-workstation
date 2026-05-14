@@ -40,6 +40,7 @@ RUN git clone --single-branch --branch feature/pipeline_as_yaml https://github.c
 
 ENV MISE_YES=1
 RUN curl https://mise.run | sh
+ENV PATH="/root/.local/bin:${PATH}"
 
 # # https://github.com/jenkinsci/pipeline-as-yaml-plugin/pull/77
 # ARG MAVEN_VERSION=3.9.6
@@ -76,6 +77,7 @@ USER jenkins
 # Install mise as user
 ENV MISE_YES=1
 RUN curl https://mise.run | sh
+ENV PATH="/home/jenkins/.local/bin:${PATH}"
 
 # https://www.jenkins.io/projects/blueocean/
 # https://github.com/jenkinsci/blueocean-plugin/releases
