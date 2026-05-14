@@ -3,7 +3,7 @@
 # profile: null
 
 # Make ansible-lint resolve paths relative to playbooks/ansible.cfg
-project_dir: playbooks/
+# project_dir: playbooks/
 
 # enable_list:
 #   # - yaml
