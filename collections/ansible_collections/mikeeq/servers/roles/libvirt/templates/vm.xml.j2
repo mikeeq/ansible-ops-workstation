@@ -142,7 +142,7 @@
     </interface>
 {% elif libvirt_vm_network == "bridge" %}
     <interface type='bridge'>
-      <source bridge='{{ baremetal_bridge_interface }}'/>
+      <source bridge='{{ network_bridge_baremetal_bridge_interface }}'/>
       <model type='virtio'/>
       <address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x0"/>
     </interface>

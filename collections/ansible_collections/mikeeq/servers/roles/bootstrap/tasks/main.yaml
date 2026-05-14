@@ -1,4 +1,9 @@
 ---
+- name: Install dependencies
+  ansible.builtin.package:
+    name: zsh
+    state: present
+
 - name: Import user.yaml
   ansible.builtin.import_tasks: user.yaml
 - name: Import ssh_keys.yaml

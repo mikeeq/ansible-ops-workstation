@@ -7,7 +7,7 @@
     owner: "{{ item }}"
     group: "{{ item }}"
   with_items:
-    - "{{ user_name }}"
+    - mikee
     - deploy
     # - root
 
@@ -20,7 +20,7 @@
     owner: "{{ item }}"
     group: "{{ item }}"
   with_items:
-    - "{{ user_name }}"
+    - mikee
     - deploy
     # - root
 
@@ -33,7 +33,7 @@
     mode: "0600"
     backup: true
     validate: /usr/sbin/sshd -t -f %s
-  notify: restart_ssh
+  notify: Restart_ssh
   loop:
     - /etc/ssh/sshd_config
 

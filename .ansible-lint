@@ -26,7 +26,7 @@ skip_list:
   # - tags:formatting,yaml
 
   # - risky-file-permissions
-  - no-changed-when
+  # - no-changed-when
   - command-instead-of-shell
   - risky-shell-pipe
   - command-instead-of-module
