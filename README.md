@@ -52,9 +52,7 @@
   </p>
 </p>
 
-[![CI](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml/badge.svg)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml)
-
-[![CircleCI](https://circleci.com/gh/mikeeq/ansible-ops-workstation.svg?style=svg)](https://circleci.com/gh/mikeeq/ansible-ops-workstation)
+![CI Github Actions (main)](https://github.com/mikeeq/ansible-ops-workstation/actions/workflows/ci.yaml/badge.svg?branch=main)
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
@@ -196,6 +194,13 @@ Contributions are what make the open source community such an amazing place to b
    source ~/.bashrc
    ```
 
+   > If `curl` fails due to Zscaler SSL interception, run the following first to grab Zscaler certs from the Windows host and install them into WSL's CA store:
+   >
+   > ```bash
+   > cd ~/git/github/ansible-ops-workstation/scripts
+   > ./grab_zscaler_certs.sh
+   > ```
+
 4. Clone repository
 
    ```bash
@@ -219,7 +224,13 @@ Contributions are what make the open source community such an amazing place to b
 
    ```bash
    cd playbooks
-   ansible-playbook -i ../inventory/hosts.yaml wsl-ubuntu.yaml -K
+   ansible-playbook wsl-ubuntu.yaml -K
+
+   # When there will be a problem with sudo ("timed out waiting for become success"), enable NOPASSWD temporarily:
+   echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER && sudo chmod 0440 /etc/sudoers.d/$USER
+   ansible-playbook wsl-ubuntu.yaml
+   # After provisioning is done, remove NOPASSWD:
+   sudo rm /etc/sudoers.d/$USER
    ```
 
 7. Install PowerLevel10K font on Windows - <https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf>
@@ -707,6 +718,15 @@ dnf downgrade mutter
 - Clipboard sharing is missing: https://github.com/input-leap/input-leap/issues/1698
   - Install X11 back on F43: https://copr.fedorainfracloud.org/coprs/frantisekz/GNOME-X11/
 - Sticky keys as above
+
+33. Molecule expects only .yml files (don't work with .yaml)
+
+```
+# https://github.com/ansible/molecule/issues/3849
+
+CRITICAL 'molecule/default/molecule.yml' glob failed.
+
+```
 
 ## TODO
 

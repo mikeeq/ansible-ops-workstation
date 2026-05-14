@@ -1,0 +1,28 @@
+---
+driver:
+  name: docker
+platforms:
+  - name: fedora
+    image: fedora:44
+    # dockerfile: ../../../../Dockerfile
+    # command: /usr/sbin/init
+    # privileged: true
+    # cgroupns_mode: host
+    # volumes:
+    #   - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    # pre_build_image: false
+    dockerfile: Dockerfile.j2
+    command: sleep infinity
+    pre_build_image: false
+  - name: ubuntu
+    image: ubuntu:26.04
+    dockerfile: Dockerfile.j2
+    command: sleep infinity
+    pre_build_image: false
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_ROLES_PATH: "${MOLECULE_PROJECT_DIRECTORY}/../.."
+    ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
+verifier:
+  name: ansible

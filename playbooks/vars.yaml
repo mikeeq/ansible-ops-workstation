@@ -1,7 +1,7 @@
 ---
 - name: Include architecture specifc group_vars
   hosts:
-    - "{{ hosts_to_deploy | default('local') }}"
+    - "{{ hosts_to_deploy | default('localhost') }}"
   become: false
   gather_facts: true
   pre_tasks:
@@ -22,7 +22,13 @@
       register: current_group
       changed_when: false
 
+    - name: Get current user home directory
+      ansible.builtin.shell: "echo ~{{ current_user.stdout }}"
+      register: current_home
+      changed_when: false
+
     - name: Set user facts
       ansible.builtin.set_fact:
         user_name: "{{ current_user.stdout }}"
         user_group_name: "{{ current_group.stdout }}"
+        user_home_dir: "{{ current_home.stdout }}"

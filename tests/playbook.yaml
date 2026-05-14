@@ -1,0 +1,55 @@
+---
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: ../playbooks/vars.yaml
+
+
+- name: Test playbook - install from git and run roles
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+
+  # collections:
+  #   - mikeeq.apps
+
+  pre_tasks:
+    # - name: Install test requirements
+    #   ansible.builtin.command:
+    #     cmd: ansible-galaxy collection install -r {{ playbook_dir }}/requirements.yaml --force -p {{ playbook_dir }}/tmp/ansible
+    #   changed_when: true
+
+    # - name: Gather facts
+    #   ansible.builtin.setup:
+
+    - name: Create temporary directory for GitHub Copilot CLI installation
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/tmp/bin"
+        state: directory
+
+  roles:
+    - role: mikeeq.apps.github_copilot_cli
+      github_copilot_cli_install_dir: "{{ playbook_dir }}/tmp/"
+
+  post_tasks:
+    - name: Smoke test - verify copilot is installed
+      ansible.builtin.command:
+        cmd: "{{ playbook_dir }}/tmp/bin/copilot --version"
+      register: copilot_version
+      changed_when: false
+
+    - name: Debug copilot version output
+      ansible.builtin.debug:
+        msg: "GitHub Copilot CLI version: {{ copilot_version.stdout }}"
+
+    - name: Assert copilot CLI is functional
+      ansible.builtin.assert:
+        that:
+          - copilot_version.rc == 0
+          - "'GitHub Copilot CLI' in copilot_version.stdout"
+        fail_msg: "GitHub Copilot CLI is not properly installed"
+        success_msg: "GitHub Copilot CLI {{ copilot_version.stdout_lines[0] }} is working"
+
+    - name: Clean up temporary directories
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/tmp/bin"
+        state: absent

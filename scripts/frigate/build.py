@@ -7,13 +7,14 @@ model = models.get(Models.YOLO_NAS_S, pretrained_weights="coco")
 
 # export the model for compatibility with Frigate
 
-model.export("yolo_nas_s.onnx",
-             output_predictions_format=DetectionOutputFormatMode.FLAT_FORMAT,
-             max_predictions_per_image=20,
-             num_pre_nms_predictions=300,
-             confidence_threshold=0.4,
-             input_image_shape=(320,320),
-            )
+model.export(
+    "yolo_nas_s.onnx",
+    output_predictions_format=DetectionOutputFormatMode.FLAT_FORMAT,
+    max_predictions_per_image=20,
+    num_pre_nms_predictions=300,
+    confidence_threshold=0.4,
+    input_image_shape=(320, 320),
+)
 
 
 # from google.colab import files

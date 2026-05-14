@@ -3,35 +3,41 @@
 DOCKER_IMAGE=${DOCKER_IMAGE:-fedora_systemd}
 ANSIBLE_PLAYBOOK=${ANSIBLE_PLAYBOOK:-fedora.yaml}
 docker run \
-  --name ${DOCKER_IMAGE} \
-  -d \
-  -t \
-  --privileged \
-  -v $(pwd):/repo \
-  -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
-  --cgroupns host \
-  -w /repo/playbooks \
-  --rm \
-  ${DOCKER_IMAGE}
+	--name ${DOCKER_IMAGE} \
+	-d \
+	-t \
+	--privileged \
+	-v "$(pwd)":/repo \
+	-v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+	--cgroupns host \
+	-w /repo/playbooks \
+	--rm \
+	${DOCKER_IMAGE}
 
 CONTAINER_USER=${CONTAINER_USER:-mikee}
 
 docker exec \
-  -t \
-  -u ${CONTAINER_USER} \
-  ${DOCKER_IMAGE} /bin/bash -c " \
-    ansible-galaxy collection install -r ../requirements.yaml"
+	-t \
+	-u 0 \
+	${DOCKER_IMAGE} /bin/bash -c " \
+    mkdir -p /repo/.ansible && chown -R ${CONTAINER_USER}:${CONTAINER_USER} /repo/.ansible"
 
 docker exec \
-  -t \
-  -u ${CONTAINER_USER} \
-  ${DOCKER_IMAGE} /bin/bash -c " \
+	-t \
+	-u ${CONTAINER_USER} \
+	${DOCKER_IMAGE} /bin/bash -c " \
+    mise install --silent --yes"
+
+docker exec \
+	-t \
+	-u ${CONTAINER_USER} \
+	${DOCKER_IMAGE} /bin/bash -c " \
     ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yaml ${ANSIBLE_PLAYBOOK}"
 
 docker exec \
-  -t \
-  -u ${CONTAINER_USER} \
-  ${DOCKER_IMAGE} /bin/bash -c " \
+	-t \
+	-u ${CONTAINER_USER} \
+	${DOCKER_IMAGE} /bin/bash -c " \
     ansible-playbook -e ansible_run_in_docker=true --skip-tags dont_run_in_docker -i ../inventory/hosts.yaml ${ANSIBLE_PLAYBOOK}"
 
 ansible_exitcode=$?

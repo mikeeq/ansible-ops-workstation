@@ -4,6 +4,6 @@
     - vpn1
   become: true
   roles:
-    - servers/network-static-dns
-    - servers/apps/openvpn
-    - servers/apps/vpn-gw
+    - mikeeq.servers.network_static_dns
+    - mikeeq.apps_server.openvpn
+    - mikeeq.apps_server.vpn_gw

@@ -15,6 +15,7 @@ paths = [
   '''.terragrunt-cache''',
   '''.external_modules''',
   '''.pre-commit-config\.yaml''',
+  '''\.ansible''',
 ]
 regexes = [
   '''client_id''',

@@ -4,6 +4,6 @@
   become: false
   gather_facts: false
   roles:
-    - servers/huawei-lte
+    - mikeeq.servers.huawei_lte
   vars:
     huawei_dynamic_task: "restart.yaml"

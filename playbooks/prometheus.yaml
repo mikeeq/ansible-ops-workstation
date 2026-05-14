@@ -7,50 +7,50 @@
 #   become: true
 #   gather_facts: true
 #   roles:
-#     - servers/openwrt/setup
+#     - mikeeq.servers.openwrt_setup
 
 # - name: Provision DNS1
 #   hosts:
 #     - dns1
 #   become: true
 #   roles:
-#     - servers/apps/coredns
-#     # - servers/apps/letsencrypt-coredns
+#     - mikeeq.apps_server.coredns
+#     # - mikeeq.apps_server.letsencrypt_coredns
 
 # - name: Provision DNS2
 #   hosts:
 #     - dns2
 #   become: true
 #   roles:
-#     - servers/apps/adguard-home
+#     - mikeeq.apps_server.adguard_home
 
 - name: Provision DNS1
   hosts:
     - dns1
   become: true
   roles:
-    - servers/network-static-dns
-    - apps/docker
-    - servers/apps/coredns
-    - servers/apps/letsencrypt-coredns
+    - mikeeq.servers.network_static_dns
+    - mikeeq.apps.docker
+    - mikeeq.apps_server.coredns
+    - mikeeq.apps_server.letsencrypt_coredns
 
 # - name: Provision DNS2
 #   hosts:
 #     - dns2
 #   become: true
 #   roles:
-#     - servers/network-static-dns
-#     - apps/docker
-#     - servers/apps/adguard-home
+#     - mikeeq.servers.network_static_dns
+#     - mikeeq.apps.docker
+#     - mikeeq.apps_server.adguard_home
 
 - name: Prometheus
   hosts: mikeeClevo
   # hosts: localhost
   become: true
   roles:
-    # - servers/apps/prometheus
-    - servers/apps/frigate
-    # - servers/apps/ollama-docker
-    - servers/apps/nginx
-    - servers/apps/immich
-    - servers/apps/vaultwarden
+    # - mikeeq.apps_server.prometheus
+    - mikeeq.apps_server.frigate
+    # - mikeeq.apps_server.ollama_docker
+    - mikeeq.apps_server.nginx
+    - mikeeq.apps_server.immich
+    - mikeeq.apps_server.vaultwarden

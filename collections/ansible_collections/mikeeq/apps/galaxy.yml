@@ -1,0 +1,23 @@
+---
+namespace: mikeeq
+name: apps
+version: 1.0.0
+readme: README.md
+authors:
+  - mikeeq
+description: CLI and DevOps tools (docker, kubectl, terraform, helm, etc.)
+license:
+  - GPL-3.0-or-later
+repository: https://github.com/mikeeq/ansible-ops-workstation
+tags:
+  - devops
+  - tools
+  - cli
+  - docker
+  - kubernetes
+  - terraform
+dependencies:
+  community.general: ">=12.0.0"
+build_ignore:
+  - molecule
+  - "*.tar.gz"

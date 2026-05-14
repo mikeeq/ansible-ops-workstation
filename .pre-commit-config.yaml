@@ -1,4 +1,10 @@
 ---
+exclude: |
+  (?x)^(
+    \.cache/.*|
+    \.ansible/.*
+  )$
+
 repos:
   # https://github.com/pre-commit/pre-commit-hooks/releases
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -10,7 +16,7 @@ repos:
         exclude: "zabbix_agent_custom_who(?:2)?\\.pp"
       - id: check-yaml
         args: [--allow-multiple-documents]
-        exclude: (^|/)templates/.*\.ya?ml$|^roles/servers/apps/home-assistant/files/config/.*\.ya?ml$
+        exclude: (^|/)templates/.*\.ya?ml$|^collections/ansible_collections/mikeeq/apps_server/roles/home_assistant/files/config/.*\.ya?ml$
       # - id: check-json
       - id: check-toml
       - id: check-added-large-files
@@ -19,7 +25,7 @@ repos:
       - id: check-merge-conflict
       - id: check-symlinks
       - id: detect-private-key
-        exclude: roles/apps/openvpn-client/files/client.ovpn
+        exclude: collections/ansible_collections/mikeeq/apps/roles/openvpn_client/files/client.ovpn
       - id: check-executables-have-shebangs
       - id: mixed-line-ending
         args: [--fix=lf]
@@ -63,21 +69,24 @@ repos:
     hooks:
       - id: check-json5
 
-  - repo: https://github.com/ansible/ansible-lint
-    rev: v26.4.0
-    hooks:
-      - id: ansible-lint
-
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.12
     hooks:
       - id: actionlint
 
-  # - repo: https://github.com/shellcheck-py/shellcheck-py
-  #   rev: v0.11.0.1
-  #   hooks:
-  #     - id: shellcheck
-  #       args: [--severity=warning]
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+        args: [--severity=warning]
+        exclude: collections/ansible_collections/mikeeq/servers/roles/openwrt_dynamic_sqm_lte/
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
 
   - repo: local
     hooks:
@@ -86,10 +95,29 @@ repos:
         entry: scripts/convert_yml_to_yaml.sh
         language: system
         files: \.yml$
-        exclude: "molecule/"
+        exclude: "molecule/|meta/|galaxy\\.yml"
+
+      # - id: shellcheck
+      #   name: shellcheck
+      #   entry: shellcheck --severity=warning
+      #   language: system
+      #   types:
+      #     - shell
 
       - id: gitleaks
         name: gitleaks
         entry: gitleaks detect --no-git --redact --verbose --config=gitleaks.toml
         language: system
         pass_filenames: false
+
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.1-1
+    hooks:
+      # Choose one of:
+      - id: shfmt         # prebuilt upstream executable
+
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v26.4.0
+    hooks:
+      - id: ansible-lint
+        # args: [--config-file=playbooks/.ansible-lint, --yamllint-file=.yamllint]

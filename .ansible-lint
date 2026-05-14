@@ -2,13 +2,20 @@
 # profile: basic
 # profile: null
 
+# Make ansible-lint resolve paths relative to playbooks/ansible.cfg
+# project_dir: playbooks/
+
 # enable_list:
 #   # - yaml
 #   - fqcn
 
 exclude_paths:
-  - roles/servers/apps/home-assistant/files/config
-  # - "**/molecule/"
+  - .git
+  - .ansible
+  - tests/.ansible
+  - collections/ansible_collections/mikeeq/apps_server/roles/home_assistant/files/config
+  - "**/molecule/"
+  - playbooks/requirements.yaml
 
 skip_list:
   - name
@@ -24,6 +31,7 @@ skip_list:
   - literal-compare
   - package-latest
   - ignore-errors
+  - galaxy[no-changelog]
   # - yaml[line-length]
 #   - tags:formatting,yaml
 

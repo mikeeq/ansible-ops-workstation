@@ -4,3 +4,12 @@ playbooks/dnf5
 .ansible
 .onnx
 plans
+__pycache__
+*.pyc
+*.log
+*.tmp
+*.bak
+collections/ansible_collections/*
+!collections/ansible_collections/mikeeq/
+.ruff_cache
+tests/tmp

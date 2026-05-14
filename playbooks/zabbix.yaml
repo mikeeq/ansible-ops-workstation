@@ -3,7 +3,7 @@
   hosts: mikeeClevo
   become: true
   roles:
-    - servers/apps/zabbix
+    - mikeeq.apps_server.zabbix
 
 - name: Zabbix agent
   hosts:
@@ -13,4 +13,4 @@
     - dns2
   become: true
   roles:
-    - servers/apps/zabbix-agent
+    - mikeeq.apps_server.zabbix_agent

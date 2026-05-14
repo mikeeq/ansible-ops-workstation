@@ -4,19 +4,19 @@
 
 - name: MacOS bootstrap
   hosts:
-    - "{{ hosts_to_deploy | default('local') }}"
+    - "{{ hosts_to_deploy | default('localhost') }}"
     # - mikeeClevo
   become: false
   roles:
-    # - pkg_mgmt/pip
-    - pkg_mgmt/brew
-    - apps/oh_my_zsh
-    - desktop/macos
-    - desktop/apps/vscode
-    - desktop/apps/zed
-    - apps/claude-code
-    - apps/github-copilot-cli
-    # - apps/antidote
+    # - mikeeq.utils.pip
+    - mikeeq.utils.brew
+    - mikeeq.apps.oh_my_zsh
+    - mikeeq.machines.macos
+    - mikeeq.apps_desktop.vscode
+    - mikeeq.apps_desktop.zed
+    - mikeeq.apps.claude_code
+    - mikeeq.apps.github_copilot_cli
+    # - mikeeq.apps.antidote
   vars:
     ansible_remote_tmp: "~{{ user_name }}/.ansible/tmp"
     oh_my_zsh_users:
