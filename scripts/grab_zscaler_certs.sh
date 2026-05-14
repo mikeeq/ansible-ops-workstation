@@ -36,4 +36,6 @@ EOF
 
 WIN_SCRIPT=$(wslpath -w "$SCRIPT_FILE")
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WIN_SCRIPT"
+EXIT_CODE=$?
 rm -f "$SCRIPT_FILE"
+exit $EXIT_CODE
