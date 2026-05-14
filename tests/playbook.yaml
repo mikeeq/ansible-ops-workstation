@@ -1,6 +1,6 @@
 ---
-# - name: Include a playbook for including arch specifc vars
-#   ansible.builtin.import_playbook: ../playbooks/vars.yaml
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: ../playbooks/vars.yaml
 
 
 - name: Test playbook - install from git and run roles
