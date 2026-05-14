@@ -62,7 +62,7 @@ for cert in "$CERT_DIR"/*.cer; do
     # Sanitize filename: replace spaces and special chars with underscores
     clean_name=$(echo "$filename" | sed 's/[[:space:]]\+/_/g; s/[^a-zA-Z0-9._-]/_/g; s/__*/_/g; s/^_//; s/_$//')
     # Convert DER to PEM format
-    openssl x509 -inform DER -in "$cert" -out "$CA_CERT_DIR/${clean_name}.crt"
+    sudo openssl x509 -inform DER -in "$cert" -out "$CA_CERT_DIR/${clean_name}.crt"
     echo "Installed: ${clean_name}.crt"
 done
 
