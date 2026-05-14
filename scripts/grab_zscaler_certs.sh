@@ -38,4 +38,31 @@ WIN_SCRIPT=$(wslpath -w "$SCRIPT_FILE")
 powershell.exe -NoProfile -Command "& {Get-Content '$WIN_SCRIPT' -Raw | Invoke-Expression}"
 EXIT_CODE=$?
 rm -f "$SCRIPT_FILE"
-exit $EXIT_CODE
+
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "Failed to export certificates from Windows store."
+    exit $EXIT_CODE
+fi
+
+# Convert and install certs into WSL Ubuntu CA store
+WIN_DOCS=$(powershell.exe -NoProfile -Command '[Environment]::GetFolderPath("MyDocuments")' | tr -d '\r')
+CERT_DIR=$(wslpath "$WIN_DOCS/zscaler_certs")
+CA_CERT_DIR="/usr/local/share/ca-certificates/zscaler"
+
+if [ ! -d "$CERT_DIR" ] || [ -z "$(ls -A "$CERT_DIR" 2>/dev/null)" ]; then
+    echo "No certificates found in $CERT_DIR"
+    exit 1
+fi
+
+echo "Installing Zscaler certificates to $CA_CERT_DIR..."
+sudo mkdir -p "$CA_CERT_DIR"
+
+for cert in "$CERT_DIR"/*.cer; do
+    filename=$(basename "$cert" .cer)
+    # Convert DER to PEM format
+    openssl x509 -inform DER -in "$cert" -out "$CA_CERT_DIR/${filename}.crt"
+    echo "Installed: ${filename}.crt"
+done
+
+sudo update-ca-certificates
+echo "Done. Zscaler certificates added to WSL CA store."
