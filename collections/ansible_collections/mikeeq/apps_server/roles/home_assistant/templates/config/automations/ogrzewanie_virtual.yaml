@@ -1,5 +1,5 @@
 ---
-{% for i in home_assistant_home_assistant.climate %}
+{% for i in home_assistant_config.climate %}
 - alias: ogrzewanie_virtual_wlacz1_{{ i.name }}
   description: ""
   triggers:
@@ -65,7 +65,7 @@
       to: "off"
   conditions: []
   actions:
-{% for i in home_assistant_home_assistant.climate %}
+{% for i in home_assistant_config.climate %}
     - action: switch.turn_off
       metadata: {}
       data: {}

@@ -10,4 +10,4 @@
 
 - name: "Set fact with latest kubectl_version of krew"
   ansible.builtin.set_fact:
-    krew_version: "{{ kubectl_version.stdout }}"
+    kubectl_krew_version: "{{ kubectl_version.stdout }}"

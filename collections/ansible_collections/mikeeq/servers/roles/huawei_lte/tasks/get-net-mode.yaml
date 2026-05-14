@@ -12,8 +12,8 @@
 
 - name: Transform huawei_lte_get_net_mode_request from XML to YAML
   ansible.builtin.set_fact:
-    get_net_mode_yaml: "{{ huawei_lte_get_net_mode_request.content | ansible.utils.from_xml }}"
+    huawei_lte_get_net_mode_yaml: "{{ huawei_lte_get_net_mode_request.content | ansible.utils.from_xml }}"
 
 - name: Show huawei_lte_get_net_mode_request response content in YAML
   ansible.builtin.debug:
-    var: get_net_mode_yaml.response
+    var: huawei_lte_get_net_mode_yaml.response

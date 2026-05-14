@@ -30,21 +30,21 @@
 
 - name: Set vars to enable SQM
   ansible.builtin.set_fact:
-    cake_service: "start"
-    sqm_enabled: "1"
+    openwrt_dynamic_sqm_lte_cake_service: "start"
+    openwrt_dynamic_sqm_lte_sqm_enabled: "1"
   when: openwrt_dynamic_sqm_lte_dynamic_sqm_enabled == "true"
 
 - name: Set vars to disable SQM
   ansible.builtin.set_fact:
-    cake_service: "stop"
-    sqm_enabled: "0"
+    openwrt_dynamic_sqm_lte_cake_service: "stop"
+    openwrt_dynamic_sqm_lte_sqm_enabled: "0"
   when: openwrt_dynamic_sqm_lte_dynamic_sqm_enabled == "false"
 
 - name: Change config SQM
   ansible.builtin.lineinfile:
     regexp: "option\\senabled"
     # \s{8}option\senabled\s.\d.
-    line: "        option enabled '{{ sqm_enabled }}'"
+    line: "        option enabled '{{ openwrt_dynamic_sqm_lte_sqm_enabled }}'"
     path: /etc/config/sqm
   register: openwrt_dynamic_sqm_lte_sqm_config
 
@@ -58,6 +58,6 @@
   changed_when: false
   failed_when: false
 
-- name: "Change Dynamic SQM ansible.builtin.service: {{ cake_service }}"
-  ansible.builtin.shell: service cake-autorate {{ cake_service }}
-  when: (openwrt_dynamic_sqm_lte_dynamic_sqm_status.stdout == "running" and cake_service == "stop") or (openwrt_dynamic_sqm_lte_dynamic_sqm_status.stdout == "inactive" and cake_service == "start")
+- name: "Change Dynamic SQM ansible.builtin.service: {{ openwrt_dynamic_sqm_lte_cake_service }}"
+  ansible.builtin.shell: service cake-autorate {{ openwrt_dynamic_sqm_lte_cake_service }}
+  when: (openwrt_dynamic_sqm_lte_dynamic_sqm_status.stdout == "running" and openwrt_dynamic_sqm_lte_cake_service == "stop") or (openwrt_dynamic_sqm_lte_dynamic_sqm_status.stdout == "inactive" and openwrt_dynamic_sqm_lte_cake_service == "start")

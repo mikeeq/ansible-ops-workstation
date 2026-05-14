@@ -2,11 +2,11 @@
 # IKEA ICPSHC24-30EU-IL-1
 # IKEA TRADFRI LED driver for wireless control (30 watt)
 # https://www.zigbee2mqtt.io/devices/ICPSHC24-30EU-IL-1.html
-{% for i in home_assistant_home_assistant.mqtt.ikea.tradfri_single_dimm %}
+{% for i in home_assistant_config.mqtt.ikea.tradfri_single_dimm %}
 - name: ikea_tradfri_{{ i.name }}
   schema: template
-  command_topic: "cmnd/{{ home_assistant_home_assistant.mqtt.zigbee_coordinator_base_topic }}/ZbSend"
-  state_topic: "tele/{{ home_assistant_home_assistant.mqtt.zigbee_coordinator_base_topic }}/ikea_tradfri_{{ i.name }}/SENSOR"
+  command_topic: "cmnd/{{ home_assistant_config.mqtt.zigbee_coordinator_base_topic }}/ZbSend"
+  state_topic: "tele/{{ home_assistant_config.mqtt.zigbee_coordinator_base_topic }}/ikea_tradfri_{{ i.name }}/SENSOR"
   command_on_template: >
     {"device": "ikea_tradfri_{{ i.name }}","send":{
     {% raw -%}
@@ -37,7 +37,7 @@
     {% else %}
       {{ state_attr(entity_id,'brightness') }}
     {% endif %}{% endraw +%}
-  availability_topic: "tele/{{ home_assistant_home_assistant.mqtt.zigbee_coordinator_base_topic }}/LWT"
+  availability_topic: "tele/{{ home_assistant_config.mqtt.zigbee_coordinator_base_topic }}/LWT"
   payload_available: "Online"
   payload_not_available: "Offline"
   optimistic: false

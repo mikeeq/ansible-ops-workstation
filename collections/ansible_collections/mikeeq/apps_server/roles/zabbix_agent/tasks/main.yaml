@@ -1,7 +1,7 @@
 ---
 - name: Set hostname fact if IP matches
   ansible.builtin.set_fact:
-    zabbix_hostname: >-
+    zabbix_agent_zabbix_hostname: >-
       {{
         (
           (dhcp + static_devices)

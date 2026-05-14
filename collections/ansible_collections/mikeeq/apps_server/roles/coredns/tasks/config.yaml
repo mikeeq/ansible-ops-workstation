@@ -16,7 +16,7 @@
 
 - name: Create vars
   ansible.builtin.set_fact:
-    current_serial_number: >-
+    coredns_current_serial_number: >-
       {%- if coredns_current_serial_number_res.stdout == '' -%}
         {{ lookup('pipe', 'date +%Y%m%d') }}01
       {%- else -%}
@@ -30,7 +30,7 @@
     mode: "0664"
     backup: true
   vars:
-    serial_number: "{{ current_serial_number | int }}"
+    serial_number: "{{ coredns_current_serial_number | int }}"
   register: coredns_db_res
 
 - name: Configure coredns db file
@@ -39,7 +39,7 @@
     dest: "{{ coredns_install_path }}/config/{{ coredns_zone_filename }}"
     mode: "0664"
   vars:
-    serial_number: "{{ current_serial_number | int + 1 }}"
+    serial_number: "{{ coredns_current_serial_number | int + 1 }}"
   when:
     - coredns_db_res.changed
     - coredns_current_serial_number_res.stdout != ''

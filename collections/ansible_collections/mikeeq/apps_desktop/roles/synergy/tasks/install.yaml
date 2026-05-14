@@ -8,7 +8,7 @@
   ansible.builtin.git:
     repo: "https://github.com/symless/synergy-core"
     dest: /opt/synergy/synergy-core
-    synergy_version: "{{ synergy_version }}"
+    version: "{{ synergy_version }}"
     depth: 1
 
 - name: Check if fix for flatpak is needed

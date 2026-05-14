@@ -1,9 +1,9 @@
 ---
 - name: Set vars
   ansible.builtin.set_fact:
-    vm_config_path: "{{ libvirt_images_dir }}/{{ vm.name }}.xml"
-    vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
-    vm_cloud_init_path: "{{ libvirt_cloud_init_iso_dir }}/{{ vm.name }}.iso"
+    libvirt_vm_config_path: "{{ libvirt_images_dir }}/{{ vm.name }}.xml"
+    libvirt_vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
+    libvirt_vm_cloud_init_path: "{{ libvirt_cloud_init_iso_dir }}/{{ vm.name }}.iso"
 
 - name: "Create directory for cloud-init configs"
   ansible.builtin.file:
@@ -15,7 +15,7 @@
 - name: Render vm config
   ansible.builtin.template:
     src: vm.xml.j2
-    dest: "{{ vm_config_path }}"
+    dest: "{{ libvirt_vm_config_path }}"
     owner: qemu
     group: qemu
     mode: "0600"
@@ -31,14 +31,14 @@
 
 - name: Check if storage exists
   ansible.builtin.stat:
-    path: "{{ vm_disk_path }}"
+    path: "{{ libvirt_vm_disk_path }}"
   register: libvirt_qcow_check
 
 - name: Clone template storage
   ansible.builtin.copy:
     remote_src: true
     src: "{{ libvirt_images_dir }}/{{ libvirt_cloud_image_name }}"
-    dest: "{{ vm_disk_path }}"
+    dest: "{{ libvirt_vm_disk_path }}"
     owner: qemu
     group: qemu
     mode: "0600"
@@ -52,8 +52,8 @@
 
 # - name: Extend disk image
 #   ansible.builtin.shell: |
-#     virsh --connect qemu:///system vol-resize "{{ vm_disk_path }}" "{{ vm.disk_size }}"
-#     /sbin/xfs_growfs "{{ vm_disk_path }}"
+#     virsh --connect qemu:///system vol-resize "{{ libvirt_vm_disk_path }}" "{{ vm.disk_size }}"
+#     /sbin/xfs_growfs "{{ libvirt_vm_disk_path }}"
 #   when: libvirt_vm_force_recreation == true or libvirt_qcow_check.stat.exists == false
 
 # virt-filesystems --long -h --all -a olddisk.qcow2
@@ -63,8 +63,8 @@
 # virt-filesystems --long -h --all -a olddisk.qcow2
 - name: Create disk image and resize
   ansible.builtin.shell: |
-    qemu-img create -f qcow2 -o preallocation=metadata {{ vm_disk_path }} {{ vm.disk_size }}
-    virt-resize --expand /dev/sda3 "{{ libvirt_images_dir }}/{{ libvirt_cloud_image_name }}" {{ vm_disk_path }}
+    qemu-img create -f qcow2 -o preallocation=metadata {{ libvirt_vm_disk_path }} {{ vm.disk_size }}
+    virt-resize --expand /dev/sda3 "{{ libvirt_images_dir }}/{{ libvirt_cloud_image_name }}" {{ libvirt_vm_disk_path }}
   when: libvirt_vm_force_recreation == true or libvirt_qcow_check.stat.exists == false
 
 - name: Check VM state

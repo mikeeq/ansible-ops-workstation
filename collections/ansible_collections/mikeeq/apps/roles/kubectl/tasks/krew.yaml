@@ -5,7 +5,7 @@
 ---
 - name: Upgrade krew
   ansible.builtin.include_tasks: krew/update.yaml
-  when: krew_version is not defined
+  when: kubectl_krew_version is not defined
 
 - name: Get installed kubectl_version
   become: true
@@ -21,11 +21,11 @@
 
 - name: Include krew/get_latest_version.yaml
   ansible.builtin.include_tasks: krew/get_latest_version.yaml
-  when: krew_version is not defined
+  when: kubectl_krew_version is not defined
 
 - name: Include krew/install.yaml
   ansible.builtin.include_tasks: krew/install.yaml
-  when: kubectl_installed_krew_version.stdout != krew_version
+  when: kubectl_installed_krew_version.stdout != kubectl_krew_version
 
 - name: Import krew/plugins.yaml
   ansible.builtin.import_tasks: krew/plugins.yaml

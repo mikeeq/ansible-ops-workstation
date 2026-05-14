@@ -14,6 +14,7 @@ exclude_paths:
   - .ansible
   - tests/.ansible
   - collections/ansible_collections/mikeeq/apps_server/roles/home_assistant/files/config
+  - collections/ansible_collections/mikeeq/apps_desktop/roles/zzzOld
   - "**/molecule/"
   - playbooks/requirements.yaml
 

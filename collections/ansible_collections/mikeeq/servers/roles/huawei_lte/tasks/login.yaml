@@ -7,21 +7,21 @@
 
 - name: Transform huawei_lte_info_request from XML to YAML
   ansible.builtin.set_fact:
-    info_yaml: "{{ huawei_lte_info_request.content | ansible.utils.from_xml }}"
+    huawei_lte_info_yaml: "{{ huawei_lte_info_request.content | ansible.utils.from_xml }}"
 
 - name: Extract cookie and token from YAML and transform password to the form acceptable by Huawei router
   ansible.builtin.set_fact:
-    session_cookie: "{{ info_yaml.response.SesInfo }}"
-    session_token: "{{ info_yaml.response.TokInfo }}"
-    huawei_password_b64: "{{ huawei_lte_huawei_password | hash('sha256') | b64encode }}"
+    huawei_lte_session_cookie: "{{ huawei_lte_info_yaml.response.SesInfo }}"
+    huawei_lte_session_token: "{{ huawei_lte_info_yaml.response.TokInfo }}"
+    huawei_lte_password_b64: "{{ huawei_lte_huawei_password | hash('sha256') | b64encode }}"
 
 - name: Prepare a payload with a password acceptable by login API call
   ansible.builtin.set_fact:
-    huawei_login_payload: "{{ huawei_lte_huawei_username }}{{ huawei_password_b64 }}{{ session_token }}"
+    huawei_lte_login_payload: "{{ huawei_lte_huawei_username }}{{ huawei_lte_password_b64 }}{{ huawei_lte_session_token }}"
 
 - name: Transform password to the password_type - 4
   ansible.builtin.set_fact:
-    huawei_login_payload_b64: "{{ huawei_login_payload | hash('sha256') | b64encode }}"
+    huawei_lte_login_payload_b64: "{{ huawei_lte_login_payload | hash('sha256') | b64encode }}"
 
 - name: Grab Session ID cookie, perform login - /api/user/login API call
   ansible.builtin.uri:
@@ -32,12 +32,12 @@
       <?xml version="1.0" encoding="UTF-8"?>
       <request>
         <Username>{{ huawei_lte_huawei_username }}</Username>
-        <Password>{{ huawei_login_payload_b64 }}</Password>
+        <Password>{{ huawei_lte_login_payload_b64 }}</Password>
         <password_type>4</password_type>
       </request>
     headers:
-      __RequestVerificationToken: "{{ session_token }}"
-      Cookie: "{{ session_cookie }}"
+      __RequestVerificationToken: "{{ huawei_lte_session_token }}"
+      Cookie: "{{ huawei_lte_session_cookie }}"
       X-Requested-With: "XMLHttpRequest"
       Content-Type: "application/x-www-form-urlencoded; charset=UTF-8"
   register: huawei_lte_login_request

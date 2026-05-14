@@ -6,7 +6,7 @@
 
 - name: Configure ovpn client files
   ansible.builtin.template:
-    src: "{{ openvpn_client_ovpn_client_templates_path }}/{{ item.src }}"
+    src: "{{ openvpn_client_templates_path }}/{{ item.src }}"
     dest: "/etc/openvpn/client/{{ item.dest }}"
     mode: "0664"
     backup: true

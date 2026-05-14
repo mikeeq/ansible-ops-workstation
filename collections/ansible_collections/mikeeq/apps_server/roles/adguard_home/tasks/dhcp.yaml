@@ -22,15 +22,15 @@
   ansible.builtin.debug:
     var: adguard_home_dhcp
 
-- name: "Create empty tables 'dhcp_to_create' and 'dhcp_to_delete'"
+- name: "Create empty tables 'adguard_home_dhcp_to_create' and 'adguard_home_dhcp_to_delete'"
   ansible.builtin.set_fact:
-    dhcp_to_create: []
-    dhcp_to_delete: []
+    adguard_home_dhcp_to_create: []
+    adguard_home_dhcp_to_delete: []
 
-- name: "Create var 'dhcp_to_create'"
+- name: "Create var 'adguard_home_dhcp_to_create'"
   ansible.builtin.set_fact:
-    dhcp_to_create: >-
-      {{ dhcp_to_create + entry }}
+    adguard_home_dhcp_to_create: >-
+      {{ adguard_home_dhcp_to_create + entry }}
   when: old_entry_ip != item.ip or old_entry_hostname != item.hostname
   vars:
     old_entry_ip: "{{ adguard_home_dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
@@ -45,13 +45,13 @@
       ]
   loop: "{{ adguard_home_dhcp }}"
 
-- name: "Print the 'dhcp_to_create' var"
+- name: "Print the 'adguard_home_dhcp_to_create' var"
   ansible.builtin.debug:
-    var: dhcp_to_create
+    var: adguard_home_dhcp_to_create
 
-- name: "Create var 'dhcp_to_delete'"
+- name: "Create var 'adguard_home_dhcp_to_delete'"
   ansible.builtin.set_fact:
-    dhcp_to_delete: "{{ dhcp_to_delete + entry }}"
+    adguard_home_dhcp_to_delete: "{{ adguard_home_dhcp_to_delete + entry }}"
   when:
     - (new_entry_ip != item.ip and new_entry_ip != 'N/A') or (new_entry_hostname != item.hostname and new_entry_hostname != 'N/A') or (new_entry_ip == 'N/A' and
       new_entry_hostname == 'N/A')
@@ -68,9 +68,9 @@
       ]
   loop: "{{ adguard_home_dhcp_config.static_leases }}"
 
-- name: "Print the 'dhcp_to_delete' var"
+- name: "Print the 'adguard_home_dhcp_to_delete' var"
   ansible.builtin.debug:
-    var: dhcp_to_delete
+    var: adguard_home_dhcp_to_delete
 
 # POST
 # /dhcp/remove_static_lease
@@ -91,7 +91,7 @@
         "ip": "{{ item.ip }}",
         "hostname": "{{ item.hostname }}"
       }
-  loop: "{{ dhcp_to_delete }}"
+  loop: "{{ adguard_home_dhcp_to_delete }}"
   changed_when: true
 
 # POST
@@ -118,5 +118,5 @@
         "ip": "{{ item.ip }}",
         "hostname": "{{ item.hostname }}"
       }
-  loop: "{{ dhcp_to_create }}"
+  loop: "{{ adguard_home_dhcp_to_create }}"
   changed_when: true
