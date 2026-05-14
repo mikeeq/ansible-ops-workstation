@@ -194,6 +194,13 @@ Contributions are what make the open source community such an amazing place to b
    source ~/.bashrc
    ```
 
+   > If `curl` fails due to Zscaler SSL interception, run the following first to grab Zscaler certs from the Windows host and install them into WSL's CA store:
+   >
+   > ```bash
+   > cd ~/git/github/ansible-ops-workstation/scripts
+   > ./grab_zscaler_certs.sh
+   > ```
+
 4. Clone repository
 
    ```bash
