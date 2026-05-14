@@ -2,7 +2,7 @@
 - name: "Get installed istioctl_version of istioctl"
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: istioctl istioctl_version --remote=false | awk '{print $3}'
+  ansible.builtin.shell: istioctl version --remote=false | awk '{print $3}'
   register: istioctl_installed_version
   changed_when: false
   ignore_errors: true

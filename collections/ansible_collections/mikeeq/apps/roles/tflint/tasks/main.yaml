@@ -9,7 +9,7 @@
       - tar
 
 - name: Get installed tflint_version
-  ansible.builtin.shell: tflint --tflint_version | head -n 1 | awk '{print $3}'
+  ansible.builtin.shell: tflint --version | head -n 1 | awk '{print $3}'
   register: tflint_installed_version
   changed_when: false
   ignore_errors: true

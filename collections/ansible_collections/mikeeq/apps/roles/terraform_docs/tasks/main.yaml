@@ -2,7 +2,7 @@
 - name: Get installed terraform_docs_version
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: terraform-docs terraform_docs_version | awk '{print $3}' | cut -f2 -d'v'
+  ansible.builtin.shell: terraform-docs version | awk '{print $3}' | cut -f2 -d'v'
   register: terraform_docs_installed_version
   changed_when: false
   ignore_errors: true
