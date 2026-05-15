@@ -1,8 +1,16 @@
 ---
-- ansible.builtin.import_tasks: user.yaml
-- ansible.builtin.import_tasks: ssh_keys.yaml
+- name: Install dependencies
+  ansible.builtin.package:
+    name: zsh
+    state: present
 
-- ansible.builtin.meta: flush_handlers
+- name: Import user.yaml
+  ansible.builtin.import_tasks: user.yaml
+- name: Import ssh_keys.yaml
+  ansible.builtin.import_tasks: ssh_keys.yaml
+
+- name: Meta flush_handlers
+  ansible.builtin.meta: flush_handlers
 # 206 - 1st dol
 # 205 - 2nd dol
 # 203 - piec

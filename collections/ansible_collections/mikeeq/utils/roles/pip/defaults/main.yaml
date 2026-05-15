@@ -1,2 +1,2 @@
 ---
-virtualenv_install_path: '/opt/virtualenv'
+pip_virtualenv_install_path: "/opt/virtualenv"

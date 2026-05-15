@@ -1,21 +1,22 @@
 ---
-- name: "Create dir for LE account key - {{ account_path }}"
+- name: "Create dir for LE account key - {{ letsencrypt_coredns_account_path }}"
   ansible.builtin.file:
-    path: "{{ account_path }}"
+    path: "{{ letsencrypt_coredns_account_path }}"
     state: directory
+    mode: "0700"
 
 - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
   community.crypto.openssl_privatekey:
-    path: "{{ account_key_path }}"
-    size: "{{ key_size }}"
+    path: "{{ letsencrypt_coredns_account_key_path }}"
+    size: "{{ letsencrypt_coredns_key_size }}"
     type: RSA
 
 - name: Make sure account exists, has given contacts and terms and conditions of LE are accepted
   community.crypto.acme_account:
-    account_key_src: "{{ account_key_path }}"
-    acme_version: "{{ letsencrypt_api_version }}"
-    acme_directory: "{{ letsencrypt_api }}"
+    account_key_src: "{{ letsencrypt_coredns_account_key_path }}"
+    acme_version: "{{ letsencrypt_coredns_letsencrypt_api_version }}"
+    acme_directory: "{{ letsencrypt_coredns_letsencrypt_api }}"
     state: present
     terms_agreed: true
     contact:
-      - mailto:{{ letsencrypt_email }}
+      - mailto:{{ letsencrypt_coredns_letsencrypt_email }}

@@ -837,7 +837,7 @@ views:
           - type: section
             label: Virtual
           - switch.group_ogrzewanie_podlogowe
-{# {% for i in home_assistant.climate %}
+{# {% for i in home_assistant_config.climate %}
       - type: thermostat
         entity: climate.{{ i.name }}
         features:
@@ -849,7 +849,7 @@ views:
       - type: entities
         title: Termostaty
         entities:
-{% for i in home_assistant.climate %}
+{% for i in home_assistant_config.climate %}
           - entity: climate.{{ i.name }}
             type: custom:multiple-entity-row
             name: {{ i.name }}
@@ -869,14 +869,14 @@ views:
       - type: entities
         title: Silowniki
         entities:
-{% for i in home_assistant.climate %}
+{% for i in home_assistant_config.climate %}
           - entity: {{ i.switch }}
             name: {{ i.name }}
 {% endfor %}
       - type: entities
         title: Silowniki Virtualne
         entities:
-{% for i in home_assistant.climate %}
+{% for i in home_assistant_config.climate %}
           - entity: switch.virtual_ogrzewanie_{{ i.name }}
             name: {{ i.name }}
 {% endfor %}

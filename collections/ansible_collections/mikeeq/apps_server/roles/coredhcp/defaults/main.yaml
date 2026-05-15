@@ -1,2 +1,2 @@
 ---
-install_path: "/opt/coredhcp"
+coredhcp_install_path: "/opt/coredhcp"

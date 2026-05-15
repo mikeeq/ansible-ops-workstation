@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: "{{ openvpn_ca_cert_path }}"
     state: directory
+    mode: "0700"
 
 - name: Generating CA private key
   community.crypto.openssl_privatekey:

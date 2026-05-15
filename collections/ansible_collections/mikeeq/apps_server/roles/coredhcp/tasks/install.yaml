@@ -3,32 +3,34 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    mode: "0755"
   loop:
-    - "{{ install_path }}"
-    - "{{ install_path }}/config"
+    - "{{ coredhcp_install_path }}"
+    - "{{ coredhcp_install_path }}/config"
 
 - name: Configure docker-compose file
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
+    dest: "{{ coredhcp_install_path }}/{{ item }}"
     mode: "0664"
   loop:
     - docker-compose.yaml
     - config/config.yaml
     - config/file_leases.txt
 
-- ansible.builtin.import_tasks: config.yaml
+- name: Import config.yaml
+  ansible.builtin.import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
+  changed_when: coredhcp_pull_result.stderr_lines | length > 2
+  register: coredhcp_pull_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ coredhcp_install_path }}"
 
 - name: Run using docker-compose
   ansible.builtin.command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 2
-  register: up_result
+  changed_when: coredhcp_up_result.stderr_lines | length > 2
+  register: coredhcp_up_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ coredhcp_install_path }}"

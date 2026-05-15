@@ -3,7 +3,7 @@
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.git:
-    repo: 'https://github.com/patjak/bcwc_pcie'
+    repo: "https://github.com/patjak/bcwc_pcie"
     dest: "{{ git_modules_path }}/bcwc_pcie"
 
 # - name: copy dkms config
@@ -28,29 +28,30 @@
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
     creates: /usr/src/facetimehd-0.1
-  register: keyboard_add
+  register: macbook_pro_2015_keyboard_add
 
 - name: DKMS build
   ansible.builtin.shell: dkms build facetimehd/0.1
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
-  when: keyboard_add.changed
+  when: macbook_pro_2015_keyboard_add.changed
 
 - name: DKMS install
   ansible.builtin.shell: dkms install facetimehd/0.1
   args:
     chdir: "{{ git_modules_path }}/bcwc_pcie"
-  when: keyboard_add.changed
+  when: macbook_pro_2015_keyboard_add.changed
 
 # - name: Remove repo
 #   ansible.builtin.file:
 #     path: /tmp/bcwc_pcie
 #     state: absent
 
-- name: copy dkms config
+- name: Copy dkms config
   ansible.builtin.copy:
     src: facetimehd.conf
     dest: /etc/modules-load.d/facetimehd.conf
+    mode: "0644"
 
 # modprobe -r facetimehd; sudo modprobe facetimehd
 

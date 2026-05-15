@@ -23,7 +23,7 @@
       - virt-manager
       - virt-install
       - virt-viewer
-      - 'cockpit*'
+      - "cockpit*"
 
 - name: Add user to libvirt group
   ansible.builtin.user:

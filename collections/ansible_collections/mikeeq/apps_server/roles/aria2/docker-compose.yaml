@@ -20,22 +20,22 @@ services:
     volumes:
       - ./aria2-config:/config
       - /opt/nfs/smb/aria2-downloads:/downloads
-# If you use host network mode, then no port mapping is required.
-# This is the easiest way to use IPv6 networks.
+    # If you use host network mode, then no port mapping is required.
+    # This is the easiest way to use IPv6 networks.
     # network_mode: host
-  #  network_mode: bridge
+    #  network_mode: bridge
     ports:
       - 6800:6800
       - 6888:6888
       - 6888:6888/udp
     restart: unless-stopped
-# Since Aria2 will continue to generate logs, limit the log size to 1M to prevent your hard disk from running out of space.
+    # Since Aria2 will continue to generate logs, limit the log size to 1M to prevent your hard disk from running out of space.
     logging:
       driver: json-file
       options:
         max-size: 1m
 
-# AriaNg is just a static web page, usually you only need to deploy on a single host.
+  # AriaNg is just a static web page, usually you only need to deploy on a single host.
   AriaNg:
     container_name: ariang
     image: p3terx/ariang

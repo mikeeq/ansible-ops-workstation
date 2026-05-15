@@ -3,24 +3,43 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    mode: "0755"
   loop:
-    - "{{ install_path }}"
-    - "{{ install_path }}/confdir"
-    - "{{ install_path }}/workdir"
+    - "{{ adguard_home_install_path }}"
+    - "{{ adguard_home_install_path }}/confdir"
+    - "{{ adguard_home_install_path }}/workdir"
 
 - name: Configure docker-compose file
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
+    dest: "{{ adguard_home_install_path }}/{{ item }}"
     mode: "0664"
     backup: true
   loop:
     - docker-compose.yaml
 
+- name: Install httpd-tools
+  ansible.builtin.package:
+    name: httpd-tools
+    state: present
+
+# https://github.com/pyca/bcrypt/issues/1082
+- name: Generate bcrypt hash for adguard_home password
+  ansible.builtin.command:
+    cmd: "htpasswd -nbBC 10 '' '{{ adguard_home_password }}'"
+  register: adguard_home_password_bcrypt_result
+  changed_when: false
+  no_log: true
+
+- name: Set adguard_home_password_bcrypt fact
+  ansible.builtin.set_fact:
+    adguard_home_password_bcrypt: "{{ adguard_home_password_bcrypt_result.stdout | regex_replace('^:', '') }}"
+  no_log: true
+
 - name: Configure confdir/AdGuardHome.yaml file
   ansible.builtin.template:
     src: "{{ adguard_home_templates_path }}/{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
+    dest: "{{ adguard_home_install_path }}/{{ item }}"
     mode: "0664"
     backup: true
   loop:
@@ -30,19 +49,19 @@
 
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
+  changed_when: adguard_home_pull_result.stderr_lines | length > 2
+  register: adguard_home_pull_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ adguard_home_install_path }}"
 
 - name: Run using docker-compose
   ansible.builtin.command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 2
-  register: up_result
+  changed_when: adguard_home_up_result.stderr_lines | length > 2
+  register: adguard_home_up_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ adguard_home_install_path }}"
 
 # - name: Restart using docker-compose
 #   ansible.builtin.command: docker-compose restart
 #   args:
-#     chdir: "{{ install_path }}"
+#     chdir: "{{ adguard_home_install_path }}"

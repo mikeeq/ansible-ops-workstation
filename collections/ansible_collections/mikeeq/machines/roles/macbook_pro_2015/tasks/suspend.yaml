@@ -21,7 +21,7 @@
     dest: "/etc/systemd/system/suspend-fix.service"
     mode: "0755"
 
-- name: just force systemd to reread configs (2.4 and above)
+- name: Just force systemd to reread configs (2.4 and above)
   ansible.builtin.systemd:
     daemon_reload: true
 

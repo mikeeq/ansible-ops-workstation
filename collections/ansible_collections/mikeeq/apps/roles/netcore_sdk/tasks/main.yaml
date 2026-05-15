@@ -1,8 +1,9 @@
 ---
-- ansible.builtin.include_tasks: apt.yaml
+- name: Include apt.yaml
+  ansible.builtin.include_tasks: apt.yaml
   when: ansible_facts['distribution'] == "Ubuntu"
 
-- name: netcore sdk
+- name: Netcore sdk
   ansible.builtin.package:
     name: "dotnet-sdk-8.0"
     state: present

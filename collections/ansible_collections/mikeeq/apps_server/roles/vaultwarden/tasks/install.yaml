@@ -3,14 +3,15 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    mode: "0755"
   loop:
-    - "{{ install_path }}"
-    - "{{ install_path }}/data"
+    - "{{ vaultwarden_install_path }}"
+    - "{{ vaultwarden_install_path }}/data"
 
 - name: Configure docker-compose file
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
+    dest: "{{ vaultwarden_install_path }}/{{ item }}"
     mode: "0664"
     backup: true
   loop:
@@ -18,14 +19,14 @@
 
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
+  changed_when: vaultwarden_pull_result.stderr_lines | length > 2
+  register: vaultwarden_pull_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ vaultwarden_install_path }}"
 
 - name: Run using docker-compose
   ansible.builtin.command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 2
-  register: up_result
+  changed_when: vaultwarden_up_result.stderr_lines | length > 2
+  register: vaultwarden_up_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ vaultwarden_install_path }}"

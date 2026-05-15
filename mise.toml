@@ -71,8 +71,9 @@ ANSIBLE_CONFIG = "playbooks/ansible.cfg"
 # _.path = { path = ["{{ tools['pipx:ansible'].path }}/venvs/ansible/bin"], tools = true }
 # _.path = { path = ["{{ exec(command='mise where pipx:ansible 2>/dev/null || echo /dev/null') }}/venvs/ansible/bin"], tools = true }
 
+# https://github.com/jdx/mise/discussions/9729
 [hooks]
-postinstall = "cd {{config_root}}/playbooks && ansible-galaxy install -r requirements.yaml"
+postinstall = "cd '{{config_root}}/playbooks' && ansible-galaxy install -r requirements.yaml"
 
 [tasks.pre-commit]
 description = "Run pre-commit checks on all files"

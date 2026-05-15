@@ -54,12 +54,13 @@
     value: "['<Primary><Shift>percent']"
     state: present
 
-- name: favorite-apps
+- name: Favorite-apps
   become: true
   become_user: "{{ user_name }}"
   community.general.dconf:
     key: "/org/gnome/shell/favorite-apps"
-    value: "['org.mozilla.firefox.desktop', 'google-chrome.desktop', 'terminator.desktop', 'code.desktop', 'com.discordapp.Discord.desktop', 'com.slack.Slack.desktop', 'keeweb.desktop', 'com.spotify.Client.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'org.gnome.tweaks.desktop', 'org.gnome.Settings.desktop']"
+    value: "['org.mozilla.firefox.desktop', 'google-chrome.desktop', 'terminator.desktop', 'code.desktop', 'com.discordapp.Discord.desktop', 'com.slack.Slack.desktop',
+      'keeweb.desktop', 'com.spotify.Client.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'org.gnome.tweaks.desktop', 'org.gnome.Settings.desktop']"
     state: present
 
 # Alternate-tab is deprecated in Fedora 30
@@ -105,18 +106,20 @@
     value: "true"
     state: present
 
-- name: enabled-extensions
+- name: Enabled-extensions
   become: true
   become_user: "{{ user_name }}"
   community.general.dconf:
     key: "/org/gnome/shell/enabled-extensions"
-    value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326', 'gnome-extension-brightness@bruno.englert.gitlab.com', 'sound-output-device-chooser@kgshank.net', 'blur-my-shell@aunetx', 'display-brightness-ddcutil@themightydeity.github.com', 'gsconnect@andyholmes.github.io', 'Vitals@CoreCoding.com']"
+    value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326', 'gnome-extension-brightness@bruno.englert.gitlab.com',
+      'sound-output-device-chooser@kgshank.net', 'blur-my-shell@aunetx', 'display-brightness-ddcutil@themightydeity.github.com', 'gsconnect@andyholmes.github.io',
+      'Vitals@CoreCoding.com']"
     state: present
 
 # "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326']"
 # value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'cpupower@mko-sl.de', 'gTile@vibou']"
 
-- name: show date
+- name: Show date
   become: true
   become_user: "{{ user_name }}"
   community.general.dconf:
@@ -124,7 +127,7 @@
     value: "true"
     state: present
 
-- name: remove emoji shortcut
+- name: Remove emoji shortcut
   become: true
   become_user: "{{ user_name }}"
   community.general.dconf:
@@ -132,7 +135,7 @@
     value: "['']"
     state: present
 
-- name: remove emoji shortcut fedora31
+- name: Remove emoji shortcut fedora31
   become: true
   become_user: "{{ user_name }}"
   community.general.dconf:
@@ -140,7 +143,7 @@
     value: "['']"
     state: present
 
-- name: "alt-tab all desktops (workstations)"
+- name: "Alt-tab all desktops (workstations)"
   become: true
   become_user: "{{ user_name }}"
   community.general.dconf:
@@ -195,7 +198,6 @@
     key: "/org/gnome/desktop/interface/color-scheme"
     value: "'prefer-dark'"
     state: present
-
 
 # - name: "dash-to-dock position"
 #   become: true

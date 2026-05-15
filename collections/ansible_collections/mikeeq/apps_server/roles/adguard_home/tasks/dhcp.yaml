@@ -1,74 +1,67 @@
 ---
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/uri_module.html
 
-- name: Get dhcp config
+- name: Get adguard_home_dhcp config
   ansible.builtin.uri:
     url: http://localhost/control/dhcp/status
     user: "{{ adguard_home_user }}"
     password: "{{ adguard_home_password }}"
     force_basic_auth: true
     return_content: true
-  register: dhcp_status
+  register: adguard_home_dhcp_status
 
-- ansible.builtin.set_fact:
-    dhcp_config: "{{ dhcp_status.content }}"
+- name: Set fact variables
+  ansible.builtin.set_fact:
+    adguard_home_dhcp_config: "{{ adguard_home_dhcp_status.content | from_json }}"
 
-- name: "Display var 'dhcp_config.static_leases'"
+- name: "Display var 'adguard_home_dhcp_config.static_leases'"
   ansible.builtin.debug:
-    var: dhcp_config.static_leases
+    var: adguard_home_dhcp_config.static_leases
 
 - name: "Display var 'dhcp'"
   ansible.builtin.debug:
-    var: dhcp
+    var: adguard_home_dhcp
 
-- name: "Create empty tables 'dhcp_to_create' and 'dhcp_to_delete'"
+- name: "Create empty tables 'adguard_home_dhcp_to_create' and 'adguard_home_dhcp_to_delete'"
   ansible.builtin.set_fact:
-    dhcp_to_create: []
-    dhcp_to_delete: []
+    adguard_home_dhcp_to_create: []
+    adguard_home_dhcp_to_delete: []
 
-- name: "Create var 'dhcp_to_create'"
+- name: "Create var 'adguard_home_dhcp_to_create'"
   ansible.builtin.set_fact:
-    dhcp_to_create: >-
-      {{ dhcp_to_create + entry }}
+    adguard_home_dhcp_to_create: "{{ adguard_home_dhcp_to_create + entry }}"
   when: old_entry_ip != item.ip or old_entry_hostname != item.hostname
   vars:
-    old_entry_ip: "{{ dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
-    old_entry_hostname: "{{ dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
-    entry: >-
-      [
-        {
-          'hostname': '{{ item.hostname }}',
-          'ip': '{{ item.ip }}',
-          'mac': '{{ item.mac }}'
-        }
-      ]
+    old_entry_ip: "{{ adguard_home_dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
+    old_entry_hostname: "{{ adguard_home_dhcp_config.static_leases | selectattr('mac', 'equalto', item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
+    entry:
+      - hostname: "{{ item.hostname }}"
+        ip: "{{ item.ip }}"
+        mac: "{{ item.mac }}"
   loop: "{{ dhcp }}"
 
-- name: "Print the 'dhcp_to_create' var"
+- name: "Print the 'adguard_home_dhcp_to_create' var"
   ansible.builtin.debug:
-    var: dhcp_to_create
+    var: adguard_home_dhcp_to_create
 
-- name: "Create var 'dhcp_to_delete'"
+- name: "Create var 'adguard_home_dhcp_to_delete'"
   ansible.builtin.set_fact:
-    dhcp_to_delete: "{{ dhcp_to_delete + entry }}"
+    adguard_home_dhcp_to_delete: "{{ adguard_home_dhcp_to_delete + entry }}"
   when:
-    - (new_entry_ip != item.ip and new_entry_ip != 'N/A') or (new_entry_hostname != item.hostname and new_entry_hostname != 'N/A') or (new_entry_ip == 'N/A' and new_entry_hostname == 'N/A')
+    - (new_entry_ip != item.ip and new_entry_ip != 'N/A') or (new_entry_hostname != item.hostname and new_entry_hostname != 'N/A') or (new_entry_ip == 'N/A' and
+      new_entry_hostname == 'N/A')
   vars:
-    new_entry_ip: "{{ dhcp | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
-    new_entry_hostname: "{{ dhcp | selectattr('mac', 'equalto', item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
-    entry: >-
-      [
-        {
-          'hostname': '{{ item.hostname }}',
-          'ip': '{{ item.ip }}',
-          'mac': '{{ item.mac }}'
-        }
-      ]
-  loop: "{{ dhcp_config.static_leases }}"
+    new_entry_ip: "{{ adguard_home_dhcp | selectattr('mac', 'equalto', item['mac']) | map(attribute='ip') | first | default('N/A') }}"
+    new_entry_hostname: "{{ adguard_home_dhcp | selectattr('mac', 'equalto', item['mac']) | map(attribute='hostname') | first | default('N/A') }}"
+    entry:
+      - hostname: "{{ item.hostname }}"
+        ip: "{{ item.ip }}"
+        mac: "{{ item.mac }}"
+  loop: "{{ adguard_home_dhcp_config.static_leases }}"
 
-- name: "Print the 'dhcp_to_delete' var"
+- name: "Print the 'adguard_home_dhcp_to_delete' var"
   ansible.builtin.debug:
-    var: dhcp_to_delete
+    var: adguard_home_dhcp_to_delete
 
 # POST
 # /dhcp/remove_static_lease
@@ -89,7 +82,7 @@
         "ip": "{{ item.ip }}",
         "hostname": "{{ item.hostname }}"
       }
-  loop: "{{ dhcp_to_delete }}"
+  loop: "{{ adguard_home_dhcp_to_delete }}"
   changed_when: true
 
 # POST
@@ -116,5 +109,5 @@
         "ip": "{{ item.ip }}",
         "hostname": "{{ item.hostname }}"
       }
-  loop: "{{ dhcp_to_create }}"
+  loop: "{{ adguard_home_dhcp_to_create }}"
   changed_when: true

@@ -4,6 +4,7 @@
     path: "~{{ user_name }}/.work_profiles"
     state: directory
     owner: "{{ user_name }}"
+    mode: "0755"
     # group: "{{ user_name }}"
 
 - name: "Add zshrc for work profiles"

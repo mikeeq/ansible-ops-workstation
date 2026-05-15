@@ -1,6 +1,8 @@
 ---
-- ansible.builtin.import_tasks: dnf5.yaml
-- ansible.builtin.import_tasks: repos.yaml
+- name: Import dnf5.yaml
+  ansible.builtin.import_tasks: dnf5.yaml
+- name: Import repos.yaml
+  ansible.builtin.import_tasks: repos.yaml
 
 - name: "[DNF] Install Apps"
   ansible.builtin.dnf5:
@@ -12,6 +14,7 @@
     - "{{ dnf_gui_pkgs }}"
     - "{{ dnf_extra_pkgs }}"
 
-- ansible.builtin.import_tasks: update.yaml
+- name: Import update.yaml
+  ansible.builtin.import_tasks: update.yaml
   tags:
     - update

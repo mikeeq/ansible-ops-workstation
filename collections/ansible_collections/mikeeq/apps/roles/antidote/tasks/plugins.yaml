@@ -3,13 +3,13 @@
   become: true
   become_user: "{{ item }}"
   ansible.builtin.git:
-    repo: 'https://github.com/mattmc3/antidote.git'
+    repo: "https://github.com/mattmc3/antidote.git"
     dest: "~/.antidote"
     depth: 1
     update: false
   with_items: "{{ antidote_users }}"
 
-- name: "zsh plugins list"
+- name: "Zsh plugins list"
   ansible.builtin.template:
     src: zsh_plugins.txt.j2
     dest: "~{{ item }}/.zsh_plugins.txt"
@@ -18,7 +18,7 @@
     mode: "0600"
   with_items: "{{ antidote_users }}"
 
-- name: "antidote zshrc config"
+- name: "Antidote zshrc config"
   ansible.builtin.template:
     src: zshrc.j2
     dest: "~{{ item }}/.zshrc"
@@ -32,4 +32,5 @@
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh"
     dest: /usr/share/doc/fzf/examples/key-bindings.zsh
+    mode: "0644"
   when: ansible_facts['distribution'] == "Ubuntu"

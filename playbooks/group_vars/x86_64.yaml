@@ -35,7 +35,6 @@ flatpak_apps:
   - name: org.deskflow.deskflow
     remote: flathub
 
-
 # https://github.com/ishantanu/awesome-kubectl-plugins
 krew_plugins:
   - sniff

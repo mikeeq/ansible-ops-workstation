@@ -14,30 +14,44 @@ exclude_paths:
   - .ansible
   - tests/.ansible
   - collections/ansible_collections/mikeeq/apps_server/roles/home_assistant/files/config
+  - collections/ansible_collections/mikeeq/apps_desktop/roles/zzzOld
   - "**/molecule/"
   - playbooks/requirements.yaml
 
 skip_list:
-  - name
-  - var-naming
-  - risky-file-permissions
-  - role-name[path]
+  # - name
+  # - var-naming
+  # - role-name[path]
+  # - yaml[line-length]
+  # - tags:formatting,yaml
+
+  # - risky-file-permissions
   - no-changed-when
-  - risky-shell-pipe
   - command-instead-of-shell
+  - risky-shell-pipe
   - command-instead-of-module
   - no-handler
-  - latest
   - literal-compare
+  - latest
   - package-latest
   - ignore-errors
   - galaxy[no-changelog]
-  # - yaml[line-length]
-#   - tags:formatting,yaml
-
 
 # To skip task from verifying
 # add comment # noqa: command-instead-of-module
 ## or
 # tags:
 #     - skip_ansible_lint
+
+# Rule Violation Summary
+# 101 risky-file-permissions profile:basic tags:unpredictability
+#  70 no-changed-when profile:basic tags:command-shell,idempotency
+#  64 command-instead-of-shell profile:basic tags:command-shell,idiom
+#  53 risky-shell-pipe profile:basic tags:command-shell
+#  40 command-instead-of-module profile:basic tags:command-shell,idiom
+#  25 no-handler profile:basic tags:idiom
+#  15 literal-compare profile:basic tags:idiom
+#  11 latest profile:basic tags:idempotency
+#   9 ignore-errors profile:basic tags:unpredictability
+#   6 galaxy profile:basic tags:metadata
+#   5 package-latest profile:basic tags:idempotency

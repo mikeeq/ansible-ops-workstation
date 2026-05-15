@@ -10,14 +10,14 @@
     group: "root"
     mode: "0600"
     backup: true
-  register: dhcp_flag
+  register: openwrt_setup_dhcp_flag
   # notify:
   #   - reload_dnsmasq
 
-- name: reload_dnsmasq
+- name: Reload_dnsmasq
   community.general.openwrt_init:
     name: dnsmasq
     state: reloaded
   when:
-    - dhcp_flag.changed
-    - openwrt_router_flag or openwrt_ap_only_flag
+    - openwrt_setup_dhcp_flag.changed
+    - openwrt_setup_openwrt_router_flag or openwrt_setup_openwrt_ap_only_flag

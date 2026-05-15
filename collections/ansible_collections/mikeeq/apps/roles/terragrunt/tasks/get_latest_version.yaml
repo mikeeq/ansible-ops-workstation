@@ -1,13 +1,13 @@
 ---
-- name: Get latest version
+- name: Get latest terragrunt_version
   ansible.builtin.shell: curl -Is https://github.com/gruntwork-io/terragrunt/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+  register: terragrunt_version
   changed_when: false
 
-- name: "Latest version of terragrunt:"
+- name: "Latest terragrunt_version of terragrunt:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: terragrunt_version.stdout
 
-- name: "Set fact with latest version of terragrunt"
+- name: "Set fact with latest terragrunt_version of terragrunt"
   ansible.builtin.set_fact:
-    terragrunt_version: "{{ version.stdout }}"
+    terragrunt_version: "{{ terragrunt_version.stdout }}"

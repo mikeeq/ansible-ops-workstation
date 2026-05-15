@@ -11,8 +11,6 @@
 #     src: "{{ easyrsa_path }}"
 #     dest: "/usr/bin/easyrsa"
 #     state: link
-
-
 - name: "Init pki"
   ansible.builtin.shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} init-pki"
   # register: google_chrome_repo
@@ -26,7 +24,6 @@
 #     ansible.builtin.command: /usr/share/easy-rsa/3/easyrsa build-ca
 #     responses:
 #       (?i)PEM pass phrase: "MySekretPa$$word"
-
 
 - name: "Build-ca"
   ansible.builtin.shell: "{{ easyrsa_path }}/easyrsa --batch --pki-dir={{ pki_path }} build-ca nopass"

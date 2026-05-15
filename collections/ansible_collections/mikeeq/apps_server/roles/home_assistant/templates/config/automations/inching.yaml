@@ -1,5 +1,5 @@
 ---
-{% for i in home_assistant.automations.inching %}
+{% for i in home_assistant_config.automations.inching %}
 - alias: inching_{{ i.entity_id }}
   description: ''
   trigger:

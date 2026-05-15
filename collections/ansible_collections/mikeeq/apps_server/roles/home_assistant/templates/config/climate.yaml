@@ -1,5 +1,5 @@
 ---
-{% for i in home_assistant.climate %}
+{% for i in home_assistant_config.climate %}
 - platform: generic_thermostat
   name: "{{ i.name }}"
   # heater: "{{ i.switch }}"

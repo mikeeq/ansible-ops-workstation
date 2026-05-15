@@ -1,5 +1,5 @@
 ---
-virtualenv_install_path: '/opt/virtualenv'
+aws_cli_virtualenv_install_path: "/opt/virtualenv"
 
 aws_cli_base_version: "2"
 

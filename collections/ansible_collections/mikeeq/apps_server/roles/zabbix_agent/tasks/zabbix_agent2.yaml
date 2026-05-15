@@ -1,7 +1,7 @@
 ---
 - name: Install Zabbix repository package
   ansible.builtin.dnf:
-    name: "https://repo.zabbix.com/zabbix/{{ zabbix_main_version }}/stable/rhel/10/x86_64/zabbix-agent2-{{ zabbix_version }}-release1.el10.x86_64.rpm"
+    name: "https://repo.zabbix.com/zabbix/{{ zabbix_agent_zabbix_main_version }}/stable/rhel/10/x86_64/zabbix-agent2-{{ zabbix_agent_zabbix_version }}-release1.el10.x86_64.rpm"
     state: present
     disable_gpg_check: true
   become: true
@@ -18,10 +18,10 @@
     dest: /etc/zabbix/zabbix_agent2.conf
     owner: root
     group: zabbix
-    mode: '0640'
+    mode: "0640"
     backup: true
   become: true
-  notify: restart zabbix-agent2
+  notify: Restart zabbix-agent2
 
 - name: Create Zabbix agent log directory
   ansible.builtin.file:
@@ -29,7 +29,7 @@
     state: directory
     owner: zabbix
     group: zabbix
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: Start and enable Zabbix agent service

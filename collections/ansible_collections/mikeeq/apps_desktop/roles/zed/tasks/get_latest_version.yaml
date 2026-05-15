@@ -1,13 +1,13 @@
 ---
-- name: Get latest version
+- name: Get latest zed_version
   ansible.builtin.shell: curl -Is https://github.com/zed-industries/zed/releases/latest | grep -i 'location:' | cut -f2 -d'v' | cut -f1 -d'"'
-  register: version
+  register: zed_version
   changed_when: false
 
-- name: "Latest version of zed:"
+- name: "Latest zed_version of zed:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: zed_version.stdout
 
-- name: "Set fact with latest version of zed"
+- name: "Set fact with latest zed_version of zed"
   ansible.builtin.set_fact:
-    zed_version: "{{ version.stdout }}"
+    zed_version: "{{ zed_version.stdout }}"

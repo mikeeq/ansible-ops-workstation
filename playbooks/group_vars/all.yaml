@@ -1,8 +1,8 @@
 ---
 # ansible.builtin.hostname: "mikeeMac19"
 
-git_modules_path: '/opt/git_modules'
-rpms_dwnl_path: '/opt/rpms'
+git_modules_path: "/opt/git_modules"
+rpms_dwnl_path: "/opt/rpms"
 
 generic_pkgs:
   - ack
@@ -76,34 +76,32 @@ dnf_gui_pkgs:
   - gnome-shell-extension-gpaste
   - gnome-tweaks
   - gparted
-  - gpaste          # Clipboard saver
+  - gpaste # Clipboard saver
   - gpaste-ui
-  - kgpg            # GUI for GnuPG
+  - kgpg # GUI for GnuPG
   # - kodi
   # "msg": "Depsolve Error occurred: \n Problem: conflicting requests\n  - nothing provides libwayland-client++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64\n  - nothing provides libwayland-cursor++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64\n  - nothing provides libwayland-egl++.so.0()(64bit) needed by kodi-19.4-4.fc37.x86_64",
   - pinta
   - putty
   - remmina
-  - 'remmina-plugins-*'
+  - "remmina-plugins-*"
   - seahorse
   - vlc
   - wireshark
-  - k3b       # Disc burner
-  - v4l2loopback  # Required for OBS
-  - kmod-v4l2loopback  # Required for OBS
-  - corectrl    # GUI OC AMD Radeon
+  - k3b # Disc burner
+  - v4l2loopback # Required for OBS
+  - kmod-v4l2loopback # Required for OBS
+  - corectrl # GUI OC AMD Radeon
 
 dnf_extra_pkgs: []
-
 snap_apps: []
-
 snap_classic_apps: []
   # - kubectl
   # - helm
   # Slack and Skype are failing on Wayland Desktop mode
   # - slack
   # - skype
-  #### they are not working on fedora
+  # ### they are not working on fedora
   # - hollywood
   # - wallstreet
 
@@ -152,20 +150,20 @@ gnome_extension_path: "/home/{{ gnome_extension_owner }}/.local/share/gnome-shel
 
 # https://extensions.gnome.org/extension/906/sound-output-device-chooser/
 gnome_shell_extensions:
-  - 517         # caffeine
-  - 615         # appindicator
-  - 4792        # frequency-boost-switch
-  - 3193        # Blur my Shell
-  - 2645        # brightness-control-using-ddcutil
+  - 517 # caffeine
+  - 615 # appindicator
+  - 4792 # frequency-boost-switch
+  - 3193 # Blur my Shell
+  - 2645 # brightness-control-using-ddcutil
   # - 906         # Sound Input & Output Device Chooser
   # - 4652        # adjust-display-brightness
   # - 1082        # cpufreq
   # - 4144        # vertical-overview
   # - 945         # cpu-power-manager
   # - 307         # dash-to-dock
-  - 1319        # GSConnect
+  - 1319 # GSConnect
   # - 120         # system-monitor
-  - 1460        # Vitals
+  - 1460 # Vitals
 
 gnome_extension_ids: "{{ gnome_shell_extensions }}"
 

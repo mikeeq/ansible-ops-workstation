@@ -1,9 +1,10 @@
 ---
-- ansible.builtin.import_tasks: get-net-mode.yaml
+- name: Import get-net-mode.yaml
+  ansible.builtin.import_tasks: get-net-mode.yaml
 
-- name: "Set LTE band to - {{ huawei_lteband }}, /api/net/net-mode API call"
+- name: "Set LTE band to /api/net/net-mode API call - {{ huawei_lte_huawei_lteband }}"
   ansible.builtin.uri:
-    url: "{{ huawei_url }}/api/net/net-mode"
+    url: "{{ huawei_lte_huawei_url }}/api/net/net-mode"
     return_content: true
     method: POST
     timeout: 30
@@ -12,17 +13,18 @@
       <request>
         <NetworkMode>03</NetworkMode>
         <NetworkBand>2000004400000</NetworkBand>
-        <LTEBand>{{ huawei_lteband }}</LTEBand>
+        <LTEBand>{{ huawei_lte_huawei_lteband }}</LTEBand>
       </request>
     headers:
       Content-Type: text/xml
-      Cookie: "{{ login_request.cookies_string }}"
-      __RequestVerificationToken: "{{ login_request.__requestverificationtokenone }}"
-  register: set_net_mode_request
-  failed_when: '"<error>" in set_net_mode_request.content'
-  changed_when: set_net_mode_request.content == ""
+      Cookie: "{{ huawei_lte_login_request.cookies_string }}"
+      __RequestVerificationToken: "{{ huawei_lte_login_request.__requestverificationtokenone }}"
+  register: huawei_lte_set_net_mode_request
+  failed_when: '"<error>" in huawei_lte_set_net_mode_request.content'
+  changed_when: huawei_lte_set_net_mode_request.content == ""
 
-- ansible.builtin.import_tasks: get-net-mode.yaml
+- name: Import get-net-mode.yaml
+  ansible.builtin.import_tasks: get-net-mode.yaml
 
 # LTEBand 1800+2100 FDD = 5
 # LTEBand 800+1800+2100 FDD = 80005
@@ -35,7 +37,6 @@
 # 02 - tylko 3G
 # 03 - Tylko 4G (LTE)
 # 99 - bez zmian
-
 
 # inny zapis jest sumą heksadecymalną powyższych sieci (np. GSM900 + UTMS B8 = 0x2000000000000 + 0x300 = 0x2000000000300)
 # NetworkBand:
@@ -64,7 +65,6 @@
 # 20000000 - BC13
 # 80000000 - BC14
 # 3FFFFFFF - wszystkie obsługiwane
-
 
 # inny zapis jest sumą heksadecymalną powyższych sieci
 # LTEBand:

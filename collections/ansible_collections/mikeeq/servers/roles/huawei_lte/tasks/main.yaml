@@ -12,11 +12,13 @@
   loop:
     - xmltodict
 
-- ansible.builtin.import_tasks: login.yaml
+- name: Import login.yaml
+  ansible.builtin.import_tasks: login.yaml
 
 # - ansible.builtin.import_tasks: get-net-mode.yaml
 # - ansible.builtin.import_tasks: device-status.yaml
 # - ansible.builtin.import_tasks: traffic-status.yaml
 
-- ansible.builtin.include_tasks: "{{ huawei_dynamic_task }}"
+- name: Include "{{ huawei_dynamic_task }}"
+  ansible.builtin.include_tasks: "{{ huawei_dynamic_task }}"
   when: huawei_dynamic_task is defined

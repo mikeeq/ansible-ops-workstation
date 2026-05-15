@@ -7,39 +7,39 @@
 
 - name: Find current serial number
   ansible.builtin.shell: echo -n $(cat {{ coredns_zone_filename }} | grep -w '; serial' | cut -d';' -f1)
-  register: current_serial_number_res
-  failed_when: current_serial_number_res.stdout == ""
+  register: coredns_current_serial_number_res
+  failed_when: coredns_current_serial_number_res.stdout == ""
   changed_when: false
   ignore_errors: true
   args:
-    chdir: "{{ install_path }}/config"
+    chdir: "{{ coredns_install_path }}/config"
 
 - name: Create vars
   ansible.builtin.set_fact:
-    current_serial_number: >-
-      {%- if current_serial_number_res.stdout == '' -%}
+    coredns_current_serial_number: >-
+      {%- if coredns_current_serial_number_res.stdout == '' -%}
         {{ lookup('pipe', 'date +%Y%m%d') }}01
       {%- else -%}
-        {{ current_serial_number_res.stdout | int }}
+        {{ coredns_current_serial_number_res.stdout | int }}
       {%- endif -%}
 
 - name: Check coredns db file if any changes
   ansible.builtin.template:
     src: "{{ coredns_zone_file_path }}/{{ coredns_zone_filename }}"
-    dest: "{{ install_path }}/config/{{ coredns_zone_filename }}"
+    dest: "{{ coredns_install_path }}/config/{{ coredns_zone_filename }}"
     mode: "0664"
     backup: true
   vars:
-    serial_number: "{{ current_serial_number | int }}"
-  register: db_res
+    serial_number: "{{ coredns_current_serial_number | int }}"
+  register: coredns_db_res
 
 - name: Configure coredns db file
   ansible.builtin.template:
     src: "{{ coredns_zone_file_path }}/{{ coredns_zone_filename }}"
-    dest: "{{ install_path }}/config/{{ coredns_zone_filename }}"
+    dest: "{{ coredns_install_path }}/config/{{ coredns_zone_filename }}"
     mode: "0664"
   vars:
-    serial_number: "{{ current_serial_number | int + 1 }}"
+    serial_number: "{{ coredns_current_serial_number | int + 1 }}"
   when:
-    - db_res.changed
-    - current_serial_number_res.stdout != ''
+    - coredns_db_res.changed
+    - coredns_current_serial_number_res.stdout != ''

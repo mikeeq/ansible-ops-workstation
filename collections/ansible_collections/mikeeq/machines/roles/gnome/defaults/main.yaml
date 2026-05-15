@@ -1,5 +1,5 @@
 ---
-rdp_username: "test"
-rdp_password: "pass"
+gnome_rdp_username: "test"
+gnome_rdp_password: "pass"
 # extend or mirror-primary
 gnome_rd_type: "extend"

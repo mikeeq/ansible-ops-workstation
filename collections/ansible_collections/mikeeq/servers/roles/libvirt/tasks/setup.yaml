@@ -5,18 +5,19 @@
     state: directory
     owner: qemu
     group: qemu
+    mode: "0755"
   loop:
-    - "{{ cloud_init_src_dir }}"
-    - "{{ cloud_init_iso_dir }}"
+    - "{{ libvirt_cloud_init_src_dir }}"
+    - "{{ libvirt_cloud_init_iso_dir }}"
 
-- name: "Download {{ cloud_image_name }}"
+- name: "Download {{ libvirt_cloud_image_name }}"
   ansible.builtin.get_url:
-    url: "{{ cloud_image_url }}"
-    dest: "{{ libvirt_images_dir }}/{{ cloud_image_name }}"
+    url: "{{ libvirt_cloud_image_url }}"
+    dest: "{{ libvirt_images_dir }}/{{ libvirt_cloud_image_name }}"
     mode: "0600"
     owner: qemu
     group: qemu
-    checksum: "{{ cloud_image_checksum }}"
+    checksum: "{{ libvirt_cloud_image_checksum }}"
 
 - name: "Install genisoimage"
   ansible.builtin.package:

@@ -12,20 +12,22 @@
 # Fix for Fedora 30:
 # ruby: error while loading shared libraries: libcrypt.so.1: cannot open shared object ansible.builtin.file: No such file or directory
 
-- name: Get installed version
+- name: Get installed vagrant_version
   ansible.builtin.shell: vagrant --version | awk '{print $2}'
-  register: installed_vagrant_version
+  register: vagrant_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of vagrant:"
+- name: "Installed vagrant_version of vagrant:"
   ansible.builtin.debug:
-    var: installed_vagrant_version.stdout
+    var: vagrant_installed_version.stdout
 
-- ansible.builtin.include_tasks: get_latest_version.yaml
+- name: Include get_latest_version.yaml
+  ansible.builtin.include_tasks: get_latest_version.yaml
   when: vagrant_version is not defined
 
-- ansible.builtin.debug:
+- name: Debug output
+  ansible.builtin.debug:
     var: vagrant_version
 
 # name: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant_{{ vagrant_version}}_x86_64.rpm"
@@ -34,4 +36,4 @@
     name: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant-{{ vagrant_version }}-1.x86_64.rpm"
     state: latest
     disable_gpg_check: true
-  when: installed_vagrant_version.stdout != vagrant_version
+  when: vagrant_installed_version.stdout != vagrant_version

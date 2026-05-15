@@ -1,6 +1,6 @@
 # https://docs.docker.com/compose/compose-file/compose-file-v3/
 ---
-version: '3.8'
+version: "3.8"
 services:
   adguard:
     container_name: deluge
@@ -15,7 +15,7 @@ services:
       - /opt/nfs/smb/downloads:/downloads
     restart: always
     ports:
-      - 8112:8112       # webui
+      - 8112:8112 # webui
       - 6881:6881
       - 6881:6881/udp
     logging:

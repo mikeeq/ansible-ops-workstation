@@ -1,13 +1,13 @@
 ---
-- name: Get latest version azure_functions_core_tools
+- name: Get latest azure_functions_core_tools_version azure_functions_core_tools
   ansible.builtin.shell: curl -Is https://github.com/Azure/azure-functions-core-tools/releases/latest | grep -i 'location:' | rev | cut -d'/' -f1 | rev
-  register: version
+  register: azure_functions_core_tools_version
   changed_when: false
 
-- name: "Latest version of azure_functions_core_tools:"
+- name: "Latest azure_functions_core_tools_version of azure_functions_core_tools:"
   ansible.builtin.debug:
-    var: version.stdout
+    var: azure_functions_core_tools_version.stdout
 
-- name: "Set fact with latest version of azure_functions_core_tools"
+- name: "Set fact with latest azure_functions_core_tools_version of azure_functions_core_tools"
   ansible.builtin.set_fact:
-    azure_functions_core_tools_version: "{{ version.stdout }}"
+    azure_functions_core_tools_version: "{{ azure_functions_core_tools_version.stdout }}"

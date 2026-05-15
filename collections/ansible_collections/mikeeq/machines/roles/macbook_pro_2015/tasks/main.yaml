@@ -1,7 +1,11 @@
 ---
-- ansible.builtin.import_tasks: deps.yaml
+- name: Import deps.yaml
+  ansible.builtin.import_tasks: deps.yaml
 # Unstable...
 # - ansible.builtin.import_tasks: camera.yaml
-- ansible.builtin.import_tasks: keyboard.yaml
-- ansible.builtin.import_tasks: dracut.yaml
-- ansible.builtin.import_tasks: suspend.yaml
+- name: Import keyboard.yaml
+  ansible.builtin.import_tasks: keyboard.yaml
+- name: Import dracut.yaml
+  ansible.builtin.import_tasks: dracut.yaml
+- name: Import suspend.yaml
+  ansible.builtin.import_tasks: suspend.yaml

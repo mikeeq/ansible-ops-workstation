@@ -1,18 +1,20 @@
 ---
-- name: "Get installed version of istioctl"
+- name: "Get installed istioctl_version of istioctl"
   become: true
   become_user: "{{ user_name }}"
   ansible.builtin.shell: istioctl version --remote=false | awk '{print $3}'
-  register: installed_istioctl_version
+  register: istioctl_installed_version
   changed_when: false
   ignore_errors: true
 
-- name: "Installed version of istioctl:"
+- name: "Installed istioctl_version of istioctl:"
   ansible.builtin.debug:
-    var: installed_istioctl_version.stdout
+    var: istioctl_installed_version.stdout
 
-- ansible.builtin.include_tasks: get_latest_version.yaml
+- name: Include get_latest_version.yaml
+  ansible.builtin.include_tasks: get_latest_version.yaml
   when: istioctl_version is not defined
 
-- ansible.builtin.include_tasks: install.yaml
-  when: installed_istioctl_version.stdout != istioctl_version
+- name: Include install.yaml
+  ansible.builtin.include_tasks: install.yaml
+  when: istioctl_installed_version.stdout != istioctl_version

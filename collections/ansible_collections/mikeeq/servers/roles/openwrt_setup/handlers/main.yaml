@@ -1,5 +1,5 @@
 ---
-- name: restart zabbix-agent
+- name: Restart zabbix-agent
   community.general.openwrt_init:
     name: zabbix_agentd
     state: restarted

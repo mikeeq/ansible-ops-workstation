@@ -3,34 +3,36 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    mode: "0755"
   loop:
-    - "{{ install_path }}"
-    - "{{ install_path }}/config"
+    - "{{ coredns_install_path }}"
+    - "{{ coredns_install_path }}/config"
 
 - name: Configure docker-compose file
   become: true
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "{{ install_path }}/{{ item }}"
+    dest: "{{ coredns_install_path }}/{{ item }}"
     mode: "0664"
   loop:
     - docker-compose.yaml
     - config/Corefile
 
-- ansible.builtin.import_tasks: config.yaml
+- name: Import config.yaml
+  ansible.builtin.import_tasks: config.yaml
 
 - name: Pull Docker image using docker-compose
   become: true
   ansible.builtin.command: docker-compose pull
-  changed_when: pull_result.stderr_lines | length > 2
-  register: pull_result
+  changed_when: coredns_pull_result.stderr_lines | length > 2
+  register: coredns_pull_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ coredns_install_path }}"
 
 - name: Run using docker-compose
   become: true
   ansible.builtin.command: docker-compose up -d
-  changed_when: up_result.stderr_lines | length > 2
-  register: up_result
+  changed_when: coredns_up_result.stderr_lines | length > 2
+  register: coredns_up_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ coredns_install_path }}"

@@ -82,13 +82,21 @@
                         ls
                         git-crypt unlock ~jenkins/secrets/git_crypt_key
                       """
+          - stage: "Mise Install"
+            steps:
+              script:
+                  - |
+                    sh """#!/bin/bash
+                      cd ansible-ops-workstation
+                      mise install --yes
+                    """
           - stage: "Ansible LTE Band set"
             steps:
               script:
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -e huawei_lteband=$params.HUAWEI_LTE_BAND -i ../../ansible-ops-private/inventory/hosts.yaml huawei-lte-setband.yaml
+                      mise exec -- ansible-playbook -e huawei_lteband=$params.HUAWEI_LTE_BAND -i ../../ansible-ops-private/inventory/hosts.yaml huawei-lte-setband.yaml
                     """
           - stage: "Ansible SQM disable"
             steps:
@@ -96,5 +104,5 @@
                   - |
                     sh """#!/bin/bash
                       cd ansible-ops-workstation/playbooks
-                      ansible-playbook -e dynamic_sqm_enabled=$params.DYNAMIC_SQM_ENABLED -i ../../ansible-ops-private/inventory/hosts.yaml openwrt-sqm.yaml
+                      mise exec -- ansible-playbook -e dynamic_sqm_enabled=$params.DYNAMIC_SQM_ENABLED -i ../../ansible-ops-private/inventory/hosts.yaml openwrt-sqm.yaml
                     """

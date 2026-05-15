@@ -3,13 +3,14 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    mode: "0755"
   loop:
-    - "{{ install_path }}/mosquitto/config"
+    - "{{ home_assistant_install_path }}/mosquitto/config"
 
 - name: Configure config
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: "{{ install_path }}/mosquitto/config"
+    dest: "{{ home_assistant_install_path }}/mosquitto/config"
     mode: "0664"
     backup: true
   with_fileglob:

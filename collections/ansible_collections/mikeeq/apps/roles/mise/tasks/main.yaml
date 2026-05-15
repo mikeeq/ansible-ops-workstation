@@ -1,21 +1,13 @@
 ---
-- name: Install dnf-plugins-core
-  ansible.builtin.dnf:
-    name: dnf-plugins-core
-    state: present
-  become: true
+- name: Check if mise is already installed
+  ansible.builtin.stat:
+    path: "{{ mise_install_dir }}/bin/mise"
+  register: mise_installed
 
-- name: Add mise repository
-  ansible.builtin.yum_repository:
-    name: mise
-    description: mise repository
-    baseurl: https://mise.jdx.dev/rpm
-    gpgcheck: true
-    gpgkey: https://mise.jdx.dev/gpg-key.pub
+- name: Install mise via installer script
   become: true
-
-- name: Install mise
-  ansible.builtin.dnf:
-    name: mise
-    state: present
-  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: curl -fsSL https://mise.run | sh
+  args:
+    executable: /bin/bash
+  when: not mise_installed.stat.exists

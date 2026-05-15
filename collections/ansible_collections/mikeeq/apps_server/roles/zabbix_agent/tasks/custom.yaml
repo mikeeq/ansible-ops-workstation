@@ -36,7 +36,7 @@
     group: zabbix
     mode: "0755"
   become: true
-  notify: restart zabbix-agent
+  notify: Restart zabbix-agent
   when: inventory_hostname == 'mikeeClevo'
 
 - name: Deploy speedtest cron job
@@ -56,7 +56,7 @@
     owner: zabbix
     group: zabbix
     mode: "0755"
-  notify: restart zabbix-agent
+  notify: Restart zabbix-agent
   loop:
     - url: https://raw.githubusercontent.com/blind-oracle/zabbix-sensors/refs/heads/master/sensors.py
       dest: /etc/zabbix/scripts/sensors.py
@@ -74,7 +74,7 @@
 - name: List existing SELinux modules
   ansible.builtin.command: semodule -l
   become: true
-  register: existing_policies
+  register: zabbix_agent_existing_policies
   changed_when: false
   when: ansible_selinux.status == "enabled"
 
@@ -85,4 +85,4 @@
   become: true
   when:
     - ansible_selinux.status == "enabled"
-    - (item | regex_replace('\\.pp$', '')) not in existing_policies.stdout
+    - (item | regex_replace('\\.pp$', '')) not in zabbix_agent_existing_policies.stdout

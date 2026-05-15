@@ -1,12 +1,12 @@
 ---
-- name: disable firewalld
+- name: Disable firewalld
   ansible.builtin.systemd:
     name: firewalld
     enabled: false
   tags:
     - dont_run_in_docker
 
-- name: install iptables
+- name: Install iptables
   ansible.builtin.dnf:
     name: "{{ pkgs }}"
     state: present

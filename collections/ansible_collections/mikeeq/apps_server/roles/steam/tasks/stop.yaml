@@ -7,5 +7,5 @@
     else
       echo "Steam is already turned off"
     fi
-  register: epic_flag
-  changed_when: '"Killing Steam" in epic_flag.stdout'
+  register: steam_epic_flag
+  changed_when: '"Killing Steam" in steam_epic_flag.stdout'

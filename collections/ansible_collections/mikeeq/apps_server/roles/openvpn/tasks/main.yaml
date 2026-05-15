@@ -1,12 +1,17 @@
 ---
-- ansible.builtin.import_tasks: install.yaml
+- name: Import install.yaml
+  ansible.builtin.import_tasks: install.yaml
 
 # - ansible.builtin.import_tasks: certs_shell_easy-rsa.yaml
-- ansible.builtin.import_tasks: certs_ansible_openssl.yaml
+- name: Import certs_ansible_openssl.yaml
+  ansible.builtin.import_tasks: certs_ansible_openssl.yaml
 
-- ansible.builtin.import_tasks: server_config.yaml
-- ansible.builtin.import_tasks: get_certs.yaml
-- ansible.builtin.import_tasks: selinux.yaml
+- name: Import server_config.yaml
+  ansible.builtin.import_tasks: server_config.yaml
+- name: Import get_certs.yaml
+  ansible.builtin.import_tasks: get_certs.yaml
+- name: Import selinux.yaml
+  ansible.builtin.import_tasks: selinux.yaml
 
 # - ansible.builtin.import_tasks: server_iptables.yaml
 # systemctl stop openvpn-server@server

@@ -5,7 +5,8 @@
   become: false
   gather_facts: true
   pre_tasks:
-    - ansible.builtin.include_vars: group_vars/{{ ansible_facts['architecture'] }}.yaml
+    - name: Include architecture-specific group vars
+      ansible.builtin.include_vars: group_vars/{{ ansible_facts['architecture'] }}.yaml
 
     - name: Get current user name
       ansible.builtin.command: id -un

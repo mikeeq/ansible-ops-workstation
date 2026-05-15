@@ -1,0 +1,2 @@
+---
+mise_install_dir: "{{ user_home_dir }}/.local"

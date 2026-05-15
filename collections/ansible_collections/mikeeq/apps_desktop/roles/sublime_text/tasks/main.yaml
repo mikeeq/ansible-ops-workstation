@@ -34,7 +34,8 @@
   become_user: "{{ user_name }}"
   ansible.builtin.get_url:
     url: "https://packagecontrol.io/Package%20Control.sublime-package"
-    dest: '~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package'
+    dest: "~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package"
+    mode: "0644"
 
 - name: Add sublime preferences
   become: true
@@ -43,6 +44,7 @@
     src: Preferences.sublime-settings
     dest: ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
     remote_src: true
+    mode: "0644"
 
 - name: Add package control preferences
   become: true
@@ -51,6 +53,7 @@
     src: Package Control.sublime-settings
     dest: ~/.config/sublime-text-3/Packages/User/Package Control.sublime-settings
     remote_src: true
+    mode: "0644"
 
 - name: Add applysyntax preferences
   become: true
@@ -59,3 +62,4 @@
     src: ApplySyntax.sublime-settings
     dest: ~/.config/sublime-text-3/Packages/User/ApplySyntax.sublime-settings
     remote_src: true
+    mode: "0644"

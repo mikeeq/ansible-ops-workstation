@@ -3,16 +3,19 @@
   ansible.builtin.file:
     path: /tmp/krew
     state: directory
+    mode: "0755"
 
 - name: Download krew binary
   ansible.builtin.get_url:
-    url: "https://github.com/kubernetes-sigs/krew/releases/download/v{{ krew_version }}/krew-linux_{{ architecture_common_name }}.tar.gz"
+    url: "https://github.com/kubernetes-sigs/krew/releases/download/v{{ kubectl_krew_version }}/krew-linux_{{ architecture_common_name }}.tar.gz"
     dest: /tmp/krew/krew.tar.gz
+    mode: "0644"
 
 - name: Download krew config
   ansible.builtin.get_url:
-    url: "https://github.com/kubernetes-sigs/krew/releases/download/v{{ krew_version }}/krew.yaml"
+    url: "https://github.com/kubernetes-sigs/krew/releases/download/v{{ kubectl_krew_version }}/krew.yaml"
     dest: /tmp/krew/krew.yaml
+    mode: "0644"
 
 - name: Unarchive a file that is already on the remote machine
   ansible.builtin.unarchive:
@@ -20,7 +23,7 @@
     dest: /tmp/krew
     remote_src: true
 
-- name: change permissions krew
+- name: Change permissions krew
   ansible.builtin.file:
     path: /tmp/krew
     state: directory
@@ -33,6 +36,7 @@
     owner: "{{ user_name }}"
     group: "{{ user_name }}"
     state: directory
+    mode: "0755"
   loop:
     - ".kube"
     - ".krew"

@@ -15,10 +15,10 @@ rules:
     min-spaces-from-content: 1
 ignore:
   - templates/
-  - '*/templates/'
-  - '**/templates/'
-  - '**/templates/*'
-  - '**/templates/**'
+  - "*/templates/"
+  - "**/templates/"
+  - "**/templates/*"
+  - "**/templates/**"
 
   # - comments.min-spaces-from-content must be 1
   # - braces.max-spaces-inside must be 1

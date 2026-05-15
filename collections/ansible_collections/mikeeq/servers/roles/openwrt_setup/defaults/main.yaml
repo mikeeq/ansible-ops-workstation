@@ -1,4 +1,4 @@
 ---
-openwrt_router_flag: false
-openwrt_ap_only_flag: false
-openwrt_bpir4: false
+openwrt_setup_openwrt_router_flag: false
+openwrt_setup_openwrt_ap_only_flag: false
+openwrt_setup_openwrt_bpir4: false

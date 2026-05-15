@@ -12,6 +12,7 @@
     owner: "{{ jenkins_ssh_uid }}"
     group: "{{ jenkins_ssh_gid }}"
     state: directory
+    mode: "0700"
 
 - name: Configure ssh config
   ansible.builtin.template:
@@ -38,6 +39,7 @@
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
     state: directory
+    mode: "0700"
 
 - name: Copy git-crypt key
   ansible.builtin.copy:
@@ -54,6 +56,7 @@
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
     state: directory
+    mode: "0755"
 
 - name: Configure Jenkins configuration as code
   ansible.builtin.template:
@@ -61,6 +64,7 @@
     dest: "{{ jenkins_home }}/casc_configs/"
     owner: "{{ jenkins_uid }}"
     group: "{{ jenkins_gid }}"
+    mode: "0644"
   with_fileglob:
     - ../templates/casc_configs/*
   register: jenkins_config_file

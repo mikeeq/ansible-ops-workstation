@@ -1,17 +1,17 @@
 ---
 - name: Stop container using docker-compose
   ansible.builtin.command: docker-compose stop
-  changed_when: up_result.stderr_lines | length > 1
-  register: up_result
+  changed_when: adguard_home_up_result.stderr_lines | length > 1
+  register: adguard_home_up_result
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ adguard_home_install_path }}"
 
 - name: Remove all volumes/containers using docker-compose
   ansible.builtin.command: docker-compose rm -vf
   args:
-    chdir: "{{ install_path }}"
+    chdir: "{{ adguard_home_install_path }}"
 
-- name: Ensure install_path dir is removed
+- name: Ensure adguard_home_install_path dir is removed
   ansible.builtin.file:
-    path: "{{ install_path }}"
+    path: "{{ adguard_home_install_path }}"
     state: absent

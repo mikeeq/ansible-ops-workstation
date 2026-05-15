@@ -1,7 +1,7 @@
 ---
 - name: Set vars
   ansible.builtin.set_fact:
-    vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
+    libvirt_vm_disk_path: "{{ libvirt_images_dir }}/{{ vm.name }}.qcow2"
 
 - name: Destroy the domain with XML specification
   community.libvirt.virt:
@@ -11,5 +11,5 @@
 
 - name: Remove storage
   ansible.builtin.file:
-    path: "{{ vm_disk_path }}"
+    path: "{{ libvirt_vm_disk_path }}"
     state: absent

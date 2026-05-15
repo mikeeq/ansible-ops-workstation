@@ -3,14 +3,17 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    mode: "0755"
   loop:
     - "/tmp/azure_functions_core_tools"
     - "/opt/azure_functions_core_tools"
 
 - name: Download azure_functions_core_tools binary
   ansible.builtin.get_url:
-    url: "https://github.com/Azure/azure-functions-core-tools/releases/download/{{ azure_functions_core_tools_version }}/Azure.Functions.Cli.linux-x64.{{ azure_functions_core_tools_version }}.zip"
+    url: "https://github.com/Azure/azure-functions-core-tools/releases/download/{{ azure_functions_core_tools_version }}/Azure.Functions.Cli.linux-x64.{{ azure_functions_core_tools_version
+      }}.zip"
     dest: /tmp/azure_functions_core_tools/azure_functions_core_tools.zip
+    mode: "0644"
 
 - name: Unarchive a file that is already on the remote machine
   ansible.builtin.unarchive:

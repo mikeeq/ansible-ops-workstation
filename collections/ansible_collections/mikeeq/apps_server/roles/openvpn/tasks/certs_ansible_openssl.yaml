@@ -17,9 +17,14 @@
   ansible.builtin.file:
     path: "{{ openvpn_ssl_path }}"
     state: directory
+    mode: "0700"
 
-- ansible.builtin.import_tasks: "openssl/ca.yaml"
-- ansible.builtin.import_tasks: "openssl/server.yaml"
-- ansible.builtin.import_tasks: "openssl/server_extras.yaml"
-- ansible.builtin.include_tasks: "openssl/client.yaml"
+- name: Import "openssl/ca.yaml"
+  ansible.builtin.import_tasks: "openssl/ca.yaml"
+- name: Import "openssl/server.yaml"
+  ansible.builtin.import_tasks: "openssl/server.yaml"
+- name: Import "openssl/server_extras.yaml"
+  ansible.builtin.import_tasks: "openssl/server_extras.yaml"
+- name: Include "openssl/client.yaml"
+  ansible.builtin.include_tasks: "openssl/client.yaml"
   loop: "{{ openvpn_clients }}"

@@ -1,5 +1,5 @@
 ---
-- name: antidote deps
+- name: Antidote deps
   ansible.builtin.package:
     name: "{{ pkgs }}"
     state: present
@@ -16,10 +16,14 @@
     shell: /bin/zsh
   with_items: "{{ antidote_users }}"
 
-- ansible.builtin.import_tasks: starship.yaml
-- ansible.builtin.import_tasks: plugins.yaml
-- ansible.builtin.import_tasks: work.yaml
+- name: Import starship.yaml
+  ansible.builtin.import_tasks: starship.yaml
+- name: Import plugins.yaml
+  ansible.builtin.import_tasks: plugins.yaml
+- name: Import work.yaml
+  ansible.builtin.import_tasks: work.yaml
 
-- ansible.builtin.import_tasks: update.yaml
+- name: Import update.yaml
+  ansible.builtin.import_tasks: update.yaml
   tags:
     - update

@@ -17,18 +17,12 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         docker-ce-cli \
         python3-pip \
+        python3-setuptools \
         git-crypt \
         git \
         libyaml-dev \
         sshpass \
-    && rm /usr/lib/python3.11/EXTERNALLY-MANAGED \
-    && pip3 install --no-cache-dir \
-        # https://pypi.org/project/jenkins-job-builder/
-        # jenkins-job-builder \
-        # https://pypi.org/project/ansible/
-        ansible \
-        # https://pypi.org/project/passlib/
-        passlib \
+    && rm /usr/lib/python3.13/EXTERNALLY-MANAGED \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -43,6 +37,10 @@ RUN git clone --single-branch --branch feature/pipeline_as_yaml https://github.c
     && cd jenkins-job-builder \
     && pip3 install -r requirements.txt \
     && PBR_VERSION=9.9.9 python3 setup.py install
+
+ENV MISE_YES=1
+RUN curl https://mise.run | sh
+ENV PATH="/root/.local/bin:${PATH}"
 
 # # https://github.com/jenkinsci/pipeline-as-yaml-plugin/pull/77
 # ARG MAVEN_VERSION=3.9.6
@@ -75,6 +73,11 @@ RUN git clone --single-branch --branch feature/pipeline_as_yaml https://github.c
 
 
 USER jenkins
+
+# Install mise as user
+ENV MISE_YES=1
+RUN curl https://mise.run | sh
+ENV PATH="/home/jenkins/.local/bin:${PATH}"
 
 # https://www.jenkins.io/projects/blueocean/
 # https://github.com/jenkinsci/blueocean-plugin/releases

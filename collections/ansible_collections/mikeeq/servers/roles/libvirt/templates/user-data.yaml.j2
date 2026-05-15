@@ -9,8 +9,8 @@ output:
 users:
   - name: root
     lock-passwd: true
-  - name: {{ default_admin_username }}
-    passwd: {{ default_admin_password | password_hash('sha512') }}
+  - name: {{ libvirt_default_admin_username }}
+    passwd: {{ libvirt_default_admin_password | password_hash('sha512') }}
     lock-passwd: false
     groups:
       - wheel

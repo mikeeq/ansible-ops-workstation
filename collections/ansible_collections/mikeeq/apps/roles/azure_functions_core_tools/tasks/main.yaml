@@ -1,3 +1,4 @@
 ---
-- ansible.builtin.include_tasks: setup.yaml
+- name: Include setup.yaml
+  ansible.builtin.include_tasks: setup.yaml
   when: ansible_facts['architecture'] == "x86_64"

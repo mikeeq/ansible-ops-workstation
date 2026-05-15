@@ -2,10 +2,10 @@
 - name: Refresh apk repos on OpenWRT
   ansible.builtin.raw: |
     apk update
-  register: opkg_update
-  # changed_when: '"Updated" in opkg_update.stdout'
+  register: openwrt_bootstrap_ansible_opkg_update
+  # changed_when: '"Updated" in openwrt_bootstrap_ansible_opkg_update.stdout'
   changed_when: false
-  failed_when: '"OK" not in opkg_update.stdout'
+  failed_when: '"OK" not in openwrt_bootstrap_ansible_opkg_update.stdout'
 
 - name: Install Ansible dependencies on OpenWRT
   ansible.builtin.raw: |
@@ -20,8 +20,8 @@
       - python3-urllib
       - python3-decimal
       - python3-idna
-  register: opkg_install
-  changed_when: '"Installing" in opkg_install.stdout'
+  register: openwrt_bootstrap_ansible_opkg_install
+  changed_when: '"Installing" in openwrt_bootstrap_ansible_opkg_install.stdout'
 
 # Clean
 # root@AX3200Mikee:~# df -h

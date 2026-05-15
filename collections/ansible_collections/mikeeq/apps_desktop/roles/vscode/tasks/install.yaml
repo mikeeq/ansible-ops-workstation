@@ -1,6 +1,8 @@
 ---
-- ansible.builtin.include_tasks: dnf.yaml
+- name: Include dnf.yaml
+  ansible.builtin.include_tasks: dnf.yaml
   when: ansible_facts['distribution'] == "Fedora"
 
-- ansible.builtin.include_tasks: apt.yaml
+- name: Include apt.yaml
+  ansible.builtin.include_tasks: apt.yaml
   when: ansible_facts['distribution'] == "Ubuntu"

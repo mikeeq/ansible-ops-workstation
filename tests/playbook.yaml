@@ -2,7 +2,6 @@
 - name: Include a playbook for including arch specifc vars
   ansible.builtin.import_playbook: ../playbooks/vars.yaml
 
-
 - name: Test playbook - install from git and run roles
   hosts: localhost
   connection: local
@@ -25,6 +24,7 @@
       ansible.builtin.file:
         path: "{{ playbook_dir }}/tmp/bin"
         state: directory
+        mode: "0755"
 
   roles:
     - role: mikeeq.apps.github_copilot_cli

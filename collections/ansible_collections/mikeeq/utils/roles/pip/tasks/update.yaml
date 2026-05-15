@@ -13,7 +13,7 @@
   ansible.builtin.pip:
     name: "{{ item.name }}"
     state: latest
-    virtualenv: "{{ virtualenv_install_path }}/{{ item.name }}"
+    virtualenv: "{{ pip_virtualenv_install_path }}/{{ item.name }}"
   when: item.virtualenv_enabled
   with_items:
     - "{{ pip_apps }}"
@@ -35,7 +35,6 @@
     - "{{ pipx_apps }}"
   tags:
     - update
-
 
 # TASK [pkg_mgmt/pip : Update virtualenv PIP apps] ******************************************************************
 # Monday 25 May 2020  11:15:24 +0200 (0:00:08.506)       0:01:05.474 ************

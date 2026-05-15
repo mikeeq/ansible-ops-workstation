@@ -1,8 +1,8 @@
 ---
 - name: Stop Jenkins using docker-compose
   ansible.builtin.command: docker-compose stop
-  changed_when: up_result.stderr_lines | length > 1
-  register: up_result
+  changed_when: jenkins_up_result.stderr_lines | length > 1
+  register: jenkins_up_result
   args:
     chdir: "{{ jenkins_install_path }}"
 

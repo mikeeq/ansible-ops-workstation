@@ -2,8 +2,8 @@
 - name: Disabling selinux
   ansible.builtin.lineinfile:
     path: /etc/selinux/config
-    regexp: '^SELINUX='
-    line: 'SELINUX=permissive'
+    regexp: "^SELINUX="
+    line: "SELINUX=permissive"
 
 # - name: Reboot the machine
 #   ansible.builtin.shell: nohup bash -c "sleep 2s && shutdown -r now" &

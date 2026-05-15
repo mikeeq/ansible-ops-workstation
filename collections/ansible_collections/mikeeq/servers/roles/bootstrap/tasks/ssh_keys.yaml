@@ -33,7 +33,7 @@
     mode: "0600"
     backup: true
     validate: /usr/sbin/sshd -t -f %s
-  notify: restart_ssh
+  notify: Restart_ssh
   loop:
     - /etc/ssh/sshd_config
 

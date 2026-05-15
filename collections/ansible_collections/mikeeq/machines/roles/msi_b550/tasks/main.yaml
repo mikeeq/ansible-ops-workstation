@@ -36,14 +36,14 @@
 # https://github.com/Fred78290/nct6687d
 - name: "Install b550 hwmon kernel module"
   ansible.builtin.git:
-    repo: 'https://github.com/Fred78290/nct6687d'
+    repo: "https://github.com/Fred78290/nct6687d"
     dest: "/opt/nct6687d"
     update: true
-  register: update_nct6687d
+  register: msi_b550_update_nct6687d
 
 - name: Install nct6687d kernel module using dkms
   ansible.builtin.shell: |
     make dkms/install
   args:
     chdir: /opt/nct6687d
-  when: update_nct6687d.changed
+  when: msi_b550_update_nct6687d.changed

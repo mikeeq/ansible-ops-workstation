@@ -14,17 +14,18 @@
 
       [Install]
       WantedBy=multi-user.target
+    mode: "0644"
     dest: /etc/systemd/system/wol@.service
-  register: wol_reg
+  register: fedora_wol_reg
 
 # - name: Reload systemd
 #   ansible.builtin.command: systemctl daemon-reload
-#   when: wol_reg.changed
+#   when: fedora_wol_reg.changed
 
 - name: Just force systemd to reread configs (2.4 and above)
   ansible.builtin.systemd:
     daemon_reload: true
-  when: wol_reg.changed
+  when: fedora_wol_reg.changed
 
 # systemctl enable wol@enp42s0
 # - name: Enable and start systemd service

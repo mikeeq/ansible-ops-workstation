@@ -1,10 +1,12 @@
 ---
 # roles/servers/apps/zabbix-agent/templates/zabbix_agentd.conf.j2
 
-- ansible.builtin.debug:
+- name: Debug output
+  ansible.builtin.debug:
     msg: "Zabbix agent setup for OpenWrt - {{ ansible_facts['default_ipv4']['address'] }}"
 
-- ansible.builtin.debug:
+- name: Debug output
+  ansible.builtin.debug:
     msg: "Zabbix agent setup for OpenWrt - {{ hostvars[inventory_hostname]['ansible_host'] }}"
 
 # - ansible.builtin.debug:
@@ -12,7 +14,7 @@
 
 - name: Set hostname fact if IP matches
   ansible.builtin.set_fact:
-    zabbix_hostname: >-
+    openwrt_setup_zabbix_hostname: >-
       {{
         (
           (dhcp + static_devices)
@@ -50,10 +52,10 @@
     dest: "/etc/zabbix_agentd.conf"
     owner: root
     group: zabbix
-    mode: '0640'
+    mode: "0640"
     backup: true
   become: true
-  notify: restart zabbix-agent
+  notify: Restart zabbix-agent
 
 # - name: Create Zabbix agent log directory
 #   ansible.builtin.file:
