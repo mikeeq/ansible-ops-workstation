@@ -1,6 +1,6 @@
 ---
 - name: Get installed packer_version
-  ansible.builtin.shell: packer --packer_version | awk '{print $2}' | cut -d'v' -f2
+  ansible.builtin.shell: packer --version | awk '{print $2}' | cut -d'v' -f2
   register: packer_installed_version
   changed_when: false
   ignore_errors: true

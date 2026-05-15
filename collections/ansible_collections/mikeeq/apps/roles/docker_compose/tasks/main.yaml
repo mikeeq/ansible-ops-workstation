@@ -1,7 +1,7 @@
 ---
 - name: Get installed docker_compose_version of docker_compose
   become: true
-  ansible.builtin.shell: docker-compose docker_compose_version --short | cut -d'v' -f2
+  ansible.builtin.shell: docker-compose version --short | cut -d'v' -f2
   register: docker_compose_installed_version
   changed_when: false
   ignore_errors: true

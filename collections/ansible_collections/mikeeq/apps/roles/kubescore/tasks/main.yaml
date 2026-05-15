@@ -2,7 +2,7 @@
 - name: "Get installed kubescore_version of kubescore"
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: kube-score kubescore_version --help | awk '{print $3}' | cut -d',' -f1
+  ansible.builtin.shell: kube-score version --help | awk '{print $3}' | cut -d',' -f1
   register: kubescore_installed_version
   changed_when: false
   ignore_errors: true

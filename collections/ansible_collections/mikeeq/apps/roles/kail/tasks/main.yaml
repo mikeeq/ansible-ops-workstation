@@ -2,7 +2,7 @@
 - name: Get installed kail_version
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: kail kail_version | awk '{print $1}' | cut -d'v' -f2
+  ansible.builtin.shell: kail version | awk '{print $1}' | cut -d'v' -f2
   register: kail_installed_version
   changed_when: false
   ignore_errors: true

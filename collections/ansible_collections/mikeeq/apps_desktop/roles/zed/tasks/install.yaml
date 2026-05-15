@@ -1,7 +1,7 @@
 ---
 # zed-linux-x86_64.tar.gz / zed-linux-aarch64.tar.gz
 - name: Get installed zed_version
-  ansible.builtin.shell: zed --zed_version | cut -d ' ' -f2
+  ansible.builtin.shell: zed --version | cut -d ' ' -f2
   environment:
     ZED_ALLOW_ROOT: "true"
   register: zed_installed_version

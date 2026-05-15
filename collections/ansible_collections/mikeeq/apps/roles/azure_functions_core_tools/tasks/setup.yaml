@@ -2,7 +2,7 @@
 - name: Get installed azure_functions_core_tools_version of azure_functions_core_tools
   become: true
   become_user: "{{ user_name }}"
-  ansible.builtin.shell: /opt/azure_functions_core_tools/func --azure_functions_core_tools_version
+  ansible.builtin.shell: /opt/azure_functions_core_tools/func --version
   register: azure_functions_core_tools_installed_version
   changed_when: false
   ignore_errors: true

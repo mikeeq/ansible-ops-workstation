@@ -1,6 +1,6 @@
 ---
 - name: Get installed ollama_version of ollama
-  ansible.builtin.shell: ollama --ollama_version | awk '{print $3}'
+  ansible.builtin.shell: ollama --version | awk '{print $3}'
   register: ollama_installed_version
   changed_when: false
   ignore_errors: true
