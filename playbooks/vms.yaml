@@ -151,8 +151,8 @@
     - mikeeq.machines.clevo_p170sm
     - mikeeq.apps_server.nginx
     # - mikeeq.apps_server.home_assistant
+    # - mikeeq.apps_server.frigate
     - mikeeq.apps_server.immich
-    - mikeeq.apps_server.frigate
     - mikeeq.apps_server.ollama_docker
     - mikeeq.apps_server.jenkins
     - mikeeq.apps_server.prometheus
