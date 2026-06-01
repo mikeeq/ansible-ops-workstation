@@ -108,6 +108,8 @@ snap_classic_apps: []
 flatpak_repos:
   - name: flathub
     url: https://flathub.org/repo/flathub.flatpakrepo
+  - name: flathub-beta
+    url: https://flathub.org/beta-repo/flathub-beta.flatpakrepo
 
 pip_apps: []
   # fails on newer Ubuntu as it OS managed
