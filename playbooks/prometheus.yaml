@@ -34,15 +34,15 @@
 #   roles:
 #     - mikeeq.apps_server.adguard_home
 
-- name: Provision DNS1
-  hosts:
-    - dns1
-  become: true
-  roles:
-    - mikeeq.servers.network_static_dns
-    - mikeeq.apps.docker
-    - mikeeq.apps_server.coredns
-    - mikeeq.apps_server.letsencrypt_coredns
+# - name: Provision DNS1
+#   hosts:
+#     - dns1
+#   become: true
+#   roles:
+#     - mikeeq.servers.network_static_dns
+#     - mikeeq.apps.docker
+#     - mikeeq.apps_server.coredns
+#     - mikeeq.apps_server.letsencrypt_coredns
 
 # - name: Provision DNS2
 #   hosts:
@@ -59,9 +59,9 @@
   become: true
   roles:
     # - mikeeq.apps_server.prometheus
-    - mikeeq.apps_server.frigate
+    # - mikeeq.apps_server.frigate
     # - mikeeq.apps_server.ollama_docker
-    - mikeeq.apps_server.nginx
-    - mikeeq.apps_server.immich
-    - mikeeq.apps_server.vaultwarden
+    # - mikeeq.apps_server.nginx
+    # - mikeeq.apps_server.immich
+    # - mikeeq.apps_server.vaultwarden
     - mikeeq.apps_server.home_assistant

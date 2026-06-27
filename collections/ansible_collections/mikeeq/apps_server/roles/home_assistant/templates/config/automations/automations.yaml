@@ -27,11 +27,9 @@
       to: "on"
   condition:
     - condition: template
-      value_template: >
-        {{ trigger.to_state.context.user_id == None }}
+      value_template: "{% raw %}{{ trigger.to_state.context.user_id == None }}{% endraw %}"
     - condition: template
-      value_template: >
-        {{ (as_timestamp(now()) - as_timestamp(states.switch.sonoff_dualr3_lazienka_gora_led.last_changed)) > 2 }}
+      value_template: "{% raw %}{{ (as_timestamp(now()) - as_timestamp(states.switch.sonoff_dualr3_lazienka_gora_led.last_changed)) > 2 }}{% endraw %}"
   action:
     - service: light.turn_off
       target:
