@@ -41,5 +41,5 @@
 - name: Disable service dawn, in all cases
   community.general.openwrt_init:
     name: dawn
-    enabled: true
+    enabled: false
     state: stopped

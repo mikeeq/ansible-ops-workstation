@@ -110,7 +110,7 @@
   become_user: "{{ user_name }}"
   community.general.dconf:
     key: "/org/gnome/shell/enabled-extensions"
-    value: "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326', 'gnome-extension-brightness@bruno.englert.gitlab.com', 'sound-output-device-chooser@kgshank.net', 'blur-my-shell@aunetx', 'display-brightness-ddcutil@themightydeity.github.com', 'gsconnect@andyholmes.github.io', 'Vitals@CoreCoding.com', 'do-not-disturb-while-screen-sharing-or-recording@marcinjahn.com', 'just-perfection-desktop@just-perfection', 'drive-menu@gnome-shell-extensions.gcampax.github.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']"
+    value: "['caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326', 'gnome-extension-brightness@bruno.englert.gitlab.com', 'sound-output-device-chooser@kgshank.net', 'blur-my-shell@aunetx', 'display-brightness-ddcutil@themightydeity.github.com', 'gsconnect@andyholmes.github.io', 'Vitals@CoreCoding.com', 'do-not-disturb-while-screen-sharing-or-recording@marcinjahn.com', 'just-perfection-desktop@just-perfection', 'drive-menu@gnome-shell-extensions.gcampax.github.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'clipboard-indicator@tudmotu.com']"
     state: present
 
 # "['GPaste@gnome-shell-extensions.gnome.org', 'caffeine@patapon.info', 'appindicatorsupport@rgcjonas.gmail.com', 'freq-boost-switch@metal03326']"

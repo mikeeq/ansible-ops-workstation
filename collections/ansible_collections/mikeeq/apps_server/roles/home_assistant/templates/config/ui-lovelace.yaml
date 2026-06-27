@@ -156,18 +156,18 @@ views:
                 name: Wilgotnosc
               - entity: sensor.th_garderoba_battery
                 name: Bateria
-          - entity: sensor.th_serwerownia_temperature
+          - entity: sensor.shelly_htg3_serwerownia_temperature
             type: custom:multiple-entity-row
             name: Serwerownia
             show_state: false
             secondary_info: last-changed
             entities:
-              - entity: sensor.th_serwerownia_temperature
+              - entity: sensor.shelly_htg3_serwerownia_temperature
                 name: Temperatura
-              - entity: sensor.th_serwerownia_humidity
+              - entity: sensor.shelly_htg3_serwerownia_humidity
                 name: Wilgotnosc
-              - entity: sensor.th_serwerownia_battery
-                name: Bateria
+              - entity: binary_sensor.shelly_htg3_serwerownia_external_power
+                name: Power
           - entity: sensor.shelly_htg3_pokoj_julia_temperature
             type: custom:multiple-entity-row
             name: Pokoj Julia
