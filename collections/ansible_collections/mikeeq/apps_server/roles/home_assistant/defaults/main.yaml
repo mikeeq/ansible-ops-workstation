@@ -34,22 +34,23 @@ home_assistant_custom_lovelace_plugins:
   - name: "lovelace-multiple-entity-row"
     entity_name: "multiple-entity-row.js"
     repo: https://github.com/benct/lovelace-multiple-entity-row
-    version: v4.5.1
+    release: true
+    version: v4.7.0
   - name: "button-card"
     entity_name: "button-card.js"
     repo: https://github.com/custom-cards/button-card
     release: true
-    version: v6.0.0
+    version: v7.0.1
   - name: "vacuum-card"
     entity_name: "vacuum-card.js"
     repo: https://github.com/denysdovhan/vacuum-card
     release: true
-    version: v2.11.0
+    version: v2.12.0
   - name: "advanced-camera-card"
     entity_name: "advanced-camera-card.zip"
     repo: https://github.com/dermotduffy/advanced-camera-card
     release: true
-    version: v7.19.1
+    version: v7.27.4
     zip_mode: true
   - name: "apexcharts-card"
     repo: "https://github.com/RomRider/apexcharts-card"
@@ -138,3 +139,18 @@ home_assistant_config:
       # - name: kuchnia
       tradfri_single_dimm: []
         # - name: kuchnia_szafki
+
+  alerts:
+    temperature:
+      # One-shot notifications via automations/alerts.yaml
+      # sensor: full entity suffix after 'sensor.'
+      # threshold: degrees Celsius (triggers after 10 min sustained)
+      - room: serwerownia
+        sensor: shelly_htg3_serwerownia_temperature
+        threshold: 35
+      - room: garaz
+        sensor: th_garaz_temperature
+        threshold: 38
+      - room: ogrod
+        sensor: th_ogrod_temperature
+        threshold: 42

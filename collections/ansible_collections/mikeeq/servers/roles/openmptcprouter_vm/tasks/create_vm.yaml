@@ -1,0 +1,79 @@
+---
+- name: Set VM disk path
+  ansible.builtin.set_fact:
+    openmptcprouter_vm_disk_path: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_name }}.qcow2"
+    openmptcprouter_vm_config_path: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_name }}.xml"
+
+- name: Render VM config XML
+  ansible.builtin.template:
+    src: vm.xml.j2
+    dest: "{{ openmptcprouter_vm_config_path }}"
+    owner: qemu
+    group: qemu
+    mode: "0600"
+  register: openmptcprouter_vm_config
+
+- name: Check VM disk state
+  ansible.builtin.stat:
+    path: "{{ openmptcprouter_vm_disk_path }}"
+  register: openmptcprouter_disk_check
+
+- name: Copy base qcow2 image for VM
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_qcow2_name }}"
+    dest: "{{ openmptcprouter_vm_disk_path }}"
+    owner: qemu
+    group: qemu
+    mode: "0600"
+  when: not openmptcprouter_disk_check.stat.exists or openmptcprouter_vm_force_recreation | bool
+
+- name: Check VM state
+  community.libvirt.virt:
+    name: "{{ openmptcprouter_vm_name }}"
+    command: status
+  register: openmptcprouter_vm_state
+  ignore_errors: true
+  failed_when: false
+
+- name: Shutdown VM if already running and config changed
+  community.libvirt.virt:
+    name: "{{ openmptcprouter_vm_name }}"
+    state: shutdown
+  when:
+    - openmptcprouter_vm_state.exception is not defined
+    - openmptcprouter_vm_config.changed or openmptcprouter_vm_force_recreation | bool
+
+- name: Wait for VM shutdown
+  ansible.builtin.shell: |
+    virsh list | grep -w "{{ openmptcprouter_vm_name }}"
+  register: openmptcprouter_shutdown_res
+  failed_when: openmptcprouter_shutdown_res.rc == 0 or openmptcprouter_shutdown_res.rc >= 2
+  retries: 15
+  until: openmptcprouter_shutdown_res.rc == 1
+  when:
+    - openmptcprouter_vm_state.exception is not defined
+    - openmptcprouter_vm_config.changed or openmptcprouter_vm_force_recreation | bool
+
+- name: Undefine the VM domain
+  community.libvirt.virt:
+    name: "{{ openmptcprouter_vm_name }}"
+    command: undefine
+  when:
+    - openmptcprouter_vm_state.exception is not defined
+    - openmptcprouter_vm_config.changed or openmptcprouter_vm_force_recreation | bool
+
+- name: Define the VM domain from XML
+  community.libvirt.virt:
+    command: define
+    xml: "{{ lookup('template', 'vm.xml.j2') }}"
+
+- name: Start the VM
+  community.libvirt.virt:
+    name: "{{ openmptcprouter_vm_name }}"
+    state: running
+
+- name: Set VM to autostart
+  community.libvirt.virt:
+    name: "{{ openmptcprouter_vm_name }}"
+    autostart: true

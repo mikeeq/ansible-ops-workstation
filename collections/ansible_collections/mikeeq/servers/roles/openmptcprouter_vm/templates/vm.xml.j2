@@ -1,0 +1,93 @@
+<domain type="kvm">
+  <name>{{ openmptcprouter_vm_name }}</name>
+  <memory unit="MiB">{{ openmptcprouter_vm_memory }}</memory>
+  <vcpu placement="static">{{ openmptcprouter_vm_cpu }}</vcpu>
+  <os>
+    <!-- Legacy BIOS boot — OpenMPTCProuter/OpenWrt does not use UEFI/Secure Boot -->
+    <type arch="x86_64" machine="pc-i440fx-rhel9.0.0">hvm</type>
+    <boot dev="hd"/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <cpu mode="host-passthrough" check="none" migratable="on"/>
+  <clock offset="utc">
+    <timer name="rtc" tickpolicy="catchup"/>
+    <timer name="pit" tickpolicy="delay"/>
+    <timer name="hpet" present="no"/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <pm>
+    <suspend-to-mem enabled="no"/>
+    <suspend-to-disk enabled="no"/>
+  </pm>
+  <devices>
+    <emulator>{{ openmptcprouter_vm_qemu_emulator }}</emulator>
+    <disk type="file" device="disk">
+      <driver name="qemu" type="qcow2"/>
+      <source file="{{ openmptcprouter_vm_disk_path }}"/>
+      <target dev="vda" bus="virtio"/>
+    </disk>
+    <controller type="pci" index="0" model="pci-root"/>
+    <controller type="virtio-serial" index="0"/>
+
+    <!-- NIC 0: NAT network (virbr0 / 192.168.122.0/24)
+         Provides management access from the baremetal host.
+         OpenMPTCProuter will see this as eth0 (LAN).
+         Access: ssh root@$(virsh domifaddr openmptcprouter) -->
+    <interface type="network">
+      <source network="{{ openmptcprouter_vm_nat_network }}"/>
+      <model type="virtio"/>
+    </interface>
+
+    <!-- NIC 1+: macvtap WAN interfaces
+         Each physical NIC is passed directly to the VM as a WAN port.
+         NOTE: The baremetal host CANNOT communicate with the VM via
+         macvtap interfaces (kernel limitation); use the NAT NIC above.
+         OpenMPTCProuter will see these as eth1, eth2, ... (WAN). -->
+{% for iface in openmptcprouter_vm_macvtap_interfaces %}
+    <interface type="direct">
+      <source dev="{{ iface.dev }}" mode="{{ iface.mode | default('bridge') }}"/>
+      <model type="virtio"/>
+    </interface>
+{% endfor %}
+
+    <!-- Serial console: enables `virsh console {{ openmptcprouter_vm_name }}`
+         Press Ctrl+] to exit the console session. -->
+    <serial type="pty">
+      <target type="isa-serial" port="0">
+        <model name="isa-serial"/>
+      </target>
+    </serial>
+    <console type="pty">
+      <target type="serial" port="0"/>
+    </console>
+
+    <!-- Guest agent channel for virsh commands -->
+    <channel type="unix">
+      <target type="virtio" name="org.qemu.guest_agent.0"/>
+      <address type="virtio-serial" controller="0" bus="0" port="1"/>
+    </channel>
+
+    <input type="mouse" bus="ps2"/>
+    <input type="keyboard" bus="ps2"/>
+
+    <!-- Minimal graphics: VNC only (no SPICE/sound needed for a router VM)
+         Connect: virsh console or virt-viewer -->
+    <graphics type="vnc" port="-1" autoport="yes" listen="127.0.0.1">
+      <listen type="address" address="127.0.0.1"/>
+    </graphics>
+    <video>
+      <model type="vga" vram="16384" heads="1" primary="yes"/>
+    </video>
+
+    <watchdog model="i6300esb" action="reset"/>
+    <memballoon model="virtio"/>
+    <rng model="virtio">
+      <backend model="random">/dev/urandom</backend>
+    </rng>
+  </devices>
+</domain>

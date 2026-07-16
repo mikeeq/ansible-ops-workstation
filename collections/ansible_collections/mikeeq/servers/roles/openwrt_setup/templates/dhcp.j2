@@ -41,6 +41,7 @@ config dhcp 'lan'
         list ra_flags 'managed-config'
         list ra_flags 'other-config'
         list dhcp_option '6,{{ dhcp_dns_servers }}'
+        list dhcp_option '3,{{ dhcp_default_gateway }}'
         {# list dhcp_option '6,8.8.8.8' #}
         {# option dhcpv6 'server' #}
         {# option ra 'server' #}
@@ -66,6 +67,13 @@ config tag '{{ i.name }}'
 
 config tag 'public_dns'
         list dhcp_option '6,8.8.8.8'
+
+config tag 'directgw'
+        list dhcp_option '3,{{ dhcp_direct_gateway }}'
+
+config tag 'public_dns_directgw'
+        list dhcp_option '6,8.8.8.8'
+        list dhcp_option '3,{{ dhcp_direct_gateway }}'
 
 {% for i in dhcp %}
 config host

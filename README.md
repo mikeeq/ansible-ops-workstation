@@ -728,6 +728,24 @@ CRITICAL 'molecule/default/molecule.yml' glob failed.
 
 ```
 
+34. Firefox over SSH - X11 Forwarding
+
+```
+### SSH config
+Host SSH_DEST_HOST
+  ForwardX11 yes
+  ForwardX11Trusted yes
+###
+
+ssh -YC4 $SSH_DEST_HOST
+
+export QT_X11_NO_MITSHM=1
+export _X11_NO_MITSHM=1
+export _MITSHM=0
+firefox -no-remote
+```
+
+
 ## TODO
 
 - consider switching from oh-my-zsh to antidote

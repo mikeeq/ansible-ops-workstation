@@ -76,8 +76,8 @@
   ignore_errors: true
   failed_when: false
 
-# - ansible.builtin.debug:
-#     var: libvirt_vm_state
+- ansible.builtin.debug:
+    var: libvirt_vm_state
 
 - name: Shutdown if config changed and already running
   community.libvirt.virt:

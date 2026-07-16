@@ -1,0 +1,10 @@
+---
+- name: Import setup.yaml
+  ansible.builtin.import_tasks: setup.yaml
+
+- name: Import destroy_vm.yaml
+  ansible.builtin.import_tasks: destroy_vm.yaml
+  when: openmptcprouter_vm_force_recreation | bool
+
+- name: Import create_vm.yaml
+  ansible.builtin.import_tasks: create_vm.yaml

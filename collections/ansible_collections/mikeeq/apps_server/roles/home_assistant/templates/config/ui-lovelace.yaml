@@ -3,6 +3,39 @@ views:
     path: home
     badges: []
     cards:
+      # --- Alert panel: only visible when at least one alert is active ---
+      - type: conditional
+        conditions:
+          - condition: state
+            entity: binary_sensor.any_alert_active
+            state: "on"
+        card:
+          type: entities
+          title: "⚠️ Aktywne Alerty"
+          state_color: true
+          entities:
+            - entity: alert.gaz_kotlownia
+              name: Gaz Kotlownia
+              icon: mdi:gas-cylinder
+            - entity: alert.dwor_brama_otwarta
+              name: Brama Dwor
+              icon: mdi:gate-alert
+            - entity: alert.garaz_brama_otwarta
+              name: Brama Garazowa
+              icon: mdi:garage-alert
+            - entity: alert.serwerownia_temp_wysoka
+              name: Serwerownia Temp
+              icon: mdi:thermometer-alert
+      # --- Alert history: always visible, shows last 24h of alert events ---
+      - type: logbook
+        title: Historia Alertów (24h)
+        hours_to_show: 24
+        entities:
+          - alert.gaz_kotlownia
+          - alert.dwor_brama_otwarta
+          - alert.garaz_brama_otwarta
+          - alert.serwerownia_temp_wysoka
+      # ------------------------------------------------------------------
       - type: entities
         title: Temperatury Zigbee
         entities:

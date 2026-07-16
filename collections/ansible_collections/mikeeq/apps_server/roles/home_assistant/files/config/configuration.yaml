@@ -17,9 +17,15 @@ recorder:
 
 # https://smarthomescene.com/blog/top-8-home-assistant-thermostat-cards/
 lovelace:
-  mode: yaml
+  resource_mode: yaml
   # Add yaml dashboards
   dashboards:
+    lovelace:
+      mode: yaml
+      filename: ui-lovelace.yaml
+      title: Overview
+      icon: mdi:view-dashboard
+      show_in_sidebar: true
     lovelace-generated:  # Needs to contain a hyphen (-)
       mode: yaml
       filename: notexist.yaml
@@ -76,6 +82,7 @@ virtual:
 
 switch: !include switch.yaml
 climate: !include climate.yaml
+alert: !include alert.yaml
 
 rest:
   # scan_interval: 10

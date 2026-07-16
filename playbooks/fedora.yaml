@@ -26,13 +26,13 @@
     - mikeeq.apps.docker
     - mikeeq.apps.qemu
     - mikeeq.apps_desktop.terminator
-    - mikeeq.apps.vagrant
     - mikeeq.apps.packer
     - mikeeq.machines.gnome
     - mikeeq.apps_desktop.x11docker
     - mikeeq.apps_desktop.vscode
     - mikeeq.apps_desktop.zed
     - mikeeq.machines.fedora
+    # - mikeeq.apps.vagrant
     # - mikeeq.apps.ollama
     # - mikeeq.apps.nordvpn
     # - mikeeq.apps_desktop.keeweb

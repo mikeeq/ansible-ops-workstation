@@ -46,7 +46,7 @@
 #     to: Opened
 #   condition: []
 #   action:
-#   - service: notify.mobile_app_oneplus8t_miki
+#   - service: notify.mobile_app_pixel_9_pro
 #     data:
 #       message: Brama Garazowa Otwarta!
 #   mode: single
