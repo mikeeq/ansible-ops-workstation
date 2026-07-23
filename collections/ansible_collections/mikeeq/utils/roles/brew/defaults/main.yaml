@@ -1,5 +1,6 @@
 ---
 brew_install_path: "{{ ansible_facts['env']['HOME'] }}/.homebrew"
 
+brew_trust_taps: []
 brew_pkgs: []
 brew_cask_pkgs: []
