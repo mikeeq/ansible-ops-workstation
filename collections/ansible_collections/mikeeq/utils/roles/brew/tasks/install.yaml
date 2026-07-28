@@ -1,4 +1,11 @@
 ---
+- name: "[BREW] Trust third-party taps"
+  ansible.builtin.command: "{{ brew_install_path }}/bin/brew trust {{ item }}"
+  loop: "{{ brew_trust_taps }}"
+  changed_when: true
+  become: false
+  when: brew_trust_taps | length > 0
+
 - name: "[BREW] Install formulae"
   community.general.homebrew:
     name: "{{ item }}"
