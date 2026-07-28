@@ -71,9 +71,13 @@ config tag 'public_dns'
 config tag 'directgw'
         list dhcp_option '3,{{ dhcp_direct_gateway }}'
 
-config tag 'public_dns_directgw'
+config tag 'public_dns_directgw_1'
         list dhcp_option '6,8.8.8.8'
         list dhcp_option '3,{{ dhcp_direct_gateway }}'
+
+config tag 'public_dns_directgw_2'
+        list dhcp_option '6,8.8.8.8'
+        list dhcp_option '3,{{ dhcp_direct_gateway_2 }}'
 
 {% for i in dhcp %}
 config host

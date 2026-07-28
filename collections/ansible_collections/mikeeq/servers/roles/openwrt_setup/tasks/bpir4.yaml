@@ -6,6 +6,7 @@
     update_cache: true
   vars:
     opkgs:
+      - kmod-macvlan
       - kmod-phy-airoha-en8811h
       - kmod-phy-amd
       - kmod-phy-aquantia
