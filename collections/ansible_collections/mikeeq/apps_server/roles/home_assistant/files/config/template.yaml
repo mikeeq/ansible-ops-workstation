@@ -34,6 +34,7 @@
       | selectattr('state', 'eq', 'on') | list | count }}
 
 - binary_sensor:
+# yamllint disable-line rule:indentation
   - name: serwerownia_temp_high
     unique_id: serwerownia_temp_high
     # Fires after 5 min sustained to avoid transient spikes triggering alert:

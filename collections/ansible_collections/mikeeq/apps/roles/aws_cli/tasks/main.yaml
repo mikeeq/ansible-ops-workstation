@@ -1,46 +1,7 @@
 ---
-- name: Get installed aws_cli_version of aws-cli
-  become: true
-  become_user: "{{ user_name }}"
-  ansible.builtin.shell: aws --version | cut -d "/" -f2 | awk '{print $1}'
-  register: aws_cli_installed_version
-  changed_when: false
-  ignore_errors: true
+- name: Install Session Manager
+  ansible.builtin.include_tasks: sam.yaml
 
-- name: "Installed aws_cli_version of aws-cli:"
-  ansible.builtin.debug:
-    var: aws_cli_installed_version.stdout
-
-- name: Include get_latest_version.yaml
-  ansible.builtin.include_tasks: get_latest_version.yaml
-  when: aws_cli_version is not defined
-
-- name: Include install.yaml
-  ansible.builtin.include_tasks: install.yaml
-  when: aws_cli_installed_version.stdout != aws_cli_version
-
-- name: Install Session Manager plugin on Fedora
-  ansible.builtin.dnf:
-    name: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.rpm"
-    state: present
-    disable_gpg_check: true
-  when:
-    - ansible_facts['distribution'] == "Fedora"
-
-- name: Install Session Manager plugin  on Ubuntu
-  ansible.builtin.apt:
-    deb: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.deb"
-    state: present
-  when:
-    - ansible_facts['distribution'] == "Ubuntu"
-
-- name: Create a symbolic link for aws-cli
-  ansible.builtin.file:
-    src: "/opt/pipx/venvs/awscli/bin/{{ item }}"
-    dest: "/usr/local/bin/{{ item }}"
-    owner: root
-    group: root
-    state: link
-  loop:
-    - aws
-    - aws_completer
+- name: Install aws-cli
+  ansible.builtin.include_tasks: setup.yaml
+  when: ansible_facts['os_family'] != "Darwin"

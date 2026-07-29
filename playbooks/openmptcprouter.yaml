@@ -21,16 +21,15 @@
 - name: Deploy OpenMPTCProuter VM on AlmaLinux 10 hypervisor
   hosts: "{{ hosts_to_deploy | default('almalinux_baremetal') }}"
   become: true
-  vars:
-    # Override these vars per-host via host_vars or extra-vars:
-    #
-    # openmptcprouter_vm_macvtap_interfaces:
-    #   - dev: "enp3s0"      # WAN1 physical NIC name
-    #     mode: "bridge"
-    #   - dev: "enp4s0"      # WAN2 physical NIC name (optional)
-    #     mode: "bridge"
-    #
-    # openmptcprouter_vm_image_url: "https://github.com/Ysurac/openmptcprouter/releases/download/0.64.8/..."
-    # openmptcprouter_vm_force_recreation: false
+  # Override these vars per-host via host_vars or extra-vars:
+  #
+  # openmptcprouter_vm_macvtap_interfaces:
+  #   - dev: "enp3s0"      # WAN1 physical NIC name
+  #     mode: "bridge"
+  #   - dev: "enp4s0"      # WAN2 physical NIC name (optional)
+  #     mode: "bridge"
+  #
+  # openmptcprouter_vm_image_url: "https://github.com/Ysurac/openmptcprouter/releases/download/0.64.8/..."
+  # openmptcprouter_vm_force_recreation: false
   roles:
     - mikeeq.servers.openmptcprouter_vm

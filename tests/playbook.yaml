@@ -7,14 +7,12 @@
   connection: local
   become: false
 
-  collections:
-    - mikeeq.apps
-
   pre_tasks:
     - name: Create temporary directory for ansible-galaxy collection installation
       ansible.builtin.file:
         path: "{{ playbook_dir }}/tmp/ansible"
         state: directory
+        mode: "0755"
 
     - name: Install test requirements
       ansible.builtin.command:
@@ -28,6 +26,7 @@
       ansible.builtin.file:
         path: "{{ playbook_dir }}/tmp/bin"
         state: directory
+        mode: "0755"
 
   roles:
     - role: mikeeq.apps.github_copilot_cli

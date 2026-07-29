@@ -16,7 +16,7 @@
 - name: Check VM disk state
   ansible.builtin.stat:
     path: "{{ openmptcprouter_vm_disk_path }}"
-  register: openmptcprouter_disk_check
+  register: openmptcprouter_vm_disk_check
 
 - name: Copy base qcow2 image for VM
   ansible.builtin.copy:
@@ -26,7 +26,7 @@
     owner: qemu
     group: qemu
     mode: "0600"
-  when: not openmptcprouter_disk_check.stat.exists or openmptcprouter_vm_force_recreation | bool
+  when: not openmptcprouter_vm_disk_check.stat.exists or openmptcprouter_vm_force_recreation | bool
 
 - name: Check VM state
   community.libvirt.virt:
@@ -47,10 +47,10 @@
 - name: Wait for VM shutdown
   ansible.builtin.shell: |
     virsh list | grep -w "{{ openmptcprouter_vm_name }}"
-  register: openmptcprouter_shutdown_res
-  failed_when: openmptcprouter_shutdown_res.rc == 0 or openmptcprouter_shutdown_res.rc >= 2
+  register: openmptcprouter_vm_shutdown_res
+  failed_when: openmptcprouter_vm_shutdown_res.rc == 0 or openmptcprouter_vm_shutdown_res.rc >= 2
   retries: 15
-  until: openmptcprouter_shutdown_res.rc == 1
+  until: openmptcprouter_vm_shutdown_res.rc == 1
   when:
     - openmptcprouter_vm_state.exception is not defined
     - openmptcprouter_vm_config.changed or openmptcprouter_vm_force_recreation | bool

@@ -7,6 +7,7 @@ brew_install_path: /opt/homebrew
 
 brew_trust_taps:
   - hashicorp/tap
+  - deskflow/tap
 
 brew_pkgs:
   - gpg
@@ -38,13 +39,19 @@ brew_pkgs:
   # - gh-ost
 
 brew_cask_pkgs:
-  # - iterm2
-  - visual-studio-code
-  - google-chrome
+  - bitwarden
+  - deskflow
   - firefox
+  - google-chrome
+  - iterm2
+  - lm-studio
+  - ollama
+  - rancher
   - slack
   - spotify
   - utm
-  - ollama
+  - visual-studio-code
+  # - zoom          # requires sudo
+  # - filezilla
   # - session-manager-plugin
-  # - rancher-desktop
+  # - windows-app   # requires sudo

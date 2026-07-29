@@ -34,7 +34,7 @@
     checksum: "{{ openmptcprouter_vm_image_checksum | default(omit) }}"
   when: openmptcprouter_vm_image_checksum | length > 0
 
-- name: "Download {{ openmptcprouter_vm_image_gz_name }} (no checksum)"
+- name: "Download (no checksum) {{ openmptcprouter_vm_image_gz_name }}"
   ansible.builtin.get_url:
     url: "{{ openmptcprouter_vm_image_url }}"
     dest: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_gz_name }}"
