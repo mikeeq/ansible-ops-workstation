@@ -1,0 +1,17 @@
+---
+use_default_settings: true
+
+server:
+  secret_key: "change-me-to-a-random-string"
+  limiter: false
+
+# Allow API access (needed for pi-web-access JSON API)
+search:
+  safe_search: 0
+  autocomplete: ""
+  formats:
+    - html
+    - json
+
+ui:
+  static_use_hash: true

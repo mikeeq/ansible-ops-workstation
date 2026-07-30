@@ -15,7 +15,10 @@ paths = [
   '''.terragrunt-cache''',
   '''.external_modules''',
   '''.pre-commit-config\.yaml''',
-  '''\.ansible''',
+  '''.ansible''',
+  '''.molecule''',
+  '''.vagrant''',
+  '''scripts/llama-scripts/llama.cpp'''
 ]
 regexes = [
   '''client_id''',

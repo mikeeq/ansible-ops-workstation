@@ -1,0 +1,36 @@
+ {
+     "providers": {
+         "llama.cpp": {
+           "baseUrl": "http://127.0.0.1:8000/v1",
+             "api": "openai-completions",
+             "apiKey": "dummy",
+             "models": [
+                 {
+                     "id": "Qwen3.6-35B-A3B-MXFP4_MOE.gguf",
+                     "name": "Qwen3.6-35B",
+                     "reasoning": true,
+                     "input": ["text"],
+                      "compat": {
+                        "thinkingFormat": "qwen-chat-template"
+                       },
+                     "contextWindow": 262144,
+                       "maxTokens": 32768,
+
+                     "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+                 },
+                 {
+                     "id": "unsloth/Qwen3.6-27B-GGUF:Q4_K_M",
+                     "name": "Qwen3.6-27B",
+                     "reasoning": true,
+                     "input": ["text"],
+                      "compat": {
+                        "thinkingFormat": "qwen-chat-template"
+                       },
+                     "contextWindow": 262144,
+                       "maxTokens": 32768,
+
+                     "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+                 }]
+         }
+   }
+}

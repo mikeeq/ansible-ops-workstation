@@ -2,7 +2,10 @@
 exclude: |
   (?x)^(
     \.cache/.*|
-    \.ansible/.*
+    \.ansible/.*|
+    \.molecule/.*|
+    \.vagrant/.*|
+    \scripts/llama-scripts/llama.cpp/.*
   )$
 
 repos:

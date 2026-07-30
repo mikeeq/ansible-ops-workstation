@@ -1,0 +1,38 @@
+[settings]
+experimental = true
+
+[settings.python]
+compile = false
+
+# Disable to avoid calling Github API
+[settings.aqua]
+cosign = false
+
+[tools]
+# Custom registries are not included in mise-versions
+# https://mise-versions.jdx.dev/
+
+# mise registry | grep -i aws
+# mise plugins ls-remote | grep aws
+# mise ls-remote aws-cli
+
+cmake = "latest"
+
+[env]
+ANSIBLE_CONFIG = "playbooks/ansible.cfg"
+# pipx:ansible only shims ansible-community; expose the full ansible venv bin dir
+# exec falls back to /dev/null when ansible is not yet installed (harmless)
+# _.path = { path = ["{{ tools['pipx:ansible'].path }}/venvs/ansible/bin"], tools = true }
+# _.path = { path = ["{{ exec(command='mise where pipx:ansible 2>/dev/null || echo /dev/null') }}/venvs/ansible/bin"], tools = true }
+
+# https://github.com/jdx/mise/discussions/9729
+[hooks]
+postinstall = "cd '{{config_root}}/playbooks' && ansible-galaxy install -r requirements.yaml"
+
+[tasks.pre-commit]
+description = "Run pre-commit checks on all files"
+run = "pre-commit run --all-files --show-diff-on-failure --color=always"
+
+#[tasks.ansible-setup]
+#description = "Inject passlib into ansible pipx environment"
+#run = "pipx inject ansible passlib"
