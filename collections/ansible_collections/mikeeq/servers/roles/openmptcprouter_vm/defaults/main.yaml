@@ -1,0 +1,30 @@
+---
+# OpenMPTCProuter x86_64 image (OpenWrt-based)
+# Check https://github.com/Ysurac/openmptcprouter/releases for latest
+openmptcprouter_vm_image_url: "https://github.com/Ysurac/openmptcprouter/releases/download/0.64.8/openmptcprouter-x86-64-generic-squashfs-combined.img.gz"
+openmptcprouter_vm_image_gz_name: "openmptcprouter-x86-64-generic-squashfs-combined.img.gz"
+openmptcprouter_vm_image_raw_name: "openmptcprouter-x86-64-generic-squashfs-combined.img"
+openmptcprouter_vm_image_qcow2_name: "openmptcprouter-x86-64-base.qcow2"
+openmptcprouter_vm_image_checksum: ""
+
+openmptcprouter_vm_images_dir: "/var/lib/libvirt/images"
+
+# VM defaults
+openmptcprouter_vm_name: "openmptcprouter"
+openmptcprouter_vm_cpu: 2
+openmptcprouter_vm_memory: 512
+
+openmptcprouter_vm_qemu_emulator: "/usr/bin/qemu-kvm"
+
+# NAT network for management access from the baremetal host (virbr0 / 192.168.122.0/24)
+openmptcprouter_vm_nat_network: "default"
+
+# macvtap WAN interfaces — list of physical NICs to pass through to the VM
+# mode: bridge  → VM talks to physical network; host cannot reach VM via this NIC (use NAT NIC instead)
+# mode: vepa    → frames go via upstream switch; useful with VEPA-capable switches
+openmptcprouter_vm_macvtap_interfaces:
+  - dev: "enp1s0"
+    mode: "bridge"
+
+# Set to true to force teardown and recreation of the VM
+openmptcprouter_vm_force_recreation: false

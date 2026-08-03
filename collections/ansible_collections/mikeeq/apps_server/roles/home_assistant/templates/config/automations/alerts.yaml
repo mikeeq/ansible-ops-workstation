@@ -1,0 +1,24 @@
+---
+# One-shot temperature threshold notifications per room.
+# Repeated gate/gas alerts are handled by the alert: integration (alert.yaml).
+{% for a in home_assistant_config.alerts.temperature %}
+- alias: "Alert Temperatura {{ a.room }}"
+  description: "Powiadomienie gdy temperatura w {{ a.room }} przekracza {{ a.threshold }}°C przez 10 minut"
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.{{ a.sensor }}
+      above: {{ a.threshold }}
+      for:
+        minutes: 10
+  conditions: []
+  actions:
+    - action: notify.mobile_app_pixel_9_pro
+      data:
+        title: "Temperatura - {{ a.room }}"
+        message: "{% raw %}{{ states('sensor.{% endraw %}{{ a.sensor }}{% raw %}') | round(1) }}°C za wysoka w {% endraw %}{{ a.room }}"
+        data:
+          tag: "temp_alert_{{ a.room }}"
+          channel: Temperature
+          importance: high
+  mode: single
+{% endfor %}

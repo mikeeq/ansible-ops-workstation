@@ -1,0 +1,51 @@
+---
+- name: Install Session Manager plugin on Fedora
+  ansible.builtin.dnf:
+    name: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.rpm"
+    state: present
+    disable_gpg_check: true
+  when:
+    - ansible_facts['distribution'] == "Fedora"
+
+- name: Install Session Manager plugin on Ubuntu
+  ansible.builtin.apt:
+    deb: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_{{ aws_cli_session_manager_plugin_architecture_common_name }}/session-manager-plugin.deb"
+    state: present
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+
+- name: Download Session Manager plugin on MacOS
+  ansible.builtin.get_url:
+    url: "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac_arm64/sessionmanager-bundle.zip"
+    dest: "/tmp/sessionmanager-bundle.zip"
+    mode: "0644"
+  when: ansible_facts['os_family'] == "Darwin"
+
+- name: Unzip Session Manager plugin on MacOS
+  ansible.builtin.unarchive:
+    src: "/tmp/sessionmanager-bundle.zip"
+    dest: "/tmp/"
+    remote_src: true
+  when: ansible_facts['os_family'] == "Darwin"
+
+- name: Install Session Manager plugin on MacOS
+  ansible.builtin.copy:
+    src: "/tmp/sessionmanager-bundle/bin/session-manager-plugin"
+    dest: "~/.local/bin/session-manager-plugin"
+    mode: "0755"
+  when: ansible_facts['os_family'] == "Darwin"
+
+# mkdir -p ~/.local/bin/
+# if ! command -v session-manager-plugin &>/dev/null; then
+#   curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac_arm64/sessionmanager-bundle.zip" -o "sessionmanager-bundle.zip"
+#   unzip sessionmanager-bundle.zip
+#   cp -rfv sessionmanager-bundle/bin/session-manager-plugin ~/.local/bin/
+#   rm -rf sessionmanager-bundle sessionmanager-bundle.zip
+# else
+#   echo "session-manager-plugin already installed: $(command -v session-manager-plugin)"
+# fi
+# for shell in bash zsh; do
+#   rc="$HOME/.${shell}rc"
+#   grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' "$rc" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$rc"
+#   grep -q "mise activate ${shell}" "$rc"              || echo "eval \"\$(mise activate ${shell})\""      >> "$rc"
+# done

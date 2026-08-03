@@ -7,7 +7,7 @@
   become: true
   roles:
     - mikeeq.utils.pip
-    - mikeeq.apps.keybase
+    # - mikeeq.apps.keybase
     - mikeeq.apps.kubectl
     - mikeeq.apps.helm
     - mikeeq.apps.stern

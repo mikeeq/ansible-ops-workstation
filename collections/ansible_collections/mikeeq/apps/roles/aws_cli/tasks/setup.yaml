@@ -1,0 +1,31 @@
+---
+- name: Get installed aws_cli_version of aws-cli
+  become: true
+  become_user: "{{ user_name }}"
+  ansible.builtin.shell: aws --version | cut -d "/" -f2 | awk '{print $1}'
+  register: aws_cli_installed_version
+  changed_when: false
+  ignore_errors: true
+
+- name: "Installed aws_cli_version of aws-cli:"
+  ansible.builtin.debug:
+    var: aws_cli_installed_version.stdout
+
+- name: Include get_latest_version.yaml
+  ansible.builtin.include_tasks: get_latest_version.yaml
+  when: aws_cli_version is not defined
+
+- name: Include install.yaml
+  ansible.builtin.include_tasks: install.yaml
+  when: aws_cli_installed_version.stdout != aws_cli_version
+
+- name: Create a symbolic link for aws-cli
+  ansible.builtin.file:
+    src: "/opt/pipx/venvs/awscli/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    owner: root
+    group: root
+    state: link
+  loop:
+    - aws
+    - aws_completer

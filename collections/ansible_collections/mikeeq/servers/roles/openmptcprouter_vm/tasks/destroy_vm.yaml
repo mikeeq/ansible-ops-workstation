@@ -1,0 +1,25 @@
+---
+- name: Check VM state before destroy
+  community.libvirt.virt:
+    name: "{{ openmptcprouter_vm_name }}"
+    command: status
+  register: openmptcprouter_vm_destroy_state
+  ignore_errors: true
+  failed_when: false
+
+- name: Destroy (force stop) VM
+  community.libvirt.virt:
+    name: "{{ openmptcprouter_vm_name }}"
+    state: destroyed
+  when: openmptcprouter_vm_destroy_state.exception is not defined
+
+- name: Undefine the VM domain
+  community.libvirt.virt:
+    name: "{{ openmptcprouter_vm_name }}"
+    command: undefine
+  when: openmptcprouter_vm_destroy_state.exception is not defined
+
+- name: Remove VM disk image
+  ansible.builtin.file:
+    path: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_name }}.qcow2"
+    state: absent

@@ -13,9 +13,10 @@
     - mikeeq.apps.oh_my_zsh
     - mikeeq.machines.macos
     - mikeeq.apps_desktop.vscode
-    - mikeeq.apps_desktop.zed
-    - mikeeq.apps.claude_code
+    - mikeeq.apps.aws_cli
     - mikeeq.apps.github_copilot_cli
+    # - mikeeq.apps_desktop.zed
+    # - mikeeq.apps.claude_code
     # - mikeeq.apps.antidote
   vars:
     ansible_remote_tmp: "~{{ user_name }}/.ansible/tmp"

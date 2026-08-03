@@ -25,7 +25,7 @@
 #     mode: "0664"
 #     backup: true
 #   notify:
-#     - restart_docker_compose
+#     - Restart_docker_compose
 #   loop:
 #     - config.yaml
 

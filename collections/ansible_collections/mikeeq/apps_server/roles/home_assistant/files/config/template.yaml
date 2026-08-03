@@ -32,3 +32,30 @@
     state: >
       {{ expand('switch.group_ogrzewanie_podlogowe')
       | selectattr('state', 'eq', 'on') | list | count }}
+
+- binary_sensor:
+# yamllint disable-line rule:indentation
+  - name: serwerownia_temp_high
+    unique_id: serwerownia_temp_high
+    # Fires after 5 min sustained to avoid transient spikes triggering alert:
+    state: "{{ states('sensor.shelly_htg3_serwerownia_temperature') | float(0) > 35 }}"
+    device_class: heat
+    delay_on:
+      minutes: 5
+
+  - name: any_gate_open
+    unique_id: any_gate_open
+    state: >
+      {{ is_state('binary_sensor.door_state_dwor_brama', 'on')
+         or is_state('binary_sensor.door_brama_garaz_opening', 'on') }}
+    device_class: opening
+
+  - name: any_alert_active
+    unique_id: any_alert_active
+    # Used by the dashboard conditional card to show/hide the alert panel
+    state: >
+      {{ is_state('alert.dwor_brama_otwarta', 'on')
+         or is_state('alert.garaz_brama_otwarta', 'on')
+         or is_state('alert.serwerownia_temp_wysoka', 'on')
+         or is_state('alert.gaz_kotlownia', 'on') }}
+    device_class: problem

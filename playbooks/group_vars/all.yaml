@@ -108,6 +108,8 @@ snap_classic_apps: []
 flatpak_repos:
   - name: flathub
     url: https://flathub.org/repo/flathub.flatpakrepo
+  - name: flathub-beta
+    url: https://flathub.org/beta-repo/flathub-beta.flatpakrepo
 
 pip_apps: []
   # fails on newer Ubuntu as it OS managed
@@ -164,6 +166,12 @@ gnome_shell_extensions:
   - 1319 # GSConnect
   # - 120         # system-monitor
   - 1460 # Vitals
+  - 5985 # Do Not Disturb While Screen Sharing Or Recording
+  - 3843 # Just Perfection
+  - 7 # Removable Drive Menu
+  - 19 # User Themes
+  - 779 # Clipboard Indicator
+  - 841 # Freon
 
 gnome_extension_ids: "{{ gnome_shell_extensions }}"
 

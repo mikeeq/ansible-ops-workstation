@@ -20,6 +20,7 @@ all:
           children:
             pc:
             clevo:
+            almalinux:
               children:
                 vms:
                   children:
@@ -44,6 +45,16 @@ clevo:
       ansible_host: 192.168.1.20
       ansible_ssh_pass: >-
         test_pass
+
+almalinux:
+  hosts:
+    almalinux_baremetal:
+      ansible_host: 192.168.1.30
+      # ansible_user: admin
+      # ansible_ssh_private_key_file: ~/.ssh/id_rsa
+      # openmptcprouter_vm_macvtap_interfaces:
+      #   - dev: "enp3s0"
+      #     mode: "bridge"
 
 vms:
   vars:

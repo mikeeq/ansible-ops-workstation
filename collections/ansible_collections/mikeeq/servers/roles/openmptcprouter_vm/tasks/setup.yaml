@@ -1,0 +1,64 @@
+---
+- name: Install libvirt and QEMU packages
+  ansible.builtin.package:
+    name:
+      - qemu-kvm
+      - libvirt
+      - libvirt-daemon-config-network
+      - libvirt-client
+      - python3-libvirt
+      - virt-install
+    state: present
+
+- name: Enable and start libvirtd
+  ansible.builtin.service:
+    name: libvirtd
+    state: started
+    enabled: true
+
+- name: Ensure libvirt images directory exists
+  ansible.builtin.file:
+    path: "{{ openmptcprouter_vm_images_dir }}"
+    state: directory
+    owner: qemu
+    group: qemu
+    mode: "0711"
+
+- name: "Download {{ openmptcprouter_vm_image_gz_name }}"
+  ansible.builtin.get_url:
+    url: "{{ openmptcprouter_vm_image_url }}"
+    dest: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_gz_name }}"
+    mode: "0640"
+    owner: qemu
+    group: qemu
+    checksum: "{{ openmptcprouter_vm_image_checksum | default(omit) }}"
+  when: openmptcprouter_vm_image_checksum | length > 0
+
+- name: "Download (no checksum) {{ openmptcprouter_vm_image_gz_name }}"
+  ansible.builtin.get_url:
+    url: "{{ openmptcprouter_vm_image_url }}"
+    dest: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_gz_name }}"
+    mode: "0640"
+    owner: qemu
+    group: qemu
+  when: openmptcprouter_vm_image_checksum | length == 0
+
+- name: "Decompress {{ openmptcprouter_vm_image_gz_name }}"
+  ansible.builtin.shell: |
+    gunzip -kf {{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_gz_name }}
+  args:
+    creates: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_raw_name }}"
+
+- name: "Convert raw image to qcow2"
+  ansible.builtin.shell: |
+    qemu-img convert -f raw -O qcow2 \
+      {{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_raw_name }} \
+      {{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_qcow2_name }}
+  args:
+    creates: "{{ openmptcprouter_vm_images_dir }}/{{ openmptcprouter_vm_image_qcow2_name }}"
+
+- name: Ensure default NAT network is active
+  community.libvirt.virt_net:
+    name: default
+    state: active
+    autostart: true

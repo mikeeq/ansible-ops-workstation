@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "name": "pi",
+    "version": "1.0.0",
+    "description": "Auto-generated profile for pi"
+  },
+  "filesystem": {
+    "allow": [
+      "$HOME/Library/caches/elixir_make",
+        "$HOME/.hex",
+        "$HOME/.local/share/mise/",
+        "$HOME/.local/state/mise/",
+        "$HOME/Library/Caches/mise/",
+        "$HOME/Library/Caches/deno",
+        "$HOME/.pi/agent/",
+        "$HOME/dev/spikes/llm/monotonic-pi-extensions/packages/",
+        "$HOME/Users/willem/.config/git/"
+    ],
+    "read": [
+    ],
+    "read_file": [
+        "$HOME/.gitconfig"
+    ],
+    "write": []
+  },
+  "network": {
+    "block": false
+  },
+  "workdir": {
+    "access": "readwrite"
+  }
+}

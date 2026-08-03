@@ -1,0 +1,53 @@
+---
+# https://www.home-assistant.io/integrations/alert/
+# Repeated notifications until acknowledged. One-shot temp alerts are in automations/alerts.yaml.
+
+dwor_brama_otwarta:
+  name: Brama Dwor Otwarta
+  entity_id: binary_sensor.door_state_dwor_brama
+  state: "on"
+  repeat:
+    - 5    # first reminder after 5 min
+    - 10   # then every 10 min
+    - 30   # then every 30 min
+  skip_first: true   # skip pulse noise on initial open
+  can_acknowledge: true
+  notifiers:
+    - mobile_app_pixel_9_pro
+  message: "Brama Dwor jest otwarta!"
+
+garaz_brama_otwarta:
+  name: Brama Garazowa Otwarta
+  entity_id: binary_sensor.door_brama_garaz_opening
+  state: "on"
+  repeat:
+    - 10
+    - 20
+    - 30
+  skip_first: true
+  can_acknowledge: true
+  notifiers:
+    - mobile_app_pixel_9_pro
+  message: "Brama Garazowa jest otwarta!"
+
+serwerownia_temp_wysoka:
+  name: Serwerownia Temperatura Wysoka
+  entity_id: binary_sensor.serwerownia_temp_high
+  state: "on"
+  repeat: 30
+  skip_first: false
+  can_acknowledge: true
+  notifiers:
+    - mobile_app_pixel_9_pro
+  message: "Temperatura w serwerowni przekroczyla prog!"
+
+gaz_kotlownia:
+  name: Czujnik Gazu Kotlownia
+  entity_id: binary_sensor.imou_gas_detector_kotlownia
+  state: "on"
+  repeat: 1    # repeat every 1 minute - critical alert
+  skip_first: false
+  can_acknowledge: false
+  notifiers:
+    - mobile_app_pixel_9_pro
+  message: "UWAGA! Wykryto gaz w kotlowni!"

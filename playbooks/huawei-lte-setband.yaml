@@ -1,4 +1,13 @@
 ---
+# - name: Huawei LTE router set band
+#   hosts: "{{ hosts_to_deploy | default('local') }}"
+#   become: false
+#   gather_facts: false
+#   roles:
+#     - mikeeq.servers.huawei_lte
+#   vars:
+#     huawei_dynamic_task: "get-net-mode.yaml"
+
 - name: Huawei LTE router set band
   hosts: "{{ hosts_to_deploy | default('local') }}"
   become: false
@@ -7,18 +16,20 @@
     - mikeeq.servers.huawei_lte
   vars:
     huawei_dynamic_task: "set-net-mode.yaml"
-    # huawei_lteband: "80000"               # 800
-    # huawei_lteband: "80"                  # 900
-    # huawei_lteband: "4"                   # 1800
-    # huawei_lteband: "1"                   # 2100
-    # huawei_lteband: "40"                  # 2600
-    # huawei_lteband: "80005"
-    # huawei_lteband: "45"                  # 1800+2100+2600
-    huawei_lte_huawei_lteband: "80045" # 800+1800+2100+2600
-    # huawei_lteband: "80125"
-    # huawei_lteband: "125"                 # 900+1800+2100+2600
-    # huawei_lteband: "5"                   # 1800+2100
-    # huawei_lteband: "7FFFFFFFFFFFFFFF"    # all
+    # huawei_lte_huawei_lteband: "80000"               # 800
+    # huawei_lte_huawei_lteband: "80"                  # 900
+    # huawei_lte_huawei_lteband: "4"                   # 1800
+    # huawei_lte_huawei_lteband: "1"                   # 2100
+    # huawei_lte_huawei_lteband: "40"                  # 2600
+    # huawei_lte_huawei_lteband: "80005"               # 800+1800+2100
+    # huawei_lte_huawei_lteband: "45"                  # 1800+2100+2600
+    huawei_lte_huawei_lteband: "80085" # 800+900+1800+2100
+    # huawei_lte_huawei_lteband: "80045" # 800+1800+2100+2600
+    # huawei_lte_huawei_lteband: "80085" # 800+900+2100+2600
+    # huawei_lte_huawei_lteband: "125"                 # 900+1800+2100+2600
+    # huawei_lte_huawei_lteband: "80125" # 800+900+1800+2100+2600
+    # huawei_lte_huawei_lteband: "5"                   # 1800+2100
+    # huawei_lte_huawei_lteband: "7FFFFFFFFFFFFFFF"    # all
 
 # 800 - 7.55/6.38
 # 900 - 3.32/4.57
@@ -30,3 +41,14 @@
 # 125 - 27.64/1.23
 # 80005 - 34.67/1.47
 # 80045 - ~40
+
+### 16.07.2026 office
+# 80000 - 11-13/0.6 15ms
+# 80 - 17-19/3.3 16ms
+# 4 - 20-22/1.3 14ms
+# 1 - 23-24/2.5 16ms
+# 40 - 12-19/1 15ms
+
+# 80005 - 44/8
+# 80085 - 40/10
+# 80045 - 35/8-9 13ms

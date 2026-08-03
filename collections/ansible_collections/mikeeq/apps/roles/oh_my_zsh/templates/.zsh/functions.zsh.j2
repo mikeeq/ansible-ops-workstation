@@ -33,7 +33,19 @@ function kbdown () {
 
 function aws-ctx() {
   export AWS_PROFILE="$(aws configure list-profiles | fzf)"
-  echo "Switched to profile ""$AWS_PROFILE""."
+  echo "Switched to profile $AWS_PROFILE."
+
+  # Check if the profile is an SSO profile
+  local sso_session
+  sso_session=$(aws configure get sso_session --profile "$AWS_PROFILE" 2>/dev/null)
+
+  if [[ -n "$sso_session" ]]; then
+    # Verify if the SSO token is still valid
+    if ! aws sts get-caller-identity --profile "$AWS_PROFILE" &>/dev/null; then
+      echo "SSO token expired, logging in..."
+      aws sso login --profile "$AWS_PROFILE" --no-browser
+    fi
+  fi
 }
 
 function kube-ctx() {

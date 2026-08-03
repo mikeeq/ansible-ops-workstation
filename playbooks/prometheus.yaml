@@ -1,4 +1,14 @@
 ---
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: vars.yaml
+  vars:
+    hosts_to_deploy: mikeeClevo
+
+- name: Include a playbook for including arch specifc vars
+  ansible.builtin.import_playbook: vars.yaml
+  vars:
+    hosts_to_deploy: dns1
+
 # - name: Setup OpenWRT
 #   # pre_tasks:
 #   #   - ansible.builtin.include_vars: ../
@@ -48,9 +58,10 @@
   # hosts: localhost
   become: true
   roles:
-    # - mikeeq.apps_server.prometheus
+    - mikeeq.apps_server.prometheus
     - mikeeq.apps_server.frigate
-    # - mikeeq.apps_server.ollama_docker
+    - mikeeq.apps_server.ollama_docker
     - mikeeq.apps_server.nginx
     - mikeeq.apps_server.immich
     - mikeeq.apps_server.vaultwarden
+    - mikeeq.apps_server.home_assistant
