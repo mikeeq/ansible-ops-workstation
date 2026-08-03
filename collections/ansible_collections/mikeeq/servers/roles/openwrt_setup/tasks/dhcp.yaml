@@ -21,3 +21,14 @@
   when:
     - openwrt_setup_dhcp_flag.changed
     - openwrt_setup_openwrt_router_flag or openwrt_setup_openwrt_ap_only_flag
+
+# to debug dhcp:
+# uci set dhcp.@dnsmasq[0].logdhcp='1'
+# uci commit dhcp
+# /etc/init.d/dnsmasq restart
+
+# logread -f | grep dhcp
+
+# uci set dhcp.@dnsmasq[0].logdhcp='0'
+# uci commit dhcp
+# /etc/init.d/dnsmasq restart
