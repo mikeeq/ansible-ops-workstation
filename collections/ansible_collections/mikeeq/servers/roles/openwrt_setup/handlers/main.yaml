@@ -3,3 +3,13 @@
   community.general.openwrt_init:
     name: zabbix_agentd
     state: restarted
+
+- name: Restart firewall
+  community.general.openwrt_init:
+    name: firewall
+    state: restarted
+
+- name: Restart network
+  community.general.openwrt_init:
+    name: network
+    state: restarted

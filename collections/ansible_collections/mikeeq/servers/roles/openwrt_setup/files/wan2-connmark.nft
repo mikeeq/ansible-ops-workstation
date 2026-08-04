@@ -1,0 +1,11 @@
+chain wan2_mark_prerouting {
+	type filter hook prerouting priority mangle - 1; policy accept;
+	# restore connmark to packet mark only for reply traffic
+	ct state established,related ct mark 0x000000c8 meta mark set ct mark
+	# for new inbound on wan2, set conntrack mark only (not packet mark)
+	iifname "lan1" ct state new ct mark set 0x000000c8
+}
+
+chain wan2_mark_postrouting {
+	type filter hook postrouting priority mangle - 1; policy accept;
+}

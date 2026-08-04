@@ -26,6 +26,27 @@
       - kmod-phylib-broadcom
       - kmod-phylib-qcom
 
+- name: Disable mwan3 (conflicts with custom connmark rules)
+  community.general.openwrt_init:
+    name: mwan3
+    enabled: false
+    state: stopped
+  failed_when: false
+
+- name: Deploy wan2 connmark nftables rules
+  ansible.builtin.copy:
+    src: wan2-connmark.nft
+    dest: /etc/nftables.d/wan2-connmark.nft
+    mode: "0644"
+  notify: Restart firewall
+
+- name: Deploy wan2 ip rule hotplug script
+  ansible.builtin.copy:
+    src: wan2-ip-rule.sh
+    dest: /etc/hotplug.d/iface/90-wan2-iprule
+    mode: "0755"
+  notify: Restart network
+
 - name: Install nvme dependencies
   community.general.apk:
     name: "{{ opkgs }}"
