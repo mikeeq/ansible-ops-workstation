@@ -21,11 +21,26 @@
    state (install packages, delete files, git push, restart services) without
    first showing the command and getting confirmation.
 
+   The following commands are pre-approved and may run without asking:
+   - **Read/inspect**: `ls`, `find`, `cat`, `head`, `tail`, `less`, `wc`, `file`, `stat`, `du`
+   - **Search**: `grep`, `rg`, `awk`, `sed` (read-only), `jq`
+   - **Navigation**: `pwd`, `echo`, `which`, `type`, `env`
+   - **Git (read-only)**: `git status`, `git log`, `git diff`, `git show`, `git branch`, `git remote`
+   - **Network (read-only)**: `curl` (GET only), `ping`, `nslookup`, `dig`
+   - **Process info**: `ps`, `top`, `htop`, `lsof`, `df`
+
 6. **One task at a time** — use the todo tool to track subtasks. Mark each done
    before moving to the next. Do not silently skip a step.
 
 7. **Ask when uncertain** — if the intent is ambiguous or a decision materially
    changes the approach, use `ask_user_question` before proceeding.
+
+<!-- ## Network
+
+- There is no internet access in this environment
+- Do not use `web_search`, `fetch_content`, or `agent_browser` — they will fail
+- Do not suggest installing packages from the internet or fetching remote resources
+- Use only local files, the existing codebase, and your training knowledge -->
 
 ## Memory
 
