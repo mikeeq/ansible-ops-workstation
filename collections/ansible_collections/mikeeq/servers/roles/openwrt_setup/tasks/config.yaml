@@ -25,6 +25,18 @@
   ansible.builtin.shell: wifi reload
   when: openwrt_setup_config_change.changed
 
+- name: Restart firewall after config change
+  community.general.openwrt_init:
+    name: firewall
+    state: restarted
+  when: openwrt_setup_config_change.changed
+
+- name: Restart network after config change
+  community.general.openwrt_init:
+    name: network
+    state: restarted
+  when: openwrt_setup_config_change.changed
+
 # Handles ipv6 related tasks
 - name: Disable service odhcpd, in all cases
   community.general.openwrt_init:
