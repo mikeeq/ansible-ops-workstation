@@ -1,4 +1,22 @@
 ---
+- name: "Create oh-my-zsh custom completions directory"
+  ansible.builtin.file:
+    path: "~{{ item }}/.oh-my-zsh/custom/completions"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ 'root' if item == 'root' else (user_group_name | default(item)) }}"
+    mode: "0755"
+  with_items: "{{ oh_my_zsh_users }}"
+
+- name: "Mise zsh completion"
+  become: "{{ (item != user_name) | bool }}"
+  become_user: "{{ item }}"
+  ansible.builtin.shell:
+    cmd: mise completion zsh > ~/.oh-my-zsh/custom/completions/_mise
+    creates: ~/.oh-my-zsh/custom/completions/_mise
+  with_items: "{{ oh_my_zsh_users }}"
+  failed_when: false
+
 - name: "ZSH autocomplete"
   become: "{{ (item != user_name) | bool }}"
   become_user: "{{ item }}"

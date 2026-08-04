@@ -22,4 +22,11 @@ exec ./llama.cpp/build/bin/llama-server \
 	--reasoning on \
 	--chat-template-kwargs '{"preserve_thinking": true}' \
 	--host 0.0.0.0 \
-	--port 18080
+	--port 18081
+
+# NAME: /home/mikee/git/mikee/ansible-ops-workstation/scripts/llama-scripts/llama.cpp/build/bin/llama-server
+# PID: 332994
+# MEMORY_USAGE:
+#     GTT_MEM: 2.0 MB
+#     CPU_MEM: 0.0 B
+#     VRAM_MEM: 21.3 GB

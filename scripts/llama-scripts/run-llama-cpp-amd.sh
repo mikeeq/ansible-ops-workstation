@@ -10,6 +10,8 @@ fi
 
 cd "$LLAMA_DIR"
 
+# sudo dnf install -y hipblas-devel rocblas-devel
+
 echo "Pulling latest llama.cpp..."
 git pull
 
@@ -21,6 +23,7 @@ sed -i \
 echo "Configuring CMake build for AMD ROCm (gfx1100 = RX 7900 XTX)..."
 cmake -B build \
 	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_PREFIX_PATH=/opt/rocm \
 	-DGGML_HIP=ON \
 	-DAMDGPU_TARGETS=gfx1100
 
