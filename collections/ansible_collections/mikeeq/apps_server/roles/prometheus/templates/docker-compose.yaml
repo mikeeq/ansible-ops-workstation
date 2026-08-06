@@ -86,6 +86,7 @@ services:
           cpus: 0.25
           memory: 128M
 
+  # CPU intensive
   # cadvisor:
   #   image: gcr.io/cadvisor/cadvisor:latest
   #   container_name: monitoring_cadvisor
