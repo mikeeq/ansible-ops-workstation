@@ -23,7 +23,7 @@ exec "${LLAMA_DIR}/build/bin/llama-server" \
 	-hf unsloth/Qwen3.6-35B-A3B-GGUF:MXFP4_MOE \
 	--spec-default \
 	--fit on \
-	--no-mmap \
+	--load-mode none \
 	--temp 0.6 --top-k 20 --top-p 0.95 --repeat-penalty 1.0 \
 	--presence-penalty 0.0 \
 	--chat-template-kwargs '{"preserve_thinking": true}' \

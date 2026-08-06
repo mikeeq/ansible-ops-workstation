@@ -1,0 +1,21 @@
+{
+  "providers": {
+    "llama.cpp": {
+      "baseUrl": "http://127.0.0.1:18081/v1",
+      "api": "openai-completions",
+      "apiKey": "dummy",
+      "models": [
+        {
+          "id": "unsloth/Qwen3.6-35B-A3B-GGUF:Q4_K_M",
+          "name": "Qwen3.6-35B 128K (AMD)",
+          "reasoning": true,
+          "input": ["text"],
+          "compat": { "thinkingFormat": "qwen-chat-template" },
+          "contextWindow": 131072,
+          "maxTokens": 32768,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        }
+      ]
+    }
+  }
+}
