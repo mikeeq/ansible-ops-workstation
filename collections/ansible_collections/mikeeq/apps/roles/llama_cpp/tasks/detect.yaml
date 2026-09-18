@@ -1,0 +1,199 @@
+---
+# ── GPU detection ────────────────────────────────────────────────────────────
+
+- name: Check for NVIDIA GPU
+  ansible.builtin.command: nvidia-smi --query-gpu=name --format=csv,noheader
+  register: _llama_cpp_nvidia_check
+  changed_when: false
+  failed_when: false
+  when:
+    - llama_cpp_gpu_type == "auto"
+    - ansible_facts['os_family'] != "Darwin"
+
+- name: Check for AMD ROCm
+  ansible.builtin.stat:
+    path: "/opt/rocm/bin/rocminfo"
+  register: _llama_cpp_rocm_check
+  when:
+    - llama_cpp_gpu_type == "auto"
+    - ansible_facts['os_family'] != "Darwin"
+    - _llama_cpp_nvidia_check.rc | default(1) != 0
+
+- name: Detect GPU type
+  ansible.builtin.set_fact:
+    llama_cpp_detected_gpu: >-
+      {%- if llama_cpp_gpu_type != 'auto' -%}
+        {{ llama_cpp_gpu_type }}
+      {%- elif ansible_facts['os_family'] == 'Darwin' and ansible_facts['architecture'] == 'arm64' -%}
+        metal
+      {%- elif _llama_cpp_nvidia_check.rc | default(1) == 0 -%}
+        nvidia
+      {%- elif _llama_cpp_rocm_check.stat.exists | default(false) -%}
+        amd
+      {%- else -%}
+        cpu
+      {%- endif -%}
+
+# ── NVIDIA VRAM ──────────────────────────────────────────────────────────────
+
+- name: Get NVIDIA VRAM info
+  ansible.builtin.command: >-
+    nvidia-smi --query-gpu=memory.total,memory.free --format=csv,noheader,nounits
+  register: _llama_cpp_nvidia_vram
+  changed_when: false
+  when: llama_cpp_detected_gpu == "nvidia"
+
+- name: Parse NVIDIA VRAM (MiB)
+  ansible.builtin.set_fact:
+    _llama_cpp_vram_total_mb: "{{ _llama_cpp_nvidia_vram.stdout_lines[0].split(',')[0] | trim | int }}"
+    _llama_cpp_vram_free_mb: "{{ _llama_cpp_nvidia_vram.stdout_lines[0].split(',')[1] | trim | int }}"
+    _llama_cpp_gpu_name: "{{ _llama_cpp_nvidia_check.stdout_lines[0] | default('NVIDIA GPU') }}"
+  when: llama_cpp_detected_gpu == "nvidia"
+
+# ── AMD VRAM ─────────────────────────────────────────────────────────────────
+
+- name: Get AMD VRAM total (bytes)
+  ansible.builtin.shell: >-
+    cat /sys/class/drm/card*/device/mem_info_vram_total 2>/dev/null | sort -rn | head -1
+  register: _llama_cpp_amd_vram_total
+  changed_when: false
+  failed_when: false
+  when: llama_cpp_detected_gpu == "amd"
+
+- name: Get AMD VRAM used (bytes)
+  ansible.builtin.shell: >-
+    cat /sys/class/drm/card*/device/mem_info_vram_used 2>/dev/null | sort -rn | head -1
+  register: _llama_cpp_amd_vram_used
+  changed_when: false
+  failed_when: false
+  when: llama_cpp_detected_gpu == "amd"
+
+- name: Parse AMD VRAM
+  ansible.builtin.set_fact:
+    _llama_cpp_vram_total_mb: "{{ (_llama_cpp_amd_vram_total.stdout | int / 1048576) | int }}"
+    _llama_cpp_vram_free_mb: "{{ ((_llama_cpp_amd_vram_total.stdout | int - _llama_cpp_amd_vram_used.stdout | int) / 1048576) | int }}"
+    _llama_cpp_gpu_name: "AMD GPU"
+  when:
+    - llama_cpp_detected_gpu == "amd"
+    - _llama_cpp_amd_vram_total.rc == 0
+    - _llama_cpp_amd_vram_total.stdout | length > 0
+
+- name: Get AMD GPU architecture
+  ansible.builtin.shell: >-
+    /opt/rocm/bin/rocminfo 2>/dev/null | grep -oP 'gfx\d+' | head -1
+  register: _llama_cpp_amd_arch
+  changed_when: false
+  failed_when: false
+  when:
+    - llama_cpp_detected_gpu == "amd"
+    - llama_cpp_amd_gpu_target == ""
+
+- name: Set AMD GPU target
+  ansible.builtin.set_fact:
+    llama_cpp_detected_amd_target: "{{ llama_cpp_amd_gpu_target | default(_llama_cpp_amd_arch.stdout | default('gfx1100'), true) }}"
+  when: llama_cpp_detected_gpu == "amd"
+
+- name: Derive HSA_OVERRIDE_GFX_VERSION from GPU target
+  ansible.builtin.set_fact:
+    llama_cpp_detected_hsa_version: >-
+      {%- if llama_cpp_hsa_override_gfx_version -%}
+        {{ llama_cpp_hsa_override_gfx_version }}
+      {%- else -%}
+        {%- set d = llama_cpp_detected_amd_target | replace('gfx', '') -%}
+        {%- if d | length == 3 -%}
+          {{ d[0] }}.{{ d[1] }}.{{ d[2] }}
+        {%- elif d | length >= 4 -%}
+          {{ d[0:2] }}.{{ d[2] }}.{{ d[3] }}
+        {%- else -%}
+          11.0.0
+        {%- endif -%}
+      {%- endif -%}
+  when: llama_cpp_detected_gpu == "amd"
+
+# ── Metal / CPU — use system RAM as budget ───────────────────────────────────
+
+- name: Set memory info for Metal/CPU (unified or system RAM)
+  ansible.builtin.set_fact:
+    _llama_cpp_vram_total_mb: "{{ ansible_memtotal_mb }}"
+    _llama_cpp_vram_free_mb: "{{ ansible_memtotal_mb }}"
+    _llama_cpp_gpu_name: >-
+      {%- if llama_cpp_detected_gpu == 'metal' -%}Apple Silicon{%- else -%}CPU only{%- endif -%}
+  when: llama_cpp_detected_gpu in ['metal', 'cpu']
+
+# ── Memory budget calculation ────────────────────────────────────────────────
+
+- name: Calculate memory budget for discrete GPU
+  ansible.builtin.set_fact:
+    llama_cpp_memory_budget_gb: "{{ [(_llama_cpp_vram_free_mb | float / 1024) - (llama_cpp_vram_keep_free_gb | float), 0] | max | round(1) }}"
+    _llama_cpp_keep_free_label: "{{ llama_cpp_vram_keep_free_gb }} GB VRAM"
+  when: llama_cpp_detected_gpu in ['nvidia', 'amd']
+
+- name: Calculate memory budget for unified/system RAM
+  ansible.builtin.set_fact:
+    llama_cpp_memory_budget_gb: "{{ [(_llama_cpp_vram_total_mb | float / 1024) - (llama_cpp_ram_keep_free_gb | float), 0] | max | round(1) }}"
+    _llama_cpp_keep_free_label: "{{ llama_cpp_ram_keep_free_gb }} GB RAM"
+  when: llama_cpp_detected_gpu in ['metal', 'cpu']
+
+# ── Model auto-selection ─────────────────────────────────────────────────────
+
+- name: Auto-select model based on memory budget
+  ansible.builtin.set_fact:
+    llama_cpp_selected_preset: "{{ llama_cpp_model_presets | selectattr('min_memory_gb', 'le', llama_cpp_memory_budget_gb | float) | list | first | default(None) }}"
+  when: llama_cpp_model == "auto"
+
+- name: Fail if no model fits available memory
+  ansible.builtin.fail:
+    msg: >-
+      Not enough memory for any model preset.
+      Budget: {{ llama_cpp_memory_budget_gb }} GB
+      (total: {{ (_llama_cpp_vram_total_mb | float / 1024) | round(1) }} GB,
+      free: {{ (_llama_cpp_vram_free_mb | float / 1024) | round(1) }} GB,
+      keeping {{ _llama_cpp_keep_free_label }} free).
+      Smallest preset requires {{ llama_cpp_model_presets | map(attribute='min_memory_gb') | min }} GB.
+      Try reducing llama_cpp_vram_keep_free_gb or llama_cpp_ram_keep_free_gb.
+  when:
+    - llama_cpp_model == "auto"
+    - llama_cpp_selected_preset is none
+
+- name: Set model from auto-selected preset
+  ansible.builtin.set_fact:
+    llama_cpp_selected_model: "{{ llama_cpp_selected_preset.hf_repo }}"
+    llama_cpp_selected_context: "{{ llama_cpp_selected_preset.context_length }}"
+    llama_cpp_selected_kv_quant_k: "{{ llama_cpp_selected_preset.kv_quant_k }}"
+    llama_cpp_selected_kv_quant_v: "{{ llama_cpp_selected_preset.kv_quant_v }}"
+    llama_cpp_selected_extra_args: "{{ llama_cpp_selected_preset.extra_args }}"
+    llama_cpp_selected_name: "{{ llama_cpp_selected_preset.name }}"
+  when: llama_cpp_model == "auto"
+
+- name: Set model from manual override
+  ansible.builtin.set_fact:
+    llama_cpp_selected_model: "{{ llama_cpp_model }}"
+    llama_cpp_selected_context: 32768
+    llama_cpp_selected_kv_quant_k: ""
+    llama_cpp_selected_kv_quant_v: ""
+    llama_cpp_selected_extra_args: "--spec-default"
+    llama_cpp_selected_name: "{{ llama_cpp_model }}"
+  when: llama_cpp_model != "auto"
+
+# ── Summary ──────────────────────────────────────────────────────────────────
+
+- name: Display detection summary
+  ansible.builtin.debug:
+    msg: |
+      ┌──────────────────────────────────────────────────────────────┐
+      │              llama.cpp Local AI Server                      │
+      ├──────────────────────────────────────────────────────────────┤
+      │  OS:       {{ ansible_distribution | default(ansible_os_family) }} {{ ansible_distribution_version | default('') }}
+      │  GPU:      {{ llama_cpp_detected_gpu }} ({{ _llama_cpp_gpu_name }})
+      {% if llama_cpp_detected_gpu in ['nvidia', 'amd'] %}
+      │  VRAM:     {{ (_llama_cpp_vram_total_mb | float / 1024) | round(1) }} GB total, {{ (_llama_cpp_vram_free_mb | float / 1024) | round(1) }} GB free
+      {% endif %}
+      │  RAM:      {{ (ansible_memtotal_mb | float / 1024) | round(1) }} GB total
+      │  Budget:   {{ llama_cpp_memory_budget_gb }} GB (keeping {{ _llama_cpp_keep_free_label }} free)
+      │  Model:    {{ llama_cpp_selected_name }}
+      │  Context:  {{ llama_cpp_selected_context }} tokens
+      │  Server:   http://{{ llama_cpp_host }}:{{ llama_cpp_port }}
+      {% if llama_cpp_detected_gpu == 'amd' %}
+      │  AMD:      {{ llama_cpp_detected_amd_target }}, HSA={{ llama_cpp_detected_hsa_version }}
+      {% endif %}
+      └──────────────────────────────────────────────────────────────┘

@@ -1,0 +1,20 @@
+---
+isp_monitor_install_path: "/opt/isp-monitor"
+isp_monitor_clean: false
+
+isp_monitor_influx_user: "admin"
+isp_monitor_influx_password: "changeme123"
+isp_monitor_influx_org: "isp-monitor"
+isp_monitor_influx_bucket: "isp-monitor"
+isp_monitor_influx_token: "isp-monitor-token"
+isp_monitor_influx_retention: "26w"
+
+isp_monitor_grafana_user: "admin"
+isp_monitor_grafana_password: "admin"
+isp_monitor_grafana_port: 3000
+isp_monitor_influx_port: 8086
+
+isp_monitor_ping_targets: "8.8.8.8,1.1.1.1,9.9.9.9"
+isp_monitor_ping_count: 20
+isp_monitor_ping_interval: 60
+isp_monitor_speedtest_interval: 900

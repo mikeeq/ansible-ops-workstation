@@ -1,0 +1,18 @@
+---
+- name: Check docker-compose executable is present
+  ansible.builtin.shell: "which docker-compose"
+  register: isp_monitor_docker_compose_result
+  ignore_errors: true
+  changed_when: false
+
+- name: Fail on condition
+  ansible.builtin.fail:
+    msg: "docker-compose is not found! You need to install it first."
+  when: isp_monitor_docker_compose_result.rc != 0
+
+- name: Include cleanup.yaml
+  ansible.builtin.include_tasks: cleanup.yaml
+  when: isp_monitor_clean
+
+- name: Import install.yaml
+  ansible.builtin.import_tasks: install.yaml

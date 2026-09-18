@@ -1,0 +1,30 @@
+---
+- name: Detect system capabilities
+  ansible.builtin.import_tasks: detect.yaml
+  tags:
+    - llama_cpp
+    - llama_cpp_detect
+
+- name: Install build dependencies
+  ansible.builtin.import_tasks: deps.yaml
+  tags:
+    - llama_cpp
+    - llama_cpp_deps
+
+- name: Build llama.cpp
+  ansible.builtin.import_tasks: build.yaml
+  tags:
+    - llama_cpp
+    - llama_cpp_build
+
+- name: Configure llama server
+  ansible.builtin.import_tasks: configure.yaml
+  tags:
+    - llama_cpp
+    - llama_cpp_configure
+
+- name: Setup llama server service
+  ansible.builtin.import_tasks: service.yaml
+  tags:
+    - llama_cpp
+    - llama_cpp_service

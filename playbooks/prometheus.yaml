@@ -60,7 +60,7 @@
   roles:
     - mikeeq.apps_server.prometheus
     - mikeeq.apps_server.frigate
-    - mikeeq.apps_server.ollama_docker
+    # - mikeeq.apps_server.ollama_docker
     - mikeeq.apps_server.nginx
     - mikeeq.apps_server.immich
     - mikeeq.apps_server.vaultwarden

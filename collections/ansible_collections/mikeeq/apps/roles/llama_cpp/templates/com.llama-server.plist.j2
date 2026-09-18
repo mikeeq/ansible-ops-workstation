@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.llama-server</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>{{ llama_cpp_install_path }}/run-server.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>{{ llama_cpp_install_path }}</string>
+    <key>RunAtLoad</key>
+    <{{ 'true' if llama_cpp_service_enabled else 'false' }}/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>{{ llama_cpp_install_path }}/llama-server.log</string>
+    <key>StandardErrorPath</key>
+    <string>{{ llama_cpp_install_path }}/llama-server.err</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+    </dict>
+</dict>
+</plist>

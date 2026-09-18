@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+{% if llama_cpp_detected_gpu == 'amd' %}
+# ROCm compatibility for {{ llama_cpp_detected_amd_target }}
+export HSA_OVERRIDE_GFX_VERSION="{{ llama_cpp_detected_hsa_version }}"
+
+{% endif %}
+exec "{{ llama_cpp_install_path }}/llama.cpp/build/bin/llama-server" \
+	-hf "{{ llama_cpp_selected_model }}" \
+{% if llama_cpp_detected_gpu == 'metal' %}
+	--fit on \
+	--load-mode none \
+{% elif llama_cpp_detected_gpu == 'cpu' %}
+	-ngl 0 \
+{% else %}
+	-ngl 99 \
+{% endif %}
+	-c {{ llama_cpp_selected_context }} \
+{% if llama_cpp_selected_kv_quant_k %}
+	-ctk {{ llama_cpp_selected_kv_quant_k }} -ctv {{ llama_cpp_selected_kv_quant_v }} \
+{% endif %}
+{% if llama_cpp_flash_attention %}
+	-fa \
+{% endif %}
+	--temp {{ llama_cpp_temp }} \
+	--top-k {{ llama_cpp_top_k }} \
+	--top-p {{ llama_cpp_top_p }} \
+	--min-p {{ llama_cpp_min_p }} \
+	--repeat-penalty {{ llama_cpp_repeat_penalty }} \
+	--presence-penalty {{ llama_cpp_presence_penalty }} \
+	--chat-template-kwargs '{"preserve_thinking": true}' \
+	-np {{ llama_cpp_parallel_slots }} \
+	--jinja \
+{% if llama_cpp_selected_extra_args %}
+	{{ llama_cpp_selected_extra_args }} \
+{% endif %}
+	--host {{ llama_cpp_host }} \
+	--port {{ llama_cpp_port }}
