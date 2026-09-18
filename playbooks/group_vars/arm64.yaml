@@ -44,7 +44,7 @@ brew_cask_pkgs:
   - firefox
   - google-chrome
   - iterm2
-  - lm-studio
+  # - lm-studio
   - ollama
   - rancher
   - slack
@@ -52,6 +52,6 @@ brew_cask_pkgs:
   - utm
   - visual-studio-code
   # - zoom          # requires sudo
-  # - filezilla
+  # - filezillaco
   # - session-manager-plugin
   # - windows-app   # requires sudo
