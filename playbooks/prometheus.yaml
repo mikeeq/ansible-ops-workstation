@@ -4,10 +4,10 @@
   vars:
     hosts_to_deploy: mikeeClevo
 
-- name: Include a playbook for including arch specifc vars
-  ansible.builtin.import_playbook: vars.yaml
-  vars:
-    hosts_to_deploy: dns1
+# - name: Include a playbook for including arch specifc vars
+#   ansible.builtin.import_playbook: vars.yaml
+#   vars:
+#     hosts_to_deploy: dns1
 
 # - name: Setup OpenWRT
 #   # pre_tasks:
@@ -34,15 +34,15 @@
 #   roles:
 #     - mikeeq.apps_server.adguard_home
 
-- name: Provision DNS1
-  hosts:
-    - dns1
-  become: true
-  roles:
-    - mikeeq.servers.network_static_dns
-    - mikeeq.apps.docker
-    - mikeeq.apps_server.coredns
-    - mikeeq.apps_server.letsencrypt_coredns
+# - name: Provision DNS1
+#   hosts:
+#     - dns1
+#   become: true
+#   roles:
+#     - mikeeq.servers.network_static_dns
+#     - mikeeq.apps.docker
+#     - mikeeq.apps_server.coredns
+#     - mikeeq.apps_server.letsencrypt_coredns
 
 # - name: Provision DNS2
 #   hosts:
@@ -57,7 +57,33 @@
   hosts: mikeeClevo
   # hosts: localhost
   become: true
+  pre_tasks:
+    - name: Ensure host macvlan shim exists so host can reach DNS containers
+      ansible.builtin.shell: |
+        set -o pipefail
+        if nmcli -t -f NAME connection show | grep -qx '{{ dns_macvlan_shim_conn }}'; then
+          exit 0
+        fi
+        nmcli connection add type macvlan \
+          con-name '{{ dns_macvlan_shim_conn }}' \
+          ifname '{{ dns_macvlan_shim_ifname }}' \
+          dev '{{ dns_macvlan_parent }}' \
+          mode bridge \
+          ipv4.method manual \
+          ipv4.addresses '{{ dns_macvlan_shim_ip }}/32' \
+          +ipv4.routes '{{ coredns_macvlan_ip }}/32' \
+          +ipv4.routes '{{ adguard_home_macvlan_ip }}/32'
+        nmcli connection up '{{ dns_macvlan_shim_conn }}'
+      args:
+        executable: /bin/bash
+      register: dns_macvlan_shim
+      changed_when: dns_macvlan_shim.stdout | length > 0
   roles:
+    - mikeeq.servers.network_static_dns
+    - mikeeq.apps.docker
+    - mikeeq.apps_server.coredns
+    - mikeeq.apps_server.letsencrypt_coredns
+    - mikeeq.apps_server.adguard_home
     - mikeeq.apps_server.prometheus
     - mikeeq.apps_server.frigate
     # - mikeeq.apps_server.ollama_docker

@@ -47,6 +47,21 @@
 
 # - ansible.builtin.import_tasks: config.yaml
 
+- name: Ensure LAN macvlan docker network exists
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    docker network inspect {{ adguard_home_macvlan_network_name }} >/dev/null 2>&1 && exit 0
+    docker network create -d macvlan \
+      --subnet={{ adguard_home_macvlan_subnet }} \
+      --gateway={{ adguard_home_macvlan_gateway }} \
+      -o parent={{ adguard_home_macvlan_parent }} \
+      {{ adguard_home_macvlan_network_name }}
+  args:
+    executable: /bin/bash
+  register: adguard_home_macvlan_net
+  changed_when: adguard_home_macvlan_net.stdout | length == 64
+
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
   changed_when: adguard_home_pull_result.stderr_lines | length > 2

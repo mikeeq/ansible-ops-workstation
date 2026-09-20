@@ -3,7 +3,7 @@
 
 - name: Get adguard_home_dhcp config
   ansible.builtin.uri:
-    url: http://localhost/control/dhcp/status
+    url: http://{{ adguard_home_api_host }}/control/dhcp/status
     user: "{{ adguard_home_user }}"
     password: "{{ adguard_home_password }}"
     force_basic_auth: true
@@ -69,7 +69,7 @@
 
 - name: Removes a static lease
   ansible.builtin.uri:
-    url: http://localhost/control/dhcp/remove_static_lease
+    url: http://{{ adguard_home_api_host }}/control/dhcp/remove_static_lease
     user: "{{ adguard_home_user }}"
     password: "{{ adguard_home_password }}"
     force_basic_auth: true
@@ -96,7 +96,7 @@
 
 - name: Adds a static lease
   ansible.builtin.uri:
-    url: http://localhost/control/dhcp/add_static_lease
+    url: http://{{ adguard_home_api_host }}/control/dhcp/add_static_lease
     user: "{{ adguard_home_user }}"
     password: "{{ adguard_home_password }}"
     force_basic_auth: true

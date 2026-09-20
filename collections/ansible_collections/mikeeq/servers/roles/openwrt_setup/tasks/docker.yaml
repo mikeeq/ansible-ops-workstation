@@ -1,0 +1,57 @@
+---
+# Install Docker and set up a macvlan network so containers (e.g. CoreDNS,
+# AdGuard Home) can run on their own LAN IPs bridged to br-lan.
+
+- name: Install docker packages
+  community.general.apk:
+    name: "{{ pkgs }}"
+    state: present
+    update_cache: true
+  vars:
+    pkgs:
+      - dockerd
+      - docker
+      - docker-compose
+      - luci-app-dockerman
+      - kmod-macvlan
+
+- name: Get current docker data_root
+  ansible.builtin.command: uci -q get dockerd.globals.data_root
+  register: openwrt_setup_docker_dataroot_cur
+  changed_when: false
+  failed_when: false
+
+- name: Set docker data_root
+  ansible.builtin.shell: |
+    uci set dockerd.globals.data_root='{{ openwrt_setup_docker_data_root }}'
+    uci commit dockerd
+  register: openwrt_setup_docker_dataroot_set
+  changed_when: true
+  when: openwrt_setup_docker_dataroot_cur.stdout | trim != openwrt_setup_docker_data_root
+
+- name: Enable and start dockerd
+  community.general.openwrt_init:
+    name: dockerd
+    enabled: true
+    state: started
+
+- name: Restart dockerd after data_root change
+  community.general.openwrt_init:
+    name: dockerd
+    state: restarted
+  when: openwrt_setup_docker_dataroot_set.changed
+
+- name: Check if macvlan network exists
+  ansible.builtin.command: docker network inspect {{ openwrt_setup_docker_macvlan_name }}
+  register: openwrt_setup_docker_macvlan_check
+  changed_when: false
+  failed_when: false
+
+- name: Create macvlan network
+  ansible.builtin.command: >
+    docker network create -d macvlan
+    --subnet={{ openwrt_setup_docker_macvlan_subnet }}
+    --gateway={{ openwrt_setup_docker_macvlan_gateway }}
+    -o parent={{ openwrt_setup_docker_macvlan_parent }}
+    {{ openwrt_setup_docker_macvlan_name }}
+  when: openwrt_setup_docker_macvlan_check.rc != 0

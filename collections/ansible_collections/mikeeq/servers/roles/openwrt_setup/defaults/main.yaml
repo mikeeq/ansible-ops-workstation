@@ -2,3 +2,10 @@
 openwrt_setup_openwrt_router_flag: false
 openwrt_setup_openwrt_ap_only_flag: false
 openwrt_setup_openwrt_bpir4: false
+
+openwrt_setup_docker: false
+openwrt_setup_docker_data_root: /opt/docker
+openwrt_setup_docker_macvlan_name: lanmac
+openwrt_setup_docker_macvlan_subnet: 192.168.0.0/18
+openwrt_setup_docker_macvlan_gateway: 192.168.0.1
+openwrt_setup_docker_macvlan_parent: br-lan

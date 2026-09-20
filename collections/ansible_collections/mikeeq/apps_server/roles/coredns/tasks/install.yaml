@@ -21,6 +21,21 @@
 - name: Import config.yaml
   ansible.builtin.import_tasks: config.yaml
 
+- name: Ensure LAN macvlan docker network exists
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    docker network inspect {{ coredns_macvlan_network_name }} >/dev/null 2>&1 && exit 0
+    docker network create -d macvlan \
+      --subnet={{ coredns_macvlan_subnet }} \
+      --gateway={{ coredns_macvlan_gateway }} \
+      -o parent={{ coredns_macvlan_parent }} \
+      {{ coredns_macvlan_network_name }}
+  args:
+    executable: /bin/bash
+  register: coredns_macvlan_net
+  changed_when: coredns_macvlan_net.stdout | length == 64
+
 - name: Pull Docker image using docker-compose
   become: true
   ansible.builtin.command: docker-compose pull
