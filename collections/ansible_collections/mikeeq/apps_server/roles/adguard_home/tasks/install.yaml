@@ -18,15 +18,11 @@
   loop:
     - docker-compose.yaml
 
-- name: Install httpd-tools
-  ansible.builtin.package:
-    name: httpd-tools
-    state: present
-
-# https://github.com/pyca/bcrypt/issues/1082
+# Generate the bcrypt hash via a throwaway container so no host package
+# (httpd-tools/htpasswd) is required - works on both Fedora and OpenWrt.
 - name: Generate bcrypt hash for adguard_home password
   ansible.builtin.command:
-    cmd: "htpasswd -nbBC 10 '' '{{ adguard_home_password }}'"
+    cmd: docker run --rm httpd:2-alpine htpasswd -nbBC 10 '' '{{ adguard_home_password }}'
   register: adguard_home_password_bcrypt_result
   changed_when: false
   no_log: true

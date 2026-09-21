@@ -14,6 +14,63 @@
       - docker-compose
       - luci-app-dockerman
       - kmod-macvlan
+      - block-mount
+      - kmod-fs-ext4
+
+- name: Get nvme partition UUID
+  ansible.builtin.shell: >
+    block info {{ openwrt_setup_docker_nvme_device }} |
+    grep -o 'UUID="[^"]*"' | cut -d'"' -f2
+  register: openwrt_setup_docker_nvme_uuid_cmd
+  changed_when: false
+  failed_when: openwrt_setup_docker_nvme_uuid_cmd.stdout | trim == ''
+
+- name: Set nvme uuid fact
+  ansible.builtin.set_fact:
+    openwrt_setup_docker_nvme_uuid: "{{ openwrt_setup_docker_nvme_uuid_cmd.stdout | trim }}"
+
+- name: Ensure nvme mount target exists
+  ansible.builtin.file:
+    path: "{{ openwrt_setup_docker_nvme_target }}"
+    state: directory
+    mode: "0755"
+
+- name: Get current fstab.nvme uuid
+  ansible.builtin.command: uci -q get fstab.nvme.uuid
+  register: openwrt_setup_docker_fstab_uuid_cur
+  changed_when: false
+  failed_when: false
+
+- name: Configure nvme fstab mount
+  ansible.builtin.shell: |
+    uci -q delete fstab.nvme
+    uci set fstab.nvme=mount
+    uci set fstab.nvme.target='{{ openwrt_setup_docker_nvme_target }}'
+    uci set fstab.nvme.uuid='{{ openwrt_setup_docker_nvme_uuid }}'
+    uci set fstab.nvme.fstype='{{ openwrt_setup_docker_nvme_fstype }}'
+    uci set fstab.nvme.options='{{ openwrt_setup_docker_nvme_options }}'
+    uci set fstab.nvme.enabled='1'
+    uci commit fstab
+  register: openwrt_setup_docker_fstab_set
+  changed_when: true
+  when: openwrt_setup_docker_fstab_uuid_cur.stdout | trim != openwrt_setup_docker_nvme_uuid
+
+- name: Apply fstab mounts
+  ansible.builtin.command: /etc/init.d/fstab boot
+  changed_when: openwrt_setup_docker_fstab_set.changed
+  when: openwrt_setup_docker_fstab_set.changed
+
+- name: Ensure nvme is mounted
+  ansible.builtin.shell: mount | grep -q ' on {{ openwrt_setup_docker_nvme_target }} '
+  register: openwrt_setup_docker_nvme_mounted
+  changed_when: false
+  failed_when: openwrt_setup_docker_nvme_mounted.rc != 0
+
+- name: Ensure docker data_root directory exists
+  ansible.builtin.file:
+    path: "{{ openwrt_setup_docker_data_root }}"
+    state: directory
+    mode: "0710"
 
 - name: Get current docker data_root
   ansible.builtin.command: uci -q get dockerd.globals.data_root
@@ -55,3 +112,41 @@
     -o parent={{ openwrt_setup_docker_macvlan_parent }}
     {{ openwrt_setup_docker_macvlan_name }}
   when: openwrt_setup_docker_macvlan_check.rc != 0
+
+# Host macvlan shim so the router itself can reach the macvlan container IPs
+# (macvlan isolates the parent host from its own child interfaces).
+- name: Deploy macvlan shim hotplug script
+  ansible.builtin.copy:
+    dest: /etc/hotplug.d/iface/40-{{ openwrt_setup_docker_macvlan_shim_ifname }}
+    mode: "0755"
+    content: |
+      #!/bin/sh
+      [ "$ACTION" = ifup ] || exit 0
+      [ "$INTERFACE" = '{{ openwrt_setup_docker_macvlan_shim_iface }}' ] || exit 0
+      SHIM='{{ openwrt_setup_docker_macvlan_shim_ifname }}'
+      if ! ip link show "$SHIM" >/dev/null 2>&1; then
+        ip link add "$SHIM" link '{{ openwrt_setup_docker_macvlan_parent }}' type macvlan mode bridge
+        ip addr add '{{ openwrt_setup_docker_macvlan_shim_ip }}/32' dev "$SHIM"
+        ip link set "$SHIM" up
+      fi
+      {% for r in openwrt_setup_docker_macvlan_shim_routes %}
+      ip route replace '{{ r }}/32' dev "$SHIM"
+      {% endfor %}
+  when: openwrt_setup_docker_macvlan_shim
+
+- name: Ensure macvlan shim is up now
+  ansible.builtin.shell: |
+    set -e
+    SHIM='{{ openwrt_setup_docker_macvlan_shim_ifname }}'
+    if ! ip link show "$SHIM" >/dev/null 2>&1; then
+      ip link add "$SHIM" link '{{ openwrt_setup_docker_macvlan_parent }}' type macvlan mode bridge
+      ip addr add '{{ openwrt_setup_docker_macvlan_shim_ip }}/32' dev "$SHIM"
+      ip link set "$SHIM" up
+      echo created
+    fi
+    {% for r in openwrt_setup_docker_macvlan_shim_routes %}
+    ip route replace '{{ r }}/32' dev "$SHIM"
+    {% endfor %}
+  register: openwrt_setup_docker_shim_apply
+  changed_when: "'created' in openwrt_setup_docker_shim_apply.stdout"
+  when: openwrt_setup_docker_macvlan_shim

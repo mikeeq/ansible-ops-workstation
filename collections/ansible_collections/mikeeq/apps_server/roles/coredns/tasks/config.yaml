@@ -1,9 +1,9 @@
 ---
-- name: Install Dependencies
-  become: true
-  ansible.builtin.package:
-    name: bind-utils
-    state: present
+# - name: Install Dependencies
+#   become: true
+#   ansible.builtin.package:
+#     name: bind-utils
+#     state: present
 
 - name: Find current serial number
   ansible.builtin.shell: echo -n $(cat {{ coredns_zone_filename }} | grep -w '; serial' | cut -d';' -f1)

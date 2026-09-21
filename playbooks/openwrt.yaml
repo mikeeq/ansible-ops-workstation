@@ -1,18 +1,42 @@
 ---
-- name: Bootstrap OpenWRT to enable Ansible
-  hosts:
-    - openwrt
-  become: true
-  gather_facts: false
-  roles:
-    - mikeeq.servers.openwrt_bootstrap_ansible
+# - name: Bootstrap OpenWRT to enable Ansible
+#   hosts:
+#     - openwrt
+#   become: true
+#   gather_facts: false
+#   roles:
+#     - mikeeq.servers.openwrt_bootstrap_ansible
 
-- name: Setup OpenWRT
-  # pre_tasks:
-  #   - ansible.builtin.include_vars: ../
+# - name: Setup OpenWRT
+#   # pre_tasks:
+#   #   - ansible.builtin.include_vars: ../
+#   hosts:
+#     - openwrt
+#   become: true
+#   gather_facts: true
+#   roles:
+#     - mikeeq.servers.openwrt_setup
+
+# # DNS now runs on the BPI-R4 as macvlan containers (coredns .11, adguard .12)
+# # on the `lanmac` network created by the openwrt_setup docker role. Cert
+# # issuance (letsencrypt_coredns) stays off OpenWrt - see vms.yaml.
+- name: Provision DNS containers on BPI-R4
   hosts:
-    - openwrt
+    - openwrt_bpir4garage
   become: true
   gather_facts: true
   roles:
-    - mikeeq.servers.openwrt_setup
+    - mikeeq.apps_server.coredns
+    - mikeeq.apps_server.adguard_home
+
+# # Option B certs: the acme client runs on the controller, while the DNS-01
+# challenge write + CoreDNS reload are delegated to the BPI-R4
+# (letsencrypt_coredns_host in group_vars/local.yaml). Requires CoreDNS to be
+# deployed and reachable as the public authoritative NS for the domain.
+# - name: Issue Let's Encrypt wildcard cert (DNS-01 via BPI-R4 CoreDNS)
+#   hosts: localhost
+#   connection: local
+#   become: true
+#   gather_facts: false
+#   roles:
+#     - mikeeq.apps_server.letsencrypt_coredns

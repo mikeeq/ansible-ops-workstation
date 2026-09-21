@@ -11,7 +11,8 @@
 
 - name: "Create LE challenge TXT record - {{ record_state ~ ' ' ~ letsencrypt_coredns_record_full }}"
   ansible.builtin.lineinfile:
-    path: "/opt/coredns/config/{{ coredns_zone_filename }}"
+    path: "{{ letsencrypt_coredns_install_path | default('/opt/coredns') }}/config/{{ coredns_zone_filename }}"
     regexp: "^{{ letsencrypt_coredns_record_without_domain }}"
     state: "{{ record_state }}"
     line: "{{ letsencrypt_coredns_record_without_domain }} IN TXT {{ item.value['dns-01'].resource_value }}"
+  delegate_to: "{{ letsencrypt_coredns_host | default(omit) }}"
