@@ -8,6 +8,7 @@
     password: "{{ adguard_home_password }}"
     force_basic_auth: true
     return_content: true
+  delegate_to: localhost
   register: adguard_home_dhcp_status
 
 - name: Set fact variables
@@ -68,6 +69,7 @@
 # Removes a static lease
 
 - name: Removes a static lease
+  delegate_to: localhost
   ansible.builtin.uri:
     url: http://{{ adguard_home_api_host }}/control/dhcp/remove_static_lease
     user: "{{ adguard_home_user }}"
@@ -95,6 +97,7 @@
 # }
 
 - name: Adds a static lease
+  delegate_to: localhost
   ansible.builtin.uri:
     url: http://{{ adguard_home_api_host }}/control/dhcp/add_static_lease
     user: "{{ adguard_home_user }}"
