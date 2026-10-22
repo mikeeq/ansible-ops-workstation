@@ -96,17 +96,15 @@
 - name: Derive HSA_OVERRIDE_GFX_VERSION from GPU target
   ansible.builtin.set_fact:
     llama_cpp_detected_hsa_version: >-
+      {%- set d = llama_cpp_detected_amd_target | replace('gfx', '') -%}
       {%- if llama_cpp_hsa_override_gfx_version -%}
         {{ llama_cpp_hsa_override_gfx_version }}
+      {%- elif d | length == 3 -%}
+        {{ d[0] }}.{{ d[1] }}.{{ d[2] }}
+      {%- elif d | length >= 4 -%}
+        {{ d[0:2] }}.{{ d[2] }}.{{ d[3] }}
       {%- else -%}
-        {%- set d = llama_cpp_detected_amd_target | replace('gfx', '') -%}
-        {%- if d | length == 3 -%}
-          {{ d[0] }}.{{ d[1] }}.{{ d[2] }}
-        {%- elif d | length >= 4 -%}
-          {{ d[0:2] }}.{{ d[2] }}.{{ d[3] }}
-        {%- else -%}
-          11.0.0
-        {%- endif -%}
+        11.0.0
       {%- endif -%}
   when: llama_cpp_detected_gpu == "amd"
 
