@@ -64,3 +64,29 @@
     - action: switch.turn_on
       target:
         entity_id: switch.opentherm_ch_enable
+
+# Cycling alert; the trailing delay with mode single limits it to one notification per 4 h
+- id: piec_taktowanie_alert
+  alias: piec_taktowanie_alert
+  description: "Powiadomienie, gdy kocioł startuje więcej niż 4 razy/h przez 30 min"
+  mode: single
+  max_exceeded: silent
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.piec_starty_1h
+      above: 4
+      for:
+        minutes: 30
+  actions:
+    - action: notify.mobile_app_pixel_9_pro
+      data:
+        title: "Piec - taktowanie"
+{% raw %}
+        message: >-
+          {{ states('sensor.piec_starty_1h') }} startów/h, średnio {{ states('sensor.piec_sredni_czas_pracy') }} min
+          palenia. Sprawdź rotametry, otwarte strefy i ch_target.
+{% endraw %}
+        data:
+          tag: piec_taktowanie
+          channel: Temperature
+    - delay: "04:00:00"

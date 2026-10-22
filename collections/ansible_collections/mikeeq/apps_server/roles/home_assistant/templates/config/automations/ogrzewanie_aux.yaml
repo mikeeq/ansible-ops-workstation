@@ -1,32 +1,99 @@
 ---
-- alias: Wlacz cyrkulacje
-  description: ''
-  trigger:
-  - platform: time
-    at: 07:00:00
-  - platform: time
-    at: '16:00:00'
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+# DHW circulation in pulses (5 min every 30 min) within the usage windows instead of running continuously.
+# A pump left on for 10 min (restart, manual switch) is turned off, except during the Sunday disinfection.
+- id: cwu_cyrkulacja
+  alias: cwu_cyrkulacja
+  description: "Cyrkulacja CWU impulsowo: 5 min co 30 min w godz. 07–10 i 16–21"
   mode: single
-- alias: Wylacz cyrkulacje
-  description: ''
-  trigger:
-  - platform: time
-    at: '10:00:00'
-  - platform: time
-    at: '21:00:00'
-  condition: []
-  action:
-  - service: switch.turn_off
-    data: {}
-    target:
+  max_exceeded: silent
+  triggers:
+    - trigger: time_pattern
+      minutes: "/30"
+      id: impuls
+    - trigger: state
       entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+      to: "on"
+      for:
+        minutes: 10
+      id: za_dlugo
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: impuls
+            - condition: or
+              conditions:
+                - condition: time
+                  after: "07:00:00"
+                  before: "10:00:00"
+                - condition: time
+                  after: "16:00:00"
+                  before: "21:00:00"
+          sequence:
+            - action: switch.turn_on
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+            - delay: "00:05:00"
+            - action: switch.turn_off
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+        - conditions:
+            - condition: trigger
+              id: za_dlugo
+            - condition: numeric_state
+              entity_id: automation.cwu_dezynfekcja
+              attribute: current
+              below: 1
+          sequence:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+
+# Fewer night DHW reheats (the only non-condensing operation): 45 °C 22:00–05:00, 50 °C otherwise.
+# Only switches between 45 and 50, so the 60 °C disinfection setpoint is left alone.
+- id: cwu_noc
+  alias: cwu_noc
+  description: "CWU 45 °C w nocy (22–05), 50 °C w dzień"
   mode: single
+  triggers:
+    - trigger: time
+      at: "22:00:00"
+    - trigger: time
+      at: "05:00:00"
+    - trigger: homeassistant
+      event: start
+  actions:
+    - delay:
+        seconds: 30
+    - choose:
+        - conditions:
+            - condition: time
+              after: "22:00:00"
+              before: "05:00:00"
+            - condition: numeric_state
+              entity_id: number.opentherm_t_dhw_set
+              above: 45
+              below: 51
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 45
+        - conditions:
+            - condition: time
+              after: "05:00:00"
+              before: "22:00:00"
+            - condition: numeric_state
+              entity_id: number.opentherm_t_dhw_set
+              below: 50
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 50
+
 # Weekly Legionella disinfection of the cylinder and the circulation loop: 60 °C held for 30 min, then back to 50 °C.
 # 06:00 is the deadline; the HA start trigger restores 50 °C if a restart interrupted the run.
 - id: cwu_dezynfekcja
