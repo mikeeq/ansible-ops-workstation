@@ -27,49 +27,111 @@
     target:
       entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
   mode: single
-- alias: Wlacz Grzejniki
-  description: ''
-  trigger:
-  - platform: time
-    at: 05:30:00
-  # - platform: time
-  #   at: '17:30:00'
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
-  - delay: '00:04:00'
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+# Weekly Legionella disinfection of the cylinder and the circulation loop: 60 °C held for 30 min, then back to 50 °C.
+# 06:00 is the deadline; the HA start trigger restores 50 °C if a restart interrupted the run.
+- id: cwu_dezynfekcja
+  alias: cwu_dezynfekcja
+  description: "Niedziela 03:00: CWU 60 °C przez 30 min z cyrkulacją, potem 50 °C (najpóźniej o 06:00)"
+  mode: restart
+  triggers:
+    - trigger: time
+      at: "03:00:00"
+      id: start
+    - trigger: time
+      at: "06:00:00"
+      id: koniec
+    - trigger: homeassistant
+      event: start
+      id: ha_start
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: start
+            - condition: time
+              weekday: sun
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 60
+            - action: switch.turn_on
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+            - if:
+                - condition: numeric_state
+                  entity_id: sensor.opentherm_t_dhw
+                  below: 59
+              then:
+                - wait_for_trigger:
+                    - trigger: numeric_state
+                      entity_id: sensor.opentherm_t_dhw
+                      above: 59
+                  timeout: "02:00:00"
+                  continue_on_timeout: true
+            - delay: "00:30:00"
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 50
+            - action: switch.turn_off
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+        - conditions:
+            - condition: trigger
+              id:
+                - koniec
+                - ha_start
+            - condition: numeric_state
+              entity_id: number.opentherm_t_dhw_set
+              above: 50
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 50
+            - if:
+                - condition: trigger
+                  id: koniec
+              then:
+                - action: switch.turn_off
+                  target:
+                    entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+
+# Radiators are not used for heating: once a week flush the pump with the mixer closed
+# (cold water), then move the mixer with the pump stopped so no heat goes to the garage
+- id: grzejniki_przeplukanie
+  alias: grzejniki_przeplukanie
+  description: "Raz w tygodniu: pompa grzejników 5 min przy zamkniętym mieszaczu, potem ruch mieszacza bez pompy"
   mode: single
-- alias: Wylacz Grzejniki
-  description: ''
-  trigger:
-  - platform: time
-    at: '06:00:00'
-  # - platform: time
-  #   at: '18:00:00'
-  condition: []
-  action:
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
-  - delay: '00:04:00'
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
-  mode: single
+  triggers:
+    - trigger: time
+      at: "10:00:00"
+  conditions:
+    - condition: time
+      weekday: mon
+  actions:
+    - action: switch.turn_on
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+    - delay: "00:05:00"
+    - action: switch.turn_off
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+    - action: switch.turn_on
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+    - delay: "00:02:00"
+    - action: switch.turn_off
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+    - action: switch.turn_on
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
+    - delay: "00:04:00"
+    - action: switch.turn_off
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie

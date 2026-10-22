@@ -1,0 +1,5 @@
+---
+# State flag for ogrzewanie_slonce: setpoints of the roof-window rooms are lowered (restored after a restart)
+ogrzewanie_slonce:
+  name: Ogrzewanie - obniżenie na słońce
+  icon: mdi:weather-sunny-alert

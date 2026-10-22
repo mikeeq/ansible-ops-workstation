@@ -21,6 +21,8 @@ services:
       - /dev/ttyUSB0:/dev/ttyUSB0
     ports:
       - '8123:8123'
+      # HA-MCP in-process server (ha_mcp_tools); set its Network access to "Local network"
+      - '{{ home_assistant_mcp_port }}:{{ home_assistant_mcp_port }}'
     logging:
       driver: "json-file"
       options:

@@ -1,111 +1,66 @@
 ---
+# Periodic/startup triggers reconcile CH enable with the UFH pump after restarts
 - alias: piec_off
   description: ""
   mode: single
+  max_exceeded: silent
   triggers:
     - trigger: state
       entity_id:
         - >-
           switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
-      from: "on"
       to: "off"
       for:
         hours: 0
         minutes: 0
         seconds: 15
-  conditions: []
+    - trigger: homeassistant
+      event: start
+    - trigger: time_pattern
+      minutes: "/5"
+  conditions:
+    - condition: state
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+      state: "off"
+      for:
+        seconds: 15
+    - condition: state
+      entity_id: switch.opentherm_ch_enable
+      state: "on"
   actions:
-    - action: water_heater.set_operation_mode
-      metadata: {}
-      data:
-        operation_mode: "off"
+    - action: switch.turn_off
       target:
-        entity_id: water_heater.piec_woda_ogrzewanie
-    - action: water_heater.set_temperature
-      metadata: {}
-      data:
-        temperature: 35
-      target:
-        entity_id: water_heater.piec_woda_ogrzewanie
+        entity_id: switch.opentherm_ch_enable
 - alias: piec_on
   description: ""
   mode: single
+  max_exceeded: silent
   triggers:
     - trigger: state
       entity_id:
         - >-
           switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
-      from: "off"
       to: "on"
       # Wait for mixer to fully open up, ARA661 (120s + delay from driver)
       for:
         hours: 0
         minutes: 5
         seconds: 0
-  conditions: []
-  actions:
-    - action: water_heater.set_operation_mode
-      metadata: {}
-      data:
-        operation_mode: "gas"
-      target:
-        entity_id: water_heater.piec_woda_ogrzewanie
-    - action: water_heater.set_temperature
-      metadata: {}
-      data:
-        temperature: 58
-      target:
-        entity_id: water_heater.piec_woda_ogrzewanie
-- alias: piec_palnik
-  description: ""
-  mode: single
-  triggers:
-    - trigger: numeric_state
-      entity_id:
-        - sensor.opentherm_opentherm_slave_fl
-      above: 0
+    - trigger: homeassistant
+      event: start
+    - trigger: time_pattern
+      minutes: "/5"
   conditions:
-    - condition: numeric_state
-      entity_id: sensor.opentherm_opentherm_slave_ch
-      above: 0
+    - condition: state
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+      state: "on"
+      for:
+        minutes: 5
+    - condition: state
+      entity_id: switch.opentherm_ch_enable
+      state: "off"
   actions:
-    - action: water_heater.set_temperature
-      metadata: {}
-      data:
-        temperature: 58
+    # Setpoint comes from number.opentherm_ch_target; anti-cycling runs on the ESPHome device
+    - action: switch.turn_on
       target:
-        entity_id: water_heater.piec_woda_ogrzewanie
-    # - wait_for_trigger:
-    #     - trigger: numeric_state
-    #       entity_id:
-    #         - sensor.opentherm_opentherm_flm
-    #       for:
-    #         hours: 0
-    #         minutes: 1
-    #         seconds: 0
-    #       above: 0
-    #   continue_on_timeout: false
-    #   enabled: false
-    # - wait_for_trigger:
-    #     - trigger: numeric_state
-    #       entity_id:
-    #         - sensor.opentherm_opentherm_slave_fl
-    #       for:
-    #         hours: 0
-    #         minutes: 5
-    #         seconds: 0
-    #       above: 0
-    #   continue_on_timeout: true
-    #   enabled: true
-    - delay:
-        hours: 0
-        minutes: 7
-        seconds: 0
-        milliseconds: 0
-      enabled: true
-    - action: water_heater.set_temperature
-      metadata: {}
-      data:
-        temperature: 40
-      target:
-        entity_id: water_heater.piec_woda_ogrzewanie
+        entity_id: switch.opentherm_ch_enable

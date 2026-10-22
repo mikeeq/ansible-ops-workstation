@@ -1,68 +1,270 @@
 ---
-- alias: ogrzewanie_wlacz
-  description: ""
+# UFH pump follows the zone actuators; the board on the boiler handles anti-cycling.
+# Periodic/startup triggers reconcile the pump after HA or Sonoff restarts.
+- id: ogrzewanie_pompa
+  alias: ogrzewanie_pompa
+  description: "Pompa podłogówki ON, gdy dowolny siłownik jest otwarty od 4 min; OFF, gdy wszystkie zamknięte od 1 min"
+  mode: queued
+  max: 3
+  max_exceeded: silent
   triggers:
     - trigger: state
-      entity_id:
-{% for i in home_assistant_config.climate %}
-        - "switch.virtual_ogrzewanie_{{ i.name }}"
-{% endfor %}
-      from: "off"
+      entity_id: switch.group_ogrzewanie_podlogowe
       to: "on"
+      for:
+        minutes: 4
+    - trigger: state
+      entity_id: switch.group_ogrzewanie_podlogowe
+      to: "off"
+      for:
+        minutes: 1
+    - trigger: homeassistant
+      event: start
+    - trigger: time_pattern
+      minutes: "/5"
+  conditions: []
+  actions:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: switch.group_ogrzewanie_podlogowe
+              state: "on"
+              for:
+                minutes: 4
+            - condition: state
+              entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+              state: "off"
+          sequence:
+            - action: switch.turn_on
+              target:
+                entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+        - conditions:
+            - condition: state
+              entity_id: switch.group_ogrzewanie_podlogowe
+              state: "off"
+              for:
+                minutes: 1
+            - condition: state
+              entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+              state: "on"
+          sequence:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+
+# Heating curve: boiler setpoint from the IMGW outdoor temperature (36 - 0.3 * T_out, 34-42 °C).
+# The OpenTherm board keeps the last value when HA is down; written only when it changes (flash wear).
+- id: ogrzewanie_krzywa_grzewcza
+  alias: ogrzewanie_krzywa_grzewcza
+  description: "Nastawa kotła ch_target = 36 − 0,3 × temperatura zewnętrzna (IMGW), ograniczona do 34–42 °C"
+  mode: single
+  max_exceeded: silent
+  triggers:
+    - trigger: state
+      entity_id: sensor.temperatura_zewnetrzna
+    - trigger: time_pattern
+      minutes: "/30"
+    - trigger: homeassistant
+      event: start
   conditions:
     - condition: template
-      value_template: >-
-        {% raw -%}{{ [{%- endraw -%}{%- for i in home_assistant_config.climate -%}states('switch.virtual_ogrzewanie_{{ i.name }}'),{%- endfor -%}].count('on') >= 3 }}
+      value_template: "{% raw %}{{ is_number(states('sensor.temperatura_zewnetrzna')) }}{% endraw %}"
+{% raw %}
+  variables:
+    target: >-
+      {{ [[(36 - 0.3 * states('sensor.temperatura_zewnetrzna') | float) | round(0), 34] | max, 42] | min | int }}
   actions:
-    # # Wait for mixer to fully open up, ARA661 (120s + delay from driver)
-    # - delay:
-    #     hours: 0
-    #     minutes: 5
-    #     seconds: 0
-    #     milliseconds: 0
-    - action: switch.turn_on
-      metadata: {}
-      data: {}
-      target:
-        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
-    # - service: switch.turn_on
-    #   data: {}
-    #   target:
-    #     entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+    - if:
+        - condition: template
+          value_template: "{{ states('number.opentherm_ch_target') | float(0) | int != target }}"
+      then:
+        - action: number.set_value
+          target:
+            entity_id: number.opentherm_ch_target
+          data:
+            value: "{{ target }}"
+{% endraw %}
+
+# Heating season from the 24 h outdoor mean: > 16 °C thermostats off, < 14 °C heat (hysteresis 2 K).
+# initial_hvac_mode: heat resets the thermostats on every HA start, hence the start trigger.
+- id: ogrzewanie_sezon
+  alias: ogrzewanie_sezon
+  description: "Sezon grzewczy: średnia 24 h > 16 °C → termostaty off, < 14 °C → heat"
   mode: single
-- alias: ogrzewanie_wylacz
-  description: ""
+  triggers:
+    - trigger: time
+      at: "06:00:00"
+    - trigger: homeassistant
+      event: start
+  conditions: []
+  actions:
+    - delay:
+        minutes: 2
+    - choose:
+        - conditions:
+            - condition: numeric_state
+              entity_id: sensor.temperatura_zewnetrzna_srednia_24h
+              above: 16
+          sequence:
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: "off"
+        - conditions:
+            - condition: numeric_state
+              entity_id: sensor.temperatura_zewnetrzna_srednia_24h
+              below: 14
+          sequence:
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: heat
+
+# Roof windows on the west slope overheat Julia's and Timi's rooms on sunny afternoons and the screed lags 2-4 h:
+# on a sunny forecast lower their setpoints in the morning, restore at sunset (or at HA start after sunset).
+- id: ogrzewanie_slonce
+  alias: ogrzewanie_slonce
+  description: "Prognoza >= 3 h słońca 11-17 → pokoje z oknami dachowymi (Julia, Timi) −1 K od 09:00 do zachodu słońca"
+  mode: queued
+  max: 3
+  triggers:
+    - trigger: time
+      at: "09:00:00"
+      id: start
+    - trigger: sun
+      event: sunset
+      id: koniec
+    - trigger: homeassistant
+      event: start
+      id: ha_start
+  variables:
+    pokoje:
+      - climate.pokoj_julia
+      - climate.pokoj_timi
+    obnizenie: 1.0
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: start
+            - condition: state
+              entity_id: input_boolean.ogrzewanie_slonce
+              state: "off"
+            - condition: state
+              entity_id: climate.pokoj_julia
+              state: heat
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id: weather.open_meteo
+                  state:
+                    - unavailable
+                    - unknown
+          sequence:
+            - action: weather.get_forecasts
+              target:
+                entity_id: weather.open_meteo
+              data:
+                type: hourly
+              response_variable: prognoza
+{% raw %}
+            - variables:
+                godziny_slonca: >-
+                  {%- set ns = namespace(h=0) %}
+                  {%- for f in prognoza['weather.open_meteo'].forecast | default([]) %}
+                  {%- set t = as_datetime(f.datetime) %}
+                  {%- if today_at('11:00') <= t < today_at('17:00') and f.cloud_coverage | float(100) <= 40 %}
+                  {%- set ns.h = ns.h + 1 %}
+                  {%- endif %}
+                  {%- endfor %}
+                  {{ ns.h }}
+            - condition: template
+              value_template: "{{ godziny_slonca | int >= 3 }}"
+            - repeat:
+                for_each: "{{ pokoje }}"
+                sequence:
+                  - action: climate.set_temperature
+                    target:
+                      entity_id: "{{ repeat.item }}"
+                    data:
+                      temperature: "{{ (state_attr(repeat.item, 'temperature') | float - obnizenie) | round(1) }}"
+{% endraw %}
+            - action: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.ogrzewanie_slonce
+        - conditions:
+            - condition: trigger
+              id:
+                - koniec
+                - ha_start
+            - condition: state
+              entity_id: input_boolean.ogrzewanie_slonce
+              state: "on"
+            - condition: or
+              conditions:
+                - condition: trigger
+                  id: koniec
+                - condition: state
+                  entity_id: sun.sun
+                  state: below_horizon
+          sequence:
+{% raw %}
+            - repeat:
+                for_each: "{{ pokoje }}"
+                sequence:
+                  - action: climate.set_temperature
+                    target:
+                      entity_id: "{{ repeat.item }}"
+                    data:
+                      temperature: "{{ (state_attr(repeat.item, 'temperature') | float + obnizenie) | round(1) }}"
+{% endraw %}
+            - action: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.ogrzewanie_slonce
+
+- id: ogrzewanie_czujniki_niedostepne
+  alias: ogrzewanie_czujniki_niedostepne
+  description: "Powiadomienie, gdy czujnik termostatu strefy jest niedostępny (termostat wtedy nie grzeje)"
+  mode: single
   triggers:
     - trigger: state
       entity_id:
 {% for i in home_assistant_config.climate %}
-        - "switch.virtual_ogrzewanie_{{ i.name }}"
+        - "sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_temperature"
 {% endfor %}
-      from: "on"
-      to: "off"
+      to:
+        - unavailable
+        - unknown
+      for:
+        hours: 2
+    - trigger: time
+      at: "09:00:00"
+  variables:
+    sensors:
+{% for i in home_assistant_config.climate %}
+      - "sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_temperature"
+{% endfor %}
+{% raw %}
+    missing: >-
+      {{ sensors | select('is_state', ['unavailable', 'unknown']) | list }}
   conditions:
     - condition: template
-      value_template: >-
-        {% raw -%}{{ [{%- endraw -%}{%- for i in home_assistant_config.climate -%}states('switch.virtual_ogrzewanie_{{ i.name }}'),{%- endfor -%}].count('on') <= 2 }}
+      value_template: "{{ missing | count > 0 }}"
   actions:
-    # - action: switch.turn_on
-    #   metadata: {}
-    #   data: {}
-    #   target:
-    #     entity_id: switch.virtual_ogrzewanie_dol_lazienka
-    # - delay:
-    #     hours: 0
-    #     minutes: 1
-    #     seconds: 0
-    #     milliseconds: 0
-    - action: switch.turn_off
-      metadata: {}
-      data: {}
-      target:
-        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
-    # - action: switch.turn_off
-    #   metadata: {}
-    #   data: {}
-    #   target:
-    #     entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
-  mode: single
+    - action: notify.mobile_app_pixel_9_pro
+      data:
+        title: "Ogrzewanie - czujniki"
+        message: >-
+          Strefy bez temperatury (nie grzeją): {{ missing | map('replace', 'sensor.', '') | map('replace', '_temperature', '') | join(', ') }}
+        data:
+          tag: ogrzewanie_czujniki
+          channel: Temperature
+{% endraw %}

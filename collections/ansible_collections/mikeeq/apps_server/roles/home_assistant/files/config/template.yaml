@@ -16,17 +16,38 @@
 # yamllint disable-line rule:indentation
   - name: current_state_ch
     state: >
-      {% if states('sensor.opentherm_opentherm_slave_dhw') == "1" %}
+      {% if is_state('binary_sensor.opentherm_dhw_active', 'on') %}
         Water
-      {% elif states('sensor.opentherm_opentherm_slave_ch') == "1" %}
+      {% elif is_state('binary_sensor.opentherm_flame_on', 'on') %}
         CH
       {% else %}
         Idle
       {% endif %}
 
-  - name: open_meteo_temperature
+  - name: piec_sredni_czas_pracy
+    unique_id: piec_sredni_czas_pracy
+    unit_of_measurement: min
     state: >
-      {{ state_attr('weather.open_meteo', 'temperature') }}S
+      {% set starts = states('sensor.piec_starty_1h') | int(0) %}
+      {% set ratio = states('sensor.piec_praca_1h') | float(0) %}
+      {{ (ratio * 60 / 100 / starts) | round(1) if starts > 0 else 0 }}
+
+  # Heating control input: IMGW-PIB station Gdańsk (synop 12155), fallbacks: IMGW weather entity, open-meteo
+  - name: temperatura_zewnetrzna
+    unique_id: temperatura_zewnetrzna
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    state: >
+      {% set imgw = states('sensor.gdansk_temperature') %}
+      {% set imgw_w = state_attr('weather.gdansk', 'temperature') %}
+      {% if is_number(imgw) %}{{ imgw | float }}
+      {% elif is_number(imgw_w) %}{{ imgw_w | float }}
+      {% else %}{{ state_attr('weather.open_meteo', 'temperature') | float }}{% endif %}
+    availability: >
+      {{ is_number(states('sensor.gdansk_temperature'))
+         or is_number(state_attr('weather.gdansk', 'temperature'))
+         or is_number(state_attr('weather.open_meteo', 'temperature')) }}
 
   - name: climate_switches_on_count
     state: >
@@ -35,6 +56,14 @@
 
 - binary_sensor:
 # yamllint disable-line rule:indentation
+  # Holds the last flame state while OpenTherm is unavailable, so restarts are not counted as burner starts
+  - name: piec_palnik
+    unique_id: piec_palnik
+    device_class: heat
+    state: >
+      {% set f = states('binary_sensor.opentherm_flame_on') %}
+      {{ f == 'on' if f in ['on', 'off'] else this.state == 'on' }}
+
   - name: serwerownia_temp_high
     unique_id: serwerownia_temp_high
     # Fires after 5 min sustained to avoid transient spikes triggering alert:
@@ -59,3 +88,47 @@
          or is_state('alert.serwerownia_temp_wysoka', 'on')
          or is_state('alert.gaz_kotlownia', 'on') }}
     device_class: problem
+
+
+# Garage gate as a real cover: state from the reed switch, and open/close only pulse the relay
+# when the gate is in the opposite state – a second tap can no longer close a gate you wanted open.
+- cover:
+    - name: Brama garażowa
+      unique_id: brama_garazowa
+      device_class: garage
+      state: "{{ 'open' if is_state('binary_sensor.door_brama_garaz_opening', 'on') else 'closed' }}"
+      availability: "{{ has_value('binary_sensor.door_brama_garaz_opening') }}"
+      open_cover:
+        - condition: state
+          entity_id: binary_sensor.door_brama_garaz_opening
+          state: "off"
+        - action: switch.turn_on
+          target:
+            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+      close_cover:
+        - condition: state
+          entity_id: binary_sensor.door_brama_garaz_opening
+          state: "on"
+        - action: switch.turn_on
+          target:
+            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+      stop_cover:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+
+- sensor:
+    # Battery-powered devices below 20 % or offline (an offline Zigbee sensor usually means a dead battery).
+    # Phones, robots and mains-powered Shelly are excluded.
+    - name: Słabe baterie
+      unique_id: slabe_baterie
+      icon: mdi:battery-alert
+      state: >
+        {% set ids = ['th_salon', 'th_kuchnia', 'th_sypialnia_dol', 'th_lazienka_dol', 'th_przedpokoj',
+                      'th_garaz', 'th_ogrod', 'th_pokoj_timi', 'th_lazienka_gora', 'th_garderoba',
+                      'shelly_htg3_pokoj_julia', 'door_brama_garaz', 'ikea_5b_kuchnia', 'button_state_dol_1'] %}
+        {% set ns = namespace(n=0) %}
+        {% for s in ids | map('regex_replace', '^(.*)$', 'sensor.\\1_battery') | map('states') %}
+          {% if not s | is_number or s | float < 20 %}{% set ns.n = ns.n + 1 %}{% endif %}
+        {% endfor %}
+        {{ ns.n }}

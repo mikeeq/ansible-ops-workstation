@@ -1,0 +1,31 @@
+---
+{% raw %}
+# Burner counters computed in HA, the boiler's own OpenTherm counter is stuck at 65535;
+# binary_sensor.piec_palnik ignores OpenTherm/HA outages (unavailable -> on is not a start)
+- platform: history_stats
+  name: piec_starty_1h
+  unique_id: piec_starty_1h
+  entity_id: binary_sensor.piec_palnik
+  state: "on"
+  type: count
+  start: "{{ now() - timedelta(hours=1) }}"
+  end: "{{ now() }}"
+
+- platform: history_stats
+  name: piec_starty_24h
+  unique_id: piec_starty_24h
+  entity_id: binary_sensor.piec_palnik
+  state: "on"
+  type: count
+  start: "{{ now() - timedelta(hours=24) }}"
+  end: "{{ now() }}"
+
+- platform: history_stats
+  name: piec_praca_1h
+  unique_id: piec_praca_1h
+  entity_id: binary_sensor.piec_palnik
+  state: "on"
+  type: ratio
+  start: "{{ now() - timedelta(hours=1) }}"
+  end: "{{ now() }}"
+{% endraw %}
