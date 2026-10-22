@@ -22,7 +22,9 @@ PING_INTERVAL = int(os.environ.get("PING_INTERVAL", "60"))
 SPEEDTEST_INTERVAL = int(os.environ.get("SPEEDTEST_INTERVAL", "900"))
 SPEEDTEST_SERVER_ID = os.environ.get("SPEEDTEST_SERVER_ID", "")
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 log = logging.getLogger("collector")
 
 
@@ -43,7 +45,9 @@ def run_ping(target, count):
     try:
         result = subprocess.run(
             ["ping", "-c", str(count), "-W", "5", "-i", "0.5", target],
-            capture_output=True, text=True, timeout=count * 2 + 30,
+            capture_output=True,
+            text=True,
+            timeout=count * 2 + 30,
         )
         output = result.stdout
         loss = 100.0
@@ -74,7 +78,10 @@ def run_ping(target, count):
     return {
         "target": target,
         "loss_pct": 100.0,
-        "rtt_min": 0, "rtt_avg": 0, "rtt_max": 0, "rtt_mdev": 0,
+        "rtt_min": 0,
+        "rtt_avg": 0,
+        "rtt_max": 0,
+        "rtt_mdev": 0,
     }
 
 
@@ -85,7 +92,9 @@ def run_speedtest():
             cmd += ["--server-id", SPEEDTEST_SERVER_ID]
         result = subprocess.run(
             cmd,
-            capture_output=True, text=True, timeout=120,
+            capture_output=True,
+            text=True,
+            timeout=120,
         )
         if result.returncode != 0:
             log.error("speedtest exited %d: %s", result.returncode, result.stderr)
@@ -138,7 +147,9 @@ def ping_loop(write_api):
     while True:
         for target in PING_TARGETS:
             r = run_ping(target, PING_COUNT)
-            log.info("Ping %s: loss=%.1f%% avg=%.1fms", target, r["loss_pct"], r["rtt_avg"])
+            log.info(
+                "Ping %s: loss=%.1f%% avg=%.1fms", target, r["loss_pct"], r["rtt_avg"]
+            )
             try:
                 write_ping(write_api, r)
             except Exception as e:
@@ -151,7 +162,12 @@ def speedtest_loop(write_api):
         log.info("Running speed test…")
         r = run_speedtest()
         if r:
-            log.info("Speed: ↓%.1f Mbps ↑%.1f Mbps ping=%.1fms", r["download_mbps"], r["upload_mbps"], r["ping_ms"])
+            log.info(
+                "Speed: ↓%.1f Mbps ↑%.1f Mbps ping=%.1fms",
+                r["download_mbps"],
+                r["upload_mbps"],
+                r["ping_ms"],
+            )
             try:
                 write_speedtest(write_api, r)
             except Exception as e:
@@ -166,7 +182,12 @@ def main():
     wait_for_influxdb(client)
     write_api = client.write_api(write_options=SYNCHRONOUS)
 
-    log.info("Targets: %s | Ping every %ds | Speedtest every %ds", PING_TARGETS, PING_INTERVAL, SPEEDTEST_INTERVAL)
+    log.info(
+        "Targets: %s | Ping every %ds | Speedtest every %ds",
+        PING_TARGETS,
+        PING_INTERVAL,
+        SPEEDTEST_INTERVAL,
+    )
 
     threading.Thread(target=ping_loop, args=(write_api,), daemon=True).start()
     speedtest_loop(write_api)

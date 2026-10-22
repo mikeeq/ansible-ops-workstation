@@ -55,8 +55,8 @@
       | selectattr('state', 'eq', 'on') | list | count }}
 
 - binary_sensor:
-# yamllint disable-line rule:indentation
   # Holds the last flame state while OpenTherm is unavailable, so restarts are not counted as burner starts
+  # yamllint disable-line rule:indentation
   - name: piec_palnik
     unique_id: piec_palnik
     device_class: heat
