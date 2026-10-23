@@ -1,0 +1,28 @@
+---
+# llama.cpp Local AI Server
+#
+# All-in-one deployment for local AI coding setup.
+# Auto-detects GPU (NVIDIA/AMD/Apple Metal/CPU), RAM/VRAM, and selects the
+# best model for available resources.
+#
+# Usage:
+#   ansible-playbook playbooks/llama-cpp.yaml -K
+#
+# Override examples:
+#   -e llama_cpp_gpu_type=nvidia
+#   -e llama_cpp_model='unsloth/Qwen3.6-27B-GGUF:Q4_K_M'
+#   -e llama_cpp_vram_keep_free_gb=4
+#   -e llama_cpp_port=8080
+#   -e llama_cpp_force_rebuild=true
+
+- name: Include architecture specific group_vars
+  ansible.builtin.import_playbook: vars.yaml
+
+- name: Deploy llama.cpp local AI server
+  hosts: "{{ hosts_to_deploy | default('localhost') }}"
+  become: false
+  gather_facts: true
+  roles:
+    - role: mikeeq.apps.llama_cpp
+      tags:
+        - llama_cpp

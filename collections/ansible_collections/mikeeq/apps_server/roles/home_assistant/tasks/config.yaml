@@ -14,6 +14,13 @@
     - "{{ home_assistant_install_path }}/config/mqtt/lights"
     - "{{ home_assistant_install_path }}/config/mqtt/switches"
 
+# with_fileglob copies never delete, so files dropped from the role must be removed explicitly
+- name: Remove obsolete config files
+  ansible.builtin.file:
+    path: "{{ home_assistant_install_path }}/config/{{ item }}"
+    state: absent
+  loop: "{{ home_assistant_obsolete_config_files }}"
+
 - name: Configure config files
   ansible.builtin.copy:
     src: "{{ item }}"
@@ -89,15 +96,6 @@
   with_fileglob:
     - ../templates/config/mqtt/switches/*
 
-- name: Configure config/mqtt/water_heater
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "{{ home_assistant_install_path }}/config/mqtt/water_heater/"
-    mode: "0664"
-    backup: true
-  with_fileglob:
-    - ../templates/config/mqtt/water_heater/*
-
 - name: Check that the .storage exists
   ansible.builtin.stat:
     path: "{{ home_assistant_install_path }}/config/.storage/onboarding"
@@ -122,3 +120,11 @@
     force: false
   with_fileglob:
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config_init/*"
+
+# Private frontend assets (floor plans) served under /local/; kept out of this public repo
+- name: Configure private www assets
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/www/"
+    dest: "{{ home_assistant_install_path }}/config/www/"
+    mode: "0644"
+    directory_mode: "0755"

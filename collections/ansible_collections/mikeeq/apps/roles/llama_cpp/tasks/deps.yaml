@@ -1,0 +1,73 @@
+---
+# ── Common build tools ───────────────────────────────────────────────────────
+
+- name: Install build dependencies (Fedora/RHEL)
+  ansible.builtin.dnf:
+    name:
+      - cmake
+      - gcc-c++
+      - git
+    state: present
+  become: true
+  when: ansible_facts['pkg_mgr'] == "dnf"
+
+- name: Install build dependencies (Debian/Ubuntu)
+  ansible.builtin.apt:
+    name:
+      - cmake
+      - g++
+      - git
+      - build-essential
+    state: present
+    update_cache: true
+  become: true
+  when: ansible_facts['pkg_mgr'] == "apt"
+
+- name: Install build dependencies (macOS)
+  community.general.homebrew:
+    name:
+      - cmake
+    state: present
+  become: false
+  when: ansible_facts['os_family'] == "Darwin"
+
+# ── GPU-specific dependencies ────────────────────────────────────────────────
+
+- name: Install AMD ROCm build dependencies (Fedora)
+  ansible.builtin.dnf:
+    name:
+      - hipblas-devel
+      - rocblas-devel
+    state: present
+  become: true
+  when:
+    - llama_cpp_detected_gpu == "amd"
+    - ansible_facts['pkg_mgr'] == "dnf"
+
+- name: Install AMD ROCm build dependencies (Debian/Ubuntu)
+  ansible.builtin.apt:
+    name:
+      - libhipblas-dev
+      - librocblas-dev
+    state: present
+  become: true
+  when:
+    - llama_cpp_detected_gpu == "amd"
+    - ansible_facts['pkg_mgr'] == "apt"
+
+- name: Verify CUDA toolkit is available
+  ansible.builtin.command: nvcc --version
+  register: _llama_cpp_nvcc_check
+  changed_when: false
+  failed_when: false
+  when: llama_cpp_detected_gpu == "nvidia"
+
+- name: Warn if CUDA toolkit is missing
+  ansible.builtin.debug:
+    msg: >-
+      nvcc not found — CUDA toolkit may not be installed.
+      Install it from https://developer.nvidia.com/cuda-downloads
+      The build will attempt to proceed but may fail.
+  when:
+    - llama_cpp_detected_gpu == "nvidia"
+    - _llama_cpp_nvcc_check.rc | default(1) != 0

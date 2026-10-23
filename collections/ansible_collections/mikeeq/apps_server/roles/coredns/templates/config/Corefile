@@ -1,7 +1,6 @@
 . {
     log
     errors
-    auto
     reload 10s
     forward . 1.1.1.1:53
     # If you wish to use a standard ZONE File format, uncomment the following line and customize the specified file

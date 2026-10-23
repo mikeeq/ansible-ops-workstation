@@ -1,0 +1,58 @@
+services:
+  influxdb:
+    image: influxdb:2.9.1
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=changeme123
+      - DOCKER_INFLUXDB_INIT_ORG=isp-monitor
+      - DOCKER_INFLUXDB_INIT_BUCKET=isp-monitor
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=isp-monitor-token
+      - DOCKER_INFLUXDB_INIT_RETENTION=26w
+    mem_limit: 512m
+
+  grafana:
+    image: grafana/grafana:11.6.16
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+    depends_on:
+      - influxdb
+    mem_limit: 256m
+
+  collector:
+    build: ./collector
+    restart: unless-stopped
+    cap_add:
+      - NET_RAW
+    environment:
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_TOKEN=isp-monitor-token
+      - INFLUX_ORG=isp-monitor
+      - INFLUX_BUCKET=isp-monitor
+      - PING_TARGETS=8.8.8.8,1.1.1.1,9.9.9.9
+      - PING_COUNT=20
+      - PING_INTERVAL=60
+      - SPEEDTEST_INTERVAL=900
+      - SPEEDTEST_SERVER_ID=
+    depends_on:
+      - influxdb
+    mem_limit: 128m
+
+volumes:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:

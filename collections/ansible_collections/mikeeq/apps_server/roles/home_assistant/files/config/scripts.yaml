@@ -1,0 +1,22 @@
+---
+
+przyjazd:
+  alias: Przyjazd
+  icon: mdi:home-import-outline
+  mode: single
+  sequence:
+    # No reed switch on the entrance gate: this pulse closes it if it was already open.
+    - action: switch.turn_on
+      target:
+        entity_id: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+    - action: cover.open_cover
+      target:
+        entity_id: cover.brama_garazowa
+    - if:
+        - condition: state
+          entity_id: sun.sun
+          state: below_horizon
+      then:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew

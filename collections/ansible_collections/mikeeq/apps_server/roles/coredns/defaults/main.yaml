@@ -4,3 +4,11 @@ coredns_install_path: "/opt/coredns"
 coredns_domain_name: "example.com"
 coredns_zone_filename: "db.{{ coredns_domain_name }}"
 coredns_zone_file_path: "config"
+
+# LAN-exposed macvlan network. The container gets its own IP on the physical
+# LAN (like a VM on the bridge) instead of using host port mappings/NAT.
+coredns_macvlan_network_name: "lan_macvlan"
+coredns_macvlan_parent: "eth0"
+coredns_macvlan_subnet: "192.168.0.0/24"
+coredns_macvlan_gateway: "192.168.0.1"
+coredns_macvlan_ip: "192.168.1.121"

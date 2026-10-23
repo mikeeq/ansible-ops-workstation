@@ -1,0 +1,50 @@
+---
+# New 2-month Energa billing period (1st of Jan/Mar/May/Jul/Sep/Nov, registers for the last day arrive ~01:00):
+# carry the estimated energy bank and meter registers over. Correct the helpers from the invoice when it arrives.
+- alias: prad_nowy_okres
+  description: ""
+  mode: single
+  triggers:
+    - trigger: time
+      at: "03:00:00"
+  conditions:
+    - condition: template
+      value_template: "{% raw %}{{ now().day == 1 and now().month % 2 == 1 }}{% endraw %}"
+  actions:
+    # Read everything first: setting a helper re-renders the bank estimate
+    - variables:
+{% raw %}
+        b1: "{{ state_attr('sensor.prad_faktura_prognoza', 'magazyn_teraz_l1') | float(0) }}"
+        b2: "{{ state_attr('sensor.prad_faktura_prognoza', 'magazyn_teraz_l2') | float(0) }}"
+        reg:
+          pobor_l1: "{{ states('sensor.energa_30407650_stan_licznika_import_strefa_1') | float(0) }}"
+          pobor_l2: "{{ states('sensor.energa_30407650_stan_licznika_import_strefa_2') | float(0) }}"
+          oddanie_l1: "{{ states('sensor.energa_30407650_stan_licznika_export_strefa_1') | float(0) }}"
+          oddanie_l2: "{{ states('sensor.energa_30407650_stan_licznika_export_strefa_2') | float(0) }}"
+    - condition: template
+      value_template: "{{ reg.values() | select('>', 0) | list | count == 4 }}"
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.prad_magazyn_start_l1
+      data:
+        value: "{{ b1 }}"
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.prad_magazyn_start_l2
+      data:
+        value: "{{ b2 }}"
+    - repeat:
+        for_each: "{{ reg | list }}"
+        sequence:
+          - action: input_number.set_value
+            target:
+              entity_id: "input_number.prad_start_{{ repeat.item }}"
+            data:
+              value: "{{ reg[repeat.item] }}"
+{% endraw %}
+    - action: persistent_notification.create
+      data:
+        title: Prąd – nowy okres rozliczeniowy
+        message: >-
+          {% raw %}Magazyn przeniesiony (szacunek): L1 {{ b1 | round(0) }} kWh, L2 {{ b2 | round(0) }} kWh.
+          Po fakturze Energa popraw input_number.prad_magazyn_start_* i prad_start_*.{% endraw %}

@@ -7,6 +7,17 @@ adguard_home_user: testuser
 adguard_home_password: pass_tes1
 adguard_home_templates_path: templates
 
+# LAN-exposed macvlan network. The container gets its own IP on the physical
+# LAN (like a VM on the bridge) instead of using host networking.
+adguard_home_macvlan_network_name: "lan_macvlan"
+adguard_home_macvlan_parent: "eth0"
+adguard_home_macvlan_subnet: "192.168.0.0/24"
+adguard_home_macvlan_gateway: "192.168.0.1"
+adguard_home_macvlan_ip: "192.168.1.122"
+
+# Host/IP the AdGuard REST API is reached on (its own macvlan IP, not localhost).
+adguard_home_api_host: "{{ adguard_home_macvlan_ip }}"
+
 adguard_home_dhcp:
   - hostname: sony-ps5
     mac: 5c:96:66:2a:5a:ad

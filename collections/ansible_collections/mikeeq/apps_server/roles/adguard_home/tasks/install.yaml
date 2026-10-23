@@ -18,15 +18,11 @@
   loop:
     - docker-compose.yaml
 
-- name: Install httpd-tools
-  ansible.builtin.package:
-    name: httpd-tools
-    state: present
-
-# https://github.com/pyca/bcrypt/issues/1082
+# Generate the bcrypt hash via a throwaway container so no host package
+# (httpd-tools/htpasswd) is required - works on both Fedora and OpenWrt.
 - name: Generate bcrypt hash for adguard_home password
   ansible.builtin.command:
-    cmd: "htpasswd -nbBC 10 '' '{{ adguard_home_password }}'"
+    cmd: docker run --rm httpd:2-alpine htpasswd -nbBC 10 '' '{{ adguard_home_password }}'
   register: adguard_home_password_bcrypt_result
   changed_when: false
   no_log: true
@@ -46,6 +42,21 @@
     - confdir/AdGuardHome.yaml
 
 # - ansible.builtin.import_tasks: config.yaml
+
+- name: Ensure LAN macvlan docker network exists
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    docker network inspect {{ adguard_home_macvlan_network_name }} >/dev/null 2>&1 && exit 0
+    docker network create -d macvlan \
+      --subnet={{ adguard_home_macvlan_subnet }} \
+      --gateway={{ adguard_home_macvlan_gateway }} \
+      -o parent={{ adguard_home_macvlan_parent }} \
+      {{ adguard_home_macvlan_network_name }}
+  args:
+    executable: /bin/bash
+  register: adguard_home_macvlan_net
+  changed_when: adguard_home_macvlan_net.stdout | length == 64
 
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull

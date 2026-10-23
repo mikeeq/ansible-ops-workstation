@@ -1,0 +1,49 @@
+---
+- name: Ensure install dirs exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ isp_monitor_install_path }}"
+    - "{{ isp_monitor_install_path }}/collector"
+    - "{{ isp_monitor_install_path }}/grafana/provisioning/datasources"
+    - "{{ isp_monitor_install_path }}/grafana/provisioning/dashboards"
+
+- name: Deploy templates
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ isp_monitor_install_path }}/{{ item }}"
+    mode: "0664"
+    backup: true
+  loop:
+    - docker-compose.yaml
+    - collector/Dockerfile
+    - collector/collector.py
+    - collector/requirements.txt
+    - grafana/provisioning/datasources/influxdb.yaml
+    - grafana/provisioning/dashboards/dashboard.yaml
+    - grafana/provisioning/dashboards/isp-monitor.json
+  notify:
+    - Rebuild_and_restart_isp_monitor
+
+- name: Build collector image
+  ansible.builtin.command: docker-compose build --no-cache
+  changed_when: isp_monitor_build_result.stderr_lines | length > 2
+  register: isp_monitor_build_result
+  args:
+    chdir: "{{ isp_monitor_install_path }}"
+
+- name: Pull Docker images using docker-compose
+  ansible.builtin.command: docker-compose pull
+  changed_when: isp_monitor_pull_result.stderr_lines | length > 2
+  register: isp_monitor_pull_result
+  args:
+    chdir: "{{ isp_monitor_install_path }}"
+
+- name: Run using docker-compose
+  ansible.builtin.command: docker-compose up -d
+  changed_when: isp_monitor_up_result.stderr_lines | length > 2
+  register: isp_monitor_up_result
+  args:
+    chdir: "{{ isp_monitor_install_path }}"

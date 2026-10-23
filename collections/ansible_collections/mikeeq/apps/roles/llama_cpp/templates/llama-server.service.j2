@@ -1,0 +1,19 @@
+[Unit]
+Description=llama.cpp Local AI Server
+After=network.target
+
+[Service]
+Type=exec
+User={{ user_name }}
+Group={{ user_group_name }}
+WorkingDirectory={{ llama_cpp_install_path }}
+ExecStart={{ llama_cpp_install_path }}/run-server.sh
+Restart=on-failure
+RestartSec=10
+TimeoutStartSec=300
+{% if llama_cpp_detected_gpu == 'amd' %}
+Environment="HSA_OVERRIDE_GFX_VERSION={{ llama_cpp_detected_hsa_version }}"
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target

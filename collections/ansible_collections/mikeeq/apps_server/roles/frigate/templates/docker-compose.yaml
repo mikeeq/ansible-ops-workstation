@@ -13,7 +13,7 @@ services:
       resources:
         limits:
           cpus: 3
-          memory: 8G
+          memory: 9G
           # pids: 1
         reservations:
           cpus: 1

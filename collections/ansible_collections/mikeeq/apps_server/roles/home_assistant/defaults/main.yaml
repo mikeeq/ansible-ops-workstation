@@ -8,6 +8,16 @@ home_assistant_clean: false
 # home_assistant_password: pass_tes1
 home_assistant_templates_path: templates
 
+# Port of the HA-MCP in-process server (ha_mcp_tools custom component)
+home_assistant_mcp_port: 9584
+
+# Paths relative to config/ removed from the host on deploy
+home_assistant_obsolete_config_files:
+  - automations/ogrzewanie_virtual.yaml
+  - zvirtual.yaml
+  # OpenTherm moved from Tasmota (MQTT) to ESPHome, never included by mqtt.yaml
+  - mqtt/water_heater
+
 home_assistant_custom_components:
   - name: ble_monitor
     repo: https://github.com/custom-components/ble_monitor
@@ -25,6 +35,20 @@ home_assistant_custom_components:
     repo: https://github.com/blakeblackshear/frigate-hass-integration
   - name: smart_thermostat
     repo: https://github.com/ScratMan/HASmartThermostat
+  # Energa Operator "Mój Licznik" via REST API – grid import/export for the Energy dashboard
+  # Setup: Settings -> Devices & Services -> Add Integration -> Energa My Meter
+  - name: energa_mobile
+    repo: https://github.com/ergo5/hass-energa-my-meter-api
+    version: v4.16.0
+  # IMGW-PIB synoptic station data; outdoor temperature for the heating curve
+  - name: meteo_imgw_pib
+    repo: https://github.com/bieniu/ha-meteo-imgw-pib
+    version: "1.12.5"
+  # HA-MCP in-process MCP server for AI agents (Copilot); requires HA >= 2026.8
+  # Setup: Settings -> Devices & Services -> Add Integration -> HA-MCP Server
+  - name: ha_mcp_tools
+    repo: https://github.com/homeassistant-ai/ha-mcp-integration
+    version: v2.2.2
   # - name: speedtest
   #   repo: https://github.com/MrSuicideParrot/hassio-speedtest-addon
   # - name: virtual
@@ -77,35 +101,35 @@ home_assistant_config:
   climate:
     # - name: garaz
     - name: przedpokoj
-      switch: switch.sonoff_4chpror3_ogrzewanie_dol2_sonoff_4chpror3_ogrzewanie_dol2_korytarz
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol2_korytarz
     - name: lazienka_dol
-      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_lazienka
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_lazienka
     - name: salon
-      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_salon
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_salon
     - name: kuchnia
-      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_kuchnia
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_kuchnia
     - name: sypialnia_dol
-      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sonoff_4chpror3_ogrzewanie_dol1_sypialnia
+      switch: switch.sonoff_4chpror3_ogrzewanie_dol1_sypialnia
     - name: pokoj_julia
-      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
       sensor_type: "shelly_htg3"
     - name: sypialnia_gora
-      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_sypialnia
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sypialnia
       sensor_type: "shelly_htg3"
     - name: garderoba
-      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_garderoba
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_garderoba
     - name: biuro_miki
-      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_sonoff_4chpror3_ogrzewanie_gora1_pokoj_nad_garazem
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora1_pokoj_nad_garazem
       sensor_type: "shelly_htg3"
     - name: lazienka_gora
-      switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_lazienka
+      switch: switch.sonoff_4chpror3_ogrzewanie_gora2_lazienka
     - name: pokoj_timi
       switch: switch.group_ogrzewanie_pokoj_timi
 
     # - name: pokoj_timi
-    #   switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_pokoj_timi
+    #   switch: switch.sonoff_4chpror3_ogrzewanie_gora2_pokoj_timi
     # - name: serwerownia
-    #   switch: switch.sonoff_4chpror3_ogrzewanie_gora2_sonoff_4chpror3_ogrzewanie_gora2_korytarz
+    #   switch: switch.sonoff_4chpror3_ogrzewanie_gora2_korytarz
 
   mqtt:
     zigbee_coordinator_base_topic: "tasmota_10B490"

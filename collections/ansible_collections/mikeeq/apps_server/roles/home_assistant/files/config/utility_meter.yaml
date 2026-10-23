@@ -1,0 +1,17 @@
+---
+# Estimated gas energy (kWh) per period, see template.yaml (gaz_*)
+gaz_dzis:
+  source: sensor.gaz_energia
+  cycle: daily
+gaz_co_dzis:
+  source: sensor.gaz_energia_co
+  cycle: daily
+gaz_cwu_dzis:
+  source: sensor.gaz_energia_cwu
+  cycle: daily
+gaz_miesiac:
+  source: sensor.gaz_energia
+  cycle: monthly
+gaz_rok:
+  source: sensor.gaz_energia
+  cycle: yearly
