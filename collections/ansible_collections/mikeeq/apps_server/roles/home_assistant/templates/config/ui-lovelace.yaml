@@ -10,17 +10,17 @@
 {#- Floor plan label positions (%), from ansible-ops-private/docs/home-assistant/floorplan/positions.yaml -#}
 {%- set floorplan = {
   'dol': {
-    'rooms': {'kuchnia': [39.0, 12.6], 'salon': [73.5, 26.2], 'przedpokoj': [39.2, 47.6],
-              'lazienka_dol': [56.7, 67.5], 'sypialnia_dol': [81.7, 81.6]},
-    'sensors': [['sensor.th_garaz_temperature', 24.0, 79.1], ['sensor.opentherm_ds18b20', 56.0, 89.3]],
+    'rooms': {'kuchnia': [38.1, 15.9], 'salon': [73.5, 29.0], 'przedpokoj': [39.2, 49.5],
+              'lazienka_dol': [56.5, 68.7], 'sypialnia_dol': [81.5, 82.2]},
+    'sensors': [['sensor.th_garaz_temperature', 24.5, 79.9], ['sensor.opentherm_ds18b20', 56.5, 89.7]],
   },
   'gora': {
-    'rooms': {'garderoba': [41.5, 20.5], 'pokoj_julia': [77.1, 17.7], 'sypialnia_gora': [44.8, 46.0],
+    'rooms': {'garderoba': [44.5, 20.5], 'pokoj_julia': [77.1, 17.7], 'sypialnia_gora': [44.8, 46.0],
               'biuro_miki': [21.4, 81.4], 'lazienka_gora': [59.4, 87.9], 'pokoj_timi': [85.3, 83.7]},
     'sensors': [['sensor.shelly_htg3_serwerownia_temperature', 87.3, 43.7]],
   },
 } -%}
-{%- set floorplan_ver = 1 -%}
+{%- set floorplan_ver = 2 -%}
 title: Dom
 views:
   # =====================================================================
