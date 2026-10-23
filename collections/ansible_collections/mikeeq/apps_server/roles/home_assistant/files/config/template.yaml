@@ -32,21 +32,21 @@
       {% set ratio = states('sensor.piec_praca_1h') | float(0) %}
       {{ (ratio * 60 / 100 / starts) | round(1) if starts > 0 else 0 }}
 
-  # Heating control input: IMGW-PIB station Gdańsk (synop 12155), fallbacks: IMGW weather entity, open-meteo
+  # Heating control input: IMGW-PIB station Wejherowo, fallbacks: IMGW weather entity, open-meteo
   - name: temperatura_zewnetrzna
     unique_id: temperatura_zewnetrzna
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
     state: >
-      {% set imgw = states('sensor.gdansk_temperature') %}
-      {% set imgw_w = state_attr('weather.gdansk', 'temperature') %}
+      {% set imgw = states('sensor.wejherowo_temperature') %}
+      {% set imgw_w = state_attr('weather.wejherowo', 'temperature') %}
       {% if is_number(imgw) %}{{ imgw | float }}
       {% elif is_number(imgw_w) %}{{ imgw_w | float }}
       {% else %}{{ state_attr('weather.open_meteo', 'temperature') | float }}{% endif %}
     availability: >
-      {{ is_number(states('sensor.gdansk_temperature'))
-         or is_number(state_attr('weather.gdansk', 'temperature'))
+      {{ is_number(states('sensor.wejherowo_temperature'))
+         or is_number(state_attr('weather.wejherowo', 'temperature'))
          or is_number(state_attr('weather.open_meteo', 'temperature')) }}
 
   - name: climate_switches_on_count

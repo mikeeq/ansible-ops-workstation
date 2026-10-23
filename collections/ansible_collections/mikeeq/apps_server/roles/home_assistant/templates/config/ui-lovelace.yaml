@@ -33,10 +33,10 @@ views:
     max_columns: 3
     badges:
       - type: entity
-        entity: weather.open_meteo
+        entity: sensor.wejherowo_temperature
         name: Na zewnątrz
         show_name: true
-        state_content: temperature
+        icon: mdi:thermometer
         tap_action:
           action: navigate
           navigation_path: /lovelace/ogrod
@@ -279,15 +279,33 @@ views:
         name: Zasilanie
         show_name: true
       - type: entity
+        entity: number.opentherm_ch_target
+        name: Krzywa
+        show_name: true
+        icon: mdi:chart-bell-curve-cumulative
+        tap_action:
+          action: none
+      - type: entity
         entity: sensor.climate_switches_on_count
         name: Strefy grzeją
         show_name: true
         icon: mdi:valve-open
       - type: entity
-        entity: weather.open_meteo
+        entity: sensor.temperatura_zewnetrzna
         name: Na zewnątrz
         show_name: true
-        state_content: temperature
+        icon: mdi:thermometer
+      - type: entity
+        entity: input_boolean.ogrzewanie_slonce
+        name: Obniżka – słońce
+        show_name: true
+        color: amber
+        tap_action:
+          action: none
+        visibility:
+          - condition: state
+            entity: input_boolean.ogrzewanie_slonce
+            state: "on"
     sections:
       - type: grid
         cards:
@@ -395,46 +413,51 @@ views:
           - type: heading
             heading: Kocioł
             icon: mdi:water-boiler
+          # Status only – boiler setpoints and CO/CWU are managed by automations, not from the dashboard
           - type: tile
-            entity: number.opentherm_ch_target
-            name: Nastawa CO
+            entity: sensor.opentherm_t_set_effective
+            name: Nastawa zasilania
             icon: mdi:radiator
             color: deep-orange
             grid_options:
               columns: 6
-            features:
-              - type: numeric-input
-                style: buttons
           - type: tile
-            entity: number.opentherm_t_dhw_set
-            name: Nastawa CWU
-            icon: mdi:water-boiler
+            entity: sensor.opentherm_t_dhw
+            name: Ciepła woda
+            icon: mdi:water-thermometer
             color: blue
             grid_options:
               columns: 6
-            features:
-              - type: numeric-input
-                style: buttons
+          # Set by ogrzewanie_krzywa_grzewcza from the IMGW outdoor temperature
           - type: tile
-            entity: switch.opentherm_ch_enable
-            name: CO
-            icon: mdi:radiator
+            entity: number.opentherm_ch_target
+            name: Nastawa z krzywej
+            icon: mdi:chart-bell-curve-cumulative
+            color: deep-orange
             grid_options:
               columns: 6
             tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
+              action: none
           - type: tile
-            entity: switch.opentherm_dhw_enable
-            name: CWU
-            icon: mdi:water-thermometer
+            entity: sensor.temperatura_zewnetrzna_srednia_24h
+            name: Śr. 24 h (sezon)
+            icon: mdi:thermometer-auto
+            grid_options:
+              columns: 6
+{% for sw in [['switch.opentherm_ch_enable', 'CO', 'mdi:radiator'], ['switch.opentherm_dhw_enable', 'CWU', 'mdi:water-boiler']] %}
+          - type: tile
+            entity: {{ sw[0] }}
+            name: {{ sw[1] }}
+            icon: {{ sw[2] }}
             grid_options:
               columns: 6
             tap_action:
-              action: toggle
+              action: none
+            icon_tap_action:
+              action: none
             hold_action:
-              action: more-info
+              action: none
+{% endfor %}
           - type: tile
             entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
             name: Podłogówka
@@ -447,6 +470,21 @@ views:
             icon: mdi:meter-gas
             grid_options:
               columns: 6
+          - type: tile
+            entity: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+            name: Cyrkulacja
+            icon: mdi:water-sync
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.opentherm_t_dhw_set
+            name: Nastawa CWU
+            icon: mdi:water-boiler
+            color: blue
+            grid_options:
+              columns: 6
+            tap_action:
+              action: none
 
       - type: grid
         cards:
@@ -476,6 +514,27 @@ views:
             icon: mdi:timer-outline
             grid_options:
               columns: 6
+          - type: tile
+            entity: sensor.piec_starty_24h
+            name: Starty / 24 h
+            icon: mdi:counter
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.piec_praca_1h
+            name: Praca palnika / 1 h
+            icon: mdi:fire-circle
+            grid_options:
+              columns: 6
+          # Condensing works below ~55 °C exhaust
+          - type: tile
+            entity: sensor.opentherm_t_exhaust
+            name: Spaliny (kondensacja < 55 °C)
+            icon: mdi:smoke
+            features_position: inline
+            features:
+              - type: trend-graph
+                hours_to_show: 6
           - type: history-graph
             hours_to_show: 6
             entities:
@@ -519,6 +578,13 @@ views:
                 name: Nastawa
                 yaxis_id: "1"
                 curve: stepline
+              - entity: number.opentherm_ch_target
+                name: Krzywa
+                yaxis_id: "1"
+                curve: stepline
+              - entity: sensor.opentherm_t_exhaust
+                name: Spaliny
+                yaxis_id: "1"
               - entity: sensor.climate_switches_on_count
                 name: Strefy
                 yaxis_id: "2"
@@ -547,12 +613,24 @@ views:
             entities:
               - entity: switch.opentherm_anti_cycle
                 name: Anty-taktowanie
+                type: simple-entity
+                tap_action:
+                  action: none
               - entity: number.opentherm_stop_above
                 name: Stop powyżej nastawy
+                type: simple-entity
+                tap_action:
+                  action: none
               - entity: number.opentherm_start_below
                 name: Start poniżej nastawy
+                type: simple-entity
+                tap_action:
+                  action: none
               - entity: number.opentherm_max_rel_mod_level
                 name: Maks. modulacja
+                type: simple-entity
+                tap_action:
+                  action: none
               - entity: sensor.opentherm_cycle_state
                 name: Faza cyklu
               - entity: sensor.piec_starty_24h
@@ -584,8 +662,48 @@ views:
                 name: Mieszacz grzejniki – otwieranie
               - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
                 name: Mieszacz grzejniki – zamykanie
-              - entity: automation.wlacz_cyrkulacje
-                name: Cyrkulacja – harmonogram
+      - type: grid
+        cards:
+          - type: heading
+            heading: Pogoda i CWU
+            icon: mdi:weather-partly-cloudy
+          - type: entities
+            entities:
+              - entity: sensor.temperatura_zewnetrzna
+                name: Na zewnątrz (IMGW)
+              - entity: sensor.temperatura_zewnetrzna_srednia_24h
+                name: Średnia 24 h
+              - entity: number.opentherm_ch_target
+                name: Nastawa z krzywej
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: automation.ogrzewanie_krzywa_grzewcza
+                name: Krzywa grzewcza
+              - entity: automation.ogrzewanie_sezon
+                name: Sezon grzewczy
+              - entity: automation.ogrzewanie_slonce
+                name: Obniżka na słońce
+              - entity: input_boolean.ogrzewanie_slonce
+                name: Obniżka aktywna
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: number.opentherm_t_dhw_set
+                name: Nastawa CWU
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+                name: Pompa cyrkulacji
+              - entity: automation.cwu_cyrkulacja
+                name: Cyrkulacja impulsowa
+              - entity: automation.cwu_noc
+                name: CWU 45 °C w nocy
+              - entity: automation.cwu_dezynfekcja
+                name: Dezynfekcja (niedz. 03:00)
+              - entity: automation.piec_taktowanie_alert
+                name: Alert taktowania
       - type: grid
         cards:
           - type: heading
@@ -652,7 +770,7 @@ views:
       - type: grid
         cards:
           - type: weather-forecast
-            entity: weather.open_meteo
+            entity: weather.wejherowo
             forecast_type: hourly
           - type: tile
             entity: sensor.th_ogrod_temperature
