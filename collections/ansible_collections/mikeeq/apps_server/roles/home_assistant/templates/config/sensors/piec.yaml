@@ -29,3 +29,24 @@
   start: "{{ now() - timedelta(hours=1) }}"
   end: "{{ now() }}"
 {% endraw %}
+
+# Estimated gas energy (kWh) from the template power sensors gaz_moc_co / gaz_moc_cwu (kW)
+- platform: integration
+  name: gaz_energia_co
+  unique_id: gaz_energia_co
+  source: sensor.gaz_moc_co
+  method: left
+  round: 3
+  unit_time: h
+  max_sub_interval:
+    minutes: 5
+
+- platform: integration
+  name: gaz_energia_cwu
+  unique_id: gaz_energia_cwu
+  source: sensor.gaz_moc_cwu
+  method: left
+  round: 3
+  unit_time: h
+  max_sub_interval:
+    minutes: 5

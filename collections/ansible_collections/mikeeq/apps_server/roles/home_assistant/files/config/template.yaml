@@ -49,6 +49,160 @@
          or is_number(state_attr('weather.wejherowo', 'temperature'))
          or is_number(state_attr('weather.open_meteo', 'temperature')) }}
 
+  # Gas estimate (no gas meter in HA): boiler output from OpenTherm modulation. Min ~5.8 kW (34 % of 17 kW),
+  # CH max = max_capacity (8 kW after P 12.2), DHW always up to 17 kW.
+  - name: piec_moc_cieplna
+    unique_id: piec_moc_cieplna
+    unit_of_measurement: kW
+    device_class: power
+    state_class: measurement
+    icon: mdi:fire
+    state: >
+      {% if is_state('binary_sensor.piec_palnik', 'on') %}
+        {% set pmin = 5.8 %}
+        {% set pmax = 17.0 if is_state('binary_sensor.opentherm_dhw_active', 'on')
+           else states('sensor.opentherm_max_capacity') | float(8) %}
+        {% set mod = states('sensor.opentherm_rel_mod_level') | float(0) %}
+        {{ (pmin + ([pmax, pmin] | max - pmin) * mod / 100) | round(2) }}
+      {% else %}0{% endif %}
+
+  # Gas input = output / efficiency (CH condensing 0.95, DHW 0.88) x calibration against the gas meter
+  - name: gaz_moc_co
+    unique_id: gaz_moc_co
+    unit_of_measurement: kW
+    device_class: power
+    state_class: measurement
+    icon: mdi:radiator
+    state: >
+      {% if is_state('binary_sensor.opentherm_dhw_active', 'on') %}0
+      {% else %}{{ (states('sensor.piec_moc_cieplna') | float(0) / 0.95
+                    * states('input_number.gaz_korekta') | float(1)) | round(2) }}{% endif %}
+
+  - name: gaz_moc_cwu
+    unique_id: gaz_moc_cwu
+    unit_of_measurement: kW
+    device_class: power
+    state_class: measurement
+    icon: mdi:water-boiler
+    state: >
+      {% if is_state('binary_sensor.opentherm_dhw_active', 'on') %}
+        {{ (states('sensor.piec_moc_cieplna') | float(0) / 0.88
+            * states('input_number.gaz_korekta') | float(1)) | round(2) }}
+      {% else %}0{% endif %}
+
+  - name: gaz_moc
+    unique_id: gaz_moc
+    unit_of_measurement: kW
+    device_class: power
+    state_class: measurement
+    icon: mdi:meter-gas
+    state: >
+      {{ (states('sensor.gaz_moc_co') | float(0) + states('sensor.gaz_moc_cwu') | float(0)) | round(2) }}
+
+  - name: gaz_energia
+    unique_id: gaz_energia
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    icon: mdi:meter-gas
+    state: >
+      {{ (states('sensor.gaz_energia_co') | float(0) + states('sensor.gaz_energia_cwu') | float(0)) | round(3) }}
+    availability: >
+      {{ is_number(states('sensor.gaz_energia_co')) and is_number(states('sensor.gaz_energia_cwu')) }}
+
+  # For the Energy dashboard (gas in m³, like the meter)
+  - name: gaz_zuzycie
+    unique_id: gaz_zuzycie
+    unit_of_measurement: m³
+    device_class: gas
+    state_class: total_increasing
+    icon: mdi:meter-gas-outline
+    state: >
+      {{ (states('sensor.gaz_energia') | float(0) / states('input_number.gaz_wsp_konwersji') | float(11.942)) | round(3) }}
+    availability: >
+      {{ is_number(states('sensor.gaz_energia')) }}
+
+  - name: gaz_koszt_godzina
+    unique_id: gaz_koszt_godzina
+    unit_of_measurement: zł/h
+    state_class: measurement
+    icon: mdi:cash-clock
+    state: >
+      {{ (states('sensor.gaz_moc') | float(0) * states('input_number.gaz_cena_kwh') | float(0)) | round(2) }}
+
+  # Costs: variable part from the utility meters + fixed charges spread over the days
+  - name: gaz_koszt_dzis
+    unique_id: gaz_koszt_dzis
+    unit_of_measurement: zł
+    state_class: measurement
+    icon: mdi:cash
+    state: >
+      {{ (states('sensor.gaz_dzis') | float(0) * states('input_number.gaz_cena_kwh') | float(0)
+          + states('input_number.gaz_oplata_stala') | float(0) * 12 / 365) | round(2) }}
+
+  - name: gaz_koszt_wczoraj
+    unique_id: gaz_koszt_wczoraj
+    unit_of_measurement: zł
+    icon: mdi:cash-check
+    state: >
+      {{ (state_attr('sensor.gaz_dzis', 'last_period') | float(0) * states('input_number.gaz_cena_kwh') | float(0)
+          + states('input_number.gaz_oplata_stala') | float(0) * 12 / 365) | round(2) }}
+
+  # Fixed charges only for the days the meter has tracked (meters started 2026-10-23, not at the start of the period)
+  - name: gaz_koszt_miesiac
+    unique_id: gaz_koszt_miesiac
+    unit_of_measurement: zł
+    state_class: measurement
+    icon: mdi:calendar-month
+    state: >
+      {% set start = as_datetime(state_attr('sensor.gaz_miesiac', 'last_reset'), now()) %}
+      {% set days = (now() - start).total_seconds() / 86400 %}
+      {{ (states('sensor.gaz_miesiac') | float(0) * states('input_number.gaz_cena_kwh') | float(0)
+          + states('input_number.gaz_oplata_stala') | float(0) * 12 / 365 * days) | round(2) }}
+
+  - name: gaz_koszt_rok
+    unique_id: gaz_koszt_rok
+    unit_of_measurement: zł
+    state_class: measurement
+    icon: mdi:calendar-range
+    state: >
+      {% set start = as_datetime(state_attr('sensor.gaz_rok', 'last_reset'), now()) %}
+      {% set days = (now() - start).total_seconds() / 86400 %}
+      {{ (states('sensor.gaz_rok') | float(0) * states('input_number.gaz_cena_kwh') | float(0)
+          + states('input_number.gaz_oplata_stala') | float(0) * 12 / 365 * days) | round(2) }}
+
+  # Model from the invoices (2026-10-23): DHW ~15.9 kWh/day (summer bills) + heating ~2.95 kWh per K of
+  # (21.5 °C - outdoor 24 h mean) per day (HA estimate 22/23.10)
+  - name: gaz_prognoza_doba
+    unique_id: gaz_prognoza_doba
+    unit_of_measurement: kWh
+    state_class: measurement
+    icon: mdi:crystal-ball
+    state: >
+      {% set t = states('sensor.temperatura_zewnetrzna_srednia_24h') | float(10) %}
+      {{ (15.9 + 2.95 * ([21.5 - t, 0] | max)) | round(1) }}
+    attributes:
+      koszt: >
+        {{ ((15.9 + 2.95 * ([21.5 - states('sensor.temperatura_zewnetrzna_srednia_24h') | float(10), 0] | max))
+            * states('input_number.gaz_cena_kwh') | float(0)
+            + states('input_number.gaz_oplata_stala') | float(0) * 12 / 365) | round(2) }}
+
+  # Whole month: tracked energy + model for the rest of the month (and for days before tracking started)
+  - name: gaz_prognoza_miesiac
+    unique_id: gaz_prognoza_miesiac
+    unit_of_measurement: zł
+    state_class: measurement
+    icon: mdi:crystal-ball
+    state: >
+      {% set m0 = now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) %}
+      {% set m1 = (m0 + timedelta(days=32)).replace(day=1) %}
+      {% set start = [as_datetime(state_attr('sensor.gaz_miesiac', 'last_reset'), m0), m0] | max %}
+      {% set tracked = (now() - start).total_seconds() / 86400 %}
+      {% set untracked = (m1 - m0).total_seconds() / 86400 - tracked %}
+      {{ ((states('sensor.gaz_miesiac') | float(0) + untracked * states('sensor.gaz_prognoza_doba') | float(0))
+          * states('input_number.gaz_cena_kwh') | float(0)
+          + states('input_number.gaz_oplata_stala') | float(0)) | round(0) }}
+
   - name: climate_switches_on_count
     state: >
       {{ expand('switch.group_ogrzewanie_podlogowe')
@@ -132,3 +286,145 @@
           {% if not s | is_number or s | float < 20 %}{% set ns.n = ns.n + 1 %}{% endif %}
         {% endfor %}
         {{ ns.n }}
+
+# Electricity invoice estimate: Energa G12W prosumer (net-metering 0.8, bank in kWh), 2-month periods Jan-Feb, Mar-Apr...
+# Registers lag ~1 day (end of yesterday). Invoice uses hourly-netted sums: factors from FES/00050-51 (import L1 0.85,
+# L2 0.965, export 0.96). A surplus in one zone covers a deficit in the other 1:1 (FES/00051).
+- triggers:
+    - trigger: time_pattern
+      minutes: "/15"
+    - trigger: homeassistant
+      event: start
+    - trigger: event
+      event_type: event_template_reloaded
+    - trigger: state
+      entity_id:
+        - sensor.energa_30407650_stan_licznika_import_strefa_1
+        - sensor.energa_30407650_stan_licznika_import_strefa_2
+        - sensor.energa_30407650_stan_licznika_export_strefa_1
+        - sensor.energa_30407650_stan_licznika_export_strefa_2
+        - input_number.prad_start_pobor_l1
+        - input_number.prad_start_pobor_l2
+        - input_number.prad_start_oddanie_l1
+        - input_number.prad_start_oddanie_l2
+        - input_number.prad_magazyn_start_l1
+        - input_number.prad_magazyn_start_l2
+  conditions:
+    - condition: template
+      value_template: >
+        {{ ['import_strefa_1', 'import_strefa_2', 'export_strefa_1', 'export_strefa_2']
+           | map('regex_replace', '^', 'sensor.energa_30407650_stan_licznika_') | map('states')
+           | select('is_number') | list | count == 4 }}
+  variables:
+    p: >
+      {% macro bilans(i1, i2, e1, e2, b1, b2) %}
+        {% set n1 = i1 * 0.85 %}{% set n2 = i2 * 0.965 %}
+        {% set s1 = b1 + e1 * 0.96 * 0.8 - n1 %}{% set s2 = b2 + e2 * 0.96 * 0.8 - n2 %}
+        {% if s1 < 0 and s2 > 0 %}{% set c = [s2, -s1] | min %}{% set s1 = s1 + c %}{% set s2 = s2 - c %}
+        {% elif s2 < 0 and s1 > 0 %}{% set c = [s1, -s2] | min %}{% set s2 = s2 + c %}{% set s1 = s1 - c %}{% endif %}
+        {{ {'n1': n1, 'n2': n2, 'b1': [s1, 0] | max, 'b2': [s2, 0] | max,
+            'p1': [-s1, 0] | max, 'p2': [-s2, 0] | max} | to_json }}
+      {% endmacro %}
+      {% macro tempo(stat, since, days) %}
+        {% set cov = state_attr(stat, 'age_coverage_ratio') | float(0) %}
+        {{ (states(stat) | float(0) / (7 * cov)) if cov > 0.25 else since / days }}
+      {% endmacro %}
+      {% set reg = 'sensor.energa_30407650_stan_licznika_' %}
+      {% set i1 = [states(reg ~ 'import_strefa_1') | float(0) - states('input_number.prad_start_pobor_l1') | float(0), 0] | max %}
+      {% set i2 = [states(reg ~ 'import_strefa_2') | float(0) - states('input_number.prad_start_pobor_l2') | float(0), 0] | max %}
+      {% set e1 = [states(reg ~ 'export_strefa_1') | float(0) - states('input_number.prad_start_oddanie_l1') | float(0), 0] | max %}
+      {% set e2 = [states(reg ~ 'export_strefa_2') | float(0) - states('input_number.prad_start_oddanie_l2') | float(0), 0] | max %}
+      {% set b1 = states('input_number.prad_magazyn_start_l1') | float(0) %}
+      {% set b2 = states('input_number.prad_magazyn_start_l2') | float(0) %}
+      {% set t = now() %}
+      {% set start = t.replace(month=t.month - (t.month - 1) % 2, day=1, hour=0, minute=0, second=0, microsecond=0) %}
+      {% set end = (start + timedelta(days=62)).replace(day=1) %}
+      {% set read = t.replace(hour=0, minute=0, second=0, microsecond=0) %}
+      {% set el = [(read - start).days, 1] | max %}
+      {% set rem = [(end - read).days, 0] | max %}
+      {% set ri1 = tempo('sensor.prad_7d_pobor_l1', i1, el) | float(0) %}
+      {% set ri2 = tempo('sensor.prad_7d_pobor_l2', i2, el) | float(0) %}
+      {% set re1 = tempo('sensor.prad_7d_oddanie_l1', e1, el) | float(0) %}
+      {% set re2 = tempo('sensor.prad_7d_oddanie_l2', e2, el) | float(0) %}
+      {% set fi1 = i1 + ri1 * rem %}{% set fi2 = i2 + ri2 * rem %}
+      {% set fe1 = e1 + re1 * rem %}{% set fe2 = e2 + re2 * rem %}
+      {% set teraz = bilans(i1, i2, e1, e2, b1, b2) | from_json %}
+      {% set f = bilans(fi1, fi2, fe1, fe2, b1, b2) | from_json %}
+      {# FES/00051 net prices x VAT: energy + variable network + quality fee per zone, OZE + cogeneration on
+         netted import, excise on raw import, fixed: subscription + fixed network + capacity fee per month #}
+      {% set vat = 1.23 %}
+      {% set energia = (f.p1 * (0.6107 + 0.4017 + 0.0332) + f.p2 * (0.3990 + 0.0851 + 0.0332)) * vat %}
+      {% set oze = (f.n1 + f.n2) * (0.0073 + 0.0030) * vat %}
+      {% set akcyza = (fi1 + fi2) * 0.005 * vat %}
+      {% set stale = 2 * (0.70 + 20.17 + 24.05) * vat %}
+      {{ {
+        'okres': start.strftime('%d.%m') ~ '–' ~ (end - timedelta(days=1)).strftime('%d.%m.%Y'),
+        'dni_uplynelo': el, 'dni_do_konca': rem,
+        'pobor_l1': i1 | round(1), 'pobor_l2': i2 | round(1), 'oddanie_l1': e1 | round(1), 'oddanie_l2': e2 | round(1),
+        'tempo_pobor': (ri1 + ri2) | round(1), 'tempo_oddanie': (re1 + re2) | round(1),
+        'magazyn_teraz_l1': teraz.b1 | round(0), 'magazyn_teraz_l2': teraz.b2 | round(0),
+        'magazyn_teraz': (teraz.b1 + teraz.b2) | round(0),
+        'prognoza_pobor': (fi1 + fi2) | round(0), 'prognoza_oddanie': (fe1 + fe2) | round(0),
+        'magazyn_koniec': (f.b1 + f.b2) | round(0), 'do_zaplaty_kwh': (f.p1 + f.p2) | round(0),
+        'koszt_energii': energia | round(2), 'oplata_oze_kog': oze | round(2), 'akcyza': akcyza | round(2),
+        'oplaty_stale': stale | round(2), 'faktura': (energia + oze + akcyza + stale) | round(2)
+      } }}
+  sensor:
+    - name: prad_faktura_prognoza
+      unique_id: prad_faktura_prognoza
+      unit_of_measurement: zł
+      state_class: measurement
+      icon: mdi:file-document-outline
+      state: "{{ p.faktura }}"
+      attributes:
+        okres: "{{ p.okres }}"
+        dni_uplynelo: "{{ p.dni_uplynelo }}"
+        dni_do_konca: "{{ p.dni_do_konca }}"
+        pobor_l1: "{{ p.pobor_l1 }}"
+        pobor_l2: "{{ p.pobor_l2 }}"
+        oddanie_l1: "{{ p.oddanie_l1 }}"
+        oddanie_l2: "{{ p.oddanie_l2 }}"
+        tempo_pobor: "{{ p.tempo_pobor }}"
+        tempo_oddanie: "{{ p.tempo_oddanie }}"
+        magazyn_teraz_l1: "{{ p.magazyn_teraz_l1 }}"
+        magazyn_teraz_l2: "{{ p.magazyn_teraz_l2 }}"
+        prognoza_pobor: "{{ p.prognoza_pobor }}"
+        prognoza_oddanie: "{{ p.prognoza_oddanie }}"
+        magazyn_koniec: "{{ p.magazyn_koniec }}"
+        do_zaplaty_kwh: "{{ p.do_zaplaty_kwh }}"
+        koszt_energii: "{{ p.koszt_energii }}"
+        oplata_oze_kog: "{{ p.oplata_oze_kog }}"
+        akcyza: "{{ p.akcyza }}"
+        oplaty_stale: "{{ p.oplaty_stale }}"
+
+    - name: prad_magazyn
+      unique_id: prad_magazyn
+      unit_of_measurement: kWh
+      state_class: measurement
+      icon: mdi:battery-charging-70
+      state: "{{ p.magazyn_teraz }}"
+
+    - name: prad_magazyn_koniec_okresu
+      unique_id: prad_magazyn_koniec_okresu
+      unit_of_measurement: kWh
+      state_class: measurement
+      icon: mdi:battery-clock
+      state: "{{ p.magazyn_koniec }}"
+
+    - name: prad_okres_pobor
+      unique_id: prad_okres_pobor
+      unit_of_measurement: kWh
+      icon: mdi:transmission-tower-import
+      state: "{{ (p.pobor_l1 + p.pobor_l2) | round(1) }}"
+
+    - name: prad_okres_oddanie
+      unique_id: prad_okres_oddanie
+      unit_of_measurement: kWh
+      icon: mdi:transmission-tower-export
+      state: "{{ (p.oddanie_l1 + p.oddanie_l2) | round(1) }}"
+
+    - name: prad_do_zaplaty_kwh
+      unique_id: prad_do_zaplaty_kwh
+      unit_of_measurement: kWh
+      icon: mdi:cash-plus
+      state: "{{ p.do_zaplaty_kwh }}"

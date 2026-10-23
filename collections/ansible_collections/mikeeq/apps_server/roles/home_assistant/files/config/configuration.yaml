@@ -97,6 +97,8 @@ switch: !include switch.yaml
 climate: !include climate.yaml
 alert: !include alert.yaml
 input_boolean: !include input_boolean.yaml
+input_number: !include input_number.yaml
+utility_meter: !include utility_meter.yaml
 
 rest:
   # scan_interval: 10

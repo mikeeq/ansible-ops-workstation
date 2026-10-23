@@ -193,6 +193,26 @@ views:
               action: toggle
             hold_action:
               action: more-info
+          - type: tile
+            entity: sensor.gaz_koszt_dzis
+            name: Gaz dziś
+            icon: mdi:meter-gas
+            color: deep-orange
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/gaz
+          - type: tile
+            entity: sensor.gaz_prognoza_miesiac
+            name: Prognoza miesiąca
+            icon: mdi:crystal-ball
+            color: amber
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/gaz
 
       - type: grid
         cards:
@@ -545,6 +565,530 @@ views:
               - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
                 name: Podłogówka
 
+      # Gas estimate from OpenTherm (no gas meter in HA), tariff from the last invoice
+      - type: grid
+        cards:
+          - type: heading
+            heading: Gaz i koszty
+            icon: mdi:meter-gas
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/gaz
+            badges:
+              - type: entity
+                entity: sensor.gaz_koszt_godzina
+                icon: mdi:cash-clock
+          - type: tile
+            entity: sensor.gaz_moc
+            name: Pobór gazu teraz
+            icon: mdi:fire
+            color: deep-orange
+            features_position: inline
+            features:
+              - type: trend-graph
+                hours_to_show: 24
+          - type: tile
+            entity: sensor.gaz_koszt_dzis
+            name: Koszt dziś
+            icon: mdi:cash
+            color: deep-orange
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_koszt_wczoraj
+            name: Wczoraj
+            icon: mdi:cash-check
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_co_dzis
+            name: CO dziś
+            icon: mdi:radiator
+            color: deep-orange
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_cwu_dzis
+            name: CWU dziś
+            icon: mdi:water-boiler
+            color: blue
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_koszt_miesiac
+            name: Ten miesiąc
+            icon: mdi:calendar-month
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_prognoza_miesiac
+            name: Prognoza miesiąca
+            icon: mdi:crystal-ball
+            color: amber
+            grid_options:
+              columns: 6
+          - type: statistics-graph
+            title: Gaz dziennie (kWh)
+            entities:
+              - entity: sensor.gaz_energia_co
+                name: CO
+              - entity: sensor.gaz_energia_cwu
+                name: CWU
+            stat_types:
+              - change
+            period: day
+            days_to_show: 14
+            chart_type: bar
+
+  # Gas details, opened from "Gaz i koszty" / home tiles
+  - title: Gaz
+    path: gaz
+    subview: true
+    back_path: /lovelace/ogrzewanie
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Gaz – szacunek z kotła (OpenTherm)
+            icon: mdi:meter-gas
+          - type: tile
+            entity: sensor.gaz_moc
+            name: Pobór gazu
+            icon: mdi:fire
+            color: deep-orange
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_godzina
+            name: Koszt teraz
+            icon: mdi:cash-clock
+            color: deep-orange
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_dzis
+            name: Koszt dziś
+            icon: mdi:cash
+            color: deep-orange
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_wczoraj
+            name: Wczoraj
+            icon: mdi:cash-check
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_miesiac
+            name: Ten miesiąc
+            icon: mdi:calendar-month
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_prognoza_miesiac
+            name: Prognoza miesiąca
+            icon: mdi:crystal-ball
+            color: amber
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_rok
+            name: Ten rok
+            icon: mdi:calendar-range
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_prognoza_doba
+            name: Prognoza doby (pogoda)
+            icon: mdi:weather-snowy-heavy
+            color: amber
+            state_content:
+              - state
+              - koszt
+            grid_options:
+              columns: 3
+          - type: custom:apexcharts-card
+            graph_span: 24h
+            header:
+              show: true
+              title: Pobór gazu i temperatura (24 h)
+              show_states: true
+              colorize_states: true
+            yaxis:
+              - id: kw
+                min: 0
+                max: 20
+                decimals: 0
+              - id: temp
+                opposite: true
+                decimals: 0
+            series:
+              - entity: sensor.gaz_moc_co
+                name: CO
+                type: area
+                curve: stepline
+                color: "#ff7a1a"
+                opacity: 0.4
+                yaxis_id: kw
+              - entity: sensor.gaz_moc_cwu
+                name: CWU
+                type: area
+                curve: stepline
+                color: "#3a78c2"
+                opacity: 0.4
+                yaxis_id: kw
+              - entity: sensor.temperatura_zewnetrzna
+                name: Na zewnątrz
+                type: line
+                color: "#9aa4b1"
+                stroke_width: 2
+                yaxis_id: temp
+      - type: grid
+        column_span: 2
+        cards:
+          - type: custom:apexcharts-card
+            graph_span: 14d
+            span:
+              end: day
+            header:
+              show: true
+              title: Gaz dziennie (kWh) i temperatura
+            yaxis:
+              - id: kwh
+                min: 0
+                decimals: 0
+              - id: temp
+                opposite: true
+                decimals: 0
+            series:
+              - entity: sensor.gaz_energia_co
+                name: CO
+                type: column
+                color: "#ff7a1a"
+                yaxis_id: kwh
+                statistics:
+                  type: change
+                  period: day
+                  align: start
+              - entity: sensor.gaz_energia_cwu
+                name: CWU
+                type: column
+                color: "#3a78c2"
+                yaxis_id: kwh
+                statistics:
+                  type: change
+                  period: day
+                  align: start
+              - entity: sensor.temperatura_zewnetrzna
+                name: Śr. na zewnątrz
+                type: line
+                color: "#9aa4b1"
+                stroke_width: 2
+                yaxis_id: temp
+                statistics:
+                  type: mean
+                  period: day
+                  align: start
+          - type: custom:apexcharts-card
+            graph_span: 14d
+            span:
+              end: day
+            header:
+              show: true
+              title: Koszt dzienny (zł)
+            yaxis:
+              - min: 0
+                decimals: 0
+            series:
+              - entity: sensor.gaz_koszt_dzis
+                name: Koszt
+                type: column
+                color: "#f2a33a"
+                statistics:
+                  type: max
+                  period: day
+                  align: start
+          - type: statistics-graph
+            title: Gaz miesięcznie (kWh)
+            entities:
+              - entity: sensor.gaz_energia_co
+                name: CO
+              - entity: sensor.gaz_energia_cwu
+                name: CWU
+            stat_types:
+              - change
+            period: month
+            days_to_show: 365
+            chart_type: bar
+      - type: grid
+        cards:
+          - type: gauge
+            entity: sensor.gaz_moc
+            name: Pobór gazu (kW)
+            min: 0
+            max: 20
+            needle: true
+            severity:
+              green: 0
+              yellow: 9
+              red: 15
+          - type: markdown
+            title: Podsumowanie
+            content: |
+{% raw %}
+              {% set k = states('input_number.gaz_wsp_konwersji') | float(11.942) %}
+              {% set c = states('input_number.gaz_cena_kwh') | float(0) %}
+              {% set d = states('sensor.gaz_dzis') | float(0) %}
+              {% set w = state_attr('sensor.gaz_dzis', 'last_period') | float(0) %}
+              {% set m = states('sensor.gaz_miesiac') | float(0) %}
+              | | kWh | m³ | zł |
+              |---|---:|---:|---:|
+              | 🔥 Dziś | {{ d | round(1) }} | {{ (d / k) | round(2) }} | {{ states('sensor.gaz_koszt_dzis') }} |
+              | ⏪ Wczoraj | {{ w | round(1) }} | {{ (w / k) | round(2) }} | {{ states('sensor.gaz_koszt_wczoraj') }} |
+              | 📅 Miesiąc | {{ m | round(0) }} | {{ (m / k) | round(1) }} | {{ states('sensor.gaz_koszt_miesiac') }} |
+              | 🔮 Prognoza doby | {{ states('sensor.gaz_prognoza_doba') }} | {{ (states('sensor.gaz_prognoza_doba') | float(0) / k) | round(2) }} | {{ state_attr('sensor.gaz_prognoza_doba', 'koszt') }} |
+
+              Cena {{ c }} zł/kWh ({{ (c * k) | round(2) }} zł/m³), opłaty stałe {{ states('input_number.gaz_oplata_stala') }} zł/mies.
+              Szacunek z modulacji OpenTherm (±20–25 %), korekta ×{{ states('input_number.gaz_korekta') }}.
+{% endraw %}
+          - type: markdown
+            title: Faktury myORLEN (W-3.9)
+            content: |
+              | Okres | m³ | kWh/dobę | Brutto |
+              |---|---:|---:|---:|
+              | 01.08–30.09.2026 | 81 | 15,9 | 462,71 zł |
+              | 24.05–31.07.2026 | 99 | 17,1 | 528,13 zł |
+
+              Lato = sama CWU. Prognoza sezonu: ~1420 m³ / ~6250 zł rocznie.
+              Odczyt gazomierza 30.09: 188 m³ – nowy odczyt pozwala ustawić korektę.
+          - type: entities
+            title: Parametry (zmiana w repo)
+            entities:
+              - entity: input_number.gaz_cena_kwh
+                name: Cena zmienna
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: input_number.gaz_oplata_stala
+                name: Opłaty stałe
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: input_number.gaz_wsp_konwersji
+                name: Współczynnik konwersji
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: input_number.gaz_korekta
+                name: Korekta szacunku
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: sensor.gaz_zuzycie
+                name: Licznik (szacunek)
+              - entity: sensor.piec_moc_cieplna
+                name: Moc cieplna kotła
+
+  # Electricity invoice estimate (Energa prosumer net-metering), opened from "Więcej → Energia"
+  - title: Prąd
+    path: prad
+    subview: true
+    back_path: /lovelace/wiecej
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Prąd – faktura Energa (prosument 0,8)
+            icon: mdi:transmission-tower
+          - type: tile
+            entity: sensor.prad_faktura_prognoza
+            name: Prognoza faktury
+            icon: mdi:file-document-outline
+            color: amber
+            state_content:
+              - state
+              - okres
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.prad_magazyn
+            name: Magazyn energii teraz
+            icon: mdi:battery-charging-70
+            color: green
+            features_position: inline
+            features:
+              - type: trend-graph
+                hours_to_show: 168
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.prad_magazyn_koniec_okresu
+            name: Magazyn na koniec okresu
+            icon: mdi:battery-clock
+            color: green
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.prad_do_zaplaty_kwh
+            name: Ponad magazyn (płatne)
+            icon: mdi:cash-plus
+            color: red
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.prad_okres_pobor
+            name: Pobór w okresie
+            icon: mdi:transmission-tower-import
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.prad_okres_oddanie
+            name: Oddanie w okresie
+            icon: mdi:transmission-tower-export
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.energa_30407650_zuzycie_dzis
+            name: Pobór dziś (Energa)
+            icon: mdi:home-import-outline
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.energa_30407650_produkcja_dzis
+            name: Oddanie dziś (Energa)
+            icon: mdi:home-export-outline
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
+            name: PV teraz (SAJ)
+            icon: mdi:solar-power
+            color: amber
+            grid_options:
+              columns: 3
+            visibility: {{ hide_unavailable | replace('ENTITY', 'sensor.saj_saj_wifi_dtu_a2c8e9_current_power') }}
+          - type: tile
+            entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_yield
+            name: PV dziś (SAJ)
+            icon: mdi:solar-power-variant
+            color: amber
+            grid_options:
+              columns: 3
+            visibility: {{ hide_unavailable | replace('ENTITY', 'sensor.saj_saj_wifi_dtu_a2c8e9_today_yield') }}
+      - type: grid
+        column_span: 2
+        cards:
+          - type: statistics-graph
+            title: Pobór i oddanie dziennie (kWh, Energa)
+            entities:
+              - entity: sensor.energa_30407650_panel_energia_strefa_1
+                name: Pobór L1 (dzień)
+              - entity: sensor.energa_30407650_panel_energia_strefa_2
+                name: Pobór L2 (noc/weekend)
+              - entity: sensor.energa_30407650_panel_energia_produkcja_strefa_1
+                name: Oddanie L1
+              - entity: sensor.energa_30407650_panel_energia_produkcja_strefa_2
+                name: Oddanie L2
+            stat_types:
+              - change
+            period: day
+            days_to_show: 30
+            chart_type: bar
+          - type: custom:apexcharts-card
+            graph_span: 30d
+            header:
+              show: true
+              title: Magazyn energii i prognoza faktury
+              show_states: true
+              colorize_states: true
+            yaxis:
+              - id: kwh
+                min: 0
+                decimals: 0
+              - id: zl
+                opposite: true
+                min: 0
+                decimals: 0
+            series:
+              - entity: sensor.prad_magazyn
+                name: Magazyn
+                type: area
+                color: "#4caf50"
+                opacity: 0.3
+                yaxis_id: kwh
+                group_by:
+                  func: last
+                  duration: 1d
+              - entity: sensor.prad_faktura_prognoza
+                name: Prognoza faktury
+                type: line
+                color: "#f2a33a"
+                stroke_width: 2
+                yaxis_id: zl
+                group_by:
+                  func: last
+                  duration: 1d
+      - type: grid
+        cards:
+          - type: markdown
+            title: Prognoza faktury
+            content: |
+{% raw %}
+              {% set p = 'sensor.prad_faktura_prognoza' %}
+              **Okres {{ state_attr(p, 'okres') }}** – minęło {{ state_attr(p, 'dni_uplynelo') }} dni, zostało {{ state_attr(p, 'dni_do_konca') }}.
+
+              | | L1 dzień | L2 noc/weekend |
+              |---|---:|---:|
+              | ⬇️ Pobór | {{ state_attr(p, 'pobor_l1') }} | {{ state_attr(p, 'pobor_l2') }} |
+              | ⬆️ Oddanie | {{ state_attr(p, 'oddanie_l1') }} | {{ state_attr(p, 'oddanie_l2') }} |
+              | 🔋 Magazyn teraz | {{ state_attr(p, 'magazyn_teraz_l1') }} | {{ state_attr(p, 'magazyn_teraz_l2') }} |
+
+              Tempo: pobór {{ state_attr(p, 'tempo_pobor') }} kWh/d, oddanie {{ state_attr(p, 'tempo_oddanie') }} kWh/d →
+              do końca okresu pobór {{ state_attr(p, 'prognoza_pobor') }} kWh, oddanie {{ state_attr(p, 'prognoza_oddanie') }} kWh,
+              magazyn {{ state_attr(p, 'magazyn_koniec') }} kWh.
+
+              | Składnik (brutto) | zł |
+              |---|---:|
+              | Energia ponad magazyn ({{ state_attr(p, 'do_zaplaty_kwh') }} kWh) | {{ state_attr(p, 'koszt_energii') }} |
+              | OZE + kogeneracja | {{ state_attr(p, 'oplata_oze_kog') }} |
+              | Akcyza | {{ state_attr(p, 'akcyza') }} |
+              | Opłaty stałe (2 mies.) | {{ state_attr(p, 'oplaty_stale') }} |
+              | **Razem** | **{{ states(p) }}** |
+{% endraw %}
+          - type: markdown
+            title: Faktury Energa (G12W, prosument)
+            content: |
+              | Okres | Pobór | Oddanie | Magazyn po | Brutto |
+              |---|---:|---:|---:|---:|
+              | 07–08.2026 | 1190 | 2017 | 796 (L1) | 131,92 zł |
+              | 05–06.2026 | 1540 | 2350 | 357 (L1) | 138,47 zł |
+
+              Stawki brutto ponad magazyn: L1 1,29 zł/kWh, L2 0,64 zł/kWh.
+              Gdy magazyn się skończy (zima), faktura rośnie do kilkuset zł.
+          - type: entities
+            title: Stan na początek okresu (z faktury)
+            entities:
+              - entity: input_number.prad_magazyn_start_l1
+                name: Magazyn L1
+              - entity: input_number.prad_magazyn_start_l2
+                name: Magazyn L2
+              - entity: input_number.prad_start_pobor_l1
+                name: Licznik pobór L1
+              - entity: input_number.prad_start_pobor_l2
+                name: Licznik pobór L2
+              - entity: input_number.prad_start_oddanie_l1
+                name: Licznik oddanie L1
+              - entity: input_number.prad_start_oddanie_l2
+                name: Licznik oddanie L2
+              - entity: automation.prad_nowy_okres
+                name: Przeniesienie na nowy okres
+
   # Boiler room details for tuning – not in the tab bar, opened from "Dziś"
   - title: Kotłownia
     path: kotlownia
@@ -853,6 +1397,40 @@ views:
           - type: heading
             heading: Energia
             icon: mdi:lightning-bolt
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/prad
+          - type: tile
+            entity: sensor.prad_faktura_prognoza
+            name: Faktura za prąd (prognoza)
+            icon: mdi:file-document-outline
+            color: amber
+            state_content:
+              - state
+              - okres
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/prad
+          - type: tile
+            entity: sensor.prad_magazyn
+            name: Magazyn energii
+            icon: mdi:battery-charging-70
+            color: green
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/prad
+          - type: tile
+            entity: sensor.gaz_koszt_miesiac
+            name: Gaz w tym miesiącu
+            icon: mdi:meter-gas
+            color: deep-orange
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/gaz
           - type: tile
             entity: sensor.tesla_wall_connector_status
             name: Wall Connector
