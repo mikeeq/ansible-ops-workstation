@@ -1,6 +1,12 @@
 ---
 nginx_install_path: "/opt/nginx"
 
+# Optional per-site keys:
+#   allowed_subnet: "192.168.0.0/18"  # allow only this subnet
+#   csp: "default-src 'self' ..."     # custom CSP, false to let the backend set it
+#   deny_dotfiles: false              # default true, blocks /.* paths except /.well-known
+#   proxy_buffering: false            # default true, false disables request/response buffering
+#   proxy_timeout: "3600s"            # proxy send/read timeout, default 60s
 nginx_sites:
   - source_url: "http://localhost:8080"
     destination_url: "web.example.com"

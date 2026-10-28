@@ -1,0 +1,99 @@
+---
+# Nightly restic backup of server data (configs, SQLite/MySQL dumps, documents).
+# The repository password must be provided from the private inventory
+# (backup_restic_password) – without it the repository cannot be restored.
+
+backup_restic_repository: "/mnt/hdd/backup/restic-{{ inventory_hostname | lower }}"
+backup_restic_password: ""
+backup_restic_config_dir: "/etc/backup-restic"
+backup_restic_script_path: "/usr/local/sbin/backup-restic.sh"
+# Staging directory for database dumps; keep it on the same disk as the repository
+backup_restic_staging_dir: "/mnt/hdd/backup/staging"
+
+backup_restic_packages:
+  - restic
+  - sqlite
+
+# Run the backup at the end of the role (used by the Jenkins job)
+backup_restic_run: true
+backup_restic_run_timeout: 21600
+
+backup_restic_tags:
+  - nightly
+
+backup_restic_paths:
+  - /etc
+  - /opt
+  - /var/lib/libvirt/qemu
+  - /home/mikee/Documents
+  - /mnt/hdd/immich/uploads/backups
+
+backup_restic_excludes:
+  # large or reproducible software
+  - /opt/ollama-docker
+  - /opt/nvidia
+  - /opt/pipx
+  - /opt/azure_functions_core_tools
+  # Immich: database is dumped daily by Immich itself to /mnt/hdd/immich/uploads/backups
+  - /opt/immich
+  # live database files – consistent dumps are taken into the staging directory
+  - /opt/zabbix/zbx_env/var/lib/mysql
+  - /opt/homeassistant/config/home-assistant_v2.db*
+  - /opt/homeassistant/config/zigbee.db*
+  - /opt/vaultwarden/data/db.sqlite3*
+  - /opt/prometheus/grafana_data/grafana.db*
+  - /opt/frigate/frigatedb
+  # metrics, logs, caches
+  - /opt/prometheus/prometheus_data
+  - /opt/prometheus/loki
+  - /opt/adguardhome/workdir/data
+  - /opt/jenkins/jenkins_home/workspace
+  - /opt/jenkins/jenkins_home/caches
+  - /opt/nginx/logs
+  - "*.log"
+  - "*.log.[0-9]*"
+  - "*~"
+
+# Consistent online copies of SQLite databases (sqlite3 .backup)
+backup_restic_sqlite_dumps:
+  - name: homeassistant-zigbee
+    path: /opt/homeassistant/config/zigbee.db
+  - name: vaultwarden
+    path: /opt/vaultwarden/data/db.sqlite3
+  - name: grafana
+    path: /opt/prometheus/grafana_data/grafana.db
+
+# Home Assistant recorder history (~3 GB) – disabled by default
+backup_restic_ha_recorder_db: false
+backup_restic_ha_recorder_db_path: /opt/homeassistant/config/home-assistant_v2.db
+
+# MySQL/MariaDB dumps from Docker containers using *_PASSWORD_FILE secrets
+backup_restic_mysql_dumps:
+  - name: zabbix
+    container: zabbix-mysql-server-1
+
+# Applications that must be stopped for a consistent backup. Each entry gets its
+# own snapshot (tagged with its name) taken while the listed containers are
+# stopped; the paths are excluded from the main snapshot.
+backup_restic_offline_backups:
+  # OpenCloud (files, metadata, built-in IDM/LDAP, NATS, generated secrets),
+  # Radicale calendars/contacts and the Collabora WOPI proof key
+  - name: opencloud
+    containers:
+      - opencloud
+      - opencloud_radicale
+    paths: "{{ [opencloud_install_path | default('/opt/opencloud'),
+      opencloud_config_path | default('/opt/opencloud/config'),
+      opencloud_data_path | default('/opt/opencloud/data'),
+      opencloud_radicale_data_path | default('/opt/opencloud/radicale')] | unique }}"
+    excludes:
+      # thumbnail cache, regenerated on demand
+      - "{{ opencloud_data_path | default('/opt/opencloud/data') }}/thumbnails"
+
+backup_restic_keep_daily: 7
+backup_restic_keep_weekly: 4
+backup_restic_keep_monthly: 6
+
+# Weekday (1 = Monday ... 7 = Sunday) on which `restic check` verifies the repository
+backup_restic_check_weekday: 7
+backup_restic_check_read_data_subset: "5%"

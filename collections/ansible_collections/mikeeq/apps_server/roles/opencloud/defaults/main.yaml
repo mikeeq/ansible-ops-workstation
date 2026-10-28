@@ -1,0 +1,45 @@
+---
+opencloud_install_path: "/opt/opencloud"
+opencloud_data_path: "{{ opencloud_install_path }}/data"
+opencloud_config_path: "{{ opencloud_install_path }}/config"
+opencloud_radicale_data_path: "{{ opencloud_install_path }}/radicale"
+
+opencloud_clean: false
+
+# Stable (production) channel, matches the stable-7.2 branch of
+# https://github.com/opencloud-eu/opencloud-compose
+# Rolling releases: opencloud_image: "opencloudeu/opencloud-rolling"
+opencloud_image: "opencloudeu/opencloud"
+opencloud_version: "7.2.4"
+opencloud_uid: 1000
+opencloud_gid: 1000
+
+opencloud_domain: "cloud.example.com"
+opencloud_bind_address: "0.0.0.0"
+opencloud_port: 9200
+# Only used on the very first start (user "admin"), later changes are ignored.
+opencloud_admin_password: ""
+opencloud_default_language: "en"
+# Skip TLS verification of internal calls, only needed with self-signed certs.
+opencloud_insecure: false
+# When set, containers resolve the OpenCloud/Collabora domains to this IP
+# (the reverse proxy) instead of relying on DNS/hairpin NAT.
+opencloud_reverse_proxy_ip: ""
+
+opencloud_collabora_enabled: true
+opencloud_collabora_image: "collabora/code"
+opencloud_collabora_version: "26.04.5.2.1"
+opencloud_collabora_domain: "collabora.example.com"
+opencloud_collabora_bind_address: "0.0.0.0"
+opencloud_collabora_port: 9980
+opencloud_collabora_admin_user: "admin"
+opencloud_collabora_admin_password: ""
+opencloud_collabora_ssl_verification: true
+# Disables welcome/feedback popups, limits to 20 connections / 10 documents.
+opencloud_collabora_home_mode: true
+# Host fonts made available to Collabora (e.g. MS core fonts), "" to disable.
+opencloud_collabora_fonts_path: "/usr/share/fonts"
+
+opencloud_radicale_enabled: true
+opencloud_radicale_image: "opencloudeu/radicale"
+opencloud_radicale_version: "v3.9.0"

@@ -90,4 +90,5 @@
     - mikeeq.apps_server.nginx
     - mikeeq.apps_server.immich
     - mikeeq.apps_server.vaultwarden
+    - mikeeq.apps_server.opencloud
     - mikeeq.apps_server.home_assistant

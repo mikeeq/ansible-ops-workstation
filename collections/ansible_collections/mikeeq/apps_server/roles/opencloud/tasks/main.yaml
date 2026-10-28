@@ -1,0 +1,26 @@
+---
+- name: Check docker-compose executable is present
+  ansible.builtin.shell: "which docker-compose"
+  register: opencloud_docker_compose_result
+  ignore_errors: true
+  changed_when: false
+
+- name: Fail on condition
+  ansible.builtin.fail:
+    msg: "docker-compose is not found! You need to install it first."
+  when: opencloud_docker_compose_result.rc != 0
+
+- name: Ensure required secrets are set
+  ansible.builtin.assert:
+    that:
+      - opencloud_admin_password | length > 0
+      - not opencloud_collabora_enabled or opencloud_collabora_admin_password | length > 0
+    fail_msg: "Set opencloud_admin_password (and opencloud_collabora_admin_password when Collabora is enabled)."
+    quiet: true
+
+- name: Include cleanup.yaml
+  ansible.builtin.include_tasks: cleanup.yaml
+  when: opencloud_clean
+
+- name: Import install.yaml
+  ansible.builtin.import_tasks: install.yaml

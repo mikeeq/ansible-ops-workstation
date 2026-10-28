@@ -1,0 +1,37 @@
+---
+- name: Create backup directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+  loop:
+    - "{{ backup_restic_config_dir }}"
+    - "{{ backup_restic_repository | dirname }}"
+    - "{{ backup_restic_staging_dir }}"
+
+- name: Write restic repository password
+  ansible.builtin.copy:
+    content: "{{ backup_restic_password }}"
+    dest: "{{ backup_restic_config_dir }}/password"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Write restic exclude file
+  ansible.builtin.template:
+    src: excludes.j2
+    dest: "{{ backup_restic_config_dir }}/excludes"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Install backup script
+  ansible.builtin.template:
+    src: backup-restic.sh.j2
+    dest: "{{ backup_restic_script_path }}"
+    owner: root
+    group: root
+    mode: "0700"

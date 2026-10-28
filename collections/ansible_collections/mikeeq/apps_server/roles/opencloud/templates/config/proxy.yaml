@@ -1,0 +1,30 @@
+# Based on config/opencloud/proxy.yaml from opencloud-compose (stable-7.2).
+# Forwards CalDAV/CardDAV (incl. /.well-known) to radicale; OpenCloud handles
+# authentication and passes the user in X-Remote-User.
+additional_policies:
+  - name: default
+    routes:
+      - endpoint: /caldav/
+        backend: http://radicale:5232
+        remote_user_header: X-Remote-User
+        skip_x_access_token: true
+        additional_headers:
+          - X-Script-Name: /caldav
+      - endpoint: /.well-known/caldav
+        backend: http://radicale:5232
+        remote_user_header: X-Remote-User
+        skip_x_access_token: true
+        additional_headers:
+          - X-Script-Name: /caldav
+      - endpoint: /carddav/
+        backend: http://radicale:5232
+        remote_user_header: X-Remote-User
+        skip_x_access_token: true
+        additional_headers:
+          - X-Script-Name: /carddav
+      - endpoint: /.well-known/carddav
+        backend: http://radicale:5232
+        remote_user_header: X-Remote-User
+        skip_x_access_token: true
+        additional_headers:
+          - X-Script-Name: /carddav

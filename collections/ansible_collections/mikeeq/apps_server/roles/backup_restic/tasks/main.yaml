@@ -1,0 +1,20 @@
+---
+- name: Ensure restic repository password is set
+  ansible.builtin.assert:
+    that:
+      - backup_restic_password | length >= 16
+    fail_msg: "backup_restic_password is not set (define it in the private inventory)."
+    quiet: true
+
+- name: Import install.yaml
+  ansible.builtin.import_tasks: install.yaml
+
+- name: Import config.yaml
+  ansible.builtin.import_tasks: config.yaml
+
+- name: Import init.yaml
+  ansible.builtin.import_tasks: init.yaml
+
+- name: Include run.yaml
+  ansible.builtin.include_tasks: run.yaml
+  when: backup_restic_run | bool

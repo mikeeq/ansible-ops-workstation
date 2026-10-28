@@ -1,0 +1,85 @@
+---
+- name: Ensure install dir exists
+  ansible.builtin.file:
+    path: "{{ opencloud_install_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure dirs owned by the OpenCloud container user exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ opencloud_uid }}"
+    group: "{{ opencloud_gid }}"
+    mode: "0750"
+  loop: "{{ [opencloud_data_path, opencloud_config_path] + ([opencloud_radicale_data_path] if opencloud_radicale_enabled else []) }}"
+
+- name: Configure docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yaml
+    dest: "{{ opencloud_install_path }}/docker-compose.yaml"
+    mode: "0600"
+    backup: true
+
+- name: Configure OpenCloud config files
+  ansible.builtin.template:
+    src: "config/{{ item }}"
+    dest: "{{ opencloud_config_path }}/{{ item }}"
+    owner: "{{ opencloud_uid }}"
+    group: "{{ opencloud_gid }}"
+    mode: "0644"
+  loop: "{{ ['csp.yaml'] + (['proxy.yaml'] if opencloud_radicale_enabled else []) }}"
+  register: opencloud_config_result
+
+- name: Ensure radicale proxy routes are absent when radicale is disabled
+  ansible.builtin.file:
+    path: "{{ opencloud_config_path }}/proxy.yaml"
+    state: absent
+  when: not opencloud_radicale_enabled
+  register: opencloud_proxy_config_absent_result
+
+- name: Configure radicale
+  ansible.builtin.template:
+    src: config/radicale.config
+    dest: "{{ opencloud_install_path }}/radicale.config"
+    mode: "0644"
+  when: opencloud_radicale_enabled
+  register: opencloud_radicale_config_result
+
+# WOPI proof key, coolwsd runs as uid 1001 and expects a PKCS#1 RSA key
+- name: Generate Collabora WOPI proof key
+  community.crypto.openssl_privatekey:
+    path: "{{ opencloud_install_path }}/collabora_proof_key"
+    type: RSA
+    size: 4096
+    format: pkcs1
+    owner: "1001"
+    group: "1001"
+    mode: "0400"
+  when: opencloud_collabora_enabled
+  register: opencloud_proof_key_result
+
+- name: Pull Docker image using docker-compose
+  ansible.builtin.command: docker-compose pull
+  changed_when: opencloud_pull_result.stderr_lines | length > 2
+  register: opencloud_pull_result
+  args:
+    chdir: "{{ opencloud_install_path }}"
+
+- name: Run using docker-compose
+  ansible.builtin.command: docker-compose up -d --remove-orphans
+  changed_when: opencloud_up_result.stderr_lines | length > 2
+  register: opencloud_up_result
+  args:
+    chdir: "{{ opencloud_install_path }}"
+
+- name: Restart using docker-compose when config changed
+  ansible.builtin.command: docker-compose restart
+  changed_when: true
+  args:
+    chdir: "{{ opencloud_install_path }}"
+  when: >-
+    opencloud_config_result.changed
+    or opencloud_proxy_config_absent_result.changed
+    or opencloud_radicale_config_result.changed
+    or opencloud_proof_key_result.changed

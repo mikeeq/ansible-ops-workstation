@@ -1,0 +1,11 @@
+---
+# Nightly backup of mikeeClevo with restic (run by Jenkins job "Backup Clevo").
+# Usage:
+#   ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yaml backup.yaml
+#   ansible-playbook -i ... backup.yaml -e backup_restic_run=false   # install/config only
+- name: Backup server data with restic
+  hosts: "{{ hosts_to_deploy | default('mikeeClevo') }}"
+  become: true
+  gather_facts: false
+  roles:
+    - mikeeq.apps_server.backup_restic
