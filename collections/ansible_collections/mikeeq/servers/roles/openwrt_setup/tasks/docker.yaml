@@ -128,6 +128,17 @@
         ip link add "$SHIM" link '{{ openwrt_setup_docker_macvlan_parent }}' type macvlan mode bridge
         ip addr add '{{ openwrt_setup_docker_macvlan_shim_ip }}/32' dev "$SHIM"
         ip link set "$SHIM" up
+      {% if openwrt_setup_docker_macvlan_restart_containers %}
+        # the shim is gone only when the parent bridge was rebuilt - container macvlan
+        # interfaces went with it, so restart the containers to recreate them
+        (
+          sleep 5
+          ids="$(docker ps -q --filter network='{{ openwrt_setup_docker_macvlan_name }}' 2>/dev/null)"
+          [ -n "$ids" ] || exit 0
+          logger -t "$SHIM" "parent rebuilt, restarting macvlan containers"
+          docker restart $ids >/dev/null 2>&1
+        ) &
+      {% endif %}
       fi
       {% for r in openwrt_setup_docker_macvlan_shim_routes %}
       ip route replace '{{ r }}/32' dev "$SHIM"

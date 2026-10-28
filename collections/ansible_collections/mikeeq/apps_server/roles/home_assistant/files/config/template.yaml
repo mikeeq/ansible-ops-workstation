@@ -528,3 +528,42 @@
       unit_of_measurement: kWh
       icon: mdi:cash-plus
       state: "{{ p.do_zaplaty_kwh }}"
+
+# Energa G12W zone: L2 = 22-06 and 13-15 on weekdays, all day on weekends and holidays (movable feasts not included)
+- sensor:
+    - name: prad_strefa
+      unique_id: prad_strefa
+      icon: mdi:clock-time-four-outline
+      state: >
+        {% set t = now() %}
+        {% set swieto = t.strftime('%m-%d') in ['01-01', '01-06', '05-01', '05-03', '08-15', '11-01', '11-11',
+                                               '12-24', '12-25', '12-26'] %}
+        {{ 'L2' if t.isoweekday() > 5 or swieto or t.hour >= 22 or t.hour < 6 or 13 <= t.hour < 15 else 'L1' }}
+
+    # EV charging (Tesla Wall Connector) in the current billing period, split by zone (utility_meter tesla_okres)
+    - name: prad_tesla_okres
+      unique_id: prad_tesla_okres
+      unit_of_measurement: kWh
+      icon: mdi:car-electric
+      availability: "{{ has_value('sensor.tesla_okres_l1') and has_value('sensor.tesla_okres_l2') }}"
+      state: "{{ (states('sensor.tesla_okres_l1') | float + states('sensor.tesla_okres_l2') | float) | round(1) }}"
+      attributes:
+        l1: "{{ states('sensor.tesla_okres_l1') | float(0) | round(1) }}"
+        l2: "{{ states('sensor.tesla_okres_l2') | float(0) | round(1) }}"
+        udzial_poboru: >
+          {% set pobor = states('sensor.prad_okres_pobor') | float(0) %}
+          {% set ev = states('sensor.tesla_okres_l1') | float(0) + states('sensor.tesla_okres_l2') | float(0) %}
+          {{ (100 * ev / pobor) | round(0) if pobor > 0 else none }}
+        # Same per-zone rates as prad_faktura_prognoza: what the charging would cost without the energy bank
+        wartosc_wg_stawek: >
+          {{ (states('sensor.tesla_okres_l1') | float(0) * (0.6107 + 0.4017 + 0.0332) * 1.23
+              + states('sensor.tesla_okres_l2') | float(0) * (0.3990 + 0.0851 + 0.0332) * 1.23) | round(2) }}
+
+    # Garage air temperature from the Wall Connector handle; it reports 255 on read errors
+    - name: temperatura_garaz
+      unique_id: temperatura_garaz
+      unit_of_measurement: "°C"
+      device_class: temperature
+      state_class: measurement
+      availability: "{{ states('sensor.tesla_wall_connector_handle_temperature') | float(255) < 80 }}"
+      state: "{{ states('sensor.tesla_wall_connector_handle_temperature') | float }}"

@@ -1,4 +1,31 @@
 ---
+# Keep the zone-split utility meters on the current G12W zone
+- id: prad_strefa_licznik
+  alias: prad_strefa_licznik
+  description: "Przełącza taryfę licznika tesla_okres (L1/L2) wg sensor.prad_strefa"
+  mode: queued
+  max: 3
+  triggers:
+    - trigger: state
+      entity_id: sensor.prad_strefa
+      to:
+        - L1
+        - L2
+    - trigger: homeassistant
+      event: start
+  conditions:
+    - condition: state
+      entity_id: sensor.prad_strefa
+      state:
+        - L1
+        - L2
+  actions:
+    - action: select.select_option
+      target:
+        entity_id: select.tesla_okres
+      data:
+        option: "{% raw %}{{ states('sensor.prad_strefa') | lower }}{% endraw %}"
+
 # New 2-month Energa billing period (1st of Jan/Mar/May/Jul/Sep/Nov, registers for the last day arrive ~01:00):
 # carry the estimated energy bank and meter registers over. Correct the helpers from the invoice when it arrives.
 - alias: prad_nowy_okres

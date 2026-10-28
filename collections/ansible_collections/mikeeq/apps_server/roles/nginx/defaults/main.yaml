@@ -23,3 +23,7 @@ nginx_certs:
   - cn: "web.example.com"
     domain_name: "web.example.com"
 nginx_certs_path: "/etc/ssl/certs"
+
+# Docker network of nginx (IPv4 must stay within HA trusted_proxies 172.16.0.0/12)
+nginx_docker_subnet_ipv4: "172.18.0.0/16"
+nginx_docker_subnet_ipv6: "fd0f:c7e6:9f79:18::/64"

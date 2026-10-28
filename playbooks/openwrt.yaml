@@ -20,6 +20,8 @@
 # # DNS now runs on the BPI-R4 as macvlan containers (coredns .11, adguard .12)
 # # on the `lanmac` network created by the openwrt_setup docker role. Cert
 # # issuance (letsencrypt_coredns) stays off OpenWrt - see vms.yaml.
+# # Deployed separately with dns-bpir4.yaml (kept out of this playbook so DNS
+# # can be updated without touching network/wireless/firewall).
 # - name: Provision DNS containers on BPI-R4
 #   hosts:
 #     - openwrt_bpir4garage

@@ -15,3 +15,18 @@ gaz_miesiac:
 gaz_rok:
   source: sensor.gaz_energia
   cycle: yearly
+
+# EV charging (Tesla Wall Connector)
+tesla_dzis:
+  source: sensor.tesla_wall_connector_energy
+  cycle: daily
+tesla_miesiac:
+  source: sensor.tesla_wall_connector_energy
+  cycle: monthly
+# Energa billing period (Jan-Feb, Mar-Apr, ...), tariff switched by automation prad_strefa_licznik
+tesla_okres:
+  source: sensor.tesla_wall_connector_energy
+  cron: "0 0 1 */2 *"
+  tariffs:
+    - l1
+    - l2

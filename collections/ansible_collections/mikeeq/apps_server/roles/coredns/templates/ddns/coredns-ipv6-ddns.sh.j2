@@ -1,0 +1,55 @@
+#!/bin/bash
+# {{ ansible_managed }}
+# Replace the IPv6 address in AAAA records of the zone file when the ISP prefix
+# changes (host address = new prefix + stable suffix {{ coredns_ipv6_suffix }})
+# and bump the SOA serial so CoreDNS reloads the zone.
+set -euo pipefail
+
+ZONE="{{ coredns_install_path }}/config/{{ coredns_zone_filename }}"
+SUFFIX="{{ coredns_ipv6_suffix }}"
+TAG="coredns-ipv6-ddns"
+
+{% if coredns_ipv6_prefix_interface | length > 0 %}
+# prefix of the global /64 routed on {{ coredns_ipv6_prefix_interface }} + suffix
+# (canonical /64 route always ends with "::/64")
+prefix="$(ip -6 route show dev {{ coredns_ipv6_prefix_interface }} \
+  | awk '$1 ~ /^2[0-9a-f]{3}:.*::\/64$/ { print $1; exit }' || true)"
+new=""
+if [[ -n "${prefix}" ]]; then
+  new="${prefix%::/64}${SUFFIX}"
+fi
+{% else %}
+new="$(ip -6 -o addr show scope global | awk '{print $4}' | cut -d/ -f1 \
+  | grep -E '^2[0-9a-f]{3}:' | grep -E "${SUFFIX}$" | head -n1 || true)"
+{% endif %}
+if [[ -z "${new}" ]]; then
+  logger -t "${TAG}" "no global IPv6 address/prefix for suffix ${SUFFIX}, skipping"
+  exit 0
+fi
+
+old="$(awk '$3 == "AAAA" { print $4; exit }' "${ZONE}")"
+if [[ -z "${old}" || "${old}" == "${new}" ]]; then
+  exit 0
+fi
+
+serial="$(grep -w '; serial' "${ZONE}" | awk '{ print $1 }')"
+today="$(date +%Y%m%d)"
+if [[ "${serial:0:8}" == "${today}" ]]; then
+  new_serial=$((serial + 1))
+else
+  new_serial="${today}01"
+fi
+if (( new_serial <= serial )); then
+  new_serial=$((serial + 1))
+fi
+
+tmp="$(mktemp)"
+sed -e "/[[:space:]]IN[[:space:]]\+AAAA[[:space:]]/s/${old}/${new}/" \
+  -e "s/^\([[:space:]]*\)${serial}\([[:space:]]*; serial\)/\1${new_serial}\2/" \
+  "${ZONE}" > "${tmp}"
+# keep the inode: the zone file is bind-mounted into the CoreDNS container
+cat "${tmp}" > "${ZONE}"
+rm -f "${tmp}"
+
+logger -t "${TAG}" "AAAA ${old} -> ${new}, serial ${serial} -> ${new_serial}"
+echo "AAAA ${old} -> ${new}, serial ${serial} -> ${new_serial}"

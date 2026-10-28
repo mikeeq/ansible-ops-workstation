@@ -5,6 +5,38 @@
 #     name: bind-utils
 #     state: present
 
+- name: Detect global IPv6 address with stable suffix
+  ansible.builtin.shell: |
+    set -o pipefail
+    {% if coredns_ipv6_prefix_interface | length > 0 %}
+    # canonical /64 route always ends with "::/64"
+    p="$(ip -6 route show dev {{ coredns_ipv6_prefix_interface }} \
+      | awk '$1 ~ /^2[0-9a-f]{3}:.*::\/64$/ { print $1; exit }')"
+    [ -n "${p}" ] && echo "${p%::/64}{{ coredns_ipv6_suffix }}"
+    {% else %}
+    ip -6 -o addr show scope global | awk '{print $4}' | cut -d/ -f1 \
+      | grep -E '^2[0-9a-f]{3}:' | grep -E '{{ coredns_ipv6_suffix }}$' | head -n1
+    {% endif %}
+  args:
+    executable: /bin/bash
+  register: coredns_ipv6_address_res
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: coredns_ipv6_records | length > 0
+
+- name: Set public IPv6 address for AAAA records
+  ansible.builtin.set_fact:
+    coredns_public_ipv6: "{{ coredns_ipv6_address_res.stdout | default('') | trim }}"
+  when: coredns_ipv6_records | length > 0
+
+- name: Warn when no global IPv6 address with the suffix is present
+  ansible.builtin.debug:
+    msg: "No global IPv6 address ending with {{ coredns_ipv6_suffix }} - AAAA records are skipped."
+  when:
+    - coredns_ipv6_records | length > 0
+    - coredns_public_ipv6 | default('') | length == 0
+
 - name: Find current serial number
   ansible.builtin.shell: echo -n $(cat {{ coredns_zone_filename }} | grep -w '; serial' | cut -d';' -f1)
   register: coredns_current_serial_number_res

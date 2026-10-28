@@ -1,4 +1,4 @@
-{#- Main dashboard, phone-first (Pixel 9 Pro / iPhone 14 Pro). Previous layout: ui-lovelace-old.yaml.
+inventory/group_vars/clevo.yaml:generic-api-key:251{#- Main dashboard, phone-first (Pixel 9 Pro / iPhone 14 Pro). Previous layout: ui-lovelace-old.yaml.
     Ansible renders this file: HA templates would need raw/endraw, none are used here. -#}
 {%- set room_labels = {
   'przedpokoj': 'Korytarz', 'lazienka_dol': 'Łazienka dół', 'salon': 'Salon', 'kuchnia': 'Kuchnia',
@@ -12,7 +12,7 @@
   'dol': {
     'rooms': {'kuchnia': [38.1, 15.9], 'salon': [73.5, 29.0], 'przedpokoj': [39.2, 49.5],
               'lazienka_dol': [56.5, 68.7], 'sypialnia_dol': [81.5, 82.2]},
-    'sensors': [['sensor.th_garaz_temperature', 24.5, 79.9], ['sensor.opentherm_ds18b20', 56.5, 89.7]],
+    'sensors': [['sensor.temperatura_garaz', 24.5, 79.9], ['sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature', 56.5, 89.7]],
   },
   'gora': {
     'rooms': {'garderoba': [44.5, 20.5], 'pokoj_julia': [77.1, 17.7], 'sypialnia_gora': [44.8, 46.0],
@@ -1126,6 +1126,91 @@ views:
                 name: Licznik oddanie L2
               - entity: automation.prad_nowy_okres
                 name: Przeniesienie na nowy okres
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Ładowanie auta (Tesla Wall Connector)
+            icon: mdi:ev-station
+          - type: tile
+            entity: sensor.prad_tesla_okres
+            name: Auto w okresie
+            icon: mdi:car-electric
+            color: blue
+            state_content:
+              - state
+              - udzial_poboru
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.tesla_miesiac
+            name: Auto w tym miesiącu
+            icon: mdi:calendar-month
+            color: blue
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.tesla_dzis
+            name: Auto dziś
+            icon: mdi:calendar-today
+            color: blue
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.tesla_wall_connector_status
+            name: Wall Connector
+            icon: mdi:ev-station
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.tesla_wall_connector_total_power
+            name: Moc ładowania
+            icon: mdi:flash
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.tesla_wall_connector_session_energy
+            name: Bieżąca sesja
+            icon: mdi:battery-charging
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.prad_strefa
+            name: Strefa G12W teraz
+            icon: mdi:clock-time-four-outline
+            grid_options:
+              columns: 3
+      - type: grid
+        column_span: 2
+        cards:
+          - type: statistics-graph
+            title: Ładowanie auta dziennie (kWh)
+            entities:
+              - entity: sensor.tesla_wall_connector_energy
+                name: Tesla Wall Connector
+            stat_types:
+              - change
+            period: day
+            days_to_show: 60
+            chart_type: bar
+      - type: grid
+        cards:
+          - type: markdown
+            title: Auto w okresie rozliczeniowym
+            content: |
+{% raw %}
+              {% set t = 'sensor.prad_tesla_okres' %}
+              | | kWh |
+              |---|---:|
+              | L1 dzień | {{ state_attr(t, 'l1') }} |
+              | L2 noc/weekend | {{ state_attr(t, 'l2') }} |
+              | **Razem** | **{{ states(t) }}** |
+
+              To {{ state_attr(t, 'udzial_poboru') }} % poboru z sieci w okresie ({{ states('sensor.prad_okres_pobor') }} kWh,
+              liczniki Energa spóźniają się o ok. dobę). Według stawek ponad magazyn byłoby to
+              **{{ state_attr(t, 'wartosc_wg_stawek') }} zł**; póki starcza magazynu, płaci się tylko OZE i akcyzę
+              (ok. 0,02 zł/kWh), ale każda kWh zjada ok. 1,25 kWh oddanych do sieci.
+{% endraw %}
 
   # Boiler room details for tuning – not in the tab bar, opened from "Dziś"
   - title: Kotłownia
@@ -1138,54 +1223,90 @@ views:
       - type: grid
         column_span: 3
         cards:
+          # Supply = solid, return = dashed (same colour per circuit); modulation as a shaded area on the right axis
           - type: custom:apexcharts-card
             graph_span: 6h
             header:
               show: true
               title: Kocioł i grupy pompowe
+              show_states: true
+              colorize_states: true
+            apex_config:
+              chart:
+                height: 420
+              legend:
+                show: true
+                position: bottom
+              tooltip:
+                shared: true
+                x:
+                  format: HH:mm
+              grid:
+                strokeDashArray: 3
+            all_series_config:
+              stroke_width: 2
+              curve: smooth
+              group_by:
+                func: avg
+                duration: 2min
             series:
-              - entity: binary_sensor.opentherm_flame_on
-                name: Płomień
-                yaxis_id: "2"
-                type: line
-                curve: stepline
-                transform: "return x === 'on' ? 1 : 0;"
               - entity: sensor.opentherm_rel_mod_level
                 name: Modulacja
-                yaxis_id: "1"
+                yaxis_id: mod
+                type: area
+                curve: stepline
+                color: "#9e9e9e"
+                opacity: 0.2
+                stroke_width: 1
               - entity: sensor.opentherm_t_boiler
-                name: Zasilanie
-                yaxis_id: "1"
+                name: TB (kocioł)
+                yaxis_id: temp
+                color: "#e53935"
+                stroke_width: 3
               - entity: sensor.opentherm_t_set_effective
                 name: Nastawa
-                yaxis_id: "1"
+                yaxis_id: temp
+                color: "#ff9800"
                 curve: stepline
-              - entity: number.opentherm_ch_target
-                name: Krzywa
-                yaxis_id: "1"
-                curve: stepline
+                stroke_dash: 6
+                group_by:
+                  func: last
+                  duration: 2min
               - entity: sensor.opentherm_t_exhaust
                 name: Spaliny
-                yaxis_id: "1"
-              - entity: sensor.climate_switches_on_count
-                name: Strefy
-                yaxis_id: "2"
-                type: line
-                curve: stepline
+                yaxis_id: temp
+                color: "#8e24aa"
               - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
                 name: Podłoga Z
-                yaxis_id: "1"
+                yaxis_id: temp
+                color: "#1e88e5"
               - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
                 name: Podłoga P
-                yaxis_id: "1"
+                yaxis_id: temp
+                color: "#1e88e5"
+                stroke_dash: 4
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+                name: Grupy Z
+                yaxis_id: temp
+                color: "#43a047"
             yaxis:
-              - id: "1"
-                min: 0
-                max: 80
-              - id: "2"
+              - id: temp
+                min: ~20
+                max: ~70
+                decimals: 0
+                apex_config:
+                  tickAmount: 5
+                  title:
+                    text: °C
+              - id: mod
                 opposite: true
                 min: 0
-                max: 12
+                max: 100
+                decimals: 0
+                apex_config:
+                  tickAmount: 5
+                  title:
+                    text: Modulacja %
       - type: grid
         cards:
           - type: heading
@@ -1221,7 +1342,7 @@ views:
                 name: Praca palnika / 1 h
               - entity: sensor.opentherm_t_exhaust
                 name: Spaliny
-              - entity: sensor.opentherm_ds18b20
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
                 name: Temperatura w kotłowni
       - type: grid
         cards:
@@ -1236,8 +1357,6 @@ views:
                 name: Podłoga powrót
               - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
                 name: Grzejniki zasilanie
-              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
-                name: Grzejniki powrót
               - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
                 name: Pompa grzejniki
               - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
@@ -1473,8 +1592,10 @@ views:
             grid_options:
               columns: 6
             visibility: {{ hide_unavailable | replace('ENTITY', 'sensor.th_ogrod_humidity') }}
-          - type: picture
-            image: https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=342&col=208&lang=pl
+          - type: iframe
+            url: >-
+              https://embed.windy.com/embed2.html?lat=54.459&lon=18.357&detailLat=54.495&detailLon=18.357&width=650&height=450&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1
+            aspect_ratio: 122%
       - type: grid
         cards:
           - type: heading

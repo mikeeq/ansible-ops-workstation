@@ -272,3 +272,74 @@
           tag: ogrzewanie_czujniki
           channel: Temperature
 {% endraw %}
+
+# Washer/dryer heat the bathroom air, so the thermostat stops calling and the floor goes cold.
+# The thermostat is set to off for the run because keep_alive would close a manually opened actuator.
+# Restart-safe: initial_hvac_mode: heat brings the thermostat back.
+{% for i in home_assistant_config.climate if i.name in ['lazienka_dol', 'lazienka_gora'] %}
+- id: ogrzewanie_podloga_{{ i.name }}
+  alias: ogrzewanie_podloga_{{ i.name }}
+  description: "Podłoga {{ i.name }}: 45 min grzania, gdy pętla nie grzała od 8 h (od 4 h, gdy i tak grzeją inne strefy), 05–22"
+  mode: single
+  max_exceeded: silent
+  triggers:
+    - trigger: state
+      entity_id: {{ i.switch }}
+      to: "off"
+      for:
+        hours: 8
+    - trigger: time
+      at: "05:00:00"
+    - trigger: state
+      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+      to: "on"
+      for:
+        minutes: 10
+  conditions:
+    - condition: state
+      entity_id: climate.{{ i.name }}
+      state: heat
+    - condition: time
+      after: "05:00:00"
+      before: "22:00:00"
+    - condition: numeric_state
+      entity_id: climate.{{ i.name }}
+      attribute: current_temperature
+      below: 25
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: {{ i.switch }}
+          state: "off"
+          for:
+            hours: 8
+        - condition: and
+          conditions:
+            - condition: state
+              entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+              state: "on"
+            - condition: state
+              entity_id: {{ i.switch }}
+              state: "off"
+              for:
+                hours: 4
+  actions:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.{{ i.name }}
+      data:
+        hvac_mode: "off"
+    - action: switch.turn_on
+      target:
+        entity_id: {{ i.switch }}
+    - delay:
+        minutes: 45
+    - action: switch.turn_off
+      target:
+        entity_id: {{ i.switch }}
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.{{ i.name }}
+      data:
+        hvac_mode: heat
+{% endfor %}

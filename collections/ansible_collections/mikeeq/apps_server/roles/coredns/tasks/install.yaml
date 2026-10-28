@@ -21,6 +21,10 @@
 - name: Import config.yaml
   ansible.builtin.import_tasks: config.yaml
 
+- name: Import ddns.yaml
+  ansible.builtin.import_tasks: ddns.yaml
+  when: coredns_ipv6_ddns | bool
+
 - name: Ensure LAN macvlan docker network exists
   become: true
   ansible.builtin.shell: |

@@ -173,7 +173,7 @@ home_assistant_config:
         sensor: shelly_htg3_serwerownia_temperature
         threshold: 35
       - room: garaz
-        sensor: th_garaz_temperature
+        sensor: temperatura_garaz
         threshold: 38
       - room: ogrod
         sensor: th_ogrod_temperature
