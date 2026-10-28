@@ -55,3 +55,16 @@
     name: dawn
     enabled: false
     state: stopped
+
+# usteer replaces dawn for AP steering; config in templates/openwrt/<host>/usteer
+- name: Enable service usteer, in all cases
+  community.general.openwrt_init:
+    name: usteer
+    enabled: true
+    state: started
+
+- name: Restart usteer after config change
+  community.general.openwrt_init:
+    name: usteer
+    state: restarted
+  when: openwrt_setup_config_change.changed

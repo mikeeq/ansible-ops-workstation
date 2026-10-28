@@ -128,16 +128,18 @@
               data:
                 hvac_mode: heat
 
-# Roof windows on the west slope overheat Julia's and Timi's rooms on sunny afternoons and the screed lags 2-4 h:
-# on a sunny forecast lower their setpoints in the morning, restore at sunset (or at HA start after sunset).
+# West-facing rooms (roof windows: Julia, Timi; terrace door/windows: salon, ground-floor bedroom) overheat on sunny
+# afternoons and the screed lags 2-4 h. The salon used to heat 01:00-07:30 before a sunny day and then overshot by
+# 1.5-1.7 K, so the decision is taken at 01:00: on a sunny forecast lower the setpoints, restore at sunset
+# (or at HA start after sunset).
 - id: ogrzewanie_slonce
   alias: ogrzewanie_slonce
-  description: "Prognoza >= 3 h słońca 11-17 → pokoje z oknami dachowymi (Julia, Timi) −1 K od 09:00 do zachodu słońca"
+  description: "Prognoza >= 3 h słońca 11-17 → pokoje zachodnie (Julia, Timi, salon, sypialnia dół) −1 K od 01:00 do zachodu słońca"
   mode: queued
   max: 3
   triggers:
     - trigger: time
-      at: "09:00:00"
+      at: "01:00:00"
       id: start
     - trigger: sun
       event: sunset
@@ -149,6 +151,8 @@
     pokoje:
       - climate.pokoj_julia
       - climate.pokoj_timi
+      - climate.salon
+      - climate.sypialnia_dol
     obnizenie: 1.0
   actions:
     - choose:

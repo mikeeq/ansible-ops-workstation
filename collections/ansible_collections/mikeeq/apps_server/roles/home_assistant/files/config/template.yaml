@@ -171,8 +171,8 @@
       {{ (states('sensor.gaz_rok') | float(0) * states('input_number.gaz_cena_kwh') | float(0)
           + states('input_number.gaz_oplata_stala') | float(0) * 12 / 365 * days) | round(2) }}
 
-  # Model from the invoices (2026-10-23): DHW ~15.9 kWh/day (summer bills) + heating ~2.95 kWh per K of
-  # (21.5 °C - outdoor 24 h mean) per day (HA estimate 22/23.10)
+  # DHW ~15.9 kWh/day (summer bills) + heating 8.8 kWh per K below a 12 °C balance point (outdoor 24 h mean):
+  # 22/23.10 at ~7 °C ~44 kWh, 23/24.10 at ~10.6 °C no heating at all (sun, screed mass). Recalibrate in winter.
   - name: gaz_prognoza_doba
     unique_id: gaz_prognoza_doba
     unit_of_measurement: kWh
@@ -180,10 +180,10 @@
     icon: mdi:crystal-ball
     state: >
       {% set t = states('sensor.temperatura_zewnetrzna_srednia_24h') | float(10) %}
-      {{ (15.9 + 2.95 * ([21.5 - t, 0] | max)) | round(1) }}
+      {{ (15.9 + 8.8 * ([12 - t, 0] | max)) | round(1) }}
     attributes:
       koszt: >
-        {{ ((15.9 + 2.95 * ([21.5 - states('sensor.temperatura_zewnetrzna_srednia_24h') | float(10), 0] | max))
+        {{ ((15.9 + 8.8 * ([12 - states('sensor.temperatura_zewnetrzna_srednia_24h') | float(10), 0] | max))
             * states('input_number.gaz_cena_kwh') | float(0)
             + states('input_number.gaz_oplata_stala') | float(0) * 12 / 365) | round(2) }}
 
@@ -207,6 +207,24 @@
     state: >
       {{ expand('switch.group_ogrzewanie_podlogowe')
       | selectattr('state', 'eq', 'on') | list | count }}
+
+  # Room display names for alerts and the setpoint log (same as room_labels in ui-lovelace.yaml)
+  - name: pokoje_etykiety
+    unique_id: pokoje_etykiety
+    icon: mdi:label-multiple
+    state: "11"
+    attributes:
+      przedpokoj: Korytarz
+      lazienka_dol: Łazienka dół
+      salon: Salon
+      kuchnia: Kuchnia
+      sypialnia_dol: Sypialnia dół
+      pokoj_julia: Pokój Julia
+      sypialnia_gora: Sypialnia
+      garderoba: Garderoba
+      biuro_miki: Biuro Miki
+      lazienka_gora: Łazienka góra
+      pokoj_timi: Pokój Timi
 
 - binary_sensor:
   # Holds the last flame state while OpenTherm is unavailable, so restarts are not counted as burner starts
@@ -240,8 +258,90 @@
       {{ is_state('alert.dwor_brama_otwarta', 'on')
          or is_state('alert.garaz_brama_otwarta', 'on')
          or is_state('alert.serwerownia_temp_wysoka', 'on')
-         or is_state('alert.gaz_kotlownia', 'on') }}
+         or is_state('alert.gaz_kotlownia', 'on')
+         or is_state('alert.okno_otwarte', 'on')
+         or is_state('alert.pokoj_za_zimno', 'on')
+         or is_state('alert.pokoj_szybko_sie_nagrzewa', 'on') }}
     device_class: problem
+
+  # Room alerts from sensor.zmiana_temperatury_* (K/h, sensors/temperatura_zmiana.yaml). Only heated rooms – the
+  # server room has no thermostat, its window is opened on purpose. Bathrooms: showers and airing, higher limit.
+  - name: okno_otwarte
+    unique_id: okno_otwarte
+    device_class: window
+    delay_on:
+      minutes: 5
+    delay_off:
+      minutes: 10
+    state: >
+      {% set ns = namespace(n=0) %}
+      {% for e in integration_entities('derivative') | select('match', 'sensor.zmiana_temperatury_') %}
+        {% set limit = -3.0 if 'lazienka' in e else -1.5 %}
+        {% if states(e) | float(0) < limit %}{% set ns.n = ns.n + 1 %}{% endif %}
+      {% endfor %}
+      {{ ns.n > 0 }}
+    attributes:
+      pokoje: >
+        {% set ns = namespace(r=[]) %}
+        {% for e in integration_entities('derivative') | select('match', 'sensor.zmiana_temperatury_') %}
+          {% set room = e | replace('sensor.zmiana_temperatury_', '') %}
+          {% set limit = -3.0 if 'lazienka' in e else -1.5 %}
+          {% if states(e) | float(0) < limit %}
+            {% set ns.r = ns.r + [(state_attr('sensor.pokoje_etykiety', room) or room) ~ ' ' ~ states(e) ~ ' K/h'] %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.r }}
+
+  - name: pokoj_szybko_sie_nagrzewa
+    unique_id: pokoj_szybko_sie_nagrzewa
+    device_class: heat
+    delay_on:
+      minutes: 5
+    delay_off:
+      minutes: 10
+    state: >
+      {{ integration_entities('derivative') | select('match', 'sensor.zmiana_temperatury_')
+         | reject('search', 'lazienka') | map('states') | map('float', 0) | select('gt', 2.0) | list | count > 0 }}
+    attributes:
+      pokoje: >
+        {% set ns = namespace(r=[]) %}
+        {% for e in integration_entities('derivative') | select('match', 'sensor.zmiana_temperatury_')
+                    | reject('search', 'lazienka') %}
+          {% set room = e | replace('sensor.zmiana_temperatury_', '') %}
+          {% if states(e) | float(0) > 2.0 %}
+            {% set ns.r = ns.r + [(state_attr('sensor.pokoje_etykiety', room) or room) ~ ' +' ~ states(e) ~ ' K/h'] %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.r }}
+
+  # Heating cannot keep up (or a window stays open): over 1 K below the setpoint for an hour
+  - name: pokoj_za_zimno
+    unique_id: pokoj_za_zimno
+    device_class: cold
+    delay_on:
+      minutes: 60
+    delay_off:
+      minutes: 10
+    state: >
+      {% set ns = namespace(n=0) %}
+      {% for c in states.climate | selectattr('state', 'eq', 'heat') %}
+        {% if c.attributes.current_temperature | float(99) < c.attributes.temperature | float(0) - 1.0 %}
+          {% set ns.n = ns.n + 1 %}
+        {% endif %}
+      {% endfor %}
+      {{ ns.n > 0 }}
+    attributes:
+      pokoje: >
+        {% set ns = namespace(r=[]) %}
+        {% for c in states.climate | selectattr('state', 'eq', 'heat') %}
+          {% set t = c.attributes.current_temperature | float(99) %}
+          {% set s = c.attributes.temperature | float(0) %}
+          {% if t < s - 1.0 %}
+            {% set ns.r = ns.r + [(state_attr('sensor.pokoje_etykiety', c.object_id) or c.object_id)
+                                  ~ ' ' ~ t ~ ' °C (nastawa ' ~ s ~ ')'] %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.r }}
 
 
 # Garage gate as a real cover: state from the reed switch, and open/close only pulse the relay

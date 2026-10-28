@@ -90,7 +90,7 @@ views:
           - type: heading
             heading: Alerty
             icon: mdi:alert
-{% for a in [['gaz_kotlownia', 'Gaz w kotłowni', 'mdi:meter-gas'], ['garaz_brama_otwarta', 'Brama garażowa otwarta', 'mdi:garage-alert'], ['dwor_brama_otwarta', 'Brama wjazdowa otwarta', 'mdi:gate-alert'], ['serwerownia_temp_wysoka', 'Serwerownia za ciepło', 'mdi:thermometer-alert']] %}
+{% for a in [['gaz_kotlownia', 'Gaz w kotłowni', 'mdi:meter-gas'], ['garaz_brama_otwarta', 'Brama garażowa otwarta', 'mdi:garage-alert'], ['dwor_brama_otwarta', 'Brama wjazdowa otwarta', 'mdi:gate-alert'], ['serwerownia_temp_wysoka', 'Serwerownia za ciepło', 'mdi:thermometer-alert'], ['okno_otwarte', 'Okno/drzwi otwarte?', 'mdi:window-open-variant'], ['pokoj_za_zimno', 'Pokój się wychładza', 'mdi:snowflake-thermometer'], ['pokoj_szybko_sie_nagrzewa', 'Pokój szybko się nagrzewa', 'mdi:thermometer-chevron-up']] %}
           - type: tile
             entity: alert.{{ a[0] }}
             name: {{ a[1] }}
@@ -150,6 +150,9 @@ views:
             name: Furtka
             camera_view: auto
             show_state: false
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/domofon
 
       - type: grid
         cards:
@@ -564,6 +567,41 @@ views:
                 name: CWU
               - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
                 name: Podłogówka
+
+      # Room alerts (template.yaml / alert.yaml) and the setpoint log (automations/ogrzewanie_log.yaml)
+      - type: grid
+        cards:
+          - type: heading
+            heading: Alerty i zmiany nastaw
+            icon: mdi:thermometer-alert
+{% for b in [['okno_otwarte', 'Okno/drzwi otwarte?', 'mdi:window-open-variant', 'blue'], ['pokoj_za_zimno', 'Wychładza się', 'mdi:snowflake-thermometer', 'light-blue'], ['pokoj_szybko_sie_nagrzewa', 'Szybko się nagrzewa', 'mdi:thermometer-chevron-up', 'red']] %}
+          - type: tile
+            entity: binary_sensor.{{ b[0] }}
+            name: {{ b[1] }}
+            icon: {{ b[2] }}
+            color: {{ b[3] }}
+            state_content:
+              - state
+              - pokoje
+            grid_options:
+              columns: {{ 12 if loop.first else 6 }}
+{% endfor %}
+          - type: history-graph
+            title: Zmiana temperatury (K/h)
+            hours_to_show: 24
+            entities:
+{% for i in home_assistant_config.climate %}
+              - entity: sensor.zmiana_temperatury_{{ i.name }}
+                name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
+{% endfor %}
+          - type: logbook
+            title: Zmiany nastaw termostatów
+            hours_to_show: 72
+            target:
+              entity_id:
+{% for i in home_assistant_config.climate %}
+                - climate.{{ i.name }}
+{% endfor %}
 
       # Gas estimate from OpenTherm (no gas meter in HA), tariff from the last invoice
       - type: grid
@@ -1260,6 +1298,113 @@ views:
               - entity: {{ i.switch }}
                 name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
 {% endfor %}
+
+  # =====================================================================
+  # Domofon: live doorbell with 2-way audio (go2rtc WebRTC backchannel,
+  # requires HTTPS), opened from the doorbell notification
+  # =====================================================================
+  - title: Domofon
+    path: domofon
+    icon: mdi:doorbell-video
+    type: sections
+    max_columns: 2
+    sections:
+      - type: grid
+        cards:
+          - type: custom:advanced-camera-card
+            grid_options:
+              columns: full
+            cameras:
+              - camera_entity: camera.reolink_doorbell
+                live_provider: go2rtc
+                go2rtc:
+                  # Frigate camera name differs from the go2rtc restream name
+                  stream: reolink_doorbell_restream
+                  modes:
+                    - webrtc
+            live:
+              # Hear the visitor right away and keep audio on after talking
+              auto_unmute:
+                - selected
+                - visible
+                - microphone
+              auto_mute:
+                - hidden
+              controls:
+                builtin: false
+              microphone:
+                # Reolink doorbell is half-duplex: any backchannel audio (even a
+                # muted mic sending silence) mutes its microphone, so connect the
+                # mic only while talking and drop it right after
+                always_connected: false
+                disconnect_seconds: 3
+            # Always-visible intercom button bar below the video
+            menu:
+              style: outside
+              position: bottom
+              button_size: 64
+              buttons:
+                microphone:
+                  enabled: true
+                  # Push-to-talk, matching the half-duplex doorbell
+                  type: momentary
+                  priority: 100
+                mute:
+                  enabled: true
+                  priority: 90
+                fullscreen:
+                  priority: 10
+{% for b in ['iris', 'cameras', 'live', 'clips', 'snapshots', 'timeline', 'download', 'camera_ui', 'display_mode', 'media_player', 'ptz_home'] %}
+                {{ b }}:
+                  enabled: false
+{% endfor %}
+      - type: grid
+        cards:
+          - type: heading
+            heading: Furtka
+            icon: mdi:gate
+          - type: tile
+            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
+            name: Otwórz furtkę
+            icon: mdi:door-open
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+          - type: tile
+            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+            name: Brama wjazdowa
+            icon: mdi:gate
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+          - type: tile
+            entity: select.reolink_furtka_play_quick_reply_message
+            name: Szybka odpowiedź
+            features:
+              - type: select-options
+          - type: tile
+            entity: automation.auto_furtka_dzwonek
+            name: Furtka otwiera się na dzwonek
+            icon: mdi:doorbell
+            features_position: inline
+            features:
+              - type: toggle
+          - type: tile
+            entity: siren.reolink_furtka_siren
+            name: Syrena
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.reolink_furtka_visitor
+            name: Ostatni dzwonek
+            icon: mdi:bell-ring
+            state_content: last_changed
+            grid_options:
+              columns: 6
 
   # =====================================================================
   # Kamery: snapshots (cheap on mobile data), tap = live
