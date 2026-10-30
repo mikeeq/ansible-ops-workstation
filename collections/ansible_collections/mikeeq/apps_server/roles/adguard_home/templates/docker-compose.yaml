@@ -4,7 +4,7 @@ version: '3.8'
 services:
   adguard:
     container_name: adguard
-    image: adguard/adguardhome:latest
+    image: {{ adguard_home_image }}
     # environment:
       # WEBPASSWORD: 'set a secure password here or it will be random'
     # Volumes store your data between container upgrades

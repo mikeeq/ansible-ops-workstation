@@ -11,3 +11,14 @@
   sampling_size: 500
   precision: 3
 {% endfor %}
+
+# PV power averaged over 5 min – smooths clouds for solar EV charging (automations/tesla_slonce.yaml)
+- platform: statistics
+  name: pv_moc_5min
+  unique_id: pv_moc_5min
+  entity_id: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
+  state_characteristic: mean
+  max_age:
+    minutes: 5
+  sampling_size: 100
+  precision: 0

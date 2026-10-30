@@ -52,11 +52,11 @@
               target:
                 entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
 
-# Heating curve: boiler setpoint from the IMGW outdoor temperature (36 - 0.3 * T_out, 34-42 °C).
+# Heating curve: boiler setpoint from the outdoor temperature (Airly, IMGW fallback; 36 - 0.3 * T_out, 34-42 °C).
 # The OpenTherm board keeps the last value when HA is down; written only when it changes (flash wear).
 - id: ogrzewanie_krzywa_grzewcza
   alias: ogrzewanie_krzywa_grzewcza
-  description: "Nastawa kotła ch_target = 36 − 0,3 × temperatura zewnętrzna (IMGW), ograniczona do 34–42 °C"
+  description: "Nastawa kotła ch_target = 36 − 0,3 × temperatura zewnętrzna (Airly → IMGW), ograniczona do 34–42 °C"
   mode: single
   max_exceeded: silent
   triggers:
@@ -72,7 +72,7 @@
 {% raw %}
   variables:
     target: >-
-      {{ [[(36 - 0.3 * states('sensor.temperatura_zewnetrzna') | float) | round(0), 34] | max, 42] | min | int }}
+      {{ [[(36 - 0.3 * states('sensor.temperatura_zewnetrzna') | float(0)) | round(0), 34] | max, 42] | min | int }}
   actions:
     - if:
         - condition: template

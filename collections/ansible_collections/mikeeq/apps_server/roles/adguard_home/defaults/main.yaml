@@ -1,5 +1,6 @@
 ---
 adguard_home_install_path: "/opt/adguardhome"
+adguard_home_image: "adguard/adguardhome:latest"
 
 adguard_home_clean: false
 

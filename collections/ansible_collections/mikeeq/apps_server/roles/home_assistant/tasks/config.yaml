@@ -128,3 +128,28 @@
     dest: "{{ home_assistant_install_path }}/config/www/"
     mode: "0644"
     directory_mode: "0755"
+
+# Tesla Fleet command signing: HA uses config/tesla_fleet.key if present; the public key must be reachable at
+# https://<domain>/.well-known/appspecific/com.tesla.3p.public-key.pem (nginx proxies it to /local/tesla/)
+- name: Ensure Tesla Fleet public key dir exists
+  ansible.builtin.file:
+    path: "{{ home_assistant_install_path }}/config/www/tesla"
+    state: directory
+    mode: "0755"
+
+- name: Generate Tesla Fleet private key
+  ansible.builtin.command:
+    cmd: openssl ecparam -name prime256v1 -genkey -noout -out tesla_fleet.key
+    chdir: "{{ home_assistant_install_path }}/config"
+    creates: "{{ home_assistant_install_path }}/config/tesla_fleet.key"
+
+- name: Restrict Tesla Fleet private key
+  ansible.builtin.file:
+    path: "{{ home_assistant_install_path }}/config/tesla_fleet.key"
+    mode: "0600"
+
+- name: Export Tesla Fleet public key
+  ansible.builtin.command:
+    cmd: openssl ec -in tesla_fleet.key -pubout -out www/tesla/com.tesla.3p.public-key.pem
+    chdir: "{{ home_assistant_install_path }}/config"
+    creates: "{{ home_assistant_install_path }}/config/www/tesla/com.tesla.3p.public-key.pem"

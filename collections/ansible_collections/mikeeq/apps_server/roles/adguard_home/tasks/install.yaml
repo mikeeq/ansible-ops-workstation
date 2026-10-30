@@ -79,6 +79,11 @@
     # AdGuard Home rewrites its config with 0600
     mode: "0600"
     backup: true
+    # an invalid config would leave the LAN without DNS - let AdGuard Home check it first
+    validate: >-
+      docker run --rm --entrypoint /opt/adguardhome/AdGuardHome
+      -v %s:/tmp/AdGuardHome.yaml:ro {{ adguard_home_image }}
+      --check-config -c /tmp/AdGuardHome.yaml -w /tmp
   loop:
     - confdir/AdGuardHome.yaml
   register: adguard_home_config_result

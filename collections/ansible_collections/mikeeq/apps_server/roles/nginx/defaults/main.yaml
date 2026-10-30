@@ -7,6 +7,10 @@ nginx_install_path: "/opt/nginx"
 #   deny_dotfiles: false              # default true, blocks /.* paths except /.well-known
 #   proxy_buffering: false            # default true, false disables request/response buffering
 #   proxy_timeout: "3600s"            # proxy send/read timeout, default 60s
+#   location_extra_config: |          # raw nginx directives added to "location /"
+#     rewrite ^/old$ /new break;
+#   server_extra_config: |            # raw nginx directives added to the server block (e.g. extra locations)
+#     location = /.well-known/x.pem { proxy_pass http://backend/x.pem; }
 nginx_sites:
   - source_url: "http://localhost:8080"
     destination_url: "web.example.com"

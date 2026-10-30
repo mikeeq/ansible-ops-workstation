@@ -1,15 +1,22 @@
 ---
-# DHW circulation in pulses (5 min every 30 min) within the usage windows instead of running continuously.
-# A pump left on for 10 min (restart, manual switch) is turned off, except during the Sunday disinfection.
+# DHW circulation in pulses within the usage windows: every full hour, and also when the boiler starts charging the
+# cylinder, so the cooled loop water is reheated in the same burn instead of forcing a separate reheat.
+# Skipped if the pump ran recently (hourly: 40 min, charge: 20 min). A pump left on for 10 min (restart, manual switch)
+# is turned off, except during the Sunday disinfection.
 - id: cwu_cyrkulacja
   alias: cwu_cyrkulacja
-  description: "Cyrkulacja CWU impulsowo: 5 min co 30 min w godz. 07–10 i 16–21"
+  description: "Cyrkulacja CWU 5 min co godzinę i przy starcie ładowania zasobnika, w godz. 07–10 i 16–21"
   mode: single
   max_exceeded: silent
   triggers:
     - trigger: time_pattern
-      minutes: "/30"
+      minutes: "0"
       id: impuls
+    - trigger: state
+      entity_id: binary_sensor.opentherm_dhw_active
+      from: "off"
+      to: "on"
+      id: ladowanie
     - trigger: state
       entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
       to: "on"
@@ -20,7 +27,9 @@
     - choose:
         - conditions:
             - condition: trigger
-              id: impuls
+              id:
+                - impuls
+                - ladowanie
             - condition: or
               conditions:
                 - condition: time
@@ -29,6 +38,26 @@
                 - condition: time
                   after: "16:00:00"
                   before: "21:00:00"
+            - condition: or
+              conditions:
+                - condition: and
+                  conditions:
+                    - condition: trigger
+                      id: impuls
+                    - condition: state
+                      entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+                      state: "off"
+                      for:
+                        minutes: 40
+                - condition: and
+                  conditions:
+                    - condition: trigger
+                      id: ladowanie
+                    - condition: state
+                      entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+                      state: "off"
+                      for:
+                        minutes: 20
           sequence:
             - action: switch.turn_on
               target:

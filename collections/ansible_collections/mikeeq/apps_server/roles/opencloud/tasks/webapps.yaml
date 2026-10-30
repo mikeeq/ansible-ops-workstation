@@ -1,0 +1,85 @@
+---
+# Web apps are unpacked from pinned, checksum verified archives into
+# opencloud_apps_path, which is mounted read-only into the container.
+- name: Ensure unzip is installed
+  ansible.builtin.package:
+    name: unzip
+    state: present
+
+- name: Ensure web app dirs exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ opencloud_apps_path }}"
+    - "{{ opencloud_install_path }}/apps-cache"
+
+- name: Download web apps
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ opencloud_install_path }}/apps-cache/{{ item.name }}-{{ item.url | basename }}"
+    checksum: "{{ item.checksum }}"
+    mode: "0644"
+  loop: "{{ opencloud_web_apps }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: opencloud_web_apps_download
+
+- name: Check installed web apps
+  ansible.builtin.stat:
+    path: "{{ opencloud_apps_path }}/{{ item.name }}/manifest.json"
+  loop: "{{ opencloud_web_apps }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: opencloud_web_apps_installed
+
+- name: List web app dirs
+  ansible.builtin.find:
+    paths: "{{ opencloud_apps_path }}"
+    file_type: directory
+  register: opencloud_web_apps_dirs
+
+- name: Remove outdated and unmanaged web apps
+  ansible.builtin.file:
+    path: "{{ opencloud_apps_path }}/{{ item }}"
+    state: absent
+  loop: >-
+    {{ (opencloud_web_apps_dirs.files | map(attribute='path') | map('basename')
+        | difference(opencloud_web_apps | map(attribute='name')))
+       + (opencloud_web_apps_download.results | selectattr('changed') | map(attribute='item.name')) }}
+  register: opencloud_web_apps_removed
+
+- name: Unpack web apps
+  ansible.builtin.unarchive:
+    src: "{{ item.0.dest }}"
+    dest: "{{ opencloud_apps_path }}"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "u=rwX,go=rX"
+  loop: "{{ opencloud_web_apps_download.results | zip(opencloud_web_apps_installed.results) }}"
+  loop_control:
+    label: "{{ item.0.item.name }}"
+  when: item.0.changed or not item.1.stat.exists
+  # in check mode the archive was not downloaded
+  ignore_errors: "{{ ansible_check_mode }}"
+  register: opencloud_web_apps_unpacked
+
+- name: List cached web app archives
+  ansible.builtin.find:
+    paths: "{{ opencloud_install_path }}/apps-cache"
+    patterns: "*.zip"
+  register: opencloud_web_apps_cache
+
+- name: Remove unused web app archives
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: >-
+    {{ opencloud_web_apps_cache.files | map(attribute='path')
+       | difference(opencloud_web_apps_download.results | map(attribute='dest')) }}
+
+- name: Set web apps changed fact
+  ansible.builtin.set_fact:
+    opencloud_web_apps_changed: "{{ opencloud_web_apps_removed.changed or opencloud_web_apps_unpacked.changed }}"

@@ -1,16 +1,15 @@
 ---
-- name: Stop container using docker-compose
-  ansible.builtin.command: docker-compose stop
-  changed_when: opencloud_stop_result.stderr_lines | length > 1
-  register: opencloud_stop_result
-  args:
-    chdir: "{{ opencloud_install_path }}"
+- name: Check for existing docker-compose file
+  ansible.builtin.stat:
+    path: "{{ opencloud_install_path }}/docker-compose.yaml"
+  register: opencloud_compose_file
 
-- name: Remove all volumes/containers using docker-compose
-  ansible.builtin.command: docker-compose rm -vf
+- name: Remove containers, networks and volumes using docker-compose
+  ansible.builtin.command: docker-compose down --volumes --remove-orphans
   changed_when: true
   args:
     chdir: "{{ opencloud_install_path }}"
+  when: opencloud_compose_file.stat.exists
 
 - name: Ensure opencloud dirs are removed
   ansible.builtin.file:
@@ -20,4 +19,5 @@
     - "{{ opencloud_data_path }}"
     - "{{ opencloud_config_path }}"
     - "{{ opencloud_radicale_data_path }}"
+    - "{{ opencloud_apps_path }}"
     - "{{ opencloud_install_path }}"

@@ -1,7 +1,8 @@
-# Based on https://github.com/opencloud-eu/opencloud-compose (stable-7.2):
-# docker-compose.yml + weboffice/collabora.yml + radicale/radicale.yml
-# + external-proxy/*.yml, TLS is terminated by the nginx role.
-{% set opencloud_extra_hosts = [opencloud_domain] + ([opencloud_collabora_domain] if opencloud_collabora_enabled else []) %}
+# Based on https://github.com/opencloud-eu/opencloud-compose (main, rolling):
+# docker-compose.yml + weboffice/{euro-office,collabora}.yml + radicale/radicale.yml
+# + search/tika.yml + yjs/yjs.yml + thumbnails/imagor.yml + external-proxy/*.yml,
+# TLS is terminated by the nginx role.
+{% set opencloud_extra_hosts = [opencloud_domain] + ([opencloud_office_domain] if opencloud_office else []) %}
 ---
 name: opencloud
 
@@ -12,6 +13,9 @@ services:
     user: "{{ opencloud_uid }}:{{ opencloud_gid }}"
     networks:
       - opencloud-net
+{% if opencloud_imagor_enabled | bool %}
+      - imagor-net
+{% endif %}
     entrypoint:
       - /bin/sh
     # "opencloud init" creates config/opencloud.yaml with random secrets on the
@@ -34,27 +38,60 @@ services:
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "true"
       OC_SHARING_PUBLIC_WRITEABLE_SHARE_MUST_HAVE_PASSWORD: "false"
       OC_DEFAULT_LANGUAGE: "{{ opencloud_default_language }}"
-{% if opencloud_collabora_enabled %}
+{% if opencloud_tika_enabled | bool %}
+      # full-text search
+      SEARCH_EXTRACTOR_TYPE: "tika"
+      SEARCH_EXTRACTOR_TIKA_TIKA_URL: "http://tika:9998"
+      FRONTEND_FULL_TEXT_SEARCH_ENABLED: "true"
+{% endif %}
+{% if opencloud_yjs_enabled | bool %}
+      # /yjs is routed to the yjs container by the opencloud proxy (proxy.yaml)
+      WEB_OPTION_YJS_SERVER_URL: "wss://{{ opencloud_domain }}/yjs"
+{% endif %}
+{% if opencloud_imagor_enabled | bool %}
+      WEBDAV_THUMBNAILS_GENERATOR_URL: "http://imagor:8000"
+      OC_THUMBNAILS_ADDITIONAL_SOURCE_TYPES: "image/heic,image/heif,image/avif,image/heic-sequence,image/heif-sequence"
+{% endif %}
+{% if opencloud_office %}
       # WOPI (collaboration) service runs inside the opencloud process and is
       # served under /wopi and /collaboration on the opencloud domain
       OC_ADD_RUN_SERVICES: "collaboration"
-      FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR: "eu.opencloud.api.collaboration"
-      GRAPH_AVAILABLE_ROLES: "b1e2218d-eef8-4d4c-b82d-0f1a1b48f3b5,a8d5fe5e-96e3-418d-825b-534dbdf22b99,fb6c3e19-e378-47e5-b277-9732f9de6e21,58c63c02-1d89-4572-916a-870abc5a1b7d,2d00ce52-1fc2-4dbc-8b95-a73b73395f5a,1c996275-f1c9-4e71-abdf-a42f6495e960,312c0871-5ef7-4b3a-85b6-0e4074c64049,aa97fe03-7980-45ac-9e50-b325749fd7e6"
       COLLABORATION_WOPI_SRC: "https://{{ opencloud_domain }}"
-      COLLABORATION_APP_NAME: "CollaboraOnline"
-      COLLABORATION_APP_PRODUCT: "Collabora"
-      COLLABORATION_APP_ADDR: "https://{{ opencloud_collabora_domain }}"
-      COLLABORATION_APP_ICON: "https://{{ opencloud_collabora_domain }}/favicon.ico"
+      COLLABORATION_APP_NAME: "{{ opencloud_office_app_name }}"
+      COLLABORATION_APP_ADDR: "https://{{ opencloud_office_domain }}"
       COLLABORATION_APP_INSECURE: "{{ opencloud_insecure | string | lower }}"
       COLLABORATION_CS3API_DATAGATEWAY_INSECURE: "{{ opencloud_insecure | string | lower }}"
 {% endif %}
+{% if opencloud_office == "euro-office" %}
+      COLLABORATION_APP_PRODUCT: "OnlyOffice"
+      COLLABORATION_APP_ICON: "https://{{ opencloud_office_domain }}/web-apps/apps/documenteditor/main/resources/img/favicon.ico"
+      # the document server does not sign WOPI requests with a persistent key
+      COLLABORATION_APP_PROOF_DISABLE: "true"
+{% elif opencloud_office == "collabora" %}
+      COLLABORATION_APP_PRODUCT: "Collabora"
+      COLLABORATION_APP_ICON: "https://{{ opencloud_office_domain }}/favicon.ico"
+      FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR: "eu.opencloud.api.collaboration"
+      GRAPH_AVAILABLE_ROLES: "b1e2218d-eef8-4d4c-b82d-0f1a1b48f3b5,a8d5fe5e-96e3-418d-825b-534dbdf22b99,fb6c3e19-e378-47e5-b277-9732f9de6e21,58c63c02-1d89-4572-916a-870abc5a1b7d,2d00ce52-1fc2-4dbc-8b95-a73b73395f5a,1c996275-f1c9-4e71-abdf-a42f6495e960,312c0871-5ef7-4b3a-85b6-0e4074c64049,aa97fe03-7980-45ac-9e50-b325749fd7e6"
+{% endif %}
     volumes:
-      # holds opencloud.yaml (generated secrets), csp.yaml and proxy.yaml
+      # holds opencloud.yaml (generated secrets), csp.yaml, proxy.yaml, apps.yaml and app-registry.yaml
       - "{{ opencloud_config_path }}:/etc/opencloud"
       - "{{ opencloud_data_path }}:/var/lib/opencloud"
+      - "{{ opencloud_apps_path }}:/var/lib/opencloud/web/assets/apps:ro"
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "{{ opencloud_bind_address }}:{{ opencloud_port }}:9200"
+{% if opencloud_tika_enabled | bool or opencloud_imagor_enabled | bool %}
+    depends_on:
+{% if opencloud_tika_enabled | bool %}
+      tika:
+        condition: service_healthy
+{% endif %}
+{% if opencloud_imagor_enabled | bool %}
+      imagor:
+        condition: service_healthy
+{% endif %}
+{% endif %}
 {% if opencloud_reverse_proxy_ip %}
     extra_hosts:
 {% for host in opencloud_extra_hosts %}
@@ -64,7 +101,49 @@ services:
     logging:
       driver: local
     restart: always
-{% if opencloud_collabora_enabled %}
+{% if opencloud_office == "euro-office" %}
+
+  # OnlyOffice based document server, stateless (documents are stored in OpenCloud)
+  euro-office:
+    container_name: opencloud_euro_office
+    image: "{{ opencloud_euro_office_image }}:{{ opencloud_euro_office_version }}"
+    networks:
+      - opencloud-net
+    environment:
+      WOPI_ENABLED: "true"
+      JWT_SECRET: "{{ opencloud_euro_office_jwt_secret }}"
+      USE_UNAUTHORIZED_STORAGE: "{{ opencloud_insecure | string | lower }}"
+      # WOPISrc of an editor request is fetched server-side: only allow the
+      # OpenCloud domain, otherwise anyone could make it send requests into the LAN
+      NODE_CONFIG: '{{ {"services": {"CoAuthoring": {"ipfilter": {"rules": [
+        {"address": opencloud_domain, "allowed": true},
+        {"address": "*", "allowed": false}]}}}} | to_json }}'
+{% if opencloud_office_fonts_path %}
+    volumes:
+      - "{{ opencloud_office_fonts_path }}:/usr/share/fonts/truetype/more:ro"
+{% endif %}
+    ports:
+      - "{{ opencloud_office_bind_address }}:{{ opencloud_office_port }}:80"
+{% if opencloud_reverse_proxy_ip %}
+    extra_hosts:
+{% for host in opencloud_extra_hosts %}
+      - "{{ host }}:{{ opencloud_reverse_proxy_ip }}"
+{% endfor %}
+{% endif %}
+    logging:
+      driver: local
+    restart: always
+    healthcheck:
+      test:
+        - "CMD"
+        - "bash"
+        - "-c"
+        - "exec 3<>/dev/tcp/127.0.0.1/80 && printf 'GET /hosting/discovery HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && head -1 <&3 | grep -q '200 OK'"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+{% elif opencloud_office == "collabora" %}
 
   collabora:
     container_name: opencloud_collabora
@@ -91,12 +170,12 @@ services:
       - apparmor:unconfined
     volumes:
       - ./collabora_proof_key:/etc/coolwsd/proof_key:ro
-{% if opencloud_collabora_fonts_path %}
-      - "{{ opencloud_collabora_fonts_path }}:/usr/share/fonts/truetype/more:ro"
-      - "{{ opencloud_collabora_fonts_path }}:/opt/cool/systemplate/usr/share/fonts/truetype/more:ro"
+{% if opencloud_office_fonts_path %}
+      - "{{ opencloud_office_fonts_path }}:/usr/share/fonts/truetype/more:ro"
+      - "{{ opencloud_office_fonts_path }}:/opt/cool/systemplate/usr/share/fonts/truetype/more:ro"
 {% endif %}
     ports:
-      - "{{ opencloud_collabora_bind_address }}:{{ opencloud_collabora_port }}:9980"
+      - "{{ opencloud_office_bind_address }}:{{ opencloud_office_port }}:9980"
 {% if opencloud_reverse_proxy_ip %}
     extra_hosts:
 {% for host in opencloud_extra_hosts %}
@@ -112,7 +191,86 @@ services:
       timeout: 10s
       retries: 5
 {% endif %}
-{% if opencloud_radicale_enabled %}
+{% if opencloud_tika_enabled | bool %}
+
+  # text extraction for full-text search, stateless
+  tika:
+    container_name: opencloud_tika
+    image: "{{ opencloud_tika_image }}:{{ opencloud_tika_version }}"
+    networks:
+      - opencloud-net
+    environment:
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
+    deploy:
+      resources:
+        limits:
+          memory: "{{ opencloud_tika_memory_limit }}"
+    logging:
+      driver: local
+    restart: always
+    healthcheck:
+      test:
+        - "CMD"
+        - "bash"
+        - "-c"
+        - "exec 3<>/dev/tcp/127.0.0.1/9998 && printf 'GET /tika HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q '200 OK' <&3"
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+{% endif %}
+{% if opencloud_yjs_enabled | bool %}
+
+  # real-time collaboration server, documents are kept in memory only
+  yjs:
+    container_name: opencloud_yjs
+    image: "{{ opencloud_yjs_image }}:{{ opencloud_yjs_version }}"
+    user: "{{ opencloud_uid }}:{{ opencloud_gid }}"
+    networks:
+      - opencloud-net
+    environment:
+      PORT: "1234"
+      OPENCLOUD_URL: "http://opencloud:9200"
+      SHUTDOWN_GRACE_PERIOD_MS: "15000"
+    logging:
+      driver: local
+    restart: always
+    stop_grace_period: 20s
+{% endif %}
+{% if opencloud_imagor_enabled | bool %}
+
+  # HEIC/HEIF/AVIF previews, isolated on an internal network
+  imagor:
+    container_name: opencloud_imagor
+    image: "{{ opencloud_imagor_image }}:{{ opencloud_imagor_version }}"
+    environment:
+      IMAGOR_UNSAFE: "true"
+      UPLOAD_LOADER_ENABLE: "true"
+      UPLOAD_LOADER_MAX_ALLOWED_SIZE: "50000000"
+      HTTP_LOADER_DISABLE: "true"
+      VIPS_MAX_WIDTH: "7680"
+      VIPS_MAX_HEIGHT: "7680"
+      VIPS_MAX_ANIMATION_FRAMES: "100"
+    networks:
+      - imagor-net
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: local
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:8000/healthcheck"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+{% endif %}
+{% if opencloud_radicale_enabled | bool %}
 
   # CalDAV/CardDAV, reachable via /caldav/ and /carddav/ on the opencloud domain
   radicale:
@@ -131,3 +289,7 @@ services:
 
 networks:
   opencloud-net:
+{% if opencloud_imagor_enabled | bool %}
+  imagor-net:
+    internal: true
+{% endif %}

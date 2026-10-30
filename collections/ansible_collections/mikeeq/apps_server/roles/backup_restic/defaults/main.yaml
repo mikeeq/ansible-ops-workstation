@@ -76,8 +76,8 @@ backup_restic_mysql_dumps:
 # own snapshot (tagged with its name) taken while the listed containers are
 # stopped; the paths are excluded from the main snapshot.
 backup_restic_offline_backups:
-  # OpenCloud (files, metadata, built-in IDM/LDAP, NATS, generated secrets),
-  # Radicale calendars/contacts and the Collabora WOPI proof key
+  # OpenCloud (files, metadata, built-in IDM/LDAP, NATS, generated secrets) and
+  # Radicale calendars/contacts; the office server (Euro-Office) is stateless
   - name: opencloud
     containers:
       - opencloud
@@ -89,6 +89,9 @@ backup_restic_offline_backups:
     excludes:
       # thumbnail cache, regenerated on demand
       - "{{ opencloud_data_path | default('/opt/opencloud/data') }}/thumbnails"
+      # web apps, downloaded again by the opencloud role
+      - "{{ opencloud_apps_path | default('/opt/opencloud/apps') }}"
+      - "{{ opencloud_install_path | default('/opt/opencloud') }}/apps-cache"
 
 backup_restic_keep_daily: 7
 backup_restic_keep_weekly: 4

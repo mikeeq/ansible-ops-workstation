@@ -11,6 +11,14 @@ home_assistant_templates_path: templates
 # Port of the HA-MCP in-process server (ha_mcp_tools custom component)
 home_assistant_mcp_port: 9584
 
+# Solar charging of the Tesla (automations/tesla_slonce.yaml) through the core Tesla Fleet integration.
+# The key pair for Tesla command signing is generated on deploy (config/tesla_fleet.key, public key under
+# /local/tesla/, exposed by nginx at /.well-known/appspecific/). `vehicle` = entity prefix of the car in Tesla Fleet
+# (switch.<vehicle>_charge); empty until the integration is set up, then the automation is not deployed.
+home_assistant_tesla_solar:
+  vehicle: "garaz_model3hl"
+  max_amps: 16  # Wall Connector circuit B16/3
+
 # Paths relative to config/ removed from the host on deploy
 home_assistant_obsolete_config_files:
   - automations/ogrzewanie_virtual.yaml
@@ -23,8 +31,6 @@ home_assistant_custom_components:
     repo: https://github.com/custom-components/ble_monitor
   - name: gardena_smart_system
     repo: https://github.com/py-smart-gardena/hass-gardena-smart-system
-  - name: multiscrape
-    repo: https://github.com/danieldotnl/ha-multiscrape
   - name: yi_hack
     repo: https://github.com/roleoroleo/yi-hack_ha_integration
   - name: virtual
@@ -86,6 +92,12 @@ home_assistant_custom_lovelace_plugins:
     entity_name: "mini-graph-card-bundle.js"
     release: true
     version: v0.13.0
+  # Sun/moon arc with sunrise/sunset times (Ogród view); uses the built-in Sun integration
+  - name: "lovelace-horizon-card"
+    repo: "https://github.com/rejuvenate/lovelace-horizon-card"
+    entity_name: "lovelace-horizon-card.js"
+    release: true
+    version: v1.5.3
 
 home_assistant_config:
   automations:

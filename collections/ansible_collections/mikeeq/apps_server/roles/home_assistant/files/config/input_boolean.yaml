@@ -3,3 +3,11 @@
 ogrzewanie_slonce:
   name: Ogrzewanie - obniżenie na słońce
   icon: mdi:weather-sunny-alert
+
+# Solar EV charging (automations/tesla_slonce.yaml): master switch and "charging was started by the automation" flag
+tesla_slonce:
+  name: Tesla - ładowanie ze słońca
+  icon: mdi:solar-power-variant
+tesla_slonce_aktywne:
+  name: Tesla - ładowanie ze słońca trwa
+  icon: mdi:car-electric

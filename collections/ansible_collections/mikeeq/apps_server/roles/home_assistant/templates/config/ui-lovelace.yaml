@@ -1,4 +1,4 @@
-inventory/group_vars/clevo.yaml:generic-api-key:251{#- Main dashboard, phone-first (Pixel 9 Pro / iPhone 14 Pro). Previous layout: ui-lovelace-old.yaml.
+{#- Main dashboard, phone-first (Pixel 9 Pro / iPhone 14 Pro). Previous layout: ui-lovelace-old.yaml.
     Ansible renders this file: HA templates would need raw/endraw, none are used here. -#}
 {%- set room_labels = {
   'przedpokoj': 'Korytarz', 'lazienka_dol': 'Łazienka dół', 'salon': 'Salon', 'kuchnia': 'Kuchnia',
@@ -10,17 +10,21 @@ inventory/group_vars/clevo.yaml:generic-api-key:251{#- Main dashboard, phone-fir
 {#- Floor plan label positions (%), from ansible-ops-private/docs/home-assistant/floorplan/positions.yaml -#}
 {%- set floorplan = {
   'dol': {
-    'rooms': {'kuchnia': [38.1, 15.9], 'salon': [73.5, 29.0], 'przedpokoj': [39.2, 49.5],
+    'rooms': {'kuchnia': [38.1, 15.9], 'salon': [73.5, 29.0], 'przedpokoj': [39.2, 47.2],
               'lazienka_dol': [56.5, 68.7], 'sypialnia_dol': [81.5, 82.2]},
     'sensors': [['sensor.temperatura_garaz', 24.5, 79.9], ['sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature', 56.5, 89.7]],
+    'humidity': [],
+    'garden': [13.0, 11.0],
   },
   'gora': {
     'rooms': {'garderoba': [44.5, 20.5], 'pokoj_julia': [77.1, 17.7], 'sypialnia_gora': [44.8, 46.0],
               'biuro_miki': [21.4, 81.4], 'lazienka_gora': [59.4, 87.9], 'pokoj_timi': [85.3, 83.7]},
     'sensors': [['sensor.shelly_htg3_serwerownia_temperature', 87.3, 43.7]],
+    'humidity': [['sensor.shelly_htg3_serwerownia_humidity', 87.3, 48.0]],
+    'garden': [13.5, 16.0],
   },
 } -%}
-{%- set floorplan_ver = 2 -%}
+{%- set floorplan_ver = 3 -%}
 title: Dom
 views:
   # =====================================================================
@@ -33,7 +37,7 @@ views:
     max_columns: 3
     badges:
       - type: entity
-        entity: sensor.wejherowo_temperature
+        entity: sensor.temperatura_zewnetrzna
         name: Na zewnątrz
         show_name: true
         icon: mdi:thermometer
@@ -48,6 +52,28 @@ views:
         tap_action:
           action: navigate
           navigation_path: /lovelace/ogrzewanie
+      # Sunset while the sun is up, sunrise after dark (template sensor, Koleczkowo)
+      - type: entity
+        entity: sensor.slonce
+        name: Słońce
+        show_name: true
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/ogrod
+      # Air quality only when Airly CAQI is medium or worse (> 50)
+      - type: entity
+        entity: sensor.airly_common_air_quality_index
+        name: Powietrze
+        show_name: true
+        icon: mdi:air-filter
+        color: orange
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/ogrod
+        visibility:
+          - condition: numeric_state
+            entity: sensor.airly_common_air_quality_index
+            above: 50
       # Exceptions only – visible when something needs attention
       - type: entity
         entity: cover.brama_garazowa
@@ -80,6 +106,36 @@ views:
           - condition: numeric_state
             entity: sensor.slabe_baterie
             above: 0
+      # Day before a pickup and until 6:00 (template.yaml, Szemud PDF schedule)
+      - type: entity
+        entity: sensor.wywoz_smieci
+        name: Wystaw kosze
+        show_name: true
+        color: brown
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/wiecej
+        visibility:
+          - condition: state
+            entity: binary_sensor.wystaw_kosze
+            state: "on"
+      # IMGW-PIB warning for Wejherowo, only when issued
+      - type: entity
+        entity: sensor.wejherowo_weather_alert
+        name: Ostrzeżenie IMGW
+        show_name: true
+        icon: mdi:weather-cloudy-alert
+        color: red
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/ogrod
+        visibility:
+          - condition: state
+            entity: sensor.wejherowo_weather_alert
+            state_not:
+              - no_alert
+              - unavailable
+              - unknown
     sections:
       - type: grid
         visibility:
@@ -135,24 +191,41 @@ views:
             state_content:
               - state
               - last_changed
-            features_position: inline
-            features:
-              - type: cover-open-close
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            # Details of the reed switch (open/closed history, battery) rather than the cover itself
+            hold_action:
+              action: more-info
+              entity: binary_sensor.door_brama_garaz_opening
           - type: tile
             entity: automation.auto_furtka_dzwonek
-            name: Furtka otwiera się na dzwonek
+            name: Furtka na dzwonek
             icon: mdi:doorbell
-            features_position: inline
-            features:
-              - type: toggle
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
           - type: picture-entity
             entity: camera.reolink_doorbell
             name: Furtka
             camera_view: auto
             show_state: false
+            grid_options:
+              columns: 6
             tap_action:
               action: navigate
               navigation_path: /lovelace/domofon
+          - type: picture-entity
+            entity: camera.reolink_e1pro_garaz
+            name: Brama garażowa
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
 
       - type: grid
         cards:
@@ -222,17 +295,32 @@ views:
           - type: heading
             heading: Światła
             icon: mdi:lightbulb-group
-{% for l in [
-  ['switch.sonoff_minir2_przedpokoj_minir2_swiatlo_przedpokoj', 'Korytarz', 'mdi:ceiling-light'],
-  ['switch.sonoff_minir2_salon_kinkiety_minir2_swiatlo_salon_kinkiety', 'Salon kinkiety', 'mdi:wall-sconce'],
-  ['switch.sp_sonoff_salon_switch', 'Salon lampa', 'mdi:floor-lamp-torchiere-variant'],
-  ['light.ikea_led_kuchnia_light', 'Kuchnia LED', 'mdi:led-strip', ['light-brightness']],
-  ['switch.sonoff_minir2_sypialnia_minir2_swiatlo_sypialnia', 'Sypialnia dół', 'mdi:ceiling-light'],
-  ['switch.sonoff_minir2_sypialnia_gora', 'Sypialnia', 'mdi:ceiling-light'],
-  ['light.ikea_bulb_lampka_sypialnia_gora_light', 'Sypialnia lampka', 'mdi:lamp', ['light-brightness']],
-  ['light.ikea_bulb_biuro_miki_light', 'Biuro lampka', 'mdi:lamp', ['light-brightness']],
-  ['light.led_lazienka_gora', 'Łazienka LED', 'mdi:led-strip', ['light-brightness', 'light-color-temp']],
+{% for group in [
+  ['Parter', 'mdi:home-floor-0', [
+    ['switch.sonoff_minir2_przedpokoj_minir2_swiatlo_przedpokoj', 'Korytarz', 'mdi:ceiling-light'],
+    ['switch.sonoff_minir2_salon_kinkiety_minir2_swiatlo_salon_kinkiety', 'Salon kinkiety', 'mdi:wall-sconce'],
+    ['switch.sp_sonoff_salon_switch', 'Salon lampa', 'mdi:floor-lamp-torchiere-variant'],
+    ['light.ikea_led_kuchnia_light', 'Kuchnia LED', 'mdi:led-strip', ['light-brightness']],
+    ['switch.sonoff_minir2_sypialnia_minir2_swiatlo_sypialnia', 'Sypialnia', 'mdi:ceiling-light'],
+    ['switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew', 'Garaż', 'mdi:lightbulb-fluorescent-tube'],
+  ]],
+  ['Piętro', 'mdi:home-floor-1', [
+    ['switch.sonoff_minir2_sypialnia_gora', 'Sypialnia', 'mdi:ceiling-light'],
+    ['light.ikea_bulb_lampka_sypialnia_gora_light', 'Sypialnia lampka', 'mdi:lamp', ['light-brightness']],
+    ['light.ikea_bulb_biuro_miki_light', 'Biuro lampka', 'mdi:lamp', ['light-brightness']],
+    ['light.led_lazienka_gora', 'Łazienka LED', 'mdi:led-strip', ['light-brightness', 'light-color-temp']],
+  ]],
+  ['Na zewnątrz', 'mdi:tree', [
+    ['switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew', 'Nad bramą', 'mdi:coach-lamp-variant'],
+    ['switch.sonoff_minir2_drzwi_dwor_minir2_swiatlo_drzwi_dwor', 'Drzwi wejściowe', 'mdi:coach-lamp'],
+    ['switch.sonoff_minir2_taras_minir2_swiatlo_taras', 'Taras', 'mdi:coach-lamp-variant'],
+  ]],
 ] %}
+          - type: heading
+            heading: {{ group[0] }}
+            heading_style: subtitle
+            icon: {{ group[1] }}
+{% for l in group[2] %}
           - type: tile
             entity: {{ l[0] }}
             name: {{ l[1] }}
@@ -251,26 +339,6 @@ views:
 {% endif %}
             visibility: {{ hide_unavailable | replace('ENTITY', l[0]) }}
 {% endfor %}
-          - type: heading
-            heading: Na zewnątrz
-            heading_style: subtitle
-{% for l in [
-  ['switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew', 'Nad bramą', 'mdi:coach-lamp-variant'],
-  ['switch.sonoff_minir2_drzwi_dwor_minir2_swiatlo_drzwi_dwor', 'Drzwi wejściowe', 'mdi:coach-lamp'],
-  ['switch.sonoff_minir2_taras_minir2_swiatlo_taras', 'Taras', 'mdi:coach-lamp-variant'],
-  ['switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew', 'Garaż', 'mdi:lightbulb-fluorescent-tube'],
-] %}
-          - type: tile
-            entity: {{ l[0] }}
-            name: {{ l[1] }}
-            icon: {{ l[2] }}
-            grid_options:
-              columns: 6
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-            visibility: {{ hide_unavailable | replace('ENTITY', l[0]) }}
 {% endfor %}
 
   # =====================================================================
@@ -371,11 +439,9 @@ views:
                   left: {{ pos[0] }}%
                   top: {{ pos[1] }}%
                   color: white
-                  font-size: 15px
-                  font-weight: 600
-                  padding: 2px 10px
-                  border-radius: 14px
-                  background: rgba(0, 0, 0, 0.55)
+                  font-size: 16px
+                  font-weight: 700
+                  text-shadow: 0 0 3px black, 0 0 6px black
               - type: state-label
                 entity: climate.{{ i.name }}
                 attribute: temperature
@@ -385,8 +451,18 @@ views:
                   action: more-info
                 style:
                   left: {{ pos[0] }}%
-                  top: {{ (pos[1] + 5) | round(1) }}%
+                  top: {{ (pos[1] + 4.3) | round(1) }}%
                   color: var(--secondary-text-color)
+                  font-size: 11px
+              - type: state-label
+                entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_humidity
+                prefix: "💧 "
+                tap_action:
+                  action: more-info
+                style:
+                  left: {{ pos[0] }}%
+                  top: {{ (pos[1] + 7.8) | round(1) }}%
+                  color: "#8ab4f8"
                   font-size: 11px
 {% endfor %}
 {% for s in floorplan[floor].sensors %}
@@ -399,9 +475,42 @@ views:
                   top: {{ s[2] }}%
                   color: white
                   font-size: 13px
-                  padding: 2px 8px
-                  border-radius: 12px
-                  background: rgba(0, 0, 0, 0.55)
+                  font-weight: 600
+                  text-shadow: 0 0 3px black, 0 0 6px black
+{% endfor %}
+{% for s in floorplan[floor].humidity %}
+              - type: state-label
+                entity: {{ s[0] }}
+                prefix: "💧 "
+                tap_action:
+                  action: more-info
+                style:
+                  left: {{ s[1] }}%
+                  top: {{ s[2] }}%
+                  color: "#8ab4f8"
+                  font-size: 11px
+{% endfor %}
+{% for g in [['sensor.th_ogrod_temperature', 'state_not'], ['sensor.temperatura_zewnetrzna', 'state']] %}
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: sensor.th_ogrod_temperature
+                    {{ g[1] }}:
+                      - unavailable
+                      - unknown
+                elements:
+                  - type: state-label
+                    entity: {{ g[0] }}
+                    prefix: "🌳 "
+                    tap_action:
+                      action: more-info
+                    style:
+                      left: {{ floorplan[floor].garden[0] }}%
+                      top: {{ floorplan[floor].garden[1] }}%
+                      color: white
+                      font-size: 13px
+                      font-weight: 600
+                      text-shadow: 0 0 3px black, 0 0 6px black
 {% endfor %}
 {% if floor == 'dol' %}
               - type: conditional
@@ -567,6 +676,49 @@ views:
                 name: CWU
               - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
                 name: Podłogówka
+
+      # Mould risk: long periods above 65 % (bathrooms 75 % – showers spike them); 7-day hourly means
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wilgotność
+            icon: mdi:water-percent
+            badges:
+              - type: entity
+                entity: sensor.wejherowo_humidity
+                name: Na zewnątrz
+                show_name: true
+          - type: entity-filter
+            show_empty: false
+            conditions:
+              - condition: numeric_state
+                above: 65
+            entities:
+{% for i in home_assistant_config.climate %}
+              - entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_humidity
+                name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
+{% if 'lazienka' in i.name %}
+                conditions:
+                  - condition: numeric_state
+                    above: 75
+{% endif %}
+{% endfor %}
+            card:
+              type: entities
+              title: Za wilgotno – przewietrz
+              state_color: true
+          - type: statistics-graph
+            title: Wilgotność w pokojach (7 dni)
+            chart_type: line
+            period: hour
+            days_to_show: 7
+            stat_types:
+              - mean
+            entities:
+{% for i in home_assistant_config.climate %}
+              - entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_humidity
+                name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
+{% endfor %}
 
       # Room alerts (template.yaml / alert.yaml) and the setpoint log (automations/ogrzewanie_log.yaml)
       - type: grid
@@ -1180,6 +1332,44 @@ views:
             icon: mdi:clock-time-four-outline
             grid_options:
               columns: 3
+          # Solar charging (automations/tesla_slonce.yaml): surplus = 5-min PV mean − house load without the car
+          - type: tile
+            entity: input_boolean.tesla_slonce
+            name: Ładowanie ze słońca
+            color: amber
+            state_content:
+              - state
+              - last_changed
+            features:
+              - type: toggle
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.pv_nadwyzka_auto
+            name: Nadwyżka PV dla auta
+            color: amber
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: input_number.tesla_slonce_baza
+            name: Zużycie domu (bez auta)
+            grid_options:
+              columns: 3
+{% if home_assistant_tesla_solar.vehicle %}
+          - type: tile
+            entity: sensor.{{ home_assistant_tesla_solar.vehicle }}_battery_level
+            name: Bateria auta
+            state_content:
+              - state
+              - last_changed
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.{{ home_assistant_tesla_solar.vehicle }}_charge_current
+            name: Prąd ładowania
+            grid_options:
+              columns: 6
+{% endif %}
       - type: grid
         column_span: 2
         cards:
@@ -1371,7 +1561,7 @@ views:
           - type: entities
             entities:
               - entity: sensor.temperatura_zewnetrzna
-                name: Na zewnątrz (IMGW)
+                name: Na zewnątrz (Airly → IMGW)
               - entity: sensor.temperatura_zewnetrzna_srednia_24h
                 name: Średnia 24 h
               - entity: number.opentherm_ch_target
@@ -1565,6 +1755,34 @@ views:
             name: Osoba
             grid_options:
               columns: 6
+      # Frigate object detections on the outdoor cameras (indoor ones left out on purpose)
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wykrycia (24 h)
+            icon: mdi:motion-sensor
+          - type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: binary_sensor.reolink_doorbell_person_occupancy
+                name: Furtka – osoba
+              - entity: binary_sensor.reolink_doorbell_car_occupancy
+                name: Furtka – auto
+              - entity: binary_sensor.reolink_e1pro_drzwi_person_occupancy
+                name: Drzwi – osoba
+              - entity: binary_sensor.reolink_e1pro_garaz_person_occupancy
+                name: Garaż – osoba
+          - type: logbook
+            title: Kto się kręcił
+            hours_to_show: 24
+            target:
+              entity_id:
+{% for cam in ['reolink_doorbell', 'reolink_e1pro_drzwi', 'reolink_e1pro_garaz'] %}
+{% for obj in ['person', 'dog', 'cat'] %}
+                - binary_sensor.{{ cam }}_{{ obj }}_occupancy
+{% endfor %}
+{% endfor %}
+                - binary_sensor.reolink_doorbell_car_occupancy
 
   # =====================================================================
   # Ogród
@@ -1581,6 +1799,61 @@ views:
             entity: weather.wejherowo
             forecast_type: hourly
           - type: tile
+            entity: sensor.wejherowo_weather_alert
+            name: Ostrzeżenie IMGW
+            icon: mdi:weather-cloudy-alert
+            color: red
+            visibility:
+              - condition: state
+                entity: sensor.wejherowo_weather_alert
+                state_not:
+                  - no_alert
+                  - unavailable
+                  - unknown
+          - type: tile
+            entity: sensor.wejherowo_wind_speed
+            name: Wiatr
+            icon: mdi:weather-windy
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.wejherowo_wind_direction
+            name: Kierunek
+            icon: mdi:compass-outline
+            state_content:
+              - direction_name
+              - state
+            grid_options:
+              columns: 6
+          # Air quality: Airly sensor Gdynia ul. Kańskiego 5 (nearest, 5.4 km); GIOŚ Gdynia kept for comparison
+          - type: tile
+            entity: sensor.airly_common_air_quality_index
+            name: Jakość powietrza (Airly)
+            icon: mdi:air-filter
+            grid_options:
+              columns: 12
+            state_content:
+              - state
+              - description
+          - type: tile
+            entity: sensor.airly_pm2_5
+            name: PM2.5
+            icon: mdi:blur
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.airly_pm10
+            name: PM10
+            icon: mdi:blur-radial
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gdynia_ul_porebskiego_air_quality_index
+            name: GIOŚ Gdynia (11 km)
+            icon: mdi:air-filter
+            grid_options:
+              columns: 12
+          - type: tile
             entity: sensor.th_ogrod_temperature
             name: Czujnik ogród
             grid_options:
@@ -1596,6 +1869,34 @@ views:
             url: >-
               https://embed.windy.com/embed2.html?lat=54.459&lon=18.357&detailLat=54.495&detailLon=18.357&width=650&height=450&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1
             aspect_ratio: 122%
+      # Sun arc for the house location (HA home zone = Koleczkowo); west rooms get the afternoon sun
+      - type: grid
+        cards:
+          - type: heading
+            heading: Słońce
+            icon: mdi:weather-sunset
+            badges:
+              - type: entity
+                entity: input_boolean.ogrzewanie_slonce
+                name: Pokoje zachodnie −1 K
+                show_name: true
+                icon: mdi:sun-thermometer
+                color: amber
+                tap_action:
+                  action: none
+                visibility:
+                  - condition: state
+                    entity: input_boolean.ogrzewanie_slonce
+                    state: "on"
+          - type: custom:horizon-card
+            language: pl
+            time_format: 24
+            refresh_period: 60
+            moon: true
+            fields:
+              sun_azimuth: true
+              sun_elevation: true
+              moon_phase: true
       - type: grid
         cards:
           - type: heading
@@ -1625,6 +1926,24 @@ views:
     type: sections
     max_columns: 3
     sections:
+      # Waste pickups (template.yaml, schedule from the gmina Szemud PDF – update every January)
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wywóz śmieci
+            icon: mdi:delete-clock
+          - type: tile
+            entity: sensor.wywoz_smieci
+            name: Najbliższy wywóz
+            color: brown
+{% for o in [['zmieszane', 'Zmieszane', 'grey'], ['bio', 'Bio', 'brown'], ['papier', 'Papier', 'blue'], ['plastik', 'Plastik/metal', 'yellow'], ['szklo', 'Szkło', 'green']] %}
+          - type: tile
+            entity: sensor.odpady_{{ o[0] }}
+            name: {{ o[1] }}
+            color: {{ o[2] }}
+            grid_options:
+              columns: 6
+{% endfor %}
       - type: grid
         cards:
           - type: heading

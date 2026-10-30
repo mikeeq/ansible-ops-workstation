@@ -426,13 +426,13 @@ views:
             icon: mdi:coach-lamp-variant
       - type: entities
         entities:
-          - entity: sensor.consumed_energy_dzien_total
+          - entity: sensor.energa_30407650_stan_licznika_import_strefa_1
             name: Consumed Energy Day Total
-          - entity: sensor.donated_energy_dzien_total
+          - entity: sensor.energa_30407650_stan_licznika_export_strefa_1
             name: Donated Energy Day Total
-          - entity: sensor.consumed_energy_noc_total
+          - entity: sensor.energa_30407650_stan_licznika_import_strefa_2
             name: Consumed Energy Night Total
-          - entity: sensor.donated_energy_noc_total
+          - entity: sensor.energa_30407650_stan_licznika_export_strefa_2
             name: Donated Energy Night Total
           - entity: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
             name: Current Power

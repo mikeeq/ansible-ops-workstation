@@ -39,12 +39,16 @@ config dhcp 'lan'
         option leasetime '12h'
         option dhcpv4 'server'
 {% if openwrt_setup_openwrt_router_flag | default(false) and openwrt_setup_ipv6 | default(false) %}
-        {# IPv6: SLAAC only (no DHCPv6), no DNS in RA - clients keep using IPv4 DNS that returns AAAA #}
+        {# IPv6: SLAAC only (no DHCPv6), no DNS in RA - clients keep using IPv4 DNS that returns AAAA -#}
         option ra 'server'
         option dhcpv6 'disabled'
         list ra_flags 'none'
         option dns_service '0'
         option ndp 'disabled'
+        {# Starlink delegates the prefix with ~150 s preferred lifetime - RAs must come
+           more often, otherwise clients deprecate the GUA and fall back to the ULA source -#}
+        option ra_maxinterval '{{ openwrt_setup_ipv6_ra_maxinterval }}'
+        option ra_mininterval '{{ openwrt_setup_ipv6_ra_mininterval }}'
 {% else %}
         list ra_flags 'managed-config'
         list ra_flags 'other-config'

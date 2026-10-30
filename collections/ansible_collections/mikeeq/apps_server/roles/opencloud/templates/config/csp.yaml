@@ -1,4 +1,4 @@
-# Based on config/opencloud/csp.yaml from opencloud-compose (stable-7.2)
+# Based on config/opencloud/csp.yaml from opencloud-compose (main)
 directives:
   child-src:
     - '''self'''
@@ -8,18 +8,26 @@ directives:
     - 'https://raw.githubusercontent.com/opencloud-eu/awesome-apps/'
     - 'https://update.opencloud.eu/'
     - 'https://tile.openstreetmap.org/'
+{% if opencloud_calendar_enabled | bool and opencloud_calendar_location_search | bool %}
+    # web-calendar location autocomplete
+    - 'https://nominatim.openstreetmap.org/'
+{% endif %}
   default-src:
     - '''none'''
   font-src:
     - '''self'''
+{% if opencloud_calendar_enabled | bool %}
+    # web-calendar (FullCalendar icon font)
+    - 'data:'
+{% endif %}
   frame-ancestors:
     - '''self'''
   frame-src:
     - '''self'''
     - 'blob:'
     - 'https://embed.diagrams.net/'
-{% if opencloud_collabora_enabled %}
-    - 'https://{{ opencloud_collabora_domain }}/'
+{% if opencloud_office %}
+    - 'https://{{ opencloud_office_domain }}/'
 {% endif %}
     - 'https://docs.opencloud.eu'
   img-src:
@@ -28,8 +36,8 @@ directives:
     - 'blob:'
     - 'https://raw.githubusercontent.com/opencloud-eu/awesome-apps/'
     - 'https://tile.openstreetmap.org/'
-{% if opencloud_collabora_enabled %}
-    - 'https://{{ opencloud_collabora_domain }}/'
+{% if opencloud_office %}
+    - 'https://{{ opencloud_office_domain }}/'
 {% endif %}
   manifest-src:
     - '''self'''
@@ -44,6 +52,7 @@ directives:
   style-src:
     - '''self'''
     - '''unsafe-inline'''
+    - 'blob:'
   worker-src:
     - '''self'''
     - 'blob:'

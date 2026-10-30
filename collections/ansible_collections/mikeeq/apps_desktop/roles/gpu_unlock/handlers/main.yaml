@@ -1,0 +1,7 @@
+---
+# No automatic reboot: the host runs HA, Frigate and DNS, and a failed unlock needs a cold power cycle.
+- name: Gpu_unlock reboot required
+  ansible.builtin.debug:
+    msg: >-
+      Kernel command line changed: reboot {{ inventory_hostname }} manually. If the card does not come back
+      (nvidia-smi fails), power the machine off completely, or remove gpu_unlock.targets= in the boot menu.

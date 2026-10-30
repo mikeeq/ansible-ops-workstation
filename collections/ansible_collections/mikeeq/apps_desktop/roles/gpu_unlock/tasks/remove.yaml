@@ -1,0 +1,21 @@
+---
+- name: Read the kernel command line of all boot entries
+  ansible.builtin.command: grubby --info=ALL
+  register: gpu_unlock_grubby
+  changed_when: false
+  check_mode: false
+
+- name: Remove gpu_unlock.targets from the kernel command line
+  ansible.builtin.command: >-
+    grubby --update-kernel=ALL --remove-args=gpu_unlock.targets={{ gpu_unlock_targets | join(',') }}
+  when: "'gpu_unlock.targets=' in gpu_unlock_grubby.stdout"
+  changed_when: true
+  notify: Gpu_unlock reboot required
+
+# The package scripts remove the DKMS module and rebuild the initramfs images.
+- name: Remove gpu-unlock packages
+  ansible.builtin.dnf:
+    name:
+      - gpu-unlock-dkms
+      - gpu-unlock-firmware
+    state: absent
