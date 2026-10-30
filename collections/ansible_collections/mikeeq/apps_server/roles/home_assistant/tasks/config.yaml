@@ -14,6 +14,13 @@
     - "{{ home_assistant_install_path }}/config/mqtt/lights"
     - "{{ home_assistant_install_path }}/config/mqtt/switches"
 
+# with_fileglob copies never delete, so files dropped from the role must be removed explicitly
+- name: Remove obsolete config files
+  ansible.builtin.file:
+    path: "{{ home_assistant_install_path }}/config/{{ item }}"
+    state: absent
+  loop: "{{ home_assistant_obsolete_config_files }}"
+
 - name: Configure config files
   ansible.builtin.copy:
     src: "{{ item }}"
@@ -89,15 +96,6 @@
   with_fileglob:
     - ../templates/config/mqtt/switches/*
 
-- name: Configure config/mqtt/water_heater
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "{{ home_assistant_install_path }}/config/mqtt/water_heater/"
-    mode: "0664"
-    backup: true
-  with_fileglob:
-    - ../templates/config/mqtt/water_heater/*
-
 - name: Check that the .storage exists
   ansible.builtin.stat:
     path: "{{ home_assistant_install_path }}/config/.storage/onboarding"
@@ -122,3 +120,36 @@
     force: false
   with_fileglob:
     - "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/config_init/*"
+
+# Private frontend assets (floor plans) served under /local/; kept out of this public repo
+- name: Configure private www assets
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../ansible-ops-private/templates/home-assistant/www/"
+    dest: "{{ home_assistant_install_path }}/config/www/"
+    mode: "0644"
+    directory_mode: "0755"
+
+# Tesla Fleet command signing: HA uses config/tesla_fleet.key if present; the public key must be reachable at
+# https://<domain>/.well-known/appspecific/com.tesla.3p.public-key.pem (nginx proxies it to /local/tesla/)
+- name: Ensure Tesla Fleet public key dir exists
+  ansible.builtin.file:
+    path: "{{ home_assistant_install_path }}/config/www/tesla"
+    state: directory
+    mode: "0755"
+
+- name: Generate Tesla Fleet private key
+  ansible.builtin.command:
+    cmd: openssl ecparam -name prime256v1 -genkey -noout -out tesla_fleet.key
+    chdir: "{{ home_assistant_install_path }}/config"
+    creates: "{{ home_assistant_install_path }}/config/tesla_fleet.key"
+
+- name: Restrict Tesla Fleet private key
+  ansible.builtin.file:
+    path: "{{ home_assistant_install_path }}/config/tesla_fleet.key"
+    mode: "0600"
+
+- name: Export Tesla Fleet public key
+  ansible.builtin.command:
+    cmd: openssl ec -in tesla_fleet.key -pubout -out www/tesla/com.tesla.3p.public-key.pem
+    chdir: "{{ home_assistant_install_path }}/config"
+    creates: "{{ home_assistant_install_path }}/config/www/tesla/com.tesla.3p.public-key.pem"

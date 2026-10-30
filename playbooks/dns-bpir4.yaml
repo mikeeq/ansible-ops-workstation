@@ -1,0 +1,13 @@
+---
+# DNS on the BPI-R4: CoreDNS (192.168.0.11, authoritative mikeeq.eu, ACME DNS-01)
+# and AdGuard Home (192.168.0.12, DNS for LAN clients) as macvlan containers on
+# the `lanmac` network created by the openwrt_setup docker role (gateway = host shim).
+#
+#   ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yaml dns-bpir4.yaml
+- name: Provision DNS containers on BPI-R4
+  hosts: "{{ hosts_to_deploy | default('openwrt_bpir4garage') }}"
+  become: true
+  gather_facts: true
+  roles:
+    - mikeeq.apps_server.coredns
+    - mikeeq.apps_server.adguard_home

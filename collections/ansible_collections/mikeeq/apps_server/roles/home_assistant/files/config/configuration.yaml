@@ -23,8 +23,14 @@ lovelace:
     lovelace:
       mode: yaml
       filename: ui-lovelace.yaml
-      title: Overview
-      icon: mdi:view-dashboard
+      title: Dom
+      icon: mdi:home
+      show_in_sidebar: true
+    lovelace-old:
+      mode: yaml
+      filename: ui-lovelace-old.yaml
+      title: Overview (stary)
+      icon: mdi:view-dashboard-outline
       show_in_sidebar: true
     lovelace-generated:  # Needs to contain a hyphen (-)
       mode: yaml
@@ -38,6 +44,13 @@ lovelace:
       filename: dashboard-tesla.yaml
       title: Tesla
       icon: mdi:car
+      show_in_sidebar: true
+      require_admin: false
+    lovelace-tesla-old:
+      mode: yaml
+      filename: dashboard-tesla-old.yaml
+      title: Tesla (stary)
+      icon: mdi:car-outline
       show_in_sidebar: true
       require_admin: false
   # Info: Change ?ver= to force browser to refresh new custom resources
@@ -54,6 +67,8 @@ lovelace:
       type: module
     - url: /local/mini-graph-card-bundle.js?v=1
       type: module
+    - url: /local/lovelace-horizon-card.js?v=1.5.3
+      type: module
 
 # Text to speech
 tts:
@@ -66,14 +81,13 @@ http:
     - 172.16.0.0/12     # You may also provide the subnet mask, i.e.: Docker Bridge subnet
 
 # group: !include groups.yaml
-# script: !include scripts.yaml
+script: !include scripts.yaml
 # scene: !include scenes.yaml
 
 # https://www.home-assistant.io/docs/configuration/splitting_configuration/#advanced-usage
 automation: !include_dir_merge_list automations/
 
 mqtt: !include mqtt.yaml
-multiscrape: !include multiscrape.yaml
 sensor: !include_dir_merge_list  sensors/
 template: !include template.yaml
 
@@ -83,6 +97,9 @@ virtual:
 switch: !include switch.yaml
 climate: !include climate.yaml
 alert: !include alert.yaml
+input_boolean: !include input_boolean.yaml
+input_number: !include input_number.yaml
+utility_meter: !include utility_meter.yaml
 
 rest:
   # scan_interval: 10

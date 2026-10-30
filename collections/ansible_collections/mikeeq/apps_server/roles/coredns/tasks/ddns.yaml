@@ -1,0 +1,90 @@
+---
+- name: Ensure IPv6 DDNS script dir exists
+  ansible.builtin.file:
+    path: "{{ coredns_ipv6_ddns_script_path | dirname }}"
+    state: directory
+    mode: "0755"
+
+- name: Install IPv6 DDNS script for the zone file
+  ansible.builtin.template:
+    src: ddns/coredns-ipv6-ddns.sh.j2
+    dest: "{{ coredns_ipv6_ddns_script_path }}"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Schedule IPv6 DDNS on systemd hosts
+  when: ansible_facts['os_family'] != 'OpenWrt'
+  block:
+    - name: Install IPv6 DDNS systemd service
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/coredns-ipv6-ddns.service
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Update CoreDNS AAAA records when the IPv6 prefix changes
+          After=network-online.target
+          Wants=network-online.target
+
+          [Service]
+          Type=oneshot
+          ExecStart={{ coredns_ipv6_ddns_script_path }}
+      register: coredns_ddns_service
+
+    - name: Install IPv6 DDNS systemd timer
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/coredns-ipv6-ddns.timer
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Periodic check of the IPv6 prefix for CoreDNS AAAA records
+
+          [Timer]
+          OnBootSec=2min
+          OnUnitActiveSec={{ coredns_ipv6_ddns_interval }}
+          Persistent=true
+
+          [Install]
+          WantedBy=timers.target
+      register: coredns_ddns_timer
+
+    - name: Enable IPv6 DDNS timer
+      ansible.builtin.systemd_service:
+        name: coredns-ipv6-ddns.timer
+        enabled: true
+        state: started
+        daemon_reload: "{{ coredns_ddns_service.changed or coredns_ddns_timer.changed }}"
+      # the unit files do not exist yet in check mode
+      ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Schedule IPv6 DDNS on OpenWrt
+  when: ansible_facts['os_family'] == 'OpenWrt'
+  block:
+    - name: Run IPv6 DDNS from cron
+      ansible.builtin.lineinfile:
+        path: /etc/crontabs/root
+        line: "*/5 * * * * {{ coredns_ipv6_ddns_script_path }} >/dev/null 2>&1"
+        regexp: "coredns-ipv6-ddns"
+        create: true
+        mode: "0600"
+      register: coredns_ddns_cron
+
+    - name: Run IPv6 DDNS on interface hotplug (prefix change)
+      ansible.builtin.copy:
+        dest: /etc/hotplug.d/iface/60-coredns-ipv6-ddns
+        mode: "0644"
+        content: |
+          # Managed by Ansible (mikeeq.apps_server.coredns)
+          case "$ACTION" in
+            ifup|ifupdate) {{ coredns_ipv6_ddns_script_path }} >/dev/null 2>&1 & ;;
+          esac
+
+    - name: Restart cron
+      ansible.builtin.service:
+        name: cron
+        state: restarted
+      when: coredns_ddns_cron.changed

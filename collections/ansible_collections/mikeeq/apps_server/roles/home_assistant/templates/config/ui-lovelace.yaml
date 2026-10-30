@@ -1,916 +1,2114 @@
+{#- Main dashboard, phone-first (Pixel 9 Pro / iPhone 14 Pro). Previous layout: ui-lovelace-old.yaml.
+    Ansible renders this file: HA templates would need raw/endraw, none are used here. -#}
+{%- set room_labels = {
+  'przedpokoj': 'Korytarz', 'lazienka_dol': 'Łazienka dół', 'salon': 'Salon', 'kuchnia': 'Kuchnia',
+  'sypialnia_dol': 'Sypialnia dół', 'pokoj_julia': 'Pokój Julia', 'sypialnia_gora': 'Sypialnia',
+  'garderoba': 'Garderoba', 'biuro_miki': 'Biuro Miki', 'lazienka_gora': 'Łazienka góra', 'pokoj_timi': 'Pokój Timi'
+} -%}
+{%- set floor_dol = ['przedpokoj', 'lazienka_dol', 'salon', 'kuchnia', 'sypialnia_dol'] -%}
+{%- set hide_unavailable = '[{condition: state, entity: ENTITY, state_not: unavailable}]' -%}
+{#- Floor plan label positions (%), from ansible-ops-private/docs/home-assistant/floorplan/positions.yaml -#}
+{%- set floorplan = {
+  'dol': {
+    'rooms': {'kuchnia': [38.1, 15.9], 'salon': [73.5, 29.0], 'przedpokoj': [39.2, 47.2],
+              'lazienka_dol': [56.5, 68.7], 'sypialnia_dol': [81.5, 82.2]},
+    'sensors': [['sensor.temperatura_garaz', 24.5, 79.9], ['sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature', 56.5, 89.7]],
+    'humidity': [],
+    'garden': [13.0, 11.0],
+  },
+  'gora': {
+    'rooms': {'garderoba': [44.5, 20.5], 'pokoj_julia': [77.1, 17.7], 'sypialnia_gora': [44.8, 46.0],
+              'biuro_miki': [21.4, 81.4], 'lazienka_gora': [59.4, 87.9], 'pokoj_timi': [85.3, 83.7]},
+    'sensors': [['sensor.shelly_htg3_serwerownia_temperature', 87.3, 43.7]],
+    'humidity': [['sensor.shelly_htg3_serwerownia_humidity', 87.3, 48.0]],
+    'garden': [13.5, 16.0],
+  },
+} -%}
+{%- set floorplan_ver = 3 -%}
+title: Dom
 views:
-  - title: Home
+  # =====================================================================
+  # Dom: what is used every day, in thumb order (gates first)
+  # =====================================================================
+  - title: Dom
     path: home
-    badges: []
-    cards:
-      # --- Alert panel: only visible when at least one alert is active ---
-      - type: conditional
-        conditions:
+    icon: mdi:home
+    type: sections
+    max_columns: 3
+    badges:
+      - type: entity
+        entity: sensor.temperatura_zewnetrzna
+        name: Na zewnątrz
+        show_name: true
+        icon: mdi:thermometer
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/ogrod
+      - type: entity
+        entity: sensor.temperatura_dom
+        name: W domu
+        show_name: true
+        icon: mdi:home-thermometer
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/ogrzewanie
+      # Sunset while the sun is up, sunrise after dark (template sensor, Koleczkowo)
+      - type: entity
+        entity: sensor.slonce
+        name: Słońce
+        show_name: true
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/ogrod
+      # Air quality only when Airly CAQI is medium or worse (> 50)
+      - type: entity
+        entity: sensor.airly_common_air_quality_index
+        name: Powietrze
+        show_name: true
+        icon: mdi:air-filter
+        color: orange
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/ogrod
+        visibility:
+          - condition: numeric_state
+            entity: sensor.airly_common_air_quality_index
+            above: 50
+      # Exceptions only – visible when something needs attention
+      - type: entity
+        entity: cover.brama_garazowa
+        name: Brama garażowa
+        show_name: true
+        color: red
+        visibility:
+          - condition: state
+            entity: cover.brama_garazowa
+            state: open
+      - type: entity
+        entity: automation.auto_furtka_dzwonek
+        name: Furtka na dzwonek
+        show_name: true
+        icon: mdi:doorbell
+        color: orange
+        visibility:
+          - condition: state
+            entity: automation.auto_furtka_dzwonek
+            state: "on"
+      - type: entity
+        entity: sensor.slabe_baterie
+        name: Czujniki do sprawdzenia
+        show_name: true
+        color: amber
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/wiecej
+        visibility:
+          - condition: numeric_state
+            entity: sensor.slabe_baterie
+            above: 0
+      # Day before a pickup and until 6:00 (template.yaml, Szemud PDF schedule)
+      - type: entity
+        entity: sensor.wywoz_smieci
+        name: Wystaw kosze
+        show_name: true
+        color: brown
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/wiecej
+        visibility:
+          - condition: state
+            entity: binary_sensor.wystaw_kosze
+            state: "on"
+      # IMGW-PIB warning for Wejherowo, only when issued
+      - type: entity
+        entity: sensor.wejherowo_weather_alert
+        name: Ostrzeżenie IMGW
+        show_name: true
+        icon: mdi:weather-cloudy-alert
+        color: red
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/ogrod
+        visibility:
+          - condition: state
+            entity: sensor.wejherowo_weather_alert
+            state_not:
+              - no_alert
+              - unavailable
+              - unknown
+    sections:
+      - type: grid
+        visibility:
           - condition: state
             entity: binary_sensor.any_alert_active
             state: "on"
-        card:
-          type: entities
-          title: "⚠️ Aktywne Alerty"
-          state_color: true
-          entities:
-            - entity: alert.gaz_kotlownia
-              name: Gaz Kotlownia
-              icon: mdi:gas-cylinder
-            - entity: alert.dwor_brama_otwarta
-              name: Brama Dwor
-              icon: mdi:gate-alert
-            - entity: alert.garaz_brama_otwarta
-              name: Brama Garazowa
-              icon: mdi:garage-alert
-            - entity: alert.serwerownia_temp_wysoka
-              name: Serwerownia Temp
-              icon: mdi:thermometer-alert
-      # --- Alert history: always visible, shows last 24h of alert events ---
-      - type: logbook
-        title: Historia Alertów (24h)
-        hours_to_show: 24
-        entities:
-          - alert.gaz_kotlownia
-          - alert.dwor_brama_otwarta
-          - alert.garaz_brama_otwarta
-          - alert.serwerownia_temp_wysoka
-      # ------------------------------------------------------------------
-      - type: entities
-        title: Temperatury Zigbee
-        entities:
-          - type: section
-            label: Inne
-          - entity: sensor.th_ogrod_temperature
-            type: custom:multiple-entity-row
-            name: Ogrod
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_ogrod_temperature
-                name: Temperatura
-              - entity: sensor.th_ogrod_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_ogrod_battery
-                name: Bateria
-          - entity: sensor.th_garaz_temperature
-            type: custom:multiple-entity-row
-            name: Garaz
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_garaz_temperature
-                name: Temperatura
-              - entity: sensor.th_garaz_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_garaz_battery
-                name: Bateria
-          - type: section
-            label: Dol
-          - entity: sensor.th_kuchnia_temperature
-            type: custom:multiple-entity-row
-            name: Kuchnia
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_kuchnia_temperature
-                name: Temperatura
-              - entity: sensor.th_kuchnia_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_kuchnia_battery
-                name: Bateria
-          - entity: sensor.th_salon_temperature
-            type: custom:multiple-entity-row
-            name: Salon
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_salon_temperature
-                name: Temperatura
-              - entity: sensor.th_salon_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_salon_battery
-                name: Bateria
-          - entity: sensor.th_sypialnia_dol_temperature
-            type: custom:multiple-entity-row
-            name: Sypialnia Dol
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_sypialnia_dol_temperature
-                name: Temperatura
-              - entity: sensor.th_sypialnia_dol_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_sypialnia_dol_battery
-                name: Bateria
-          - entity: sensor.th_lazienka_dol_temperature
-            type: custom:multiple-entity-row
-            name: Lazienka Dol
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_lazienka_dol_temperature
-                name: Temperatura
-              - entity: sensor.th_lazienka_dol_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_lazienka_dol_battery
-                name: Bateria
-          - entity: sensor.th_przedpokoj_temperature
-            type: custom:multiple-entity-row
-            name: Przedpokoj
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_przedpokoj_temperature
-                name: Temperatura
-              - entity: sensor.th_przedpokoj_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_przedpokoj_battery
-                name: Bateria
-          - type: section
-            label: Gora
-          - entity: sensor.th_pokoj_timi_temperature
-            type: custom:multiple-entity-row
-            name: Pokoj Timi
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_pokoj_timi_temperature
-                name: Temperatura
-              - entity: sensor.th_pokoj_timi_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_pokoj_timi_battery
-                name: Bateria
-          - entity: sensor.th_lazienka_gora_temperature
-            type: custom:multiple-entity-row
-            name: Lazienka Gora
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_lazienka_gora_temperature
-                name: Temperatura
-              - entity: sensor.th_lazienka_gora_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_lazienka_gora_battery
-                name: Bateria
-          - entity: sensor.shelly_htg3_biuro_miki_temperature
-            type: custom:multiple-entity-row
-            name: Biuro Miki
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.shelly_htg3_biuro_miki_temperature
-                name: Temperatura
-              - entity: sensor.shelly_htg3_biuro_miki_humidity
-                name: Wilgotnosc
-              - entity: binary_sensor.shelly_htg3_biuro_miki_external_power
-                name: Power
-          - entity: sensor.shelly_htg3_sypialnia_gora_temperature
-            type: custom:multiple-entity-row
-            name: Sypialnia Gora
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.shelly_htg3_sypialnia_gora_temperature
-                name: Temperatura
-              - entity: sensor.shelly_htg3_sypialnia_gora_humidity
-                name: Wilgotnosc
-              - entity: binary_sensor.shelly_htg3_sypialnia_gora_external_power
-                name: Power
-          - entity: sensor.th_garderoba_temperature
-            type: custom:multiple-entity-row
-            name: Garderoba
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.th_garderoba_temperature
-                name: Temperatura
-              - entity: sensor.th_garderoba_humidity
-                name: Wilgotnosc
-              - entity: sensor.th_garderoba_battery
-                name: Bateria
-          - entity: sensor.shelly_htg3_serwerownia_temperature
-            type: custom:multiple-entity-row
-            name: Serwerownia
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.shelly_htg3_serwerownia_temperature
-                name: Temperatura
-              - entity: sensor.shelly_htg3_serwerownia_humidity
-                name: Wilgotnosc
-              - entity: binary_sensor.shelly_htg3_serwerownia_external_power
-                name: Power
-          - entity: sensor.shelly_htg3_pokoj_julia_temperature
-            type: custom:multiple-entity-row
-            name: Pokoj Julia
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.shelly_htg3_pokoj_julia_temperature
-                name: Temperatura
-              - entity: sensor.shelly_htg3_pokoj_julia_humidity
-                name: Wilgotnosc
-              # - entity: binary_sensor.shelly_htg3_biuro_miki_external_power
-              #   name: Power
-              - entity: sensor.shelly_htg3_pokoj_julia_battery
-                name: Battery
-      - type: entities
-        entities:
-          - entity: switch.sonoff_minir2_przedpokoj_minir2_swiatlo_przedpokoj
-            name: Przedpokoj
-            icon: mdi:ceiling-light
-          - type: section
-            label: Dol
-          - entity: switch.sonoff_minir2_salon_kinkiety_minir2_swiatlo_salon_kinkiety
-            name: Salon Kinkiety
-            icon: mdi:wall-sconce
-          - entity: switch.sp_sonoff_salon_switch
-            name: Salon Lampa
-            icon: mdi:floor-lamp-torchiere-variant
-          - entity: light.ikea_led_kuchnia_light
-            name: Kuchnia LED szafki
-            icon: mdi:led-strip
-          - entity: switch.sonoff_minir2_taras_minir2_swiatlo_taras
-            name: Taras
-            icon: mdi:coach-lamp-variant
-          - type: section
-          - entity: switch.sonoff_minir2_sypialnia_minir2_swiatlo_sypialnia
-            name: Sypialnia
-            icon: mdi:ceiling-light
-          - type: section
-            label: Gora
-          - entity: switch.sonoff_minir2_sypialnia_gora
-            name: Sypialnia Gora
-            icon: mdi:ceiling-light
-          - entity: light.ikea_bulb_lampka_sypialnia_gora_light
-            name: Sypialnia Gora Lampka
-            icon: mdi:lamp
-          - type: section
-          - entity: light.ikea_bulb_biuro_miki_light
-            name: Biuro Miki Lampka
-            icon: mdi:lamp
-          - type: section
-          - entity: light.led_lazienka_gora
-            name: Lazienka Gora LED
-            icon: mdi:led-strip
-        title: Swiatla
-        show_header_toggle: false
-        state_color: true
-      - type: entities
-        entities:
-          - entity: switch.gosund_clevo_gosund_switch_clevo
-            type: custom:multiple-entity-row
-            name: Clevo
-            icon: mdi:laptop
-            toggle: false
-            show_state: true
-            entities:
-              - entity: sensor.gosund_clevo_energy_power
-                name: Zuzycie
-          - entity: switch.gosund_clevo_gpu_gosund_switch_clevo_gpu
-            type: custom:multiple-entity-row
-            name: Clevo GPU
-            icon: mdi:card-minus
-            toggle: false
-            show_state: true
-            entities:
-              - entity: sensor.gosund_clevo_gpu_energy_power
-                name: Zuzycie
-          - entity: switch.gosund_monitory_gosund_switch_monitory
-            type: custom:multiple-entity-row
-            name: Biuro Monitory
-            icon: mdi:monitor
-            toggle: true
-            show_state: true
-            entities:
-              - entity: sensor.gosund_monitory_energy_power
-                name: Zuzycie
-          - entity: switch.gosund_pc_gosund_switch_pc
-            type: custom:multiple-entity-row
-            name: PC
-            toggle: true
-            show_state: true
-            entities:
-              - entity: sensor.gosund_pc_energy_power
-                name: Zuzycie
-        title: Gniazdka
-        show_header_toggle: false
-        state_color: true
-      - type: entities
-        title: Swiatla Ogrod
-        entities:
-          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_podjazd
-            name: Podjazd
-            icon: mdi:post-lamp
-          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_boki_ogrodu
-            name: Boki ogrodu
-            icon: mdi:light-flood-up
-          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_tyl_ogrodu
-            name: Tyl ogrodu
-            icon: mdi:light-flood-up
-          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_slupki_ognisko
-            name: Slupki ognisko
-            icon: mdi:post-lamp
-          - entity: switch.sonoff_minir2_taras_minir2_swiatlo_taras
-            name: Taras
-            icon: mdi:coach-lamp-variant
-      - type: entities
-        entities:
-          - entity: sensor.speedtest_ping
-            type: custom:multiple-entity-row
-            name: Speedtest
-            show_state: true
-            entities:
-              - entity: sensor.speedtest_download
-                name: Download
-              - entity: sensor.speedtest_upload
-                name: Upload
-        title: SpeedTest
-      - type: entities
-        entities:
-          - entity: binary_sensor.imou_gas_detector_kotlownia
-            name: Czujnik gazu Kotlownia
-            icon: mdi:meter-gas
-          - entity: sensor.ikea_5b_kuchnia_battery
-            type: custom:multiple-entity-row
-            name: Ikea kuchnia
-            show_state: false
-            icon: mdi:gesture-tap-button
-            entities:
-              - entity: sensor.ikea_5b_kuchnia_battery
-                name: Battery
-          - entity: sensor.button_state_dol_1_battery
-            type: custom:multiple-entity-row
-            name: Sonoff Dol 1
-            icon: mdi:gesture-tap-button
-            show_state: false
-            entities:
-              - entity: sensor.button_state_dol_1_battery
-                name: Battery
-        title: Przyciski
-  - title: Garaz
-    path: garaz
-    badges: []
-    cards:
-      - type: entities
-        entities:
-          - entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
-            type: custom:multiple-entity-row
-            name: Brama Dwor
+        cards:
+          - type: heading
+            heading: Alerty
+            icon: mdi:alert
+{% for a in [['gaz_kotlownia', 'Gaz w kotłowni', 'mdi:meter-gas'], ['garaz_brama_otwarta', 'Brama garażowa otwarta', 'mdi:garage-alert'], ['dwor_brama_otwarta', 'Brama wjazdowa otwarta', 'mdi:gate-alert'], ['serwerownia_temp_wysoka', 'Serwerownia za ciepło', 'mdi:thermometer-alert'], ['okno_otwarte', 'Okno/drzwi otwarte?', 'mdi:window-open-variant'], ['pokoj_za_zimno', 'Pokój się wychładza', 'mdi:snowflake-thermometer'], ['pokoj_szybko_sie_nagrzewa', 'Pokój szybko się nagrzewa', 'mdi:thermometer-chevron-up']] %}
+          - type: tile
+            entity: alert.{{ a[0] }}
+            name: {{ a[1] }}
+            icon: {{ a[2] }}
+            color: red
+            visibility:
+              - condition: state
+                entity: alert.{{ a[0] }}
+                state: "on"
+{% endfor %}
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wejście
             icon: mdi:gate
-            toggle: true
-            show_state: true
-            entities:
-              - entity: sensor.door_battery_percentage_dwor_brama
-                name: Bateria
-              - entity: binary_sensor.door_state_dwor_brama
-                name: Stan
-          - entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
+          - type: tile
+            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+            name: Brama wjazdowa
+            icon: mdi:gate
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          - type: tile
+            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
             name: Furtka
             icon: mdi:door
-          - type: section
-          - entity: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
-            type: custom:multiple-entity-row
-            name: Brama Garazowa
-            icon: mdi:garage-variant
-            toggle: true
-            show_state: true
-            entities:
-              - entity: sensor.door_brama_garaz_battery
-                name: Bateria
-              - entity: binary_sensor.door_brama_garaz_opening
-                name: Stan
-          - entity: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
-            name: Garaz Swiatlo
-            icon: mdi:lightbulb-fluorescent-tube
-          - entity: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
-            name: Swiatlo nad Brama Garazowa
-            icon: mdi:coach-lamp-variant
-          - entity: switch.sonoff_minir2_drzwi_dwor_minir2_swiatlo_drzwi_dwor
-            name: Drzwi Dwor
-            icon: mdi:coach-lamp
-          - type: section
-          - entity: automation.auto_furtka_dzwonek
-            type: custom:multiple-entity-row
-            name: Furtka_Auto
-            icon: mdi:door
-            toggle: true
-            show_state: true
-            entities:
-              - entity: automation.auto_furtka_dzwonek_off
-                name: AutoOff
-                toggle: true
-              - entity: automation.auto_furtka_dzwonek_on
-                name: AutoOn
-                toggle: true
-        title: Garaz
-        show_header_toggle: false
-      - type: entities
-        title: Swiatla Ogrod
-        entities:
-          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_podjazd
-            name: Podjazd
-            icon: mdi:post-lamp
-          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_boki_ogrodu
-            name: Boki ogrodu
-            icon: mdi:light-flood-up
-          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_tyl_ogrodu
-            name: Tyl ogrodu
-            icon: mdi:light-flood-up
-          - entity: switch.sonoff_4chpror3_ogrod_swiatla_4chpror3_swiatlo_slupki_ognisko
-            name: Slupki ognisko
-            icon: mdi:post-lamp
-          - entity: switch.sonoff_minir2_taras_minir2_swiatlo_taras
-            name: Taras
-            icon: mdi:coach-lamp-variant
-      - type: entities
-        entities:
-          - entity: sensor.consumed_energy_dzien_total
-            name: Consumed Energy Day Total
-          - entity: sensor.donated_energy_dzien_total
-            name: Donated Energy Day Total
-          - entity: sensor.consumed_energy_noc_total
-            name: Consumed Energy Night Total
-          - entity: sensor.donated_energy_noc_total
-            name: Donated Energy Night Total
-          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
-            name: Current Power
-          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_state
-            name: State
-          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_temperature
-            name: Temperature
-          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_time
-            name: Today Time
-          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_yield
-            name: Today Yield
-          - entity: sensor.saj_saj_wifi_dtu_a2c8e9_total_yield
-            name: Total Yield
-        title: SAJ
-      - show_name: true
-        show_icon: true
-        show_state: true
-        type: glance
-        title: Automations
-        entities:
-          - entity: automation.inching_switch_sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
-            name: inching_garaz_brama
-          - entity: automation.inching_switch_sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
-            name: inching_dwor_brama
-          - entity: automation.inching_switch_sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
-            name: inching_dwor_furtka
-          - entity: automation.inching_switch_sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
-            name: inching_swiatlo_garaz_wew
-          - entity: automation.inching_switch_sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
-            name: inching_swiatlo_garaz_zew
-          - entity: automation.inching_switch_sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_brama_dwor_btn
-            name: inching_garaz_brama_dwor_btn
-          - entity: automation.wlacz_cyrkulacje
-            name: wlacz_cyrkulacje
-          - entity: automation.wylacz_cyrkulacje
-            name: wylacz_cyrkulacje
-        state_color: false
-      - type: entities
-        entities:
-          - entity: lawn_mower.sileno_life_750_lawn_mower
-            name: Lawn Mower
-          - entity: button.sileno_life_750_return_to_dock
-            name: Return to Dock
-          - entity: button.sileno_life_750_start_mowing_now
-            name: Start Mowing Now
-          - entity: sensor.sileno_life_750_battery_level
-            name: Battery Level
-          - entity: binary_sensor.sileno_life_750_online
-            name: Online
-        title: Kosiarka
-      - type: entities
-        entities:
-          - type: section
-            label: Trawnik
-          - entity: switch.rain_bird_sprinkler_1
-            name: "1. Front Lewa Strona"
-            icon: mdi:sprinkler
-          - entity: switch.rain_bird_sprinkler_2
-            name: "2. Front Prawa Strona"
-            icon: mdi:sprinkler
-          - entity: switch.rain_bird_sprinkler_3
-            name: "3. Bok"
-            icon: mdi:sprinkler
-          - entity: switch.rain_bird_sprinkler_4
-            name: "4. Tyl Ukos 3000"
-            icon: mdi:sprinkler
-          - entity: switch.rain_bird_sprinkler_5
-            name: "5. Tyl Srodek"
-            icon: mdi:sprinkler
-          - entity: switch.rain_bird_sprinkler_6
-            name: "6. Tyl Prawa Strona"
-            icon: mdi:sprinkler
-          - entity: switch.rain_bird_sprinkler_7
-            name: "7. Skarpa Tyl"
-            icon: mdi:sprinkler
-          - type: section
-            label: Linie Kroplujace
-          - entity: switch.rain_bird_sprinkler_8
-            name: "8. Rabaty/Donice"
-            icon: mdi:sprinkler
-          - entity: switch.rain_bird_sprinkler_9
-            name: "9. Tuje"
-            icon: mdi:sprinkler
-          - entity: switch.rain_bird_sprinkler_10
-            name: "10. Bok Skarpa"
-            icon: mdi:sprinkler
-        title: Nawodnienie
-        show_header_toggle: false
-      - type: entities
-        entities:
-          - entity: calendar.rain_bird_controller
-            name: Nawodnienie status
-          - entity: number.rain_bird_controller_rain_delay
-            name: Rain delay setting
-          - entity: sensor.rain_bird_controller_raindelay
-            name: Rain delay status
-          - entity: binary_sensor.rain_bird_controller_rainsensor
-            name: Rain Sensor status
-        title: Rain Bird Controller
-  - title: Pogoda
-    path: pogoda
-    badges: []
-    cards:
-      - type: picture
-        image: >-
-          https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=342&col=208&lang=pl
-      - type: iframe
-        url: >-
-          https://embed.windy.com/embed2.html?lat=54.459&lon=18.357&detailLat=54.495&detailLon=18.357&width=650&height=450&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1
-        aspect_ratio: 122%
-      - type: weather-forecast
-        entity: weather.dom
-  - title: Smart
-    path: smart
-    badges: []
-    cards:
-      - type: entities
-        entities:
-          - vacuum.roborock_qrevo_master
-          - sensor.roborock_qrevo_master_battery
-          - sensor.roborock_qrevo_master_status
-          - entity: select.roborock_qrevo_master_mop_intensity
-            name: Mop intensity
-          - binary_sensor.roborock_qrevo_master_mop_attached
-          - binary_sensor.roborock_qrevo_master_water_box_attached
-          - entity: sensor.roborock_qrevo_master_cleaning_time
-            name: Cleaning time
-          - entity: image.roborock_qrevo_master_dol
-            name: Mapa dol
-          - entity: image.roborock_qrevo_master_gora
-            name: Mapa gora
-        title: Roborock Qrevo Master
-      - type: entities
-        entities:
-          - entity: sensor.nawilzacz_powietrza_humidity
-            name: Humidity
-          - entity: sensor.nawilzacz_powietrza_temperature
-            name: Temperature
-          - entity: sensor.nawilzacz_powietrza_water_level
-            name: Water Level
-        title: Nawilżacz powietrza
-      - type: humidifier
-        entity: humidifier.nawilzacz_powietrza
-      - type: entities
-        title: Tesla Wall Connector
-        entities:
-          - binary_sensor.tesla_wall_connector_vehicle_connected
-          - sensor.tesla_wall_connector_status
-          - binary_sensor.tesla_wall_connector_contactor_closed
-          - sensor.tesla_wall_connector_energy
-          - sensor.tesla_wall_connector_session_energy
-          - sensor.tesla_wall_connector_grid_frequency
-          - sensor.tesla_wall_connector_grid_voltage
-          - sensor.tesla_wall_connector_handle_temperature
-          - sensor.tesla_wall_connector_phase_a_current
-          - sensor.tesla_wall_connector_phase_a_voltage
-          - sensor.tesla_wall_connector_phase_b_current
-          - sensor.tesla_wall_connector_phase_b_voltage
-          - sensor.tesla_wall_connector_phase_c_current
-          - sensor.tesla_wall_connector_phase_c_voltage
-      - type: media-control
-        entity: media_player.spotify_mikiq1w2
-  - theme: Backend-selected
-    title: Kamery
-    path: kamery
-    badges: []
-    cards:
-      # - type: picture-entity
-      #   entity: camera.yi_hack_a2_d8a470_cam
-      # - type: picture-entity
-      #   entity: camera.yi_hack_a_cd2a17_cam
-      # - show_state: true
-      #   show_name: true
-      #   camera_view: auto
-      #   type: picture-entity
-      #   entity: camera.yi_hack_a2_723336_cam
-      #   image: https://demo.home-assistant.io/stub_config/bedroom.png
-      - type: entities
-        entities:
-          - entity: select.reolink_furtka_play_quick_reply_message
-            name: Play quick reply message
-          - entity: siren.reolink_furtka_siren
-            name: Siren
-          - entity: binary_sensor.reolink_furtka_motion
-            name: Motion
-          - entity: binary_sensor.reolink_furtka_person
-            name: Person
-          - entity: binary_sensor.reolink_furtka_visitor
-            name: Visitor
-        title: Reolink-Furtka
-      # - type: picture-entity
-      #   entity: camera.reolink_furtka_fluent
-      - type: custom:frigate-card
-        cameras:
-          - camera_entity: camera.reolink_doorbell
-            live_provider: webrtc-card
-      - type: custom:frigate-card
-        cameras:
-          - camera_entity: camera.reolink_e1pro_garaz
-            live_provider: webrtc-card
-      - type: custom:frigate-card
-        cameras:
-          - camera_entity: camera.reolink_e1pro_kuchnia
-            live_provider: webrtc-card
-      - type: custom:frigate-card
-        cameras:
-          - camera_entity: camera.reolink_e1pro_drzwi
-            live_provider: webrtc-card
-      - type: custom:frigate-card
-        cameras:
-          - camera_entity: camera.yi_salon
-            live_provider: webrtc-card
-      - type: custom:frigate-card
-        cameras:
-          - camera_entity: camera.yi_sypialnia
-            live_provider: webrtc-card
-  - theme: Backend-selected
-    title: Ogrzewanie
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          - type: tile
+            entity: cover.brama_garazowa
+            name: Brama garażowa
+            state_content:
+              - state
+              - last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            # Details of the reed switch (open/closed history, battery) rather than the cover itself
+            hold_action:
+              action: more-info
+              entity: binary_sensor.door_brama_garaz_opening
+          - type: tile
+            entity: automation.auto_furtka_dzwonek
+            name: Furtka na dzwonek
+            icon: mdi:doorbell
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          - type: picture-entity
+            entity: camera.reolink_doorbell
+            name: Furtka
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/domofon
+          - type: picture-entity
+            entity: camera.reolink_e1pro_garaz
+            name: Brama garażowa
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Ogrzewanie
+            icon: mdi:radiator
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/ogrzewanie
+          - type: tile
+            entity: sensor.temperatura_parter
+            name: Parter
+            icon: mdi:home-floor-0
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/ogrzewanie
+          - type: tile
+            entity: sensor.temperatura_pietro
+            name: Piętro
+            icon: mdi:home-floor-1
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/ogrzewanie
+          - type: tile
+            entity: sensor.opentherm_t_dhw
+            name: Ciepła woda
+            icon: mdi:water-thermometer
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+            name: Cyrkulacja
+            icon: mdi:sync
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          - type: tile
+            entity: sensor.gaz_koszt_dzis
+            name: Gaz dziś
+            icon: mdi:meter-gas
+            color: deep-orange
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/gaz
+          - type: tile
+            entity: sensor.gaz_prognoza_miesiac
+            name: Prognoza miesiąca
+            icon: mdi:crystal-ball
+            color: amber
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/gaz
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Światła
+            icon: mdi:lightbulb-group
+{% for group in [
+  ['Parter', 'mdi:home-floor-0', [
+    ['switch.sonoff_minir2_przedpokoj_minir2_swiatlo_przedpokoj', 'Korytarz', 'mdi:ceiling-light'],
+    ['switch.sonoff_minir2_salon_kinkiety_minir2_swiatlo_salon_kinkiety', 'Salon kinkiety', 'mdi:wall-sconce'],
+    ['switch.sp_sonoff_salon_switch', 'Salon lampa', 'mdi:floor-lamp-torchiere-variant'],
+    ['light.ikea_led_kuchnia_light', 'Kuchnia LED', 'mdi:led-strip', ['light-brightness']],
+    ['switch.sonoff_minir2_sypialnia_minir2_swiatlo_sypialnia', 'Sypialnia', 'mdi:ceiling-light'],
+    ['switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew', 'Garaż', 'mdi:lightbulb-fluorescent-tube'],
+  ]],
+  ['Piętro', 'mdi:home-floor-1', [
+    ['switch.sonoff_minir2_sypialnia_gora', 'Sypialnia', 'mdi:ceiling-light'],
+    ['light.ikea_bulb_lampka_sypialnia_gora_light', 'Sypialnia lampka', 'mdi:lamp', ['light-brightness']],
+    ['light.ikea_bulb_biuro_miki_light', 'Biuro lampka', 'mdi:lamp', ['light-brightness']],
+    ['light.led_lazienka_gora', 'Łazienka LED', 'mdi:led-strip', ['light-brightness', 'light-color-temp']],
+  ]],
+  ['Na zewnątrz', 'mdi:tree', [
+    ['switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew', 'Nad bramą', 'mdi:coach-lamp-variant'],
+    ['switch.sonoff_minir2_drzwi_dwor_minir2_swiatlo_drzwi_dwor', 'Drzwi wejściowe', 'mdi:coach-lamp'],
+    ['switch.sonoff_minir2_taras_minir2_swiatlo_taras', 'Taras', 'mdi:coach-lamp-variant'],
+  ]],
+] %}
+          - type: heading
+            heading: {{ group[0] }}
+            heading_style: subtitle
+            icon: {{ group[1] }}
+{% for l in group[2] %}
+          - type: tile
+            entity: {{ l[0] }}
+            name: {{ l[1] }}
+            icon: {{ l[2] }}
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+{% if l[3] is defined %}
+            features:
+{% for f in l[3] %}
+              - type: {{ f }}
+{% endfor %}
+{% endif %}
+            visibility: {{ hide_unavailable | replace('ENTITY', l[0]) }}
+{% endfor %}
+{% endfor %}
+
+  # =====================================================================
+  # Ogrzewanie: rooms (tap = thermostat dial), boiler controls, today
+  # =====================================================================
+  - title: Ogrzewanie
     path: ogrzewanie
-    badges: []
-    cards:
-      - type: history-graph
-        title: Stany Ogrzewania
-        entities:
-          - name: State
-            entity: sensor.current_state_ch
-          - name: CH_STATE
-            entity: sensor.ot_ch
-          - name: SilownikiON
-            entity: sensor.climate_switches_on_count
-        hours_to_show: 4
-      - type: history-graph
-        title: Piec
-        entities:
-          - name: Slave_FL
-            entity: sensor.opentherm_opentherm_slave_fl
-          - name: FLM
-            entity: sensor.opentherm_opentherm_flm
-          - name: TB
-            entity: sensor.opentherm_opentherm_tb
-          # - name: OT33 (EXHAUST CH)
-          #   entity: sensor.opentherm_opentherm_ot33
-          # - name: PIEC
-          #   entity: water_heater.piec_woda_ogrzewanie
-          - name: CH_TEMP
-            entity: sensor.opentherm_opentherm_btmp_req
-          - name: Slave_CH
-            entity: sensor.opentherm_opentherm_slave_ch
-        hours_to_show: 4
-        logarithmic_scale: false
-        max_y_axis: 100
-        min_y_axis: 0
-        fit_y_data: false
-      - type: history-graph
-        title: Podlogowka i Grupy Pompowe
-        entities:
-          - name: Podloga Z
-            entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
-          - name: Podloga P
-            entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
-          - name: Grupy Z
-            entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
-          - name: Grupy P
-            entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
-          - name: PIEC
-            entity: water_heater.piec_woda_ogrzewanie
-        hours_to_show: 4
-        logarithmic_scale: false
-        max_y_axis: 75
-        min_y_axis: 15
-        fit_y_data: false
-      - type: custom:apexcharts-card
-        header:
-          show: true
-          title: apexcharts Opentherm
-        graph_span: 4h
-        series:
-          - entity: sensor.opentherm_opentherm_slave_fl
-            name: Slave_FL
-            yaxis_id: "1"
-          - entity: sensor.opentherm_opentherm_flm
-            name: FLM
-            yaxis_id: "1"
-          - entity: sensor.opentherm_opentherm_tb
-            name: TB
-            yaxis_id: "1"
-          # - entity: sensor.opentherm_opentherm_ot33
-          #   name: OT33 (EXHAUST CH)
-          # - name: PIEC
-          #   entity: water_heater.piec_woda_ogrzewanie
-          #   yaxis_id: "1"
-          - entity: sensor.opentherm_opentherm_btmp_req
-            name: CH_TEMP
-            yaxis_id: "1"
-          - entity: sensor.opentherm_opentherm_slave_ch
-            name: Slave_CH
-            yaxis_id: "1"
-          - entity: sensor.current_state_ch
-            name: State
-            yaxis_id: "2"
-            type: line
-          - entity: sensor.ot_ch
-            name: CH_STATE
-            yaxis_id: "2"
-            type: line
-          - entity: sensor.climate_switches_on_count
-            name: SilownikiON
-            yaxis_id: "2"
-            type: line
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
-            name: Podloga Z
-            yaxis_id: "1"
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
-            name: Podloga P
-            yaxis_id: "1"
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
-            name: Grupy Z
-            yaxis_id: "1"
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
-            name: Grupy P
-            yaxis_id: "1"
-        yaxis:
-          - id: "1"
-            min: 0
-            max: 100
-          - id: "2"
-            opposite: true
-            min: 0
-            max: 10
-      - type: custom:mini-graph-card
-        name: mini-graph-card Opentherm
-        entities:
-          - entity: sensor.opentherm_opentherm_slave_fl
-            name: Slave_FL
-          - entity: sensor.opentherm_opentherm_flm
-            name: FLM
-          - entity: sensor.opentherm_opentherm_tb
-            name: TB
-          # - entity: sensor.opentherm_opentherm_ot33
-          #   name: OT33 (EXHAUST CH)
-          # - name: PIEC
-          #   entity: water_heater.piec_woda_ogrzewanie
-          - entity: sensor.opentherm_opentherm_btmp_req
-            name: CH_TEMP
-          - entity: sensor.opentherm_opentherm_slave_ch
-            name: Slave_CH
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
-            name: Podloga Z
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
-            name: Podloga P
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
-            name: Grupy Z
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
-            name: Grupy P
-        hours_to_show: 4
-        show:
-          labels: true
-          legend: true
-          name: true
-      - type: entities
-        entities:
-          - entity: sensor.opentherm_opentherm_tb
-            type: custom:multiple-entity-row
-            name: Piec
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - entity: sensor.opentherm_opentherm_flm
-                name: FLM
-              - entity: sensor.opentherm_opentherm_slave_fl
-                name: SLAVE FL
-              - entity: sensor.current_state_ch
-                name: State
-              - entity: sensor.opentherm_opentherm_slave_ch
-                name: CH
-              - entity: sensor.opentherm_opentherm_slave_dhw
-                name: DHW
-              - entity: sensor.opentherm_opentherm_tb
-                name: TB
-          - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
-            type: custom:multiple-entity-row
-            name: Grupy pompowe
-            show_state: false
-            secondary_info: last-changed
-            entities:
-              - name: Podloga Z
-                entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
-              - name: Podloga P
-                entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
-              - name: Grupy Z
-                entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
-              - name: Grupy P
-                entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
-          - entity: binary_sensor.imou_gas_detector_kotlownia
+    icon: mdi:radiator
+    type: sections
+    max_columns: 3
+    badges:
+      - type: entity
+        entity: sensor.opentherm_cycle_state
+        name: Kocioł
+        show_name: true
+        icon: mdi:water-boiler
+      - type: entity
+        entity: binary_sensor.opentherm_flame_on
+        name: Płomień
+        show_name: true
+        icon: mdi:fire
+        color: deep-orange
+        visibility:
+          - condition: state
+            entity: binary_sensor.opentherm_flame_on
+            state: "on"
+      - type: entity
+        entity: sensor.opentherm_t_boiler
+        name: Zasilanie
+        show_name: true
+      - type: entity
+        entity: number.opentherm_ch_target
+        name: Krzywa
+        show_name: true
+        icon: mdi:chart-bell-curve-cumulative
+        tap_action:
+          action: none
+      - type: entity
+        entity: sensor.climate_switches_on_count
+        name: Strefy grzeją
+        show_name: true
+        icon: mdi:valve-open
+      - type: entity
+        entity: sensor.temperatura_zewnetrzna
+        name: Na zewnątrz
+        show_name: true
+        icon: mdi:thermometer
+      - type: entity
+        entity: input_boolean.ogrzewanie_slonce
+        name: Obniżka – słońce
+        show_name: true
+        color: amber
+        tap_action:
+          action: none
+        visibility:
+          - condition: state
+            entity: input_boolean.ogrzewanie_slonce
+            state: "on"
+    sections:
+      - type: grid
+        cards:
+{% for floor in ['dol', 'gora'] %}
+          - type: heading
+            heading: {{ 'Parter' if floor == 'dol' else 'Piętro' }}
+            icon: mdi:home-floor-{{ '0' if floor == 'dol' else '1' }}
+            badges:
+              - type: entity
+                entity: sensor.temperatura_{{ 'parter' if floor == 'dol' else 'pietro' }}
+          # Live plan: orange = zone actuator open, tap a temperature = thermostat
+          - type: picture-elements
+            image: /local/floorplan/{{ floor }}.svg?v={{ floorplan_ver }}
+            elements:
+{% for i in home_assistant_config.climate if i.name in floorplan[floor].rooms %}
+              - type: image
+                entity: {{ i.switch }}
+                image: /local/floorplan/{{ floor }}_off.svg?v={{ floorplan_ver }}
+                state_image:
+                  "on": /local/floorplan/{{ floor }}_{{ i.name }}.svg?v={{ floorplan_ver }}
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                style:
+                  left: 50%
+                  top: 50%
+                  width: 100%
+                  pointer-events: none
+{% endfor %}
+{% for i in home_assistant_config.climate if i.name in floorplan[floor].rooms %}
+{% set pos = floorplan[floor].rooms[i.name] %}
+              - type: state-label
+                entity: climate.{{ i.name }}
+                attribute: current_temperature
+                suffix: "°"
+                tap_action:
+                  action: more-info
+                style:
+                  left: {{ pos[0] }}%
+                  top: {{ pos[1] }}%
+                  color: white
+                  font-size: 16px
+                  font-weight: 700
+                  text-shadow: 0 0 3px black, 0 0 6px black
+              - type: state-label
+                entity: climate.{{ i.name }}
+                attribute: temperature
+                prefix: "→ "
+                suffix: "°"
+                tap_action:
+                  action: more-info
+                style:
+                  left: {{ pos[0] }}%
+                  top: {{ (pos[1] + 4.3) | round(1) }}%
+                  color: var(--secondary-text-color)
+                  font-size: 11px
+              - type: state-label
+                entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_humidity
+                prefix: "💧 "
+                tap_action:
+                  action: more-info
+                style:
+                  left: {{ pos[0] }}%
+                  top: {{ (pos[1] + 7.8) | round(1) }}%
+                  color: "#8ab4f8"
+                  font-size: 11px
+{% endfor %}
+{% for s in floorplan[floor].sensors %}
+              - type: state-label
+                entity: {{ s[0] }}
+                tap_action:
+                  action: more-info
+                style:
+                  left: {{ s[1] }}%
+                  top: {{ s[2] }}%
+                  color: white
+                  font-size: 13px
+                  font-weight: 600
+                  text-shadow: 0 0 3px black, 0 0 6px black
+{% endfor %}
+{% for s in floorplan[floor].humidity %}
+              - type: state-label
+                entity: {{ s[0] }}
+                prefix: "💧 "
+                tap_action:
+                  action: more-info
+                style:
+                  left: {{ s[1] }}%
+                  top: {{ s[2] }}%
+                  color: "#8ab4f8"
+                  font-size: 11px
+{% endfor %}
+{% for g in [['sensor.th_ogrod_temperature', 'state_not'], ['sensor.temperatura_zewnetrzna', 'state']] %}
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: sensor.th_ogrod_temperature
+                    {{ g[1] }}:
+                      - unavailable
+                      - unknown
+                elements:
+                  - type: state-label
+                    entity: {{ g[0] }}
+                    prefix: "🌳 "
+                    tap_action:
+                      action: more-info
+                    style:
+                      left: {{ floorplan[floor].garden[0] }}%
+                      top: {{ floorplan[floor].garden[1] }}%
+                      color: white
+                      font-size: 13px
+                      font-weight: 600
+                      text-shadow: 0 0 3px black, 0 0 6px black
+{% endfor %}
+{% if floor == 'dol' %}
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.opentherm_flame_on
+                    state: "on"
+                elements:
+                  - type: icon
+                    icon: mdi:fire
+                    entity: binary_sensor.opentherm_flame_on
+                    style:
+                      left: 56%
+                      top: 95%
+                      color: "#ff7a1a"
+                      "--mdc-icon-size": 22px
+{% endif %}
+{% for i in home_assistant_config.climate if (i.floor | default('dol' if i.name in floor_dol else 'gora')) == floor %}
+          - type: tile
+            entity: climate.{{ i.name }}
+            name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
+            state_content:
+              - current_temperature
+              - temperature
+            grid_options:
+              columns: 6
+{% endfor %}
+{% endfor %}
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Kocioł
+            icon: mdi:water-boiler
+          # Status only – boiler setpoints and CO/CWU are managed by automations, not from the dashboard
+          - type: tile
+            entity: sensor.opentherm_t_set_effective
+            name: Nastawa zasilania
+            icon: mdi:radiator
+            color: deep-orange
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.opentherm_t_dhw
+            name: Ciepła woda
+            icon: mdi:water-thermometer
+            color: blue
+            grid_options:
+              columns: 6
+          # Set by ogrzewanie_krzywa_grzewcza from the IMGW outdoor temperature
+          - type: tile
+            entity: number.opentherm_ch_target
+            name: Nastawa z krzywej
+            icon: mdi:chart-bell-curve-cumulative
+            color: deep-orange
+            grid_options:
+              columns: 6
+            tap_action:
+              action: none
+          - type: tile
+            entity: sensor.temperatura_zewnetrzna_srednia_24h
+            name: Śr. 24 h (sezon)
+            icon: mdi:thermometer-auto
+            grid_options:
+              columns: 6
+{% for sw in [['switch.opentherm_ch_enable', 'CO', 'mdi:radiator'], ['switch.opentherm_dhw_enable', 'CWU', 'mdi:water-boiler']] %}
+          - type: tile
+            entity: {{ sw[0] }}
+            name: {{ sw[1] }}
+            icon: {{ sw[2] }}
+            grid_options:
+              columns: 6
+            tap_action:
+              action: none
+            icon_tap_action:
+              action: none
+            hold_action:
+              action: none
+{% endfor %}
+          - type: tile
+            entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+            name: Podłogówka
+            icon: mdi:heating-coil
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.imou_gas_detector_kotlownia
             name: Czujnik gazu
             icon: mdi:meter-gas
-          - entity: water_heater.piec_woda_ogrzewanie
-            name: Ogrzewanie
-            icon: mdi:heating-coil
-            state_color: true
-          - entity: water_heater.piec_ciepla_woda_uzytkowa
-            name: CWU
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+            name: Cyrkulacja
+            icon: mdi:water-sync
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.opentherm_t_dhw_set
+            name: Nastawa CWU
             icon: mdi:water-boiler
-            state_color: true
-          - type: section
-            label: Pompy
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
-            name: Pompa Podlogowka
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
-            name: Pompa Grzejniki
-          - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
-            type: custom:multiple-entity-row
-            name: Mieszacz Grzejniki
-            show_state: false
-            secondary_info: last-changed
+            color: blue
+            grid_options:
+              columns: 6
+            tap_action:
+              action: none
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Dziś
+            icon: mdi:chart-timeline-variant
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/kotlownia
+          - type: tile
+            entity: sensor.opentherm_t_boiler
+            name: Zasilanie kotła
+            icon: mdi:thermometer-high
+            features_position: inline
+            features:
+              - type: trend-graph
+                hours_to_show: 6
+          - type: tile
+            entity: sensor.piec_starty_1h
+            name: Starty / 1 h
+            icon: mdi:counter
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.piec_sredni_czas_pracy
+            name: Śr. czas pracy
+            icon: mdi:timer-outline
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.piec_starty_24h
+            name: Starty / 24 h
+            icon: mdi:counter
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.piec_praca_1h
+            name: Praca palnika / 1 h
+            icon: mdi:fire-circle
+            grid_options:
+              columns: 6
+          # Condensing works below ~55 °C exhaust
+          - type: tile
+            entity: sensor.opentherm_t_exhaust
+            name: Spaliny (kondensacja < 55 °C)
+            icon: mdi:smoke
+            features_position: inline
+            features:
+              - type: trend-graph
+                hours_to_show: 6
+          - type: history-graph
+            hours_to_show: 6
             entities:
+              - entity: binary_sensor.opentherm_flame_on
+                name: Płomień
+              - entity: binary_sensor.opentherm_dhw_active
+                name: CWU
+              - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+                name: Podłogówka
+
+      # Mould risk: long periods above 65 % (bathrooms 75 % – showers spike them); 7-day hourly means
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wilgotność
+            icon: mdi:water-percent
+            badges:
+              - type: entity
+                entity: sensor.wejherowo_humidity
+                name: Na zewnątrz
+                show_name: true
+          - type: entity-filter
+            show_empty: false
+            conditions:
+              - condition: numeric_state
+                above: 65
+            entities:
+{% for i in home_assistant_config.climate %}
+              - entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_humidity
+                name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
+{% if 'lazienka' in i.name %}
+                conditions:
+                  - condition: numeric_state
+                    above: 75
+{% endif %}
+{% endfor %}
+            card:
+              type: entities
+              title: Za wilgotno – przewietrz
+              state_color: true
+          - type: statistics-graph
+            title: Wilgotność w pokojach (7 dni)
+            chart_type: line
+            period: hour
+            days_to_show: 7
+            stat_types:
+              - mean
+            entities:
+{% for i in home_assistant_config.climate %}
+              - entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_humidity
+                name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
+{% endfor %}
+
+      # Room alerts (template.yaml / alert.yaml) and the setpoint log (automations/ogrzewanie_log.yaml)
+      - type: grid
+        cards:
+          - type: heading
+            heading: Alerty i zmiany nastaw
+            icon: mdi:thermometer-alert
+{% for b in [['okno_otwarte', 'Okno/drzwi otwarte?', 'mdi:window-open-variant', 'blue'], ['pokoj_za_zimno', 'Wychładza się', 'mdi:snowflake-thermometer', 'light-blue'], ['pokoj_szybko_sie_nagrzewa', 'Szybko się nagrzewa', 'mdi:thermometer-chevron-up', 'red']] %}
+          - type: tile
+            entity: binary_sensor.{{ b[0] }}
+            name: {{ b[1] }}
+            icon: {{ b[2] }}
+            color: {{ b[3] }}
+            state_content:
+              - state
+              - pokoje
+            grid_options:
+              columns: {{ 12 if loop.first else 6 }}
+{% endfor %}
+          - type: history-graph
+            title: Zmiana temperatury (K/h)
+            hours_to_show: 24
+            entities:
+{% for i in home_assistant_config.climate %}
+              - entity: sensor.zmiana_temperatury_{{ i.name }}
+                name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
+{% endfor %}
+          - type: logbook
+            title: Zmiany nastaw termostatów
+            hours_to_show: 72
+            target:
+              entity_id:
+{% for i in home_assistant_config.climate %}
+                - climate.{{ i.name }}
+{% endfor %}
+
+      # Gas estimate from OpenTherm (no gas meter in HA), tariff from the last invoice
+      - type: grid
+        cards:
+          - type: heading
+            heading: Gaz i koszty
+            icon: mdi:meter-gas
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/gaz
+            badges:
+              - type: entity
+                entity: sensor.gaz_koszt_godzina
+                icon: mdi:cash-clock
+          - type: tile
+            entity: sensor.gaz_moc
+            name: Pobór gazu teraz
+            icon: mdi:fire
+            color: deep-orange
+            features_position: inline
+            features:
+              - type: trend-graph
+                hours_to_show: 24
+          - type: tile
+            entity: sensor.gaz_koszt_dzis
+            name: Koszt dziś
+            icon: mdi:cash
+            color: deep-orange
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_koszt_wczoraj
+            name: Wczoraj
+            icon: mdi:cash-check
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_co_dzis
+            name: CO dziś
+            icon: mdi:radiator
+            color: deep-orange
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_cwu_dzis
+            name: CWU dziś
+            icon: mdi:water-boiler
+            color: blue
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_koszt_miesiac
+            name: Ten miesiąc
+            icon: mdi:calendar-month
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gaz_prognoza_miesiac
+            name: Prognoza miesiąca
+            icon: mdi:crystal-ball
+            color: amber
+            grid_options:
+              columns: 6
+          - type: statistics-graph
+            title: Gaz dziennie (kWh)
+            entities:
+              - entity: sensor.gaz_energia_co
+                name: CO
+              - entity: sensor.gaz_energia_cwu
+                name: CWU
+            stat_types:
+              - change
+            period: day
+            days_to_show: 14
+            chart_type: bar
+
+  # Gas details, opened from "Gaz i koszty" / home tiles
+  - title: Gaz
+    path: gaz
+    subview: true
+    back_path: /lovelace/ogrzewanie
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Gaz – szacunek z kotła (OpenTherm)
+            icon: mdi:meter-gas
+          - type: tile
+            entity: sensor.gaz_moc
+            name: Pobór gazu
+            icon: mdi:fire
+            color: deep-orange
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_godzina
+            name: Koszt teraz
+            icon: mdi:cash-clock
+            color: deep-orange
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_dzis
+            name: Koszt dziś
+            icon: mdi:cash
+            color: deep-orange
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_wczoraj
+            name: Wczoraj
+            icon: mdi:cash-check
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_miesiac
+            name: Ten miesiąc
+            icon: mdi:calendar-month
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_prognoza_miesiac
+            name: Prognoza miesiąca
+            icon: mdi:crystal-ball
+            color: amber
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_koszt_rok
+            name: Ten rok
+            icon: mdi:calendar-range
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.gaz_prognoza_doba
+            name: Prognoza doby (pogoda)
+            icon: mdi:weather-snowy-heavy
+            color: amber
+            state_content:
+              - state
+              - koszt
+            grid_options:
+              columns: 3
+          - type: custom:apexcharts-card
+            graph_span: 24h
+            header:
+              show: true
+              title: Pobór gazu i temperatura (24 h)
+              show_states: true
+              colorize_states: true
+            yaxis:
+              - id: kw
+                min: 0
+                max: 20
+                decimals: 0
+              - id: temp
+                opposite: true
+                decimals: 0
+            series:
+              - entity: sensor.gaz_moc_co
+                name: CO
+                type: area
+                curve: stepline
+                color: "#ff7a1a"
+                opacity: 0.4
+                yaxis_id: kw
+              - entity: sensor.gaz_moc_cwu
+                name: CWU
+                type: area
+                curve: stepline
+                color: "#3a78c2"
+                opacity: 0.4
+                yaxis_id: kw
+              - entity: sensor.temperatura_zewnetrzna
+                name: Na zewnątrz
+                type: line
+                color: "#9aa4b1"
+                stroke_width: 2
+                yaxis_id: temp
+      - type: grid
+        column_span: 2
+        cards:
+          - type: custom:apexcharts-card
+            graph_span: 14d
+            span:
+              end: day
+            header:
+              show: true
+              title: Gaz dziennie (kWh) i temperatura
+            yaxis:
+              - id: kwh
+                min: 0
+                decimals: 0
+              - id: temp
+                opposite: true
+                decimals: 0
+            series:
+              - entity: sensor.gaz_energia_co
+                name: CO
+                type: column
+                color: "#ff7a1a"
+                yaxis_id: kwh
+                statistics:
+                  type: change
+                  period: day
+                  align: start
+              - entity: sensor.gaz_energia_cwu
+                name: CWU
+                type: column
+                color: "#3a78c2"
+                yaxis_id: kwh
+                statistics:
+                  type: change
+                  period: day
+                  align: start
+              - entity: sensor.temperatura_zewnetrzna
+                name: Śr. na zewnątrz
+                type: line
+                color: "#9aa4b1"
+                stroke_width: 2
+                yaxis_id: temp
+                statistics:
+                  type: mean
+                  period: day
+                  align: start
+          - type: custom:apexcharts-card
+            graph_span: 14d
+            span:
+              end: day
+            header:
+              show: true
+              title: Koszt dzienny (zł)
+            yaxis:
+              - min: 0
+                decimals: 0
+            series:
+              - entity: sensor.gaz_koszt_dzis
+                name: Koszt
+                type: column
+                color: "#f2a33a"
+                statistics:
+                  type: max
+                  period: day
+                  align: start
+          - type: statistics-graph
+            title: Gaz miesięcznie (kWh)
+            entities:
+              - entity: sensor.gaz_energia_co
+                name: CO
+              - entity: sensor.gaz_energia_cwu
+                name: CWU
+            stat_types:
+              - change
+            period: month
+            days_to_show: 365
+            chart_type: bar
+      - type: grid
+        cards:
+          - type: gauge
+            entity: sensor.gaz_moc
+            name: Pobór gazu (kW)
+            min: 0
+            max: 20
+            needle: true
+            severity:
+              green: 0
+              yellow: 9
+              red: 15
+          - type: markdown
+            title: Podsumowanie
+            content: |
+{% raw %}
+              {% set k = states('input_number.gaz_wsp_konwersji') | float(11.942) %}
+              {% set c = states('input_number.gaz_cena_kwh') | float(0) %}
+              {% set d = states('sensor.gaz_dzis') | float(0) %}
+              {% set w = state_attr('sensor.gaz_dzis', 'last_period') | float(0) %}
+              {% set m = states('sensor.gaz_miesiac') | float(0) %}
+              | | kWh | m³ | zł |
+              |---|---:|---:|---:|
+              | 🔥 Dziś | {{ d | round(1) }} | {{ (d / k) | round(2) }} | {{ states('sensor.gaz_koszt_dzis') }} |
+              | ⏪ Wczoraj | {{ w | round(1) }} | {{ (w / k) | round(2) }} | {{ states('sensor.gaz_koszt_wczoraj') }} |
+              | 📅 Miesiąc | {{ m | round(0) }} | {{ (m / k) | round(1) }} | {{ states('sensor.gaz_koszt_miesiac') }} |
+              | 🔮 Prognoza doby | {{ states('sensor.gaz_prognoza_doba') }} | {{ (states('sensor.gaz_prognoza_doba') | float(0) / k) | round(2) }} | {{ state_attr('sensor.gaz_prognoza_doba', 'koszt') }} |
+
+              Cena {{ c }} zł/kWh ({{ (c * k) | round(2) }} zł/m³), opłaty stałe {{ states('input_number.gaz_oplata_stala') }} zł/mies.
+              Szacunek z modulacji OpenTherm (±20–25 %), korekta ×{{ states('input_number.gaz_korekta') }}.
+{% endraw %}
+          - type: markdown
+            title: Faktury myORLEN (W-3.9)
+            content: |
+              | Okres | m³ | kWh/dobę | Brutto |
+              |---|---:|---:|---:|
+              | 01.08–30.09.2026 | 81 | 15,9 | 462,71 zł |
+              | 24.05–31.07.2026 | 99 | 17,1 | 528,13 zł |
+
+              Lato = sama CWU. Prognoza sezonu: ~1420 m³ / ~6250 zł rocznie.
+              Odczyt gazomierza 30.09: 188 m³ – nowy odczyt pozwala ustawić korektę.
+          - type: entities
+            title: Parametry (zmiana w repo)
+            entities:
+              - entity: input_number.gaz_cena_kwh
+                name: Cena zmienna
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: input_number.gaz_oplata_stala
+                name: Opłaty stałe
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: input_number.gaz_wsp_konwersji
+                name: Współczynnik konwersji
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: input_number.gaz_korekta
+                name: Korekta szacunku
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: sensor.gaz_zuzycie
+                name: Licznik (szacunek)
+              - entity: sensor.piec_moc_cieplna
+                name: Moc cieplna kotła
+
+  # Electricity invoice estimate (Energa prosumer net-metering), opened from "Więcej → Energia"
+  - title: Prąd
+    path: prad
+    subview: true
+    back_path: /lovelace/wiecej
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Prąd – faktura Energa (prosument 0,8)
+            icon: mdi:transmission-tower
+          - type: tile
+            entity: sensor.prad_faktura_prognoza
+            name: Prognoza faktury
+            icon: mdi:file-document-outline
+            color: amber
+            state_content:
+              - state
+              - okres
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.prad_magazyn
+            name: Magazyn energii teraz
+            icon: mdi:battery-charging-70
+            color: green
+            features_position: inline
+            features:
+              - type: trend-graph
+                hours_to_show: 168
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.prad_magazyn_koniec_okresu
+            name: Magazyn na koniec okresu
+            icon: mdi:battery-clock
+            color: green
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.prad_do_zaplaty_kwh
+            name: Ponad magazyn (płatne)
+            icon: mdi:cash-plus
+            color: red
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.prad_okres_pobor
+            name: Pobór w okresie
+            icon: mdi:transmission-tower-import
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.prad_okres_oddanie
+            name: Oddanie w okresie
+            icon: mdi:transmission-tower-export
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.energa_30407650_zuzycie_dzis
+            name: Pobór dziś (Energa)
+            icon: mdi:home-import-outline
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.energa_30407650_produkcja_dzis
+            name: Oddanie dziś (Energa)
+            icon: mdi:home-export-outline
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
+            name: PV teraz (SAJ)
+            icon: mdi:solar-power
+            color: amber
+            grid_options:
+              columns: 3
+            visibility: {{ hide_unavailable | replace('ENTITY', 'sensor.saj_saj_wifi_dtu_a2c8e9_current_power') }}
+          - type: tile
+            entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_yield
+            name: PV dziś (SAJ)
+            icon: mdi:solar-power-variant
+            color: amber
+            grid_options:
+              columns: 3
+            visibility: {{ hide_unavailable | replace('ENTITY', 'sensor.saj_saj_wifi_dtu_a2c8e9_today_yield') }}
+      - type: grid
+        column_span: 2
+        cards:
+          - type: statistics-graph
+            title: Pobór i oddanie dziennie (kWh, Energa)
+            entities:
+              - entity: sensor.energa_30407650_panel_energia_strefa_1
+                name: Pobór L1 (dzień)
+              - entity: sensor.energa_30407650_panel_energia_strefa_2
+                name: Pobór L2 (noc/weekend)
+              - entity: sensor.energa_30407650_panel_energia_produkcja_strefa_1
+                name: Oddanie L1
+              - entity: sensor.energa_30407650_panel_energia_produkcja_strefa_2
+                name: Oddanie L2
+            stat_types:
+              - change
+            period: day
+            days_to_show: 30
+            chart_type: bar
+          - type: custom:apexcharts-card
+            graph_span: 30d
+            header:
+              show: true
+              title: Magazyn energii i prognoza faktury
+              show_states: true
+              colorize_states: true
+            yaxis:
+              - id: kwh
+                min: 0
+                decimals: 0
+              - id: zl
+                opposite: true
+                min: 0
+                decimals: 0
+            series:
+              - entity: sensor.prad_magazyn
+                name: Magazyn
+                type: area
+                color: "#4caf50"
+                opacity: 0.3
+                yaxis_id: kwh
+                group_by:
+                  func: last
+                  duration: 1d
+              - entity: sensor.prad_faktura_prognoza
+                name: Prognoza faktury
+                type: line
+                color: "#f2a33a"
+                stroke_width: 2
+                yaxis_id: zl
+                group_by:
+                  func: last
+                  duration: 1d
+      - type: grid
+        cards:
+          - type: markdown
+            title: Prognoza faktury
+            content: |
+{% raw %}
+              {% set p = 'sensor.prad_faktura_prognoza' %}
+              **Okres {{ state_attr(p, 'okres') }}** – minęło {{ state_attr(p, 'dni_uplynelo') }} dni, zostało {{ state_attr(p, 'dni_do_konca') }}.
+
+              | | L1 dzień | L2 noc/weekend |
+              |---|---:|---:|
+              | ⬇️ Pobór | {{ state_attr(p, 'pobor_l1') }} | {{ state_attr(p, 'pobor_l2') }} |
+              | ⬆️ Oddanie | {{ state_attr(p, 'oddanie_l1') }} | {{ state_attr(p, 'oddanie_l2') }} |
+              | 🔋 Magazyn teraz | {{ state_attr(p, 'magazyn_teraz_l1') }} | {{ state_attr(p, 'magazyn_teraz_l2') }} |
+
+              Tempo: pobór {{ state_attr(p, 'tempo_pobor') }} kWh/d, oddanie {{ state_attr(p, 'tempo_oddanie') }} kWh/d →
+              do końca okresu pobór {{ state_attr(p, 'prognoza_pobor') }} kWh, oddanie {{ state_attr(p, 'prognoza_oddanie') }} kWh,
+              magazyn {{ state_attr(p, 'magazyn_koniec') }} kWh.
+
+              | Składnik (brutto) | zł |
+              |---|---:|
+              | Energia ponad magazyn ({{ state_attr(p, 'do_zaplaty_kwh') }} kWh) | {{ state_attr(p, 'koszt_energii') }} |
+              | OZE + kogeneracja | {{ state_attr(p, 'oplata_oze_kog') }} |
+              | Akcyza | {{ state_attr(p, 'akcyza') }} |
+              | Opłaty stałe (2 mies.) | {{ state_attr(p, 'oplaty_stale') }} |
+              | **Razem** | **{{ states(p) }}** |
+{% endraw %}
+          - type: markdown
+            title: Faktury Energa (G12W, prosument)
+            content: |
+              | Okres | Pobór | Oddanie | Magazyn po | Brutto |
+              |---|---:|---:|---:|---:|
+              | 07–08.2026 | 1190 | 2017 | 796 (L1) | 131,92 zł |
+              | 05–06.2026 | 1540 | 2350 | 357 (L1) | 138,47 zł |
+
+              Stawki brutto ponad magazyn: L1 1,29 zł/kWh, L2 0,64 zł/kWh.
+              Gdy magazyn się skończy (zima), faktura rośnie do kilkuset zł.
+          - type: entities
+            title: Stan na początek okresu (z faktury)
+            entities:
+              - entity: input_number.prad_magazyn_start_l1
+                name: Magazyn L1
+              - entity: input_number.prad_magazyn_start_l2
+                name: Magazyn L2
+              - entity: input_number.prad_start_pobor_l1
+                name: Licznik pobór L1
+              - entity: input_number.prad_start_pobor_l2
+                name: Licznik pobór L2
+              - entity: input_number.prad_start_oddanie_l1
+                name: Licznik oddanie L1
+              - entity: input_number.prad_start_oddanie_l2
+                name: Licznik oddanie L2
+              - entity: automation.prad_nowy_okres
+                name: Przeniesienie na nowy okres
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Ładowanie auta (Tesla Wall Connector)
+            icon: mdi:ev-station
+          - type: tile
+            entity: sensor.prad_tesla_okres
+            name: Auto w okresie
+            icon: mdi:car-electric
+            color: blue
+            state_content:
+              - state
+              - udzial_poboru
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.tesla_miesiac
+            name: Auto w tym miesiącu
+            icon: mdi:calendar-month
+            color: blue
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.tesla_dzis
+            name: Auto dziś
+            icon: mdi:calendar-today
+            color: blue
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.tesla_wall_connector_status
+            name: Wall Connector
+            icon: mdi:ev-station
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.tesla_wall_connector_total_power
+            name: Moc ładowania
+            icon: mdi:flash
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.tesla_wall_connector_session_energy
+            name: Bieżąca sesja
+            icon: mdi:battery-charging
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: sensor.prad_strefa
+            name: Strefa G12W teraz
+            icon: mdi:clock-time-four-outline
+            grid_options:
+              columns: 3
+          # Solar charging (automations/tesla_slonce.yaml): surplus = 5-min PV mean − house load without the car
+          - type: tile
+            entity: input_boolean.tesla_slonce
+            name: Ładowanie ze słońca
+            color: amber
+            state_content:
+              - state
+              - last_changed
+            features:
+              - type: toggle
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.pv_nadwyzka_auto
+            name: Nadwyżka PV dla auta
+            color: amber
+            grid_options:
+              columns: 3
+          - type: tile
+            entity: input_number.tesla_slonce_baza
+            name: Zużycie domu (bez auta)
+            grid_options:
+              columns: 3
+{% if home_assistant_tesla_solar.vehicle %}
+          - type: tile
+            entity: sensor.{{ home_assistant_tesla_solar.vehicle }}_battery_level
+            name: Bateria auta
+            state_content:
+              - state
+              - last_changed
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.{{ home_assistant_tesla_solar.vehicle }}_charge_current
+            name: Prąd ładowania
+            grid_options:
+              columns: 6
+{% endif %}
+      - type: grid
+        column_span: 2
+        cards:
+          - type: statistics-graph
+            title: Ładowanie auta dziennie (kWh)
+            entities:
+              - entity: sensor.tesla_wall_connector_energy
+                name: Tesla Wall Connector
+            stat_types:
+              - change
+            period: day
+            days_to_show: 60
+            chart_type: bar
+      - type: grid
+        cards:
+          - type: markdown
+            title: Auto w okresie rozliczeniowym
+            content: |
+{% raw %}
+              {% set t = 'sensor.prad_tesla_okres' %}
+              | | kWh |
+              |---|---:|
+              | L1 dzień | {{ state_attr(t, 'l1') }} |
+              | L2 noc/weekend | {{ state_attr(t, 'l2') }} |
+              | **Razem** | **{{ states(t) }}** |
+
+              To {{ state_attr(t, 'udzial_poboru') }} % poboru z sieci w okresie ({{ states('sensor.prad_okres_pobor') }} kWh,
+              liczniki Energa spóźniają się o ok. dobę). Według stawek ponad magazyn byłoby to
+              **{{ state_attr(t, 'wartosc_wg_stawek') }} zł**; póki starcza magazynu, płaci się tylko OZE i akcyzę
+              (ok. 0,02 zł/kWh), ale każda kWh zjada ok. 1,25 kWh oddanych do sieci.
+{% endraw %}
+
+  # Boiler room details for tuning – not in the tab bar, opened from "Dziś"
+  - title: Kotłownia
+    path: kotlownia
+    subview: true
+    back_path: /lovelace/ogrzewanie
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        column_span: 3
+        cards:
+          # Supply = solid, return = dashed (same colour per circuit); modulation as a shaded area on the right axis
+          - type: custom:apexcharts-card
+            graph_span: 6h
+            header:
+              show: true
+              title: Kocioł i grupy pompowe
+              show_states: true
+              colorize_states: true
+            apex_config:
+              chart:
+                height: 420
+              legend:
+                show: true
+                position: bottom
+              tooltip:
+                shared: true
+                x:
+                  format: HH:mm
+              grid:
+                strokeDashArray: 3
+            all_series_config:
+              stroke_width: 2
+              curve: smooth
+              group_by:
+                func: avg
+                duration: 2min
+            series:
+              - entity: sensor.opentherm_rel_mod_level
+                name: Modulacja
+                yaxis_id: mod
+                type: area
+                curve: stepline
+                color: "#9e9e9e"
+                opacity: 0.2
+                stroke_width: 1
+              - entity: sensor.opentherm_t_boiler
+                name: TB (kocioł)
+                yaxis_id: temp
+                color: "#e53935"
+                stroke_width: 3
+              - entity: sensor.opentherm_t_set_effective
+                name: Nastawa
+                yaxis_id: temp
+                color: "#ff9800"
+                curve: stepline
+                stroke_dash: 6
+                group_by:
+                  func: last
+                  duration: 2min
+              - entity: sensor.opentherm_t_exhaust
+                name: Spaliny
+                yaxis_id: temp
+                color: "#8e24aa"
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+                name: Podłoga Z
+                yaxis_id: temp
+                color: "#1e88e5"
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
+                name: Podłoga P
+                yaxis_id: temp
+                color: "#1e88e5"
+                stroke_dash: 4
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+                name: Grupy Z
+                yaxis_id: temp
+                color: "#43a047"
+            yaxis:
+              - id: temp
+                min: ~20
+                max: ~70
+                decimals: 0
+                apex_config:
+                  tickAmount: 5
+                  title:
+                    text: °C
+              - id: mod
+                opposite: true
+                min: 0
+                max: 100
+                decimals: 0
+                apex_config:
+                  tickAmount: 5
+                  title:
+                    text: Modulacja %
+      - type: grid
+        cards:
+          - type: heading
+            heading: Anty-taktowanie
+            icon: mdi:sine-wave
+          - type: entities
+            entities:
+              - entity: switch.opentherm_anti_cycle
+                name: Anty-taktowanie
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: number.opentherm_stop_above
+                name: Stop powyżej nastawy
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: number.opentherm_start_below
+                name: Start poniżej nastawy
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: number.opentherm_max_rel_mod_level
+                name: Maks. modulacja
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: sensor.opentherm_cycle_state
+                name: Faza cyklu
+              - entity: sensor.piec_starty_24h
+                name: Starty / 24 h
+              - entity: sensor.piec_praca_1h
+                name: Praca palnika / 1 h
+              - entity: sensor.opentherm_t_exhaust
+                name: Spaliny
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_4_temperature
+                name: Temperatura w kotłowni
+      - type: grid
+        cards:
+          - type: heading
+            heading: Grupy pompowe
+            icon: mdi:pump
+          - type: entities
+            entities:
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_1_temperature
+                name: Podłoga zasilanie
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_2_temperature
+                name: Podłoga powrót
+              - entity: sensor.sonoff_4chpror3_ogrzewanie_piec_ds18b20_3_temperature
+                name: Grzejniki zasilanie
+              - entity: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+                name: Pompa grzejniki
               - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
-                name: Otwieranie
-                # toggle: true
+                name: Mieszacz grzejniki – otwieranie
               - entity: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
-                name: Zamykanie
-                # toggle: true
-          - entity: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
-            type: custom:multiple-entity-row
-            name: Pompa Cyrkulacyjna
-            icon: mdi:thermometer-water
-            toggle: true
-            show_state: true
+                name: Mieszacz grzejniki – zamykanie
+      - type: grid
+        cards:
+          - type: heading
+            heading: Pogoda i CWU
+            icon: mdi:weather-partly-cloudy
+          - type: entities
             entities:
-              - entity: automation.wlacz_cyrkulacje
-                name: Auto
-                toggle: true
-              # - entity: sensor.gosund_pompa_energy_power
-              #   name: Zuzycie
-          - type: section
-            label: Virtual
-          - switch.group_ogrzewanie_podlogowe
-{# {% for i in home_assistant_config.climate %}
-      - type: thermostat
-        entity: climate.{{ i.name }}
-        features:
-          - type: climate-hvac-modes
-            hvac_modes:
-              - heat
-              - 'off'
-{% endfor %} #}
-      - type: entities
-        title: Termostaty
-        entities:
-{% for i in home_assistant_config.climate %}
-          - entity: climate.{{ i.name }}
-            type: custom:multiple-entity-row
-            name: {{ i.name }}
-            show_state: false
+              - entity: sensor.temperatura_zewnetrzna
+                name: Na zewnątrz (Airly → IMGW)
+              - entity: sensor.temperatura_zewnetrzna_srednia_24h
+                name: Średnia 24 h
+              - entity: number.opentherm_ch_target
+                name: Nastawa z krzywej
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: automation.ogrzewanie_krzywa_grzewcza
+                name: Krzywa grzewcza
+              - entity: automation.ogrzewanie_sezon
+                name: Sezon grzewczy
+              - entity: automation.ogrzewanie_slonce
+                name: Obniżka na słońce
+              - entity: input_boolean.ogrzewanie_slonce
+                name: Obniżka aktywna
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: number.opentherm_t_dhw_set
+                name: Nastawa CWU
+                type: simple-entity
+                tap_action:
+                  action: none
+              - entity: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+                name: Pompa cyrkulacji
+              - entity: automation.cwu_cyrkulacja
+                name: Cyrkulacja impulsowa
+              - entity: automation.cwu_noc
+                name: CWU 45 °C w nocy
+              - entity: automation.cwu_dezynfekcja
+                name: Dezynfekcja (niedz. 03:00)
+              - entity: automation.piec_taktowanie_alert
+                name: Alert taktowania
+      - type: grid
+        cards:
+          - type: heading
+            heading: Siłowniki
+            icon: mdi:valve
+          - type: entities
             state_color: true
-            secondary_info: last-updated
             entities:
-              - entity: climate.{{ i.name }}
-                attribute: hvac_action
-                name: State
-              - entity: climate.{{ i.name }}
-                attribute: temperature
-                name: Target Temperature
-              - entity: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_temperature
-                name: Current Temperature
-{% endfor %}
-      - type: entities
-        title: Silowniki
-        entities:
 {% for i in home_assistant_config.climate %}
-          - entity: {{ i.switch }}
-            name: {{ i.name }}
+              - entity: {{ i.switch }}
+                name: {{ i.label | default(room_labels[i.name] | default(i.name)) }}
 {% endfor %}
-      - type: entities
-        title: Silowniki Virtualne
-        entities:
-{% for i in home_assistant_config.climate %}
-          - entity: switch.virtual_ogrzewanie_{{ i.name }}
-            name: {{ i.name }}
+
+  # =====================================================================
+  # Domofon: live doorbell with 2-way audio (go2rtc WebRTC backchannel,
+  # requires HTTPS), opened from the doorbell notification
+  # =====================================================================
+  - title: Domofon
+    path: domofon
+    icon: mdi:doorbell-video
+    type: sections
+    max_columns: 2
+    sections:
+      - type: grid
+        cards:
+          - type: custom:advanced-camera-card
+            grid_options:
+              columns: full
+            cameras:
+              - camera_entity: camera.reolink_doorbell
+                live_provider: go2rtc
+                go2rtc:
+                  # Frigate camera name differs from the go2rtc restream name
+                  stream: reolink_doorbell_restream
+                  modes:
+                    - webrtc
+            live:
+              # Hear the visitor right away and keep audio on after talking
+              auto_unmute:
+                - selected
+                - visible
+                - microphone
+              auto_mute:
+                - hidden
+              controls:
+                builtin: false
+              microphone:
+                # Reolink doorbell is half-duplex: any backchannel audio (even a
+                # muted mic sending silence) mutes its microphone, so connect the
+                # mic only while talking and drop it right after
+                always_connected: false
+                disconnect_seconds: 3
+            # Always-visible intercom button bar below the video
+            menu:
+              style: outside
+              position: bottom
+              button_size: 64
+              buttons:
+                microphone:
+                  enabled: true
+                  # Push-to-talk, matching the half-duplex doorbell
+                  type: momentary
+                  priority: 100
+                mute:
+                  enabled: true
+                  priority: 90
+                fullscreen:
+                  priority: 10
+{% for b in ['iris', 'cameras', 'live', 'clips', 'snapshots', 'timeline', 'download', 'camera_ui', 'display_mode', 'media_player', 'ptz_home'] %}
+                {{ b }}:
+                  enabled: false
 {% endfor %}
-title: MikiDashboardYAML
+      - type: grid
+        cards:
+          - type: heading
+            heading: Furtka
+            icon: mdi:gate
+          - type: tile
+            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
+            name: Otwórz furtkę
+            icon: mdi:door-open
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+          - type: tile
+            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+            name: Brama wjazdowa
+            icon: mdi:gate
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+          - type: tile
+            entity: select.reolink_furtka_play_quick_reply_message
+            name: Szybka odpowiedź
+            features:
+              - type: select-options
+          - type: tile
+            entity: automation.auto_furtka_dzwonek
+            name: Furtka otwiera się na dzwonek
+            icon: mdi:doorbell
+            features_position: inline
+            features:
+              - type: toggle
+          - type: tile
+            entity: siren.reolink_furtka_siren
+            name: Syrena
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.reolink_furtka_visitor
+            name: Ostatni dzwonek
+            icon: mdi:bell-ring
+            state_content: last_changed
+            grid_options:
+              columns: 6
+
+  # =====================================================================
+  # Kamery: snapshots (cheap on mobile data), tap = live
+  # =====================================================================
+  - title: Kamery
+    path: kamery
+    icon: mdi:cctv
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+{% for cam in [['reolink_doorbell', 'Furtka'], ['reolink_e1pro_drzwi', 'Drzwi'], ['reolink_e1pro_garaz', 'Garaż'], ['reolink_e1pro_kuchnia', 'Kuchnia'], ['yi_salon', 'Salon'], ['yi_sypialnia', 'Sypialnia']] %}
+          - type: picture-entity
+            entity: camera.{{ cam[0] }}
+            name: {{ cam[1] }}
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
+{% endfor %}
+      - type: grid
+        cards:
+          - type: heading
+            heading: Dzwonek
+            icon: mdi:doorbell-video
+          - type: tile
+            entity: select.reolink_furtka_play_quick_reply_message
+            name: Odtwórz wiadomość
+            features:
+              - type: select-options
+          - type: tile
+            entity: siren.reolink_furtka_siren
+            name: Syrena
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.reolink_furtka_person
+            name: Osoba
+            grid_options:
+              columns: 6
+      # Frigate object detections on the outdoor cameras (indoor ones left out on purpose)
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wykrycia (24 h)
+            icon: mdi:motion-sensor
+          - type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: binary_sensor.reolink_doorbell_person_occupancy
+                name: Furtka – osoba
+              - entity: binary_sensor.reolink_doorbell_car_occupancy
+                name: Furtka – auto
+              - entity: binary_sensor.reolink_e1pro_drzwi_person_occupancy
+                name: Drzwi – osoba
+              - entity: binary_sensor.reolink_e1pro_garaz_person_occupancy
+                name: Garaż – osoba
+          - type: logbook
+            title: Kto się kręcił
+            hours_to_show: 24
+            target:
+              entity_id:
+{% for cam in ['reolink_doorbell', 'reolink_e1pro_drzwi', 'reolink_e1pro_garaz'] %}
+{% for obj in ['person', 'dog', 'cat'] %}
+                - binary_sensor.{{ cam }}_{{ obj }}_occupancy
+{% endfor %}
+{% endfor %}
+                - binary_sensor.reolink_doorbell_car_occupancy
+
+  # =====================================================================
+  # Ogród
+  # =====================================================================
+  - title: Ogród
+    path: ogrod
+    icon: mdi:tree
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: weather-forecast
+            entity: weather.wejherowo
+            forecast_type: hourly
+          - type: tile
+            entity: sensor.wejherowo_weather_alert
+            name: Ostrzeżenie IMGW
+            icon: mdi:weather-cloudy-alert
+            color: red
+            visibility:
+              - condition: state
+                entity: sensor.wejherowo_weather_alert
+                state_not:
+                  - no_alert
+                  - unavailable
+                  - unknown
+          - type: tile
+            entity: sensor.wejherowo_wind_speed
+            name: Wiatr
+            icon: mdi:weather-windy
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.wejherowo_wind_direction
+            name: Kierunek
+            icon: mdi:compass-outline
+            state_content:
+              - direction_name
+              - state
+            grid_options:
+              columns: 6
+          # Air quality: Airly sensor Gdynia ul. Kańskiego 5 (nearest, 5.4 km); GIOŚ Gdynia kept for comparison
+          - type: tile
+            entity: sensor.airly_common_air_quality_index
+            name: Jakość powietrza (Airly)
+            icon: mdi:air-filter
+            grid_options:
+              columns: 12
+            state_content:
+              - state
+              - description
+          - type: tile
+            entity: sensor.airly_pm2_5
+            name: PM2.5
+            icon: mdi:blur
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.airly_pm10
+            name: PM10
+            icon: mdi:blur-radial
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.gdynia_ul_porebskiego_air_quality_index
+            name: GIOŚ Gdynia (11 km)
+            icon: mdi:air-filter
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.th_ogrod_temperature
+            name: Czujnik ogród
+            grid_options:
+              columns: 6
+            visibility: {{ hide_unavailable | replace('ENTITY', 'sensor.th_ogrod_temperature') }}
+          - type: tile
+            entity: sensor.th_ogrod_humidity
+            name: Wilgotność
+            grid_options:
+              columns: 6
+            visibility: {{ hide_unavailable | replace('ENTITY', 'sensor.th_ogrod_humidity') }}
+          - type: iframe
+            url: >-
+              https://embed.windy.com/embed2.html?lat=54.459&lon=18.357&detailLat=54.495&detailLon=18.357&width=650&height=450&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1
+            aspect_ratio: 122%
+      # Sun arc for the house location (HA home zone = Koleczkowo); west rooms get the afternoon sun
+      - type: grid
+        cards:
+          - type: heading
+            heading: Słońce
+            icon: mdi:weather-sunset
+            badges:
+              - type: entity
+                entity: input_boolean.ogrzewanie_slonce
+                name: Pokoje zachodnie −1 K
+                show_name: true
+                icon: mdi:sun-thermometer
+                color: amber
+                tap_action:
+                  action: none
+                visibility:
+                  - condition: state
+                    entity: input_boolean.ogrzewanie_slonce
+                    state: "on"
+          - type: custom:horizon-card
+            language: pl
+            time_format: 24
+            refresh_period: 60
+            moon: true
+            fields:
+              sun_azimuth: true
+              sun_elevation: true
+              moon_phase: true
+      - type: grid
+        cards:
+          - type: heading
+            heading: Kosiarka
+            icon: mdi:robot-mower
+          - type: tile
+            entity: lawn_mower.sileno_life_750_lawn_mower
+            name: Sileno
+            features:
+              - type: lawn-mower-commands
+                commands:
+                  - start_pause
+                  - dock
+          - type: tile
+            entity: sensor.sileno_life_750_battery_level
+            name: Bateria
+            grid_options:
+              columns: 6
+      # Rain Bird and the 4CH garden lights are not loaded in HA right now – add back when they return.
+
+  # =====================================================================
+  # Więcej: rarely used devices + housekeeping
+  # =====================================================================
+  - title: Więcej
+    path: wiecej
+    icon: mdi:dots-horizontal
+    type: sections
+    max_columns: 3
+    sections:
+      # Waste pickups (template.yaml, schedule from the gmina Szemud PDF – update every January)
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wywóz śmieci
+            icon: mdi:delete-clock
+          - type: tile
+            entity: sensor.wywoz_smieci
+            name: Najbliższy wywóz
+            color: brown
+{% for o in [['zmieszane', 'Zmieszane', 'grey'], ['bio', 'Bio', 'brown'], ['papier', 'Papier', 'blue'], ['plastik', 'Plastik/metal', 'yellow'], ['szklo', 'Szkło', 'green']] %}
+          - type: tile
+            entity: sensor.odpady_{{ o[0] }}
+            name: {{ o[1] }}
+            color: {{ o[2] }}
+            grid_options:
+              columns: 6
+{% endfor %}
+      - type: grid
+        cards:
+          - type: heading
+            heading: Sprzątanie
+            icon: mdi:robot-vacuum
+          - type: tile
+            entity: vacuum.roborock_qrevo_master
+            name: Roborock
+            state_content:
+              - state
+              - battery_level
+            features:
+              - type: vacuum-commands
+                commands:
+                  - start_pause
+                  - stop
+                  - return_home
+          - type: picture-entity
+            entity: image.roborock_qrevo_master_dol
+            name: Mapa dół
+            show_state: false
+            grid_options:
+              columns: 6
+          - type: picture-entity
+            entity: image.roborock_qrevo_master_gora
+            name: Mapa góra
+            show_state: false
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: humidifier.nawilzacz_powietrza
+            name: Nawilżacz
+            visibility: {{ hide_unavailable | replace('ENTITY', 'humidifier.nawilzacz_powietrza') }}
+      - type: grid
+        cards:
+          - type: heading
+            heading: Energia
+            icon: mdi:lightning-bolt
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/prad
+          - type: tile
+            entity: sensor.prad_faktura_prognoza
+            name: Faktura za prąd (prognoza)
+            icon: mdi:file-document-outline
+            color: amber
+            state_content:
+              - state
+              - okres
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/prad
+          - type: tile
+            entity: sensor.prad_magazyn
+            name: Magazyn energii
+            icon: mdi:battery-charging-70
+            color: green
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/prad
+          - type: tile
+            entity: sensor.gaz_koszt_miesiac
+            name: Gaz w tym miesiącu
+            icon: mdi:meter-gas
+            color: deep-orange
+            grid_options:
+              columns: 6
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/gaz
+          - type: tile
+            entity: sensor.tesla_wall_connector_status
+            name: Wall Connector
+            icon: mdi:ev-station
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.tesla_wall_connector_session_energy
+            name: Sesja
+            icon: mdi:car-electric
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
+            name: PV teraz
+            icon: mdi:solar-power
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.saj_saj_wifi_dtu_a2c8e9_today_yield
+            name: PV dziś
+            icon: mdi:solar-power-variant
+            grid_options:
+              columns: 6
+          - type: entities
+            title: Gniazdka
+            state_color: true
+            entities:
+              - entity: switch.gosund_clevo_gosund_switch_clevo
+                name: Clevo
+              - entity: sensor.gosund_clevo_energy_power
+                name: Clevo – moc
+              - entity: switch.gosund_clevo_gpu_gosund_switch_clevo_gpu
+                name: Clevo GPU
+              - entity: sensor.gosund_clevo_gpu_energy_power
+                name: Clevo GPU – moc
+              - entity: switch.gosund_monitory_gosund_switch_monitory
+                name: Monitory
+              - entity: switch.gosund_pc_gosund_switch_pc
+                name: PC
+          - type: media-control
+            entity: media_player.spotify_mikiq1w2
+      - type: grid
+        cards:
+          - type: heading
+            heading: System
+            icon: mdi:cog
+          - type: entity-filter
+            show_empty: false
+            conditions:
+              - condition: numeric_state
+                below: 20
+            entities:
+{% for b in ['th_salon', 'th_kuchnia', 'th_sypialnia_dol', 'th_lazienka_dol', 'th_przedpokoj', 'th_garaz', 'th_ogrod', 'th_pokoj_timi', 'th_lazienka_gora', 'th_garderoba', 'shelly_htg3_pokoj_julia', 'door_brama_garaz', 'ikea_5b_kuchnia', 'button_state_dol_1'] %}
+              - sensor.{{ b }}_battery
+{% endfor %}
+            card:
+              type: entities
+              title: Słabe baterie
+          - type: entity-filter
+            show_empty: false
+            conditions:
+              - condition: state
+                state: unavailable
+            entities:
+{% for b in ['th_salon', 'th_kuchnia', 'th_sypialnia_dol', 'th_lazienka_dol', 'th_przedpokoj', 'th_garaz', 'th_ogrod', 'th_pokoj_timi', 'th_lazienka_gora', 'th_garderoba', 'shelly_htg3_pokoj_julia', 'door_brama_garaz', 'ikea_5b_kuchnia', 'button_state_dol_1'] %}
+              - sensor.{{ b }}_battery
+{% endfor %}
+            card:
+              type: entities
+              title: Czujniki offline (bateria?)
+          - type: tile
+            entity: sensor.speedtest_download
+            name: Internet ↓
+            icon: mdi:download
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.speedtest_upload
+            name: Internet ↑
+            icon: mdi:upload
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.shelly_htg3_serwerownia_temperature
+            name: Serwerownia
+          - type: entities
+            title: Automatyzacje
+            state_color: true
+            entities:
+{% for a in home_assistant_config.automations.inching %}
+              - entity: automation.inching_{{ a.entity_id | replace('.', '_') }}
+                name: Impuls – {{ a.entity_id | regex_replace('^.*_4chpror3_(switch|swiatlo)_', '') | replace('_', ' ') }}
+{% endfor %}
+              - entity: automation.auto_furtka_dzwonek
+                name: Furtka na dzwonek

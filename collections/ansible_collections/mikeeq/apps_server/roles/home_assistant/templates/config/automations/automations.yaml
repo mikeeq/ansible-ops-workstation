@@ -18,19 +18,41 @@
 
 - alias: Turn off led_lazienka_gora if turned on without user or switch
   description: >
-    Turns off light.led_lazienka_gora immediately if it was turned on without
-    a user action (e.g. via UI "Light: Turn on light") and not within 2 seconds
-    of switch.sonoff_dualr3_lazienka_gora_led changing state.
+    The Tuya LED controller powers up "on" after a power cut. Turns light.led_lazienka_gora off when
+    it comes back from unavailable as "on", 1 minute after HA start (ZHA restores the state before
+    automations run), or when it was turned on without a user action and not within 2 seconds of
+    switch.sonoff_dualr3_lazienka_gora_led changing state.
   trigger:
     - platform: state
       entity_id: light.led_lazienka_gora
       to: "on"
+      id: wlaczona
+    - platform: homeassistant
+      event: start
+      id: start
   condition:
-    - condition: template
-      value_template: "{% raw %}{{ trigger.to_state.context.user_id == None }}{% endraw %}"
-    - condition: template
-      value_template: "{% raw %}{{ (as_timestamp(now()) - as_timestamp(states.switch.sonoff_dualr3_lazienka_gora_led.last_changed)) > 2 }}{% endraw %}"
+    - condition: or
+      conditions:
+        - condition: trigger
+          id: start
+        - condition: template
+          value_template: >-
+            {% raw %}{{ trigger.id == 'wlaczona' and trigger.from_state is not none
+               and trigger.from_state.state in ['unavailable', 'unknown'] }}{% endraw +%}
+        - condition: template
+          value_template: >-
+            {% raw %}{{ trigger.id == 'wlaczona' and trigger.to_state.context.user_id == None
+               and (as_timestamp(now()) - as_timestamp(states.switch.sonoff_dualr3_lazienka_gora_led.last_changed)) > 2 }}{% endraw +%}
   action:
+    - if:
+        - condition: trigger
+          id: start
+      then:
+        - delay:
+            minutes: 1
+    - condition: state
+      entity_id: light.led_lazienka_gora
+      state: "on"
     - service: light.turn_off
       target:
         entity_id: light.led_lazienka_gora

@@ -18,34 +18,92 @@
   loop:
     - docker-compose.yaml
 
-- name: Install httpd-tools
-  ansible.builtin.package:
-    name: httpd-tools
-    state: present
+# bcrypt hashes are salted, so a fresh hash on every run would rewrite the config
+# (and restart AdGuard Home) each time - reuse the current hash if it still matches.
+- name: Read current AdGuard Home config
+  ansible.builtin.slurp:
+    src: "{{ adguard_home_install_path }}/confdir/AdGuardHome.yaml"
+  register: adguard_home_current_config
+  failed_when: false
+  no_log: true
 
-# https://github.com/pyca/bcrypt/issues/1082
+- name: Extract current password hash
+  ansible.builtin.set_fact:
+    adguard_home_current_bcrypt: >-
+      {{ (adguard_home_current_config.content | default('') | b64decode
+          | regex_search('password: (\$2[aby]\$\S+)', '\1') | default([], true) | first) | default('') }}
+  no_log: true
+
+# htpasswd runs in a throwaway container so no host package (httpd-tools) is
+# required - works on both Fedora and OpenWrt.
+- name: Verify current password hash
+  ansible.builtin.command:
+    argv:
+      - docker
+      - run
+      - --rm
+      - -e
+      - "H={{ adguard_home_current_bcrypt }}"
+      - -e
+      - "P={{ adguard_home_password }}"
+      - httpd:2-alpine
+      - sh
+      - -c
+      - 'printf "u:%s\n" "$H" > /tmp/p && htpasswd -vb /tmp/p u "$P"'
+  register: adguard_home_bcrypt_verify
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  no_log: true
+  when: adguard_home_current_bcrypt | length > 0
+
 - name: Generate bcrypt hash for adguard_home password
   ansible.builtin.command:
-    cmd: "htpasswd -nbBC 10 '' '{{ adguard_home_password }}'"
+    cmd: docker run --rm httpd:2-alpine htpasswd -nbBC 10 '' '{{ adguard_home_password }}'
   register: adguard_home_password_bcrypt_result
   changed_when: false
   no_log: true
+  when: adguard_home_bcrypt_verify.rc | default(1) != 0
 
 - name: Set adguard_home_password_bcrypt fact
   ansible.builtin.set_fact:
-    adguard_home_password_bcrypt: "{{ adguard_home_password_bcrypt_result.stdout | regex_replace('^:', '') }}"
+    adguard_home_password_bcrypt: >-
+      {{ adguard_home_current_bcrypt if adguard_home_bcrypt_verify.rc | default(1) == 0
+         else adguard_home_password_bcrypt_result.stdout | regex_replace('^:', '') }}
   no_log: true
 
 - name: Configure confdir/AdGuardHome.yaml file
   ansible.builtin.template:
     src: "{{ adguard_home_templates_path }}/{{ item }}"
     dest: "{{ adguard_home_install_path }}/{{ item }}"
-    mode: "0664"
+    # AdGuard Home rewrites its config with 0600
+    mode: "0600"
     backup: true
+    # an invalid config would leave the LAN without DNS - let AdGuard Home check it first
+    validate: >-
+      docker run --rm --entrypoint /opt/adguardhome/AdGuardHome
+      -v %s:/tmp/AdGuardHome.yaml:ro {{ adguard_home_image }}
+      --check-config -c /tmp/AdGuardHome.yaml -w /tmp
   loop:
     - confdir/AdGuardHome.yaml
+  register: adguard_home_config_result
 
 # - ansible.builtin.import_tasks: config.yaml
+
+- name: Ensure LAN macvlan docker network exists
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    docker network inspect {{ adguard_home_macvlan_network_name }} >/dev/null 2>&1 && exit 0
+    docker network create -d macvlan \
+      --subnet={{ adguard_home_macvlan_subnet }} \
+      --gateway={{ adguard_home_macvlan_gateway }} \
+      -o parent={{ adguard_home_macvlan_parent }} \
+      {{ adguard_home_macvlan_network_name }}
+  args:
+    executable: /bin/bash
+  register: adguard_home_macvlan_net
+  changed_when: adguard_home_macvlan_net.stdout | length == 64
 
 - name: Pull Docker image using docker-compose
   ansible.builtin.command: docker-compose pull
@@ -58,6 +116,16 @@
   ansible.builtin.command: docker-compose up -d
   changed_when: adguard_home_up_result.stderr_lines | length > 2
   register: adguard_home_up_result
+  args:
+    chdir: "{{ adguard_home_install_path }}"
+
+# `up -d` does not pick up a changed config file - restart to load it
+- name: Restart AdGuard Home after config change
+  ansible.builtin.command: docker-compose restart
+  changed_when: true
+  when:
+    - adguard_home_config_result.changed
+    - not adguard_home_up_result.changed
   args:
     chdir: "{{ adguard_home_install_path }}"
 

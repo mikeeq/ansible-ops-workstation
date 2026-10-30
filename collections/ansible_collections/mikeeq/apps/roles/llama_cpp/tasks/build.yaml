@@ -1,0 +1,64 @@
+---
+- name: Ensure install directory exists
+  ansible.builtin.file:
+    path: "{{ llama_cpp_install_path }}"
+    state: directory
+    mode: "0755"
+  become: false
+
+- name: Clone or update llama.cpp
+  ansible.builtin.git:
+    repo: "{{ llama_cpp_repo }}"
+    dest: "{{ llama_cpp_install_path }}/llama.cpp"
+    version: "{{ llama_cpp_version }}"
+    force: "{{ llama_cpp_force_rebuild }}"
+  register: _llama_cpp_git_result
+  become: false
+
+- name: Apply httplib SSL certificate fix
+  ansible.builtin.replace:
+    path: "{{ llama_cpp_install_path }}/llama.cpp/vendor/cpp-httplib/httplib.cpp"
+    regexp: 'return loaded_any \|\| SSL_CTX_set_default_verify_paths\(ssl_ctx\) == 1;'
+    replace: "SSL_CTX_set_default_verify_paths(ssl_ctx); return loaded_any || true;"
+  become: false
+  when: _llama_cpp_git_result.changed or llama_cpp_force_rebuild
+
+- name: Set cmake flags
+  ansible.builtin.set_fact:
+    _llama_cpp_cmake_flags: >-
+      -DCMAKE_BUILD_TYPE=Release
+      {% if llama_cpp_detected_gpu == 'nvidia' %}
+      -DGGML_CUDA=ON
+      {% elif llama_cpp_detected_gpu == 'amd' %}
+      -DCMAKE_PREFIX_PATH=/opt/rocm
+      -DGGML_HIP=ON
+      -DAMDGPU_TARGETS={{ llama_cpp_detected_amd_target }}
+      {% elif llama_cpp_detected_gpu == 'metal' %}
+      -DGGML_METAL_EMBED_LIBRARY=ON
+      {% endif %}
+
+- name: Configure cmake build
+  ansible.builtin.command: "cmake -B build {{ _llama_cpp_cmake_flags }}"
+  args:
+    chdir: "{{ llama_cpp_install_path }}/llama.cpp"
+  become: false
+  when: _llama_cpp_git_result.changed or llama_cpp_force_rebuild
+  changed_when: true
+
+- name: Build llama.cpp
+  ansible.builtin.command: "cmake --build build --config Release -j{{ ansible_processor_vcpus }}"
+  args:
+    chdir: "{{ llama_cpp_install_path }}/llama.cpp"
+  become: false
+  when: _llama_cpp_git_result.changed or llama_cpp_force_rebuild
+  changed_when: true
+
+- name: Verify llama-server binary
+  ansible.builtin.command: "{{ llama_cpp_install_path }}/llama.cpp/build/bin/llama-server --version"
+  register: _llama_cpp_version_check
+  changed_when: false
+  become: false
+
+- name: Display llama-server version
+  ansible.builtin.debug:
+    msg: "{{ _llama_cpp_version_check.stdout | default(_llama_cpp_version_check.stderr) }}"

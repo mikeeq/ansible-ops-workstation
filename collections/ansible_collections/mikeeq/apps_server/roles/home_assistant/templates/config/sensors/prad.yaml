@@ -1,0 +1,24 @@
+---
+# 7-day change of the Energa meter registers (updated about once a day) – recent daily rate for the invoice forecast
+{% for s in [['pobor_l1', 'import_strefa_1'], ['pobor_l2', 'import_strefa_2'], ['oddanie_l1', 'export_strefa_1'], ['oddanie_l2', 'export_strefa_2']] %}
+- platform: statistics
+  name: prad_7d_{{ s[0] }}
+  unique_id: prad_7d_{{ s[0] }}
+  entity_id: sensor.energa_30407650_stan_licznika_{{ s[1] }}
+  state_characteristic: change
+  max_age:
+    days: 7
+  sampling_size: 500
+  precision: 3
+{% endfor %}
+
+# PV power averaged over 5 min – smooths clouds for solar EV charging (automations/tesla_slonce.yaml)
+- platform: statistics
+  name: pv_moc_5min
+  unique_id: pv_moc_5min
+  entity_id: sensor.saj_saj_wifi_dtu_a2c8e9_current_power
+  state_characteristic: mean
+  max_age:
+    minutes: 5
+  sampling_size: 100
+  precision: 0

@@ -1,0 +1,8 @@
+---
+- name: Deploy run-server.sh
+  ansible.builtin.template:
+    src: "run-server.sh.j2"
+    dest: "{{ llama_cpp_install_path }}/run-server.sh"
+    mode: "0755"
+  become: false
+  notify: "restart llama-server"

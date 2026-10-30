@@ -1,0 +1,10 @@
+---
+# OpenCloud (+ Euro-Office, Radicale, Tika, yjs, imagor, web apps) on mikeeClevo.
+# Usage:
+#   ansible-playbook -i inventory/hosts.yaml -i ../ansible-ops-private/inventory/hosts.yaml playbooks/opencloud.yaml
+#   ... -e opencloud_clean=true   # DELETES all OpenCloud data and starts from scratch
+- name: OpenCloud
+  hosts: mikeeClevo
+  become: true
+  roles:
+    - mikeeq.apps_server.opencloud

@@ -1,0 +1,131 @@
+---
+opencloud_install_path: "/opt/opencloud"
+opencloud_data_path: "{{ opencloud_install_path }}/data"
+opencloud_config_path: "{{ opencloud_install_path }}/config"
+opencloud_radicale_data_path: "{{ opencloud_install_path }}/radicale"
+# Web apps (extensions), managed by this role
+opencloud_apps_path: "{{ opencloud_install_path }}/apps"
+
+# Stops OpenCloud and DELETES all its data, config and secrets before installing
+opencloud_clean: false
+
+# Rolling channel (new major every ~3-4 weeks), matches the main branch of
+# https://github.com/opencloud-eu/opencloud-compose. Majors can require manual
+# steps, read https://docs.opencloud.eu/docs/admin/maintenance/upgrade/ before
+# bumping. Stable channel: opencloud_image: "opencloudeu/opencloud" (7.2.x).
+opencloud_image: "opencloudeu/opencloud-rolling"
+opencloud_version: "9.0.0"
+opencloud_uid: 1000
+opencloud_gid: 1000
+
+opencloud_domain: "cloud.example.com"
+opencloud_bind_address: "0.0.0.0"
+opencloud_port: 9200
+# Only used on the very first start (user "admin"), later changes are ignored.
+opencloud_admin_password: ""
+opencloud_default_language: "en"
+# Skip TLS verification of internal calls, only needed with self-signed certs.
+opencloud_insecure: false
+# When set, containers resolve the OpenCloud/office domains to this IP
+# (the reverse proxy) instead of relying on DNS/hairpin NAT.
+opencloud_reverse_proxy_ip: ""
+
+# Web office backend (WOPI):
+#   "euro-office" - OnlyOffice based (https://github.com/Euro-Office), MS formats,
+#                   mobile editing (disabled in OnlyOffice Community Edition)
+#   "collabora"   - Collabora Online (LibreOffice based)
+#   ""            - none
+opencloud_office: "euro-office"
+opencloud_office_domain: "office.example.com"
+opencloud_office_bind_address: "0.0.0.0"
+opencloud_office_port: 9980
+# Host fonts made available to the office (e.g. MS core fonts), "" to disable.
+opencloud_office_fonts_path: "/usr/share/fonts"
+
+# Stateless, "latest" follows the newest stable Euro-Office release
+opencloud_euro_office_image: "ghcr.io/euro-office/documentserver"
+opencloud_euro_office_version: "latest"
+# Secret protecting the document server API, at least 32 characters.
+opencloud_euro_office_jwt_secret: ""
+
+opencloud_collabora_image: "collabora/code"
+opencloud_collabora_version: "26.04.5.2.1"
+opencloud_collabora_admin_user: "admin"
+opencloud_collabora_admin_password: ""
+opencloud_collabora_ssl_verification: true
+# Disables welcome/feedback popups, limits to 20 connections / 10 documents.
+opencloud_collabora_home_mode: true
+
+# CalDAV/CardDAV under /caldav/ and /carddav/
+opencloud_radicale_enabled: true
+opencloud_radicale_image: "opencloudeu/radicale"
+opencloud_radicale_version: "v3.9.0"
+# Sharing of calendars/address books between OpenCloud users (radicale >= 3.7),
+# used by the web-calendar app. Radicale is only reachable through the
+# authenticated /caldav/ and /carddav/ routes, so token (link) shares also
+# require an OpenCloud login.
+opencloud_radicale_sharing: true
+
+# Location autocomplete in the web-calendar app, sends the typed location to
+# nominatim.openstreetmap.org
+opencloud_calendar_location_search: true
+
+# Full-text search: Apache Tika extracts the text of documents (docx, pdf, ...)
+opencloud_tika_enabled: true
+opencloud_tika_image: "apache/tika"
+opencloud_tika_version: "latest"
+opencloud_tika_memory_limit: "2g"
+
+# Real-time collaboration in the built-in editor, Excalidraw and Apollon (/yjs)
+opencloud_yjs_enabled: true
+opencloud_yjs_image: "opencloudeu/yjs"
+opencloud_yjs_version: "1.1.1"
+
+# Previews of HEIC/HEIF/AVIF images (e.g. iPhone photos) via imagor/libvips
+opencloud_imagor_enabled: true
+opencloud_imagor_image: "shumc/imagor"
+opencloud_imagor_version: "1.9.14"
+
+# Web apps from https://github.com/opencloud-eu/awesome-apps (official ones).
+# Each archive contains a single "<name>/" folder; apps not listed here are
+# removed from opencloud_apps_path.
+opencloud_web_apps:
+  # draw.io diagrams (.drawio), editor is embedded from embed.diagrams.net
+  - name: draw-io
+    url: "https://github.com/opencloud-eu/web-extensions/releases/download/draw-io-v2.2.0/draw-io-2.2.0.zip"
+    checksum: "sha256:49c3aa32aa517f2a90f249b5470b38dc18b7d006841c442f64335d660b551d0c"
+  # collaborative whiteboards (.excalidraw), needs yjs
+  - name: excalidraw
+    url: "https://github.com/opencloud-eu/web-extensions/releases/download/excalidraw-v1.1.0/excalidraw-1.1.0.zip"
+    checksum: "sha256:ecfe128a9b9a44a5b8cf39d82825de4341a9d89a72319efe1516f14c3f4763e7"
+  # collaborative UML/BPMN diagrams (.apollon), needs yjs
+  - name: apollon
+    url: "https://github.com/opencloud-eu/web-extensions/releases/download/apollon-v1.1.0/apollon-1.1.0.zip"
+    checksum: "sha256:1574e2c61071ffd05854592341e124a0c1716ad462cff35951d3026fac39e799"
+  # extract .zip files in place
+  - name: unzip
+    url: "https://github.com/opencloud-eu/web-extensions/releases/download/unzip-v2.2.1/unzip-2.2.1.zip"
+    checksum: "sha256:d50bd229f27b8263de905dbf524e1a550ca85701d58cb9f4c193e6db9b1ef0cc"
+  # .gpx tracks and photo locations on OpenStreetMap
+  - name: maps
+    url: "https://github.com/opencloud-eu/web-extensions/releases/download/maps-v3.1.1/maps-3.1.1.zip"
+    checksum: "sha256:f8701e6e123e728a7a1354e3a24891689b5088f0f26a4fabe98ab8ee40782918"
+  # links to other services in the app switcher (opencloud_external_sites)
+  - name: external-sites
+    url: "https://github.com/opencloud-eu/web-extensions/releases/download/external-sites-v2.2.0/external-sites-2.2.0.zip"
+    checksum: "sha256:0f9c92f62f9753417e7492e29e67f74c3a1672063f722759575e512187870c11"
+  # CalDAV calendar on top of radicale incl. sharing between users (community app,
+  # https://github.com/LordGuenni/opencloud-web-calendar)
+  - name: web-calendar
+    url: "https://github.com/LordGuenni/opencloud-web-calendar/releases/download/v1.2.1/web-calendar.zip"
+    checksum: "sha256:23246d187ca885efaa1fb0d949bcb1e12d9881f7da095cbe9e2a3923e2d51d2a"
+
+# Entries of the external-sites app, e.g.
+#   - {name: "Photos", url: "https://immich.example.com", icon: "image-2", color: "#4250AF"}
+opencloud_external_sites: []
+
+# Web app configuration, rendered to apps.yaml (merged into each app's config)
+opencloud_web_apps_config:
+  maps:
+    config:
+      folderViewEnabled: false

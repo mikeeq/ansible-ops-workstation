@@ -1,0 +1,186 @@
+#!/bin/bash
+# {{ ansible_managed }}
+# Nightly restic backup: database dumps -> restic backup -> retention -> weekly check.
+set -euo pipefail
+
+export RESTIC_REPOSITORY="{{ backup_restic_repository }}"
+export RESTIC_PASSWORD_FILE="{{ backup_restic_config_dir }}/password"
+STAGING_DIR="{{ backup_restic_staging_dir }}"
+EXCLUDE_FILE="{{ backup_restic_config_dir }}/excludes"
+LOCK_FILE="/run/backup-restic.lock"
+
+log() { echo "[backup] $(date '+%F %T') $*"; }
+
+exec 9>"${LOCK_FILE}"
+if ! flock -n 9; then
+  log "another backup is running, exiting"
+  exit 1
+fi
+
+warnings=0
+errors=0
+# containers stopped for an offline backup; always restarted, also on failure
+stopped_containers=()
+
+start_stopped_containers() {
+  [[ -z "${stopped_containers[*]}" ]] && return 0
+  log "starting containers: ${stopped_containers[*]}"
+  if ! docker start "${stopped_containers[@]}" >/dev/null; then
+    log "ERROR failed to start containers: ${stopped_containers[*]}"
+    errors=$((errors + 1))
+    return 1
+  fi
+  stopped_containers=()
+}
+
+cleanup() {
+  start_stopped_containers || true
+  find "${STAGING_DIR}" -mindepth 1 -delete 2>/dev/null || true
+}
+trap cleanup EXIT
+trap 'exit 143' INT TERM
+cleanup
+
+dump_sqlite() {
+  local name="$1" src="$2"
+  if [[ ! -f "${src}" ]]; then
+    log "WARN sqlite ${name}: ${src} not found, skipping"
+    warnings=$((warnings + 1))
+    return
+  fi
+  log "sqlite ${name}: ${src}"
+  if ! sqlite3 "${src}" ".timeout 60000" ".backup '${STAGING_DIR}/${name}.sqlite'"; then
+    log "WARN sqlite ${name}: backup failed"
+    warnings=$((warnings + 1))
+  fi
+}
+
+dump_mysql() {
+  local name="$1" container="$2"
+  log "mysql ${name}: container ${container}"
+  # shellcheck disable=SC2016
+  if ! docker exec "${container}" sh -c \
+    'exec mysqldump --single-transaction --quick --routines --events --all-databases -uroot -p"$(cat "$MYSQL_ROOT_PASSWORD_FILE")" 2>/dev/null' \
+    > "${STAGING_DIR}/${name}.sql"; then
+    log "WARN mysql ${name}: dump failed"
+    warnings=$((warnings + 1))
+  fi
+}
+
+# Separate snapshot of an application that must be stopped for a consistent
+# backup. Uses the offline_containers/offline_paths/offline_excludes arrays.
+backup_offline() {
+  local name="$1" rc=0 p c
+  local -a existing=()
+  for p in "${offline_paths[@]}"; do
+    if [[ -e "${p}" ]]; then
+      existing+=("${p}")
+    else
+      log "WARN ${name}: path ${p} not found, skipping"
+      warnings=$((warnings + 1))
+    fi
+  done
+  if [[ -z "${existing[*]}" ]]; then
+    log "WARN ${name}: nothing to back up"
+    warnings=$((warnings + 1))
+    return 0
+  fi
+
+  for c in "${offline_containers[@]}"; do
+    [[ -z "$(docker ps -q --filter "name=^${c}$" --filter status=running)" ]] && continue
+    log "${name}: stopping container ${c}"
+    if docker stop "${c}" >/dev/null; then
+      stopped_containers+=("${c}")
+    else
+      log "WARN ${name}: failed to stop ${c}, backup may be inconsistent"
+      warnings=$((warnings + 1))
+    fi
+  done
+
+  log "restic backup ${name} (offline): ${existing[*]}"
+  restic backup \
+    --exclude-caches \
+{% for tag in backup_restic_tags %}
+    --tag "{{ tag }}" \
+{% endfor %}
+    --tag "${name}" \
+    "${offline_excludes[@]}" \
+    "${existing[@]}" || rc=$?
+
+  start_stopped_containers || true
+
+  if [[ ${rc} -eq 3 ]]; then
+    log "WARN ${name}: some files could not be read (rc=3)"
+    warnings=$((warnings + 1))
+  elif [[ ${rc} -ne 0 ]]; then
+    log "ERROR ${name}: restic backup failed (rc=${rc})"
+    errors=$((errors + 1))
+  fi
+}
+
+restic unlock >/dev/null 2>&1 || true
+
+{% for item in backup_restic_sqlite_dumps %}
+dump_sqlite "{{ item.name }}" "{{ item.path }}"
+{% endfor %}
+{% if backup_restic_ha_recorder_db %}
+dump_sqlite "homeassistant-recorder" "{{ backup_restic_ha_recorder_db_path }}"
+{% endif %}
+{% for item in backup_restic_mysql_dumps %}
+dump_mysql "{{ item.name }}" "{{ item.container }}"
+{% endfor %}
+
+paths=()
+for p in {% for p in backup_restic_paths %}"{{ p }}" {% endfor %}; do
+  if [[ -e "${p}" ]]; then
+    paths+=("${p}")
+  else
+    log "WARN path ${p} not found, skipping"
+    warnings=$((warnings + 1))
+  fi
+done
+paths+=("${STAGING_DIR}")
+
+log "restic backup: ${paths[*]}"
+backup_rc=0
+restic backup \
+  --exclude-file "${EXCLUDE_FILE}" \
+  --exclude-caches \
+{% for tag in backup_restic_tags %}
+  --tag "{{ tag }}" \
+{% endfor %}
+  "${paths[@]}" || backup_rc=$?
+
+# rc 3 = snapshot created, but some files could not be read
+if [[ ${backup_rc} -ne 0 && ${backup_rc} -ne 3 ]]; then
+  log "ERROR restic backup failed (rc=${backup_rc})"
+  exit "${backup_rc}"
+fi
+[[ ${backup_rc} -eq 3 ]] && { log "WARN some files could not be read (rc=3)"; warnings=$((warnings + 1)); }
+
+{% for item in backup_restic_offline_backups %}
+offline_containers=({% for c in item.containers | default([]) %}"{{ c }}" {% endfor %})
+offline_paths=({% for p in item.paths %}"{{ p }}" {% endfor %})
+offline_excludes=({% for e in item.excludes | default([]) %}--exclude "{{ e }}" {% endfor %})
+backup_offline "{{ item.name }}"
+{% endfor %}
+
+log "restic forget --prune"
+restic forget --prune \
+  --keep-daily {{ backup_restic_keep_daily }} \
+  --keep-weekly {{ backup_restic_keep_weekly }} \
+  --keep-monthly {{ backup_restic_keep_monthly }}
+
+if [[ "$(date +%u)" == "{{ backup_restic_check_weekday }}" ]]; then
+  log "restic check --read-data-subset={{ backup_restic_check_read_data_subset }}"
+  restic check --read-data-subset="{{ backup_restic_check_read_data_subset }}"
+fi
+
+restic snapshots --latest 1 --compact
+log "done, warnings: ${warnings}, errors: ${errors}"
+if [[ ${errors} -gt 0 ]]; then
+  exit 1
+fi
+if [[ ${warnings} -gt 0 ]]; then
+  exit 3
+fi

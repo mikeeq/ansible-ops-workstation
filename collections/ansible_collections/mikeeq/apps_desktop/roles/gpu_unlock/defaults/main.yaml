@@ -1,0 +1,18 @@
+---
+# https://github.com/Zagitta/gpu-unlock – lifts the GeForce half-rate cap on FP16/BF16/TF32 tensor math
+# (FP32 accumulate). Kernel module that runs at boot, before the nvidia driver binds the card.
+gpu_unlock_repo: "https://github.com/Zagitta/gpu-unlock.git"
+# Pinned commit (v2.0.0, reviewed 2026-10-29). Review the diff before bumping: the module runs firmware on the GPU.
+gpu_unlock_version: "7eb51bccae0a0b7e599e084d971170e9a1e82d0c"
+gpu_unlock_package_version: "2.0.0"
+
+gpu_unlock_src_dir: /usr/local/src/gpu-unlock
+gpu_unlock_cache_dir: /var/cache/gpu-unlock
+
+# Full PCI addresses as `lspci -D` prints them; never "all" on hosts with an unsupported second GPU.
+gpu_unlock_targets:
+  - "0000:06:00.0"
+
+# present: build + install the module and add gpu_unlock.targets= to the kernel command line.
+# absent: drop the kernel argument and remove the packages (the unlock disappears after the next power cycle).
+gpu_unlock_state: present

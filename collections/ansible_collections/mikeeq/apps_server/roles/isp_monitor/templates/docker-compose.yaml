@@ -1,0 +1,57 @@
+services:
+  influxdb:
+    image: influxdb:2.9.1
+    restart: unless-stopped
+    ports:
+      - "{{ isp_monitor_influx_port }}:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME={{ isp_monitor_influx_user }}
+      - DOCKER_INFLUXDB_INIT_PASSWORD={{ isp_monitor_influx_password }}
+      - DOCKER_INFLUXDB_INIT_ORG={{ isp_monitor_influx_org }}
+      - DOCKER_INFLUXDB_INIT_BUCKET={{ isp_monitor_influx_bucket }}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN={{ isp_monitor_influx_token }}
+      - DOCKER_INFLUXDB_INIT_RETENTION={{ isp_monitor_influx_retention }}
+    mem_limit: 512m
+
+  grafana:
+    image: grafana/grafana:11.6.16
+    restart: unless-stopped
+    ports:
+      - "{{ isp_monitor_grafana_port }}:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER={{ isp_monitor_grafana_user }}
+      - GF_SECURITY_ADMIN_PASSWORD={{ isp_monitor_grafana_password }}
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+    depends_on:
+      - influxdb
+    mem_limit: 256m
+
+  collector:
+    build: ./collector
+    restart: unless-stopped
+    cap_add:
+      - NET_RAW
+    environment:
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_TOKEN={{ isp_monitor_influx_token }}
+      - INFLUX_ORG={{ isp_monitor_influx_org }}
+      - INFLUX_BUCKET={{ isp_monitor_influx_bucket }}
+      - PING_TARGETS={{ isp_monitor_ping_targets }}
+      - PING_COUNT={{ isp_monitor_ping_count }}
+      - PING_INTERVAL={{ isp_monitor_ping_interval }}
+      - SPEEDTEST_INTERVAL={{ isp_monitor_speedtest_interval }}
+    depends_on:
+      - influxdb
+    mem_limit: 128m
+
+volumes:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:

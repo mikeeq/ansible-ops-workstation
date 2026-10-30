@@ -51,3 +51,48 @@ gaz_kotlownia:
   notifiers:
     - mobile_app_pixel_9_pro
   message: "UWAGA! Wykryto gaz w kotlowni!"
+
+# Room temperature alerts (binary sensors in template.yaml); server room excluded on purpose
+okno_otwarte:
+  name: Okno lub drzwi otwarte
+  entity_id: binary_sensor.okno_otwarte
+  state: "on"
+  repeat:
+    - 10
+    - 30
+    - 60
+  skip_first: false
+  can_acknowledge: true
+  notifiers:
+    - mobile_app_pixel_9_pro
+  title: Okno/drzwi otwarte?
+  message: >-
+    Szybki spadek temperatury: {{ state_attr('binary_sensor.okno_otwarte', 'pokoje') | join(', ') }}
+  done_message: Temperatura przestała spadać.
+
+pokoj_za_zimno:
+  name: Pokój za zimny
+  entity_id: binary_sensor.pokoj_za_zimno
+  state: "on"
+  repeat: 180
+  skip_first: false
+  can_acknowledge: true
+  notifiers:
+    - mobile_app_pixel_9_pro
+  title: Pokój się wychładza
+  message: >-
+    Ponad 1 K poniżej nastawy od godziny: {{ state_attr('binary_sensor.pokoj_za_zimno', 'pokoje') | join(', ') }}
+
+pokoj_szybko_sie_nagrzewa:
+  name: Pokój szybko się nagrzewa
+  entity_id: binary_sensor.pokoj_szybko_sie_nagrzewa
+  state: "on"
+  repeat: 180
+  skip_first: false
+  can_acknowledge: true
+  notifiers:
+    - mobile_app_pixel_9_pro
+  title: Pokój szybko się nagrzewa
+  message: >-
+    Ponad 2 K/h: {{ state_attr('binary_sensor.pokoj_szybko_sie_nagrzewa', 'pokoje') | join(', ') }}
+    (słońce przez okno dachowe?)

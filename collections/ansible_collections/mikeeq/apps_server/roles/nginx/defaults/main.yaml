@@ -1,6 +1,16 @@
 ---
 nginx_install_path: "/opt/nginx"
 
+# Optional per-site keys:
+#   allowed_subnet: "192.168.0.0/18"  # allow only this subnet
+#   csp: "default-src 'self' ..."     # custom CSP, false to let the backend set it
+#   deny_dotfiles: false              # default true, blocks /.* paths except /.well-known
+#   proxy_buffering: false            # default true, false disables request/response buffering
+#   proxy_timeout: "3600s"            # proxy send/read timeout, default 60s
+#   location_extra_config: |          # raw nginx directives added to "location /"
+#     rewrite ^/old$ /new break;
+#   server_extra_config: |            # raw nginx directives added to the server block (e.g. extra locations)
+#     location = /.well-known/x.pem { proxy_pass http://backend/x.pem; }
 nginx_sites:
   - source_url: "http://localhost:8080"
     destination_url: "web.example.com"
@@ -17,3 +27,7 @@ nginx_certs:
   - cn: "web.example.com"
     domain_name: "web.example.com"
 nginx_certs_path: "/etc/ssl/certs"
+
+# Docker network of nginx (IPv4 must stay within HA trusted_proxies 172.16.0.0/12)
+nginx_docker_subnet_ipv4: "172.18.0.0/16"
+nginx_docker_subnet_ipv6: "fd0f:c7e6:9f79:18::/64"

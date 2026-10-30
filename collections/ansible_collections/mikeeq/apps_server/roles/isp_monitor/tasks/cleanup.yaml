@@ -1,0 +1,17 @@
+---
+- name: Stop containers using docker-compose
+  ansible.builtin.command: docker-compose stop
+  changed_when: isp_monitor_stop_result.stderr_lines | length > 1
+  register: isp_monitor_stop_result
+  args:
+    chdir: "{{ isp_monitor_install_path }}"
+
+- name: Remove all volumes/containers using docker-compose
+  ansible.builtin.command: docker-compose rm -vf
+  args:
+    chdir: "{{ isp_monitor_install_path }}"
+
+- name: Ensure install_path dir is removed
+  ansible.builtin.file:
+    path: "{{ isp_monitor_install_path }}"
+    state: absent

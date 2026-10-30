@@ -1,0 +1,7 @@
+---
+- name: ISP Monitor
+  hosts:
+    - orangepi
+  become: true
+  roles:
+    - mikeeq.apps_server.isp_monitor

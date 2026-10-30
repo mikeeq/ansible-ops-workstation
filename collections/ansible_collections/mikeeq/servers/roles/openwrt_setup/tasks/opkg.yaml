@@ -28,6 +28,8 @@
   vars:
     opkgs:
       - bash
+      - curl
+      - lsblk
       - screen
       - fping
       - iputils-ping
@@ -58,7 +60,8 @@
   vars:
     opkgs:
       - luci-app-dawn
-      # - luci-app-usteer
+      - usteer
+      - luci-app-usteer
 
 # - name: Install batman dependencies
 #   community.general.apk:

@@ -37,12 +37,20 @@
     state: restarted
   when: openwrt_setup_config_change.changed
 
-# Handles ipv6 related tasks
-- name: Disable service odhcpd, in all cases
+# odhcpd sends IPv6 router advertisements (SLAAC) - only on the main router with IPv6 enabled
+- name: Enable service odhcpd on IPv6 router
+  community.general.openwrt_init:
+    name: odhcpd
+    enabled: true
+    state: started
+  when: openwrt_setup_openwrt_router_flag and openwrt_setup_ipv6
+
+- name: Disable service odhcpd on access points and IPv4-only routers
   community.general.openwrt_init:
     name: odhcpd
     enabled: false
     state: stopped
+  when: not (openwrt_setup_openwrt_router_flag and openwrt_setup_ipv6)
 
 # - name: Enable service dawn, in all cases
 #   community.general.openwrt_init:
@@ -55,3 +63,16 @@
     name: dawn
     enabled: false
     state: stopped
+
+# usteer replaces dawn for AP steering; config in templates/openwrt/<host>/usteer
+- name: Enable service usteer, in all cases
+  community.general.openwrt_init:
+    name: usteer
+    enabled: true
+    state: started
+
+- name: Restart usteer after config change
+  community.general.openwrt_init:
+    name: usteer
+    state: restarted
+  when: openwrt_setup_config_change.changed
