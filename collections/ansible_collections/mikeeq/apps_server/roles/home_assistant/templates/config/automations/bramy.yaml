@@ -1,0 +1,244 @@
+---
+# Gate state model. Neither gate reports its position, so the state is computed: every relay pulse advances the
+# controller's step-by-step cycle (closed → opening → stopped → closing → stopped → opening …, a pulse at the end
+# position starts the other way) and the travel times from defaults give the end of a motion.
+# State: JSON in input_text.brama_<id> (restored after a restart, see input_text.yaml), shown by cover.brama_<id>
+# and binary_sensor.brama_<id>_otwarta (template.yaml). Pulses from the remote are invisible to HA: the garage door
+# reed switch and the cameras (brama_<id>_obraz below) correct the model.
+{% for b in home_assistant_bramy %}
+- id: brama_{{ b.id }}_model
+  alias: brama_{{ b.id }}_model
+  description: "Model stanu: {{ b.name }} (impulsy przekaźnika, czasy ruchu{{ ', kontaktron' if b.kontaktron is defined else '' }})"
+  mode: queued
+  max: 10
+  triggers:
+    - trigger: state
+      entity_id: {{ b.relay }}
+      from: "off"
+      to: "on"
+      id: impuls
+    - trigger: time
+      at: sensor.brama_{{ b.id }}_koniec_ruchu
+      id: koniec
+    - trigger: homeassistant
+      event: start
+      id: start
+    - trigger: event
+      event_type: brama_korekta
+      event_data:
+        brama: {{ b.id }}
+      id: korekta
+{% if b.kontaktron is defined %}
+    # 2 s debounce: the reed switch blips "open" for 0.2 s on every relay pulse; also after a Zigbee drop-out
+    - trigger: state
+      entity_id: {{ b.kontaktron }}
+      from:
+        - "off"
+        - unavailable
+        - unknown
+      to: "on"
+      for: 2
+      id: kontaktron_otwarta
+    - trigger: state
+      entity_id: {{ b.kontaktron }}
+      from:
+        - "on"
+        - unavailable
+        - unknown
+      to: "off"
+      for: 2
+      id: kontaktron_zamknieta
+{% endif %}
+  variables:
+    pomocnik: input_text.brama_{{ b.id }}
+    t_open: {{ b.czas_otwierania }}
+    t_close: {{ b.czas_zamykania }}
+    kontaktron: "{{ b.kontaktron | default('') }}"
+{% raw %}
+    nowy: >-
+      {% set b = states(pomocnik) | from_json(default={}) %}
+      {% set b = b if b is mapping else {} %}
+      {% set s = b.s | default('closed') %}
+      {% set p = b.p | default(0) | float(0) %}
+      {% set k = b.k | default('close') %}
+      {% set t0 = (b.t | default('')) | as_datetime(now()) %}
+      {% set teraz = trigger.to_state.last_changed if trigger.id.startswith('kontaktron') else now() %}
+      {% set ts = teraz.isoformat(timespec='seconds') %}
+      {% set dt = (teraz - t0).total_seconds() %}
+      {% set poz = ([[p + dt * 100 / t_open, 100] | min, 0] | max) if s == 'opening'
+             else ([[p - dt * 100 / t_close, 100] | min, 0] | max) if s == 'closing' else p %}
+      {% set poz = poz | round(0) | int %}
+      {% set kont = is_state(kontaktron, 'on') if kontaktron else none %}
+      {% set ns = namespace(s=s, p=p | int, k=k, t=b.t | default(ts), e=b.e | default(''), z=b.z | default('')) %}
+      {% if trigger.id == 'impuls' %}
+        {% set ns.z = 'impuls' %}
+        {% if s in ['opening', 'closing'] %}
+          {% set ns.s = 'stopped' %}{% set ns.p = poz %}{% set ns.e = '' %}{% set ns.t = ts %}
+        {% elif s == 'closed' or (s == 'stopped' and k == 'close') %}
+          {% set ns.s = 'opening' %}{% set ns.k = 'open' %}{% set ns.p = poz %}{% set ns.t = ts %}
+          {% set ns.e = (teraz + timedelta(seconds=(100 - poz) * t_open / 100)).isoformat(timespec='seconds') %}
+        {% else %}
+          {% set ns.s = 'closing' %}{% set ns.k = 'close' %}{% set ns.p = poz %}{% set ns.t = ts %}
+          {% set ns.e = (teraz + timedelta(seconds=poz * t_close / 100)).isoformat(timespec='seconds') %}
+        {% endif %}
+      {% elif trigger.id in ['koniec', 'start'] %}
+        {% if s in ['opening', 'closing'] and (ns.e | as_datetime(teraz)) <= teraz + timedelta(seconds=1) %}
+          {% if s == 'opening' %}
+            {% set ns.s = 'open' %}{% set ns.p = 100 %}{% set ns.z = 'czas' %}
+          {% elif kont and ns.z != 'czekam_na_kontaktron' %}
+            {# Door should be closed but the reed switch is still open: give it 10 s more #}
+            {% set ns.z = 'czekam_na_kontaktron' %}
+            {% set ns.e = (teraz + timedelta(seconds=10)).isoformat(timespec='seconds') %}
+          {% elif kont %}
+            {# Reversed (photocell) or stopped by the wall button / remote: assume open #}
+            {% set ns.s = 'open' %}{% set ns.k = 'open' %}{% set ns.p = 100 %}{% set ns.z = 'kontaktron_otwarta' %}
+          {% else %}
+            {% set ns.s = 'closed' %}{% set ns.p = 0 %}{% set ns.z = 'czas' %}
+          {% endif %}
+          {% if ns.s in ['open', 'closed'] %}{% set ns.e = '' %}{% set ns.t = ts %}{% endif %}
+        {% endif %}
+        {% if trigger.id == 'start' and kont is not none and ns.s not in ['opening', 'closing'] %}
+          {% if not kont and ns.s != 'closed' %}
+            {% set ns.s = 'closed' %}{% set ns.k = 'close' %}{% set ns.p = 0 %}{% set ns.t = ts %}{% set ns.z = 'kontaktron' %}
+          {% elif kont and ns.s == 'closed' %}
+            {% set ns.s = 'open' %}{% set ns.k = 'open' %}{% set ns.p = 100 %}{% set ns.t = ts %}{% set ns.z = 'kontaktron' %}
+          {% endif %}
+        {% endif %}
+      {% elif trigger.id == 'korekta' and trigger.event.data.stan | default('') in ['open', 'closed'] %}
+        {% set ns.s = trigger.event.data.stan %}
+        {% set ns.k = 'open' if ns.s == 'open' else 'close' %}
+        {% set ns.p = 100 if ns.s == 'open' else 0 %}
+        {% set ns.e = '' %}{% set ns.t = ts %}{% set ns.z = trigger.event.data.zrodlo | default('korekta') %}
+      {% elif trigger.id == 'kontaktron_otwarta' and s not in ['opening', 'open', 'stopped'] %}
+        {# Left the closed position without a pulse from HA: wall button or remote #}
+        {% set ns.s = 'opening' %}{% set ns.k = 'open' %}{% set ns.p = 0 %}{% set ns.t = ts %}
+        {% set ns.e = (teraz + timedelta(seconds=t_open)).isoformat(timespec='seconds') %}
+        {% set ns.z = 'kontaktron' %}
+      {% elif trigger.id == 'kontaktron_zamknieta' %}
+        {% set ns.s = 'closed' %}{% set ns.k = 'close' %}{% set ns.p = 0 %}{% set ns.e = '' %}{% set ns.t = ts %}
+        {% set ns.z = 'kontaktron' %}
+      {% endif %}
+      {{ {'s': ns.s, 'p': ns.p, 'k': ns.k, 't': ns.t, 'e': ns.e, 'z': ns.z} | to_json }}
+  actions:
+    - condition: template
+      value_template: "{{ (nowy | to_json if nowy is mapping else nowy) != states(pomocnik) }}"
+    - action: input_text.set_value
+      target:
+        entity_id: "{{ pomocnik }}"
+      data:
+        value: "{{ nowy | to_json if nowy is mapping else nowy }}"
+{% endraw %}
+{% endfor %}
+{% for b in home_assistant_bramy if b.kamera is defined %}
+{% set o = b.kamera %}
+
+# {{ b.name }} from {{ o.camera }}{{ ' (daytime only)' if o.only_day else '' }}, PTZ at the saved position: after
+# every HA-driven clean full open/close the gate area is offered as a reference ("open"/"closed", per day/night mode
+# of the camera) – brama_obraz.py keeps it only when there is none yet or the crop already matches that state, so a
+# wrong model cannot teach the camera wrong references. Every 2 min the current crop is compared with both and
+# sensor.brama_{{ b.id }}_obraz is updated. Two results in a row that disagree with a model at rest correct it
+# (remote control, unreliable reed switch).
+- id: brama_{{ b.id }}_obraz
+  alias: brama_{{ b.id }}_obraz
+  description: "Stan bramy z kamery ({{ o.camera }}): wzorce po ruchu z HA, korekta modelu"
+  mode: queued
+  max: 3
+  triggers:
+    - trigger: time_pattern
+      minutes: "/2"
+      id: sprawdz
+    - trigger: state
+      entity_id: input_text.brama_{{ b.id }}
+      id: model
+  variables:
+    brama: {{ b.id }}
+    pomocnik: input_text.brama_{{ b.id }}
+    kamera: {{ o.camera }}
+    tryb_kamery: sensor.{{ o.prefix }}_day_night_state
+    roi: "{{ o.roi }}"
+    obraz: /config/tmp/brama_{{ b.id }}_kamera.jpg
+    wynik_obrazu: sensor.brama_{{ b.id }}_obraz
+    ptz_ok: >-
+      {{ '{{' }} (states('sensor.{{ o.prefix }}_ptz_pan_position') | float(-9999) - {{ o.pan }}) | abs <= {{ home_assistant_bramy_ptz_tolerance }}
+         and (states('sensor.{{ o.prefix }}_ptz_tilt_position') | float(-9999) - {{ o.tilt }}) | abs <= {{ home_assistant_bramy_ptz_tolerance }} {{ '}}' }}
+  conditions:
+    - condition: state
+      entity_id: switch.{{ o.prefix }}_privacy_mode
+      state: "off"
+{% if o.only_day %}
+    # Sun elevation, not the camera's day/night state: a camera forced to colour mode always reports "day"
+    # (on 2026-10-30 a dark frame "corrected" a closed gate to open and the model stayed inverted for a day)
+    - condition: numeric_state
+      entity_id: sun.sun
+      attribute: elevation
+      above: {{ home_assistant_bramy_min_elevation }}
+{% endif %}
+{% raw %}
+    - condition: template
+      value_template: "{{ ptz_ok and states(tryb_kamery) in ['day', 'night'] }}"
+  actions:
+    - variables:
+        tryb: >-
+          {% set b = states(pomocnik) | from_json(default={}) %}
+          {% if trigger.id == 'model' %}
+            {% set a = trigger.from_state.state | from_json(default={}) %}
+            {% set b = trigger.to_state.state | from_json(default={}) %}
+            {# Only a clean full stroke started by HA: closed → open or open → closed in one go #}
+            {{ 'wzorzec_' ~ b.s if a is mapping and b is mapping and a.z | default('') == 'impuls'
+               and b.z | default('') in ['czas', 'kontaktron']
+               and ((a.s | default('') == 'opening' and a.p | default(-1) == 0 and b.s == 'open')
+                    or (a.s | default('') == 'closing' and a.p | default(-1) == 100 and b.s == 'closed'))
+               else 'nic' }}
+          {% else %}
+            {{ 'klasyfikuj' if b is mapping and b.s | default('') in ['open', 'closed', 'stopped']
+               and (now() - (b.t | default('') | as_datetime(now()))).total_seconds() > 180 else 'nic' }}
+          {% endif %}
+        # References per camera mode: colour by day, IR at night look nothing alike
+        wzorzec: "{{ brama }}_{{ states(tryb_kamery) }}"
+        poprzedni: "{{ states(wynik_obrazu) }}"
+    - condition: template
+      value_template: "{{ tryb != 'nic' }}"
+    # Let the gate settle and the camera image catch up before saving a reference
+    - if:
+        - condition: template
+          value_template: "{{ tryb.startswith('wzorzec_') }}"
+      then:
+        - delay: 5
+    - action: camera.snapshot
+      target:
+        entity_id: "{{ kamera }}"
+      data:
+        filename: "{{ obraz }}"
+    - action: shell_command.brama_obraz
+      data:
+        tryb: "{{ tryb }}"
+        brama: "{{ wzorzec }}"
+        obraz: "{{ obraz }}"
+        roi: "{{ roi }}"
+      response_variable: wynik
+    - condition: template
+      value_template: "{{ tryb == 'klasyfikuj' and wynik.returncode == 0 }}"
+    - variables:
+        r: "{{ wynik.stdout | from_json(default={}) }}"
+        model: "{{ (states(pomocnik) | from_json(default={})).s | default('') }}"
+    - event: brama_obraz
+      event_data:
+        brama: "{{ brama }}"
+        stan: "{{ r.stan | default('blad') }}"
+        podobienstwo_open: "{{ r.open | default(none) }}"
+        podobienstwo_closed: "{{ r.closed | default(none) }}"
+    # Correct only a model at rest, on two equal results in a row; a partly open (stopped) gate looks open
+    - if:
+        - condition: template
+          value_template: >-
+            {{ r.stan | default('') in ['open', 'closed'] and r.stan == poprzedni
+               and model in ['open', 'closed', 'stopped'] and r.stan != model
+               and not (model == 'stopped' and r.stan == 'open') }}
+      then:
+        - event: brama_korekta
+          event_data:
+            brama: "{{ brama }}"
+            stan: "{{ r.stan }}"
+            zrodlo: obraz
+{% endraw %}
+{% endfor %}

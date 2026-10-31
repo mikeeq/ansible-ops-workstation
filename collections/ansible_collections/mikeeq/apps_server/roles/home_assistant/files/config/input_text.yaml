@@ -1,0 +1,13 @@
+---
+# Gate state model (automations/bramy.yaml), JSON written by brama_<id>_model – do not edit by hand.
+# No `initial`: the last value is restored after a restart.
+#   s: closed|opening|open|closing|stopped, p: position % at t, k: last direction (open|close),
+#   t: time of the last change, e: expected end of motion ('' when not moving), z: source of the change
+brama_wjazdowa:
+  name: Brama wjazdowa - stan modelu
+  icon: mdi:gate
+  max: 255
+brama_garazowa:
+  name: Brama garażowa - stan modelu
+  icon: mdi:garage
+  max: 255

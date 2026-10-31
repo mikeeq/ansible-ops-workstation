@@ -4,7 +4,8 @@
 
 dwor_brama_otwarta:
   name: Brama Dwor Otwarta
-  entity_id: binary_sensor.door_state_dwor_brama
+  # Gate model (automations/bramy.yaml) – the entrance gate has no reed switch
+  entity_id: binary_sensor.brama_wjazdowa_otwarta
   state: "on"
   repeat:
     - 5    # first reminder after 5 min
@@ -18,7 +19,8 @@ dwor_brama_otwarta:
 
 garaz_brama_otwarta:
   name: Brama Garazowa Otwarta
-  entity_id: binary_sensor.door_brama_garaz_opening
+  # Gate model (reed switch + travel time + camera) – the bare reed switch is unreliable
+  entity_id: binary_sensor.brama_garazowa_otwarta
   state: "on"
   repeat:
     - 10

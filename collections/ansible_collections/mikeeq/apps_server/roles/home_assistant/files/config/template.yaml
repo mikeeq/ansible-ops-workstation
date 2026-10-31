@@ -257,8 +257,8 @@
   - name: any_gate_open
     unique_id: any_gate_open
     state: >
-      {{ is_state('binary_sensor.door_state_dwor_brama', 'on')
-         or is_state('binary_sensor.door_brama_garaz_opening', 'on') }}
+      {{ is_state('binary_sensor.brama_wjazdowa_otwarta', 'on')
+         or is_state('binary_sensor.brama_garazowa_otwarta', 'on') }}
     device_class: opening
 
   - name: any_alert_active
@@ -356,30 +356,109 @@
 
 # Garage gate as a real cover: state from the reed switch, and open/close only pulse the relay
 # when the gate is in the opposite state – a second tap can no longer close a gate you wanted open.
+# Gates: state from the model in input_text.brama_<id> (automations/bramy.yaml), commands through
+# script.brama_ustaw, which sends as many pulses as the step-by-step controller needs (open → stop → close → stop)
 - cover:
     - name: Brama garażowa
       unique_id: brama_garazowa
       device_class: garage
-      state: "{{ 'open' if is_state('binary_sensor.door_brama_garaz_opening', 'on') else 'closed' }}"
-      availability: "{{ has_value('binary_sensor.door_brama_garaz_opening') }}"
+      availability: "{{ has_value('input_text.brama_garazowa') }}"
+      state: >
+        {% set b = states('input_text.brama_garazowa') | from_json(default={}) %}
+        {{ {'opening': 'opening', 'closing': 'closing', 'closed': 'closed'}.get(b.s | default('closed'), 'open') }}
+      position: "{{ (states('input_text.brama_garazowa') | from_json(default={})).p | default(0) }}"
       open_cover:
-        - condition: state
-          entity_id: binary_sensor.door_brama_garaz_opening
-          state: "off"
-        - action: switch.turn_on
-          target:
-            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+        - action: script.brama_ustaw
+          data:
+            brama: garazowa
+            cel: open
       close_cover:
-        - condition: state
-          entity_id: binary_sensor.door_brama_garaz_opening
-          state: "on"
-        - action: switch.turn_on
-          target:
-            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+        - action: script.brama_ustaw
+          data:
+            brama: garazowa
+            cel: close
       stop_cover:
-        - action: switch.turn_on
-          target:
-            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+        - action: script.brama_ustaw
+          data:
+            brama: garazowa
+            cel: stop
+    - name: Brama wjazdowa
+      unique_id: brama_wjazdowa
+      device_class: gate
+      availability: "{{ has_value('input_text.brama_wjazdowa') }}"
+      state: >
+        {% set b = states('input_text.brama_wjazdowa') | from_json(default={}) %}
+        {{ {'opening': 'opening', 'closing': 'closing', 'closed': 'closed'}.get(b.s | default('closed'), 'open') }}
+      position: "{{ (states('input_text.brama_wjazdowa') | from_json(default={})).p | default(0) }}"
+      open_cover:
+        - action: script.brama_ustaw
+          data:
+            brama: wjazdowa
+            cel: open
+      close_cover:
+        - action: script.brama_ustaw
+          data:
+            brama: wjazdowa
+            cel: close
+      stop_cover:
+        - action: script.brama_ustaw
+          data:
+            brama: wjazdowa
+            cel: stop
+
+- sensor:
+    # End of the current gate motion – time trigger of brama_<id>_model (unknown when the gate is not moving)
+    - name: brama_wjazdowa_koniec_ruchu
+      unique_id: brama_wjazdowa_koniec_ruchu
+      device_class: timestamp
+      state: "{{ (states('input_text.brama_wjazdowa') | from_json(default={})).e | default('') or none }}"
+    - name: brama_garazowa_koniec_ruchu
+      unique_id: brama_garazowa_koniec_ruchu
+      device_class: timestamp
+      state: "{{ (states('input_text.brama_garazowa') | from_json(default={})).e | default('') or none }}"
+
+- binary_sensor:
+    # Not closed: opening, open, stopped part way or closing (alerts, any_gate_open)
+    - name: brama_wjazdowa_otwarta
+      unique_id: brama_wjazdowa_otwarta
+      device_class: opening
+      availability: "{{ has_value('input_text.brama_wjazdowa') }}"
+      state: "{{ (states('input_text.brama_wjazdowa') | from_json(default={})).s | default('closed') != 'closed' }}"
+    # Model, not the bare reed switch: it drops out and blips "open" on relay pulses
+    - name: brama_garazowa_otwarta
+      unique_id: brama_garazowa_otwarta
+      device_class: garage_door
+      availability: "{{ has_value('input_text.brama_garazowa') }}"
+      state: "{{ (states('input_text.brama_garazowa') | from_json(default={})).s | default('closed') != 'closed' }}"
+
+# Last result of the camera check of the gates (automations brama_<id>_obraz)
+- triggers:
+    - trigger: event
+      event_type: brama_obraz
+      event_data:
+        brama: wjazdowa
+  sensor:
+    - name: brama_wjazdowa_obraz
+      unique_id: brama_wjazdowa_obraz
+      icon: mdi:cctv
+      state: "{{ trigger.event.data.stan }}"
+      attributes:
+        podobienstwo_open: "{{ trigger.event.data.podobienstwo_open }}"
+        podobienstwo_closed: "{{ trigger.event.data.podobienstwo_closed }}"
+
+- triggers:
+    - trigger: event
+      event_type: brama_obraz
+      event_data:
+        brama: garazowa
+  sensor:
+    - name: brama_garazowa_obraz
+      unique_id: brama_garazowa_obraz
+      icon: mdi:cctv
+      state: "{{ trigger.event.data.stan }}"
+      attributes:
+        podobienstwo_open: "{{ trigger.event.data.podobienstwo_open }}"
+        podobienstwo_closed: "{{ trigger.event.data.podobienstwo_closed }}"
 
 - sensor:
     # Battery-powered devices below 20 % or offline (an offline Zigbee sensor usually means a dead battery).
@@ -602,6 +681,28 @@
       state: >
         {{ (states('sensor.pv_moc_5min') | float(0) / 1000
             - states('input_number.tesla_slonce_baza') | float(0.8)) | round(2) }}
+
+# Garage light as a real light: state from the model in input_boolean.swiatlo_garaz (automations/swiatlo_garaz.yaml),
+# on/off send a pulse to the bistable relay only when the model says it is needed
+- light:
+    - name: swiatlo_garaz
+      unique_id: swiatlo_garaz
+      icon: mdi:lightbulb-fluorescent-tube
+      state: "{{ is_state('input_boolean.swiatlo_garaz', 'on') }}"
+      turn_on:
+        - condition: state
+          entity_id: input_boolean.swiatlo_garaz
+          state: "off"
+        - action: switch.turn_on
+          target:
+            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
+      turn_off:
+        - condition: state
+          entity_id: input_boolean.swiatlo_garaz
+          state: "on"
+        - action: switch.turn_on
+          target:
+            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
 
 # Waste collection, Koleczkowo 1 (gmina Szemud, PRSP Sanipor): bins out by 6:00 on the pickup day.
 # Dates come from the gmina PDF (https://szemud.pl/gospodarka-odpadami.html, KOLECZKOWO-1_…pdf). Update every January

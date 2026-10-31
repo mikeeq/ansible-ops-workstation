@@ -19,6 +19,44 @@ home_assistant_tesla_solar:
   vehicle: "garaz_model3hl"
   max_amps: 16  # Wall Connector circuit B16/3
 
+# Gate state model (automations/bramy.yaml, cover.brama_<id>): both controllers work step by step
+# (pulse: open → stop → close → stop). Travel times measured on 2026-10-30. Entities per gate (template.yaml,
+# input_text.yaml, scripts.yaml brama_ustaw) are named after `id` – adding a gate means adding them there too.
+# The entrance gate has no limit switch (the remote is invisible to HA); the garage door reed switch (Zigbee) also
+# catches the wall button and the remote, but drops out and blips "open" for 0.2 s on relay pulses.
+# `kamera`: camera that sees the gate, used to correct the model. `roi` = gate area as fractions of the frame
+# (x0 y0 x1 y1, keep clear of the timestamp overlay), valid only at the PTZ position below. References are learnt
+# automatically after every HA-driven full open/close, separately for the camera's day and night (IR) mode.
+home_assistant_bramy:
+  - id: wjazdowa
+    name: Brama wjazdowa
+    relay: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+    czas_otwierania: 27
+    czas_zamykania: 27
+    kamera:
+      camera: camera.reolink_e1pro_kuchnia
+      prefix: e1prokuchnia
+      pan: 5085
+      tilt: 374
+      only_day: true  # looks through a window, forced colour mode (its day/night state is always "day")
+      roi: "0.70 0.36 1.0 0.62"
+  - id: garazowa
+    name: Brama garażowa
+    relay: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
+    czas_otwierania: 24
+    czas_zamykania: 27
+    kontaktron: binary_sensor.door_brama_garaz_opening
+    kamera:
+      camera: camera.reolink_e1pro_garaz
+      prefix: e1pro
+      pan: 4044
+      tilt: 0
+      only_day: false  # IR at night
+      roi: "0.20 0.02 0.56 0.23"  # door above the car roofs, left of the timestamp
+home_assistant_bramy_ptz_tolerance: 50
+# only_day cameras: minimum sun elevation (°) – at dusk the crops are too dark to compare
+home_assistant_bramy_min_elevation: 5
+
 # Paths relative to config/ removed from the host on deploy
 home_assistant_obsolete_config_files:
   - automations/ogrzewanie_virtual.yaml

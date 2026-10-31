@@ -13,6 +13,7 @@
     - "{{ home_assistant_install_path }}/config/mqtt/sensors"
     - "{{ home_assistant_install_path }}/config/mqtt/lights"
     - "{{ home_assistant_install_path }}/config/mqtt/switches"
+    - "{{ home_assistant_install_path }}/config/tmp"
 
 # with_fileglob copies never delete, so files dropped from the role must be removed explicitly
 - name: Remove obsolete config files

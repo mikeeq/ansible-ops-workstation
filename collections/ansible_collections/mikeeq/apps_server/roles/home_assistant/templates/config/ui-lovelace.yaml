@@ -158,27 +158,19 @@ views:
                 state: "on"
 {% endfor %}
 
+      # Gates and garage in one column: both gates, garage lights, kitchen camera that sees the entrance gate
       - type: grid
         cards:
           - type: heading
-            heading: Wejście
+            heading: Brama i garaż
             icon: mdi:gate
+          # State from the gate model (automations/bramy.yaml); tap = open / close / stop while moving
           - type: tile
-            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+            entity: cover.brama_wjazdowa
             name: Brama wjazdowa
-            icon: mdi:gate
-            state_content: last_changed
-            grid_options:
-              columns: 6
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-          - type: tile
-            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
-            name: Furtka
-            icon: mdi:door
-            state_content: last_changed
+            state_content:
+              - state
+              - last_changed
             grid_options:
               columns: 6
             tap_action:
@@ -199,6 +191,63 @@ views:
             hold_action:
               action: more-info
               entity: binary_sensor.door_brama_garaz_opening
+          # State from the model (automations/swiatlo_garaz.yaml: pulses + garage camera); on/off pulse only when needed
+          - type: tile
+            entity: light.swiatlo_garaz
+            name: Światło w garażu
+            state_content:
+              - state
+              - last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          # PIR lamp behind a bistable relay – HA cannot know its state, tap = one pulse
+          - type: tile
+            entity: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
+            name: Światło nad bramą
+            icon: mdi:coach-lamp-variant
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          # Both gates side by side: entrance gate from the kitchen window, garage door from inside
+          - type: picture-entity
+            entity: camera.reolink_e1pro_kuchnia
+            name: Brama wjazdowa
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
+          - type: picture-entity
+            entity: camera.reolink_e1pro_garaz
+            name: Garaż
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Furtka
+            icon: mdi:door
+          - type: tile
+            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
+            name: Furtka
+            icon: mdi:door
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
           - type: tile
             entity: automation.auto_furtka_dzwonek
             name: Furtka na dzwonek
@@ -215,17 +264,10 @@ views:
             camera_view: auto
             show_state: false
             grid_options:
-              columns: 6
+              columns: 12
             tap_action:
               action: navigate
               navigation_path: /lovelace/domofon
-          - type: picture-entity
-            entity: camera.reolink_e1pro_garaz
-            name: Brama garażowa
-            camera_view: auto
-            show_state: false
-            grid_options:
-              columns: 6
 
       - type: grid
         cards:
@@ -302,7 +344,7 @@ views:
     ['switch.sp_sonoff_salon_switch', 'Salon lampa', 'mdi:floor-lamp-torchiere-variant'],
     ['light.ikea_led_kuchnia_light', 'Kuchnia LED', 'mdi:led-strip', ['light-brightness']],
     ['switch.sonoff_minir2_sypialnia_minir2_swiatlo_sypialnia', 'Sypialnia', 'mdi:ceiling-light'],
-    ['switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew', 'Garaż', 'mdi:lightbulb-fluorescent-tube'],
+    ['light.swiatlo_garaz', 'Garaż', 'mdi:lightbulb-fluorescent-tube'],
   ]],
   ['Piętro', 'mdi:home-floor-1', [
     ['switch.sonoff_minir2_sypialnia_gora', 'Sypialnia', 'mdi:ceiling-light'],
@@ -1682,14 +1724,31 @@ views:
             tap_action:
               action: toggle
           - type: tile
-            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama
+            entity: cover.brama_wjazdowa
             name: Brama wjazdowa
-            icon: mdi:gate
-            state_content: last_changed
+            state_content:
+              - state
+              - last_changed
             grid_options:
               columns: 6
             tap_action:
               action: toggle
+          - type: tile
+            entity: sensor.brama_wjazdowa_obraz
+            name: Brama wjazdowa wg kamery
+            state_content:
+              - state
+              - last_changed
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.brama_garazowa_obraz
+            name: Garaż wg kamery
+            state_content:
+              - state
+              - last_changed
+            grid_options:
+              columns: 6
           - type: tile
             entity: select.reolink_furtka_play_quick_reply_message
             name: Szybka odpowiedź
@@ -1724,16 +1783,32 @@ views:
     type: sections
     max_columns: 3
     sections:
+      # One Frigate card per camera like the old dashboard: live by default, the card menu switches to recent clips,
+      # snapshots, recordings and the event timeline of that camera. Live through Frigate's go2rtc (restream names).
+{% for cam in [['reolink_doorbell', 'Furtka', 'reolink_doorbell_restream'], ['reolink_e1pro_kuchnia', 'Brama (kuchnia)', 'reolink_e1pro_kuchnia_restream'], ['reolink_e1pro_garaz', 'Garaż', 'reolink_e1pro_garaz_restream'], ['reolink_e1pro_drzwi', 'Drzwi', 'reolink_e1pro_drzwi_restream'], ['yi_salon', 'Salon', 'yi_salon'], ['yi_sypialnia', 'Sypialnia', 'yi_sypialnia']] %}
       - type: grid
         cards:
-{% for cam in [['reolink_doorbell', 'Furtka'], ['reolink_e1pro_drzwi', 'Drzwi'], ['reolink_e1pro_garaz', 'Garaż'], ['reolink_e1pro_kuchnia', 'Kuchnia'], ['yi_salon', 'Salon'], ['yi_sypialnia', 'Sypialnia']] %}
-          - type: picture-entity
-            entity: camera.{{ cam[0] }}
-            name: {{ cam[1] }}
-            camera_view: auto
-            show_state: false
+          - type: custom:advanced-camera-card
             grid_options:
-              columns: 6
+              columns: full
+            cameras:
+              - camera_entity: camera.{{ cam[0] }}
+                title: {{ cam[1] }}
+                live_provider: go2rtc
+                go2rtc:
+                  stream: {{ cam[2] }}
+            menu:
+              buttons:
+                clips:
+                  enabled: true
+                snapshots:
+                  enabled: true
+                recordings:
+                  enabled: true
+                timeline:
+                  enabled: true
+                fullscreen:
+                  enabled: true
 {% endfor %}
       - type: grid
         cards:
