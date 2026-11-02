@@ -1,0 +1,40 @@
+---
+# Logbook entry for every thermostat setpoint change: old -> new and who changed it (user, automation or system)
+- alias: termostat_nastawa_log
+  description: ""
+  mode: queued
+  max: 20
+  triggers:
+    - trigger: state
+      entity_id:
+{% for i in home_assistant_config.climate %}
+        - climate.{{ i.name }}
+{% endfor %}
+      attribute: temperature
+  conditions:
+    - condition: template
+      value_template: >-
+{% raw %}
+        {{ trigger.from_state is not none and trigger.to_state is not none
+           and trigger.from_state.attributes.temperature is number
+           and trigger.to_state.attributes.temperature is number }}
+{% endraw %}
+  actions:
+    - variables:
+{% raw %}
+        kto: >-
+          {% set ctx = trigger.to_state.context %}
+          {% set a = states.automation | selectattr('context.id', 'eq', ctx.id) | map(attribute='name') | list %}
+          {% set u = states.person | selectattr('attributes.user_id', 'eq', ctx.user_id) | map(attribute='name') | list %}
+          {% if a %}automatyzacja: {{ a[0] }}{% elif u %}ręcznie: {{ u[0] }}{% elif ctx.user_id %}ręcznie
+          {%- else %}system{% endif %}
+        pokoj: "{{ state_attr('sensor.pokoje_etykiety', trigger.to_state.object_id) or trigger.to_state.object_id }}"
+    - action: logbook.log
+      data:
+        name: "Nastawa {{ pokoj }}"
+        message: >-
+          {{ trigger.from_state.attributes.temperature }} → {{ trigger.to_state.attributes.temperature }} °C
+          ({{ kto }}), w pokoju {{ trigger.to_state.attributes.current_temperature }} °C
+        entity_id: "{{ trigger.entity_id }}"
+        domain: climate
+{% endraw %}

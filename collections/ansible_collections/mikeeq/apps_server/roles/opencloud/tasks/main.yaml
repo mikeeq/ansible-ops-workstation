@@ -1,0 +1,33 @@
+---
+- name: Check docker-compose executable is present
+  ansible.builtin.shell: "which docker-compose"
+  register: opencloud_docker_compose_result
+  ignore_errors: true
+  changed_when: false
+
+- name: Fail on condition
+  ansible.builtin.fail:
+    msg: "docker-compose is not found! You need to install it first."
+  when: opencloud_docker_compose_result.rc != 0
+
+- name: Ensure office backend and required secrets are set
+  ansible.builtin.assert:
+    that:
+      - opencloud_office in ["euro-office", "collabora", ""]
+      - opencloud_admin_password | length > 0
+      - opencloud_office != "euro-office" or opencloud_euro_office_jwt_secret | length >= 32
+      - opencloud_office != "collabora" or opencloud_collabora_admin_password | length > 0
+      - not (opencloud_calendar_enabled | bool) or opencloud_radicale_enabled | bool
+    fail_msg: >-
+      opencloud_office must be "euro-office", "collabora" or "". Set opencloud_admin_password,
+      opencloud_euro_office_jwt_secret (>= 32 chars) for Euro-Office and
+      opencloud_collabora_admin_password for Collabora. The web-calendar app needs
+      opencloud_radicale_enabled.
+    quiet: true
+
+- name: Include cleanup.yaml
+  ansible.builtin.include_tasks: cleanup.yaml
+  when: opencloud_clean | bool
+
+- name: Import install.yaml
+  ansible.builtin.import_tasks: install.yaml

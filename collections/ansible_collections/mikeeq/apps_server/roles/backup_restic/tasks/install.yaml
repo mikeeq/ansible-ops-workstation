@@ -1,0 +1,5 @@
+---
+- name: Install backup packages
+  ansible.builtin.package:
+    name: "{{ backup_restic_packages }}"
+    state: present

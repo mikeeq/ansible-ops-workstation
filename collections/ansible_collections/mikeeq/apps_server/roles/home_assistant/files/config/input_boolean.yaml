@@ -1,0 +1,19 @@
+---
+# State flag for ogrzewanie_slonce: setpoints of the roof-window rooms are lowered (restored after a restart)
+ogrzewanie_slonce:
+  name: Ogrzewanie - obniżenie na słońce
+  icon: mdi:weather-sunny-alert
+
+# Solar EV charging (automations/tesla_slonce.yaml): master switch and "charging was started by the automation" flag
+tesla_slonce:
+  name: Tesla - ładowanie ze słońca
+  icon: mdi:solar-power-variant
+tesla_slonce_aktywne:
+  name: Tesla - ładowanie ze słońca trwa
+  icon: mdi:car-electric
+
+# Garage light state model (automations/swiatlo_garaz.yaml): flipped on every HA pulse, corrected from the garage
+# camera (wall buttons switch the bistable relay without HA). No `initial`: restored after a restart.
+swiatlo_garaz:
+  name: Światło w garażu - stan
+  icon: mdi:lightbulb-fluorescent-tube

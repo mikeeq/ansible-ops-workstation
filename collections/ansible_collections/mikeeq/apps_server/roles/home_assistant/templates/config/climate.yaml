@@ -2,15 +2,21 @@
 {% for i in home_assistant_config.climate %}
 - platform: generic_thermostat
   name: "{{ i.name }}"
-  # heater: "{{ i.switch }}"
-  heater: "switch.virtual_ogrzewanie_{{ i.name }}"
+  heater: "{{ i.switch }}"
   target_sensor: "sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_temperature"
   min_temp: 16
   max_temp: 24
   # target_temp: 20.0
   initial_hvac_mode: heat
-  cold_tolerance: 0.2
-  hot_tolerance: 0.2
+  # Screed keeps releasing heat after the actuator closes, so stop at the setpoint
+  cold_tolerance: 0.3
+  hot_tolerance: 0.0
+  # NC actuators need 3-5 min to open
+  min_cycle_duration:
+    minutes: 10
+  # Re-sends the actuator state, fixes drift after a Sonoff/HA restart
+  keep_alive:
+    minutes: 5
 # - platform: smart_thermostat
 #   name: "{{ i.name }}"
 #   heater: "{{ i.switch }}"

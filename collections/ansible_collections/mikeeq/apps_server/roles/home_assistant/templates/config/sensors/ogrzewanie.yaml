@@ -1,0 +1,11 @@
+---
+# 24 h mean of the outdoor temperature for the heating-season switch
+- platform: statistics
+  name: temperatura_zewnetrzna_srednia_24h
+  unique_id: temperatura_zewnetrzna_srednia_24h
+  entity_id: sensor.temperatura_zewnetrzna
+  state_characteristic: mean
+  max_age:
+    hours: 24
+  sampling_size: 2000
+  precision: 1

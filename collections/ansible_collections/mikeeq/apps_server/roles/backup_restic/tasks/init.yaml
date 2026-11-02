@@ -1,0 +1,11 @@
+---
+- name: Check if restic repository exists
+  ansible.builtin.stat:
+    path: "{{ backup_restic_repository }}/config"
+  register: backup_restic_repo_config
+
+- name: Initialize restic repository
+  ansible.builtin.command:
+    cmd: "restic init --repo {{ backup_restic_repository }} --password-file {{ backup_restic_config_dir }}/password"
+  when: not backup_restic_repo_config.stat.exists
+  changed_when: true

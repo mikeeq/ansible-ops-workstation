@@ -23,7 +23,7 @@
 # TODO: add zabbix install
 
 - name: Show info about host groups
-  hosts: clevo
+  hosts: mikeeClevo
   gather_facts: false
   tasks:
     # - name: Display all host groups
@@ -99,49 +99,58 @@
       - "mikee"
       - "root"
 
-- name: Provision DNS VMs
-  hosts:
-    - dns1
-    - dns2
-  become: true
-  roles:
-    - mikeeq.servers.network_static_dns
-    - mikeeq.apps.docker
-  vars:
-    user_name: "mikee"
+# DNS now runs directly on mikeeClevo as macvlan containers (coredns .121,
+# adguard .122) instead of the retired dns1/dns2 VMs. The host macvlan shim
+# lets mikeeClevo itself reach those container IPs (macvlan host isolation).
+# - name: Provision DNS containers on mikeeClevo
+#   hosts:
+#     - mikeeClevo
+#   become: true
+#   vars:
+#     user_name: "mikee"
+#   pre_tasks:
+#     - name: Ensure host macvlan shim exists so host can reach DNS containers
+#       ansible.builtin.shell: |
+#         set -o pipefail
+#         if nmcli -t -f NAME connection show | grep -qx '{{ dns_macvlan_shim_conn }}'; then
+#           exit 0
+#         fi
+#         nmcli connection add type macvlan \
+#           con-name '{{ dns_macvlan_shim_conn }}' \
+#           ifname '{{ dns_macvlan_shim_ifname }}' \
+#           dev '{{ dns_macvlan_parent }}' \
+#           mode bridge \
+#           ipv4.method manual \
+#           ipv4.addresses '{{ dns_macvlan_shim_ip }}/32' \
+#           +ipv4.routes '{{ coredns_macvlan_ip }}/32' \
+#           +ipv4.routes '{{ adguard_home_macvlan_ip }}/32'
+#         nmcli connection up '{{ dns_macvlan_shim_conn }}'
+#       args:
+#         executable: /bin/bash
+#       register: dns_macvlan_shim
+#       changed_when: dns_macvlan_shim.stdout | length > 0
+#   roles:
+#     - mikeeq.apps_server.coredns
+#     - mikeeq.apps_server.letsencrypt_coredns
+#     - mikeeq.apps_server.adguard_home
 
-- name: Provision DNS1
-  hosts:
-    - dns1
-  become: true
-  roles:
-    - mikeeq.apps_server.coredns
-    - mikeeq.apps_server.letsencrypt_coredns
+# - name: Provision GW1
+#   hosts:
+#     - gw1
+#   become: true
+#   roles:
+#     - mikeeq.servers.network_static_dns
+#     - mikeeq.apps.openvpn_client
+#     - mikeeq.apps_server.vpn_gw
 
-- name: Provision DNS2
-  hosts:
-    - dns2
-  become: true
-  roles:
-    - mikeeq.apps_server.adguard_home
-
-- name: Provision GW1
-  hosts:
-    - gw1
-  become: true
-  roles:
-    - mikeeq.servers.network_static_dns
-    - mikeeq.apps.openvpn_client
-    - mikeeq.apps_server.vpn_gw
-
-- name: Provision VPN1
-  hosts:
-    - vpn1
-  become: true
-  roles:
-    - mikeeq.servers.network_static_dns
-    - mikeeq.apps_server.openvpn
-    - mikeeq.apps_server.vpn_gw
+# - name: Provision VPN1
+#   hosts:
+#     - vpn1
+#   become: true
+#   roles:
+#     - mikeeq.servers.network_static_dns
+#     - mikeeq.apps_server.openvpn
+#     - mikeeq.apps_server.vpn_gw
 
 - name: Provision mikeeClevo
   hosts:

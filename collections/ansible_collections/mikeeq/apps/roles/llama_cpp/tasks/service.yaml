@@ -1,0 +1,73 @@
+---
+# ── Linux (systemd) ─────────────────────────────────────────────────────────
+
+- name: Deploy systemd service unit
+  ansible.builtin.template:
+    src: "llama-server.service.j2"
+    dest: "/etc/systemd/system/llama-server.service"
+    mode: "0644"
+  become: true
+  notify: "restart llama-server"
+  when: ansible_facts['os_family'] != "Darwin"
+
+- name: Manage llama-server systemd service
+  ansible.builtin.systemd:
+    name: "llama-server"
+    enabled: "{{ llama_cpp_service_enabled }}"
+    state: "{{ llama_cpp_service_state }}"
+    daemon_reload: true
+  become: true
+  when: ansible_facts['os_family'] != "Darwin"
+
+# ── macOS (launchd) ─────────────────────────────────────────────────────────
+
+- name: Ensure LaunchAgents directory exists
+  ansible.builtin.file:
+    path: "{{ user_home_dir }}/Library/LaunchAgents"
+    state: directory
+    mode: "0755"
+  become: false
+  when: ansible_facts['os_family'] == "Darwin"
+
+- name: Deploy launchd plist
+  ansible.builtin.template:
+    src: "com.llama-server.plist.j2"
+    dest: "{{ user_home_dir }}/Library/LaunchAgents/com.llama-server.plist"
+    mode: "0644"
+  become: false
+  notify: "restart llama-server"
+  when: ansible_facts['os_family'] == "Darwin"
+
+- name: Load launchd agent
+  ansible.builtin.command: "launchctl load {{ user_home_dir }}/Library/LaunchAgents/com.llama-server.plist"
+  become: false
+  changed_when: false
+  failed_when: false
+  when:
+    - ansible_facts['os_family'] == "Darwin"
+    - llama_cpp_service_enabled
+    - llama_cpp_service_state == "started"
+
+# ── Post-deploy summary ─────────────────────────────────────────────────────
+
+- name: Display usage info
+  ansible.builtin.debug:
+    msg: |
+      llama-server deployed to {{ llama_cpp_install_path }}
+
+      Service commands:
+      {% if ansible_facts['os_family'] != 'Darwin' %}
+        sudo systemctl status llama-server
+        sudo systemctl restart llama-server
+        sudo journalctl -u llama-server -f
+      {% else %}
+        launchctl list | grep llama
+        launchctl kickstart -k gui/$(id -u)/com.llama-server
+        tail -f {{ llama_cpp_install_path }}/llama-server.log
+      {% endif %}
+
+      Manual start:
+        {{ llama_cpp_install_path }}/run-server.sh
+
+      API endpoint:
+        http://{{ llama_cpp_host }}:{{ llama_cpp_port }}/v1

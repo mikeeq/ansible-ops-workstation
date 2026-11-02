@@ -1,0 +1,18 @@
+---
+- name: Run restic backup
+  ansible.builtin.command:
+    cmd: "{{ backup_restic_script_path }}"
+  async: "{{ backup_restic_run_timeout }}"
+  poll: 30
+  register: backup_restic_result
+  changed_when: true
+  failed_when: false
+
+- name: Show backup summary
+  ansible.builtin.debug:
+    msg: "{{ (backup_restic_result.stdout_lines | default([]))[-30:] + (backup_restic_result.stderr_lines | default([]))[-10:] }}"
+
+- name: Fail when backup did not finish cleanly
+  ansible.builtin.fail:
+    msg: "Backup finished with rc={{ backup_restic_result.rc | default('unknown') }} (3 = completed with warnings)."
+  when: backup_restic_result.rc | default(1) != 0

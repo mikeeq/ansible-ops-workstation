@@ -57,20 +57,41 @@
 - name: Allow ip forwarding for bridge network
   ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
-    line: "{{ item }}"
+    regexp: "^{{ item.key | regex_escape }}\\s*="
+    line: "{{ item.key }} = {{ item.value }}"
   loop:
-    - "net.ipv4.ip_forward=1"
-    - "net.bridge.bridge-nf-call-ip6tables = 0"
-    - "net.bridge.bridge-nf-call-iptables = 0"
-    - "net.bridge.bridge-nf-call-arptables = 0"
-    - "net.ipv6.conf.all.disable_ipv6 = 1"
-    - "net.ipv6.conf.default.disable_ipv6 = 1"
-    - "net.ipv6.conf.lo.disable_ipv6 = 1"
+    - { key: "net.ipv4.ip_forward", value: "1" }
+    - { key: "net.bridge.bridge-nf-call-ip6tables", value: "0" }
+    - { key: "net.bridge.bridge-nf-call-iptables", value: "0" }
+    - { key: "net.bridge.bridge-nf-call-arptables", value: "0" }
+    - { key: "net.ipv6.conf.all.disable_ipv6", value: "{{ network_bridge_disable_ipv6 | bool | ternary('1', '0') }}" }
+    - { key: "net.ipv6.conf.default.disable_ipv6", value: "{{ network_bridge_disable_ipv6 | bool | ternary('1', '0') }}" }
+    - { key: "net.ipv6.conf.lo.disable_ipv6", value: "{{ network_bridge_disable_ipv6 | bool | ternary('1', '0') }}" }
+  loop_control:
+    label: "{{ item.key }}"
   register: network_bridge_sysctl_changes
 
 - name: Reload sysctl
-  ansible.builtin.shell: sysctl -p
+  # net.bridge.* keys fail until br_netfilter is loaded; the remaining keys are still applied
+  ansible.builtin.shell: sysctl -p || true
   when: network_bridge_sysctl_changes.changed
+
+- name: Get IPv6 settings of the bridge connection
+  ansible.builtin.command: nmcli -g ipv6.addr-gen-mode,ipv6.token connection show {{ network_bridge_bridge_name }}
+  register: network_bridge_ipv6_current
+  changed_when: false
+  check_mode: false
+  when: network_bridge_ipv6_token | length > 0
+
+# Stable interface ID (e.g. ::110) - the address suffix survives ISP prefix changes
+- name: Set stable IPv6 token on the bridge connection
+  ansible.builtin.shell: |
+    nmcli connection modify {{ network_bridge_bridge_name }} ipv6.addr-gen-mode eui64 ipv6.token {{ network_bridge_ipv6_token }}
+    nmcli device reapply {{ network_bridge_bridge_name }}
+  when:
+    - network_bridge_ipv6_token | length > 0
+    - network_bridge_ipv6_current.stdout_lines | default([]) != ['eui64', network_bridge_ipv6_token]
+  changed_when: true
 
 - name: Disable previous connection
   community.general.nmcli:

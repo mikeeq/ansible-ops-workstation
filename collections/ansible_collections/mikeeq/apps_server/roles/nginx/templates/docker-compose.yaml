@@ -11,8 +11,11 @@ services:
       - '80'
       - '443'
     ports:
-      - '80:80'
-      - '443:443'
+      # explicit IPv4 + IPv6 host bindings (IPv6: Starlink, Clevo ::110)
+      - '0.0.0.0:80:80'
+      - '0.0.0.0:443:443'
+      - '[::]:80:80'
+      - '[::]:443:443'
     volumes:
       - './logs:/var/log/nginx'
       - './config/nginx.conf:/etc/nginx/nginx.conf'
@@ -41,3 +44,12 @@ services:
   #     - '80'
   #   ports:
   #     - '18090:80'
+
+# IPv6 in the nginx network: ip6tables DNAT keeps the real client IPv6 address (no docker-proxy)
+networks:
+  default:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: {{ nginx_docker_subnet_ipv4 }}
+        - subnet: {{ nginx_docker_subnet_ipv6 }}

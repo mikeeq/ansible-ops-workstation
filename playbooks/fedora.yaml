@@ -21,7 +21,7 @@
         mode: "400"
   roles:
     - mikeeq.utils.dnf
-    - mikeeq.utils.flatpak
+    # - mikeeq.utils.flatpak
     - mikeeq.apps_desktop.google_chrome
     - mikeeq.apps.docker
     - mikeeq.apps.qemu

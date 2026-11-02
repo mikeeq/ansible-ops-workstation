@@ -4,3 +4,25 @@ coredns_install_path: "/opt/coredns"
 coredns_domain_name: "example.com"
 coredns_zone_filename: "db.{{ coredns_domain_name }}"
 coredns_zone_file_path: "config"
+
+# LAN-exposed macvlan network. The container gets its own IP on the physical
+# LAN (like a VM on the bridge) instead of using host port mappings/NAT.
+coredns_macvlan_network_name: "lan_macvlan"
+coredns_macvlan_parent: "eth0"
+coredns_macvlan_subnet: "192.168.0.0/24"
+coredns_macvlan_gateway: "192.168.0.1"
+coredns_macvlan_ip: "192.168.1.121"
+
+# Publish AAAA records for these names, pointing to the host's global IPv6 address
+# ending with coredns_ipv6_suffix (stable interface ID, e.g. NetworkManager ipv6.token ::110)
+coredns_ipv6_records: []
+coredns_ipv6_suffix: "::110"
+# When set (e.g. "br-lan" on a router), the AAAA address is built from the global /64
+# routed on this interface + coredns_ipv6_suffix, i.e. it points to another LAN host
+# instead of an address owned by the CoreDNS host itself.
+coredns_ipv6_prefix_interface: ""
+# Keep the AAAA records up to date when the ISP prefix changes
+# (systemd timer; on OpenWrt: cron every 5 min + iface hotplug)
+coredns_ipv6_ddns: false
+coredns_ipv6_ddns_interval: "5min"
+coredns_ipv6_ddns_script_path: "/usr/local/sbin/coredns-ipv6-ddns.sh"

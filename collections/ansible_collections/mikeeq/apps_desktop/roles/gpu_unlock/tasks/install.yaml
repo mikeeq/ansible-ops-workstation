@@ -1,0 +1,112 @@
+---
+- name: Read the target GPUs
+  ansible.builtin.command: "lspci -Dn -s {{ item }}"
+  loop: "{{ gpu_unlock_targets }}"
+  register: gpu_unlock_lspci
+  changed_when: false
+  check_mode: false
+
+- name: Assert every target is an NVIDIA GPU
+  ansible.builtin.assert:
+    that:
+      - "item.stdout is search('0300: 10de:')"
+    fail_msg: "{{ item.item }} is not an NVIDIA VGA device: '{{ item.stdout }}'"
+    quiet: true
+  loop: "{{ gpu_unlock_lspci.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Install build dependencies
+  ansible.builtin.dnf:
+    name:
+      - git
+      - make
+      - gcc
+      - python3
+      - xz
+      - zstd
+      - rpm-build
+      - dkms
+      - dracut
+    state: present
+
+- name: Clone gpu-unlock at the pinned commit
+  ansible.builtin.git:
+    repo: "{{ gpu_unlock_repo }}"
+    dest: "{{ gpu_unlock_src_dir }}"
+    version: "{{ gpu_unlock_version }}"
+    force: true
+  register: gpu_unlock_git
+
+- name: Find already built RPMs
+  ansible.builtin.find:
+    paths: "{{ gpu_unlock_src_dir }}/build/rpm/RPMS/noarch"
+    patterns: "gpu-unlock-*-{{ gpu_unlock_package_version }}-*.noarch.rpm"
+  register: gpu_unlock_rpms_before
+
+# Fetches the pinned NVIDIA driver from download.nvidia.com (firmware source only); the spec checks its sha256.
+- name: Build the gpu-unlock RPMs
+  ansible.builtin.command:
+    cmd: "make rpm CACHE={{ gpu_unlock_cache_dir }} DISTDIR=build"
+    chdir: "{{ gpu_unlock_src_dir }}"
+  changed_when: true
+  when:
+    - not ansible_check_mode
+    - gpu_unlock_git.changed or gpu_unlock_rpms_before.files | length < 2
+
+- name: Find the built RPMs
+  ansible.builtin.find:
+    paths: "{{ gpu_unlock_src_dir }}/build/rpm/RPMS/noarch"
+    patterns: "gpu-unlock-*-{{ gpu_unlock_package_version }}-*.noarch.rpm"
+  register: gpu_unlock_rpms
+
+- name: Assert both packages were built
+  ansible.builtin.assert:
+    that:
+      - gpu_unlock_rpms.files | length == 2
+    fail_msg: "expected gpu-unlock-dkms and gpu-unlock-firmware in {{ gpu_unlock_src_dir }}/build/rpm"
+    quiet: true
+  when: not ansible_check_mode
+
+# The dkms package builds the module for every kernel with headers and rebuilds those initramfs images.
+- name: Install gpu-unlock-dkms and gpu-unlock-firmware
+  ansible.builtin.dnf:
+    name: "{{ gpu_unlock_rpms.files | map(attribute='path') | list }}"
+    state: present
+    disable_gpg_check: true
+  when: not ansible_check_mode
+
+- name: Check the module for the running kernel
+  ansible.builtin.command: "modinfo -k {{ ansible_facts['kernel'] }} -F version gpu_unlock"
+  register: gpu_unlock_modinfo
+  changed_when: false
+  when: not ansible_check_mode
+
+- name: Check the module is in the running kernel's initramfs
+  ansible.builtin.shell:
+    cmd: "set -o pipefail; lsinitrd -k {{ ansible_facts['kernel'] }} | grep -c 'gpu_unlock.ko'"
+    executable: /bin/bash
+  register: gpu_unlock_initrd
+  changed_when: false
+  when: not ansible_check_mode
+
+- name: Read the kernel command line of all boot entries
+  ansible.builtin.command: grubby --info=ALL
+  register: gpu_unlock_grubby
+  changed_when: false
+  check_mode: false
+
+- name: Add gpu_unlock.targets to the kernel command line
+  ansible.builtin.command: >-
+    grubby --update-kernel=ALL --args=gpu_unlock.targets={{ gpu_unlock_targets | join(',') }}
+  when: >-
+    ('gpu_unlock.targets=' ~ (gpu_unlock_targets | join(','))) not in gpu_unlock_grubby.stdout
+  changed_when: true
+  notify: Gpu_unlock reboot required
+
+- name: Show status
+  when: not ansible_check_mode
+  ansible.builtin.debug:
+    msg:
+      - "gpu_unlock {{ gpu_unlock_modinfo.stdout }} built for {{ ansible_facts['kernel'] }}, in initramfs: {{ gpu_unlock_initrd.stdout | int > 0 }}"
+      - "Active after the next reboot. Check with: journalctl -k -b | grep gpu_unlock"

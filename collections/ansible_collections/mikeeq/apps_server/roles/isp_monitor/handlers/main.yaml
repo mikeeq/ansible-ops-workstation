@@ -1,0 +1,5 @@
+---
+- name: Rebuild_and_restart_isp_monitor
+  ansible.builtin.command: docker-compose up -d --build
+  args:
+    chdir: "{{ isp_monitor_install_path }}"

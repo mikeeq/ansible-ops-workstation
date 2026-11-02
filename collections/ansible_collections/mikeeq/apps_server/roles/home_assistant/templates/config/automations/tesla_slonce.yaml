@@ -1,0 +1,100 @@
+---
+{% if home_assistant_tesla_solar.vehicle %}
+{% set v = home_assistant_tesla_solar.vehicle %}
+# Solar EV charging (Tesla Fleet): start when the PV surplus covers the 3-phase minimum (5 A ≈ 3.5 kW), follow the
+# surplus with the charge current, stop when it is gone. Only sessions started here are touched – the car's own night
+# schedule (L2) keeps working, and the charge current is restored to the maximum after every solar session.
+# Runs every 5 min: Tesla Fleet polls the car every 10 min and commands/wake-ups are billed ($10/month credit), so
+# the current is only changed in steps of >= 2 A and a new start waits 30 min after the previous session.
+- id: tesla_slonce
+  alias: tesla_slonce
+  description: "Ładowanie Tesli z nadwyżki PV (sensor.pv_nadwyzka_auto)"
+  mode: single
+  max_exceeded: silent
+  triggers:
+    - trigger: time_pattern
+      minutes: "/5"
+    - trigger: state
+      entity_id:
+        - input_boolean.tesla_slonce
+        - binary_sensor.tesla_wall_connector_vehicle_connected
+  variables:
+    charge: switch.{{ v }}_charge
+    current: number.{{ v }}_charge_current
+    battery: sensor.{{ v }}_battery_level
+    limit: number.{{ v }}_charge_limit
+    max_amps: {{ home_assistant_tesla_solar.max_amps }}
+    min_amps: 5
+{% raw %}
+    # Amps per phase the surplus can carry (3 × 230 V)
+    amps: >-
+      {{ [(states('sensor.pv_nadwyzka_auto') | float(0) * 1000 / 690) | round(0, 'floor') | int,
+          max_amps] | min }}
+    charging: "{{ is_state(charge, 'on') }}"
+    ours: "{{ is_state('input_boolean.tesla_slonce_aktywne', 'on') }}"
+    ours_minutes: >-
+      {{ ((now() - states.input_boolean.tesla_slonce_aktywne.last_changed).total_seconds() / 60)
+         | int }}
+    enabled: "{{ is_state('input_boolean.tesla_slonce', 'on') }}"
+    connected: "{{ is_state('binary_sensor.tesla_wall_connector_vehicle_connected', 'on') }}"
+    needs_charge: >-
+      {{ has_value(battery) and states(battery) | float(100) < states(limit) | float(100) - 1 }}
+  actions:
+    - choose:
+        # Session over: switched off, unplugged, surplus gone (< 4 A ≈ 2.8 kW) or the car stopped by itself
+        # (e.g. charge limit reached; checked 15 min after the start so the next poll can confirm charging)
+        - conditions:
+            - condition: template
+              value_template: >-
+                {{ ours and (not enabled or not connected or amps < min_amps - 1
+                                      or (not charging and ours_minutes >= 15)) }}
+          sequence:
+            - action: switch.turn_off
+              target:
+                entity_id: "{{ charge }}"
+              continue_on_error: true
+            - action: number.set_value
+              target:
+                entity_id: "{{ current }}"
+              data:
+                value: "{{ max_amps }}"
+              continue_on_error: true
+            - action: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.tesla_slonce_aktywne
+        # Start: enough surplus, car plugged in, below its charge limit and not charging already
+        - conditions:
+            - condition: template
+              value_template: >-
+                {{ enabled and connected and not ours and not charging and needs_charge
+                            and amps >= min_amps and ours_minutes >= 30 }}
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: "{{ current }}"
+              data:
+                value: "{{ amps }}"
+            - action: switch.turn_on
+              target:
+                entity_id: "{{ charge }}"
+            - action: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.tesla_slonce_aktywne
+        # Follow the surplus (5 A minimum, steps of >= 2 A)
+        - conditions:
+            - condition: template
+              value_template: >-
+                {{ ours and charging
+                            and (([amps, min_amps] | max) - states(current) | int(0)) | abs >= 2 }}
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: "{{ current }}"
+              data:
+                value: "{{ [amps, min_amps] | max }}"
+              continue_on_error: true
+{% endraw %}
+{% else %}
+# Solar EV charging disabled: set home_assistant_tesla_solar.vehicle after setting up Tesla Fleet
+[]
+{% endif %}

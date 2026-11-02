@@ -1,75 +1,233 @@
 ---
-- alias: Wlacz cyrkulacje
-  description: ''
-  trigger:
-  - platform: time
-    at: 07:00:00
-  - platform: time
-    at: '16:00:00'
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
-    target:
+# DHW circulation in pulses within the usage windows: every full hour, and also when the boiler starts charging the
+# cylinder, so the cooled loop water is reheated in the same burn instead of forcing a separate reheat.
+# Skipped if the pump ran recently (hourly: 40 min, charge: 20 min). A pump left on for 10 min (restart, manual switch)
+# is turned off, except during the Sunday disinfection.
+- id: cwu_cyrkulacja
+  alias: cwu_cyrkulacja
+  description: "Cyrkulacja CWU 5 min co godzinę i przy starcie ładowania zasobnika, w godz. 07–10 i 16–21"
+  mode: single
+  max_exceeded: silent
+  triggers:
+    - trigger: time_pattern
+      minutes: "0"
+      id: impuls
+    - trigger: state
+      entity_id: binary_sensor.opentherm_dhw_active
+      from: "off"
+      to: "on"
+      id: ladowanie
+    - trigger: state
       entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+      to: "on"
+      for:
+        minutes: 10
+      id: za_dlugo
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id:
+                - impuls
+                - ladowanie
+            - condition: or
+              conditions:
+                - condition: time
+                  after: "07:00:00"
+                  before: "10:00:00"
+                - condition: time
+                  after: "16:00:00"
+                  before: "21:00:00"
+            - condition: or
+              conditions:
+                - condition: and
+                  conditions:
+                    - condition: trigger
+                      id: impuls
+                    - condition: state
+                      entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+                      state: "off"
+                      for:
+                        minutes: 40
+                - condition: and
+                  conditions:
+                    - condition: trigger
+                      id: ladowanie
+                    - condition: state
+                      entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+                      state: "off"
+                      for:
+                        minutes: 20
+          sequence:
+            - action: switch.turn_on
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+            - delay: "00:05:00"
+            - action: switch.turn_off
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+        - conditions:
+            - condition: trigger
+              id: za_dlugo
+            - condition: numeric_state
+              entity_id: automation.cwu_dezynfekcja
+              attribute: current
+              below: 1
+          sequence:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+
+# Fewer night DHW reheats (the only non-condensing operation): 45 °C 22:00–05:00, 50 °C otherwise.
+# Only switches between 45 and 50, so the 60 °C disinfection setpoint is left alone.
+- id: cwu_noc
+  alias: cwu_noc
+  description: "CWU 45 °C w nocy (22–05), 50 °C w dzień"
   mode: single
-- alias: Wylacz cyrkulacje
-  description: ''
-  trigger:
-  - platform: time
-    at: '10:00:00'
-  - platform: time
-    at: '21:00:00'
-  condition: []
-  action:
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+  triggers:
+    - trigger: time
+      at: "22:00:00"
+    - trigger: time
+      at: "05:00:00"
+    - trigger: homeassistant
+      event: start
+  actions:
+    - delay:
+        seconds: 30
+    - choose:
+        - conditions:
+            - condition: time
+              after: "22:00:00"
+              before: "05:00:00"
+            - condition: numeric_state
+              entity_id: number.opentherm_t_dhw_set
+              above: 45
+              below: 51
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 45
+        - conditions:
+            - condition: time
+              after: "05:00:00"
+              before: "22:00:00"
+            - condition: numeric_state
+              entity_id: number.opentherm_t_dhw_set
+              below: 50
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 50
+
+# Weekly Legionella disinfection of the cylinder and the circulation loop: 60 °C held for 30 min, then back to 50 °C.
+# 06:00 is the deadline; the HA start trigger restores 50 °C if a restart interrupted the run.
+- id: cwu_dezynfekcja
+  alias: cwu_dezynfekcja
+  description: "Niedziela 03:00: CWU 60 °C przez 30 min z cyrkulacją, potem 50 °C (najpóźniej o 06:00)"
+  mode: restart
+  triggers:
+    - trigger: time
+      at: "03:00:00"
+      id: start
+    - trigger: time
+      at: "06:00:00"
+      id: koniec
+    - trigger: homeassistant
+      event: start
+      id: ha_start
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: start
+            - condition: time
+              weekday: sun
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 60
+            - action: switch.turn_on
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+            - if:
+                - condition: numeric_state
+                  entity_id: sensor.opentherm_t_dhw
+                  below: 59
+              then:
+                - wait_for_trigger:
+                    - trigger: numeric_state
+                      entity_id: sensor.opentherm_t_dhw
+                      above: 59
+                  timeout: "02:00:00"
+                  continue_on_timeout: true
+            - delay: "00:30:00"
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 50
+            - action: switch.turn_off
+              target:
+                entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+        - conditions:
+            - condition: trigger
+              id:
+                - koniec
+                - ha_start
+            - condition: numeric_state
+              entity_id: number.opentherm_t_dhw_set
+              above: 50
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.opentherm_t_dhw_set
+              data:
+                value: 50
+            - if:
+                - condition: trigger
+                  id: koniec
+              then:
+                - action: switch.turn_off
+                  target:
+                    entity_id: switch.sonoff_basic_ogrzewanie_pompa_cyrkulacyjna_pompa_cyrkulacyjna
+
+# Radiators are not used for heating: once a week flush the pump with the mixer closed
+# (cold water), then move the mixer with the pump stopped so no heat goes to the garage
+- id: grzejniki_przeplukanie
+  alias: grzejniki_przeplukanie
+  description: "Raz w tygodniu: pompa grzejników 5 min przy zamkniętym mieszaczu, potem ruch mieszacza bez pompy"
   mode: single
-- alias: Wlacz Grzejniki
-  description: ''
-  trigger:
-  - platform: time
-    at: 05:30:00
-  # - platform: time
-  #   at: '17:30:00'
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
-  - delay: '00:04:00'
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
-  mode: single
-- alias: Wylacz Grzejniki
-  description: ''
-  trigger:
-  - platform: time
-    at: '06:00:00'
-  # - platform: time
-  #   at: '18:00:00'
-  condition: []
-  action:
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
-  - delay: '00:04:00'
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
-  mode: single
+  triggers:
+    - trigger: time
+      at: "10:00:00"
+  conditions:
+    - condition: time
+      weekday: mon
+  actions:
+    - action: switch.turn_on
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+    - delay: "00:05:00"
+    - action: switch.turn_off
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_grzejniki
+    - action: switch.turn_on
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+    - delay: "00:02:00"
+    - action: switch.turn_off
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_otwieranie
+    - action: switch.turn_on
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie
+    - delay: "00:04:00"
+    - action: switch.turn_off
+      target:
+        entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_mieszacz_grzejniki_zamykanie

@@ -1,0 +1,8 @@
+---
+- name: Install gpu-unlock
+  ansible.builtin.include_tasks: install.yaml
+  when: gpu_unlock_state == "present"
+
+- name: Remove gpu-unlock
+  ansible.builtin.include_tasks: remove.yaml
+  when: gpu_unlock_state == "absent"

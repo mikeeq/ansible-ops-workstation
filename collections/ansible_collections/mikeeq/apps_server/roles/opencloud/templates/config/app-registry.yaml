@@ -1,0 +1,36 @@
+# Based on config/euro-office/app-registry.yaml from opencloud-compose
+# (stable-7.2); opens office documents in {{ opencloud_office_app_name }} by default.
+{% set office_mimetypes = [
+  ('application/vnd.oasis.opendocument.text', 'odt', 'OpenDocument', 'OpenDocument text document', true),
+  ('application/vnd.oasis.opendocument.spreadsheet', 'ods', 'OpenSpreadsheet', 'OpenDocument spreadsheet document', true),
+  ('application/vnd.oasis.opendocument.presentation', 'odp', 'OpenPresentation', 'OpenDocument presentation document', true),
+  ('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx', 'Microsoft Word', 'Microsoft Word document', true),
+  ('application/vnd.openxmlformats-officedocument.wordprocessingml.form', 'docxf', 'Form Document', 'Form Document', true),
+  ('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx', 'Microsoft Excel', 'Microsoft Excel document', true),
+  ('application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx', 'Microsoft PowerPoint', 'Microsoft PowerPoint document', true),
+] %}
+app_registry:
+  mimetypes:
+    - mime_type: application/pdf
+      extension: pdf
+      name: PDF
+      description: PDF document
+      icon: ''
+      default_app: ''
+      allow_creation: false
+{% for mime_type, extension, name, description, allow_creation in office_mimetypes %}
+    - mime_type: {{ mime_type }}
+      extension: {{ extension }}
+      name: {{ name }}
+      description: {{ description }}
+      icon: ''
+      default_app: {{ opencloud_office_app_name }}
+      allow_creation: {{ allow_creation | lower }}
+{% endfor %}
+    - mime_type: application/vnd.jupyter
+      extension: ipynb
+      name: Jupyter Notebook
+      description: Jupyter Notebook
+      icon: ''
+      default_app: ''
+      allow_creation: true

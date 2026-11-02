@@ -1,0 +1,14 @@
+---
+# Rate of room temperature change (K/h over 30 min) for open-window / fast-heating alerts (template.yaml).
+# max_sub_interval: Zigbee sensors report only on change, so the rate decays to 0 instead of holding the last value.
+{% for i in home_assistant_config.climate %}
+- platform: derivative
+  name: zmiana_temperatury_{{ i.name }}
+  unique_id: zmiana_temperatury_{{ i.name }}
+  source: sensor.{{ i.sensor_type | default('th') }}_{{ i.name }}_temperature
+  unit_time: h
+  time_window: "00:30:00"
+  max_sub_interval:
+    minutes: 5
+  round: 2
+{% endfor %}

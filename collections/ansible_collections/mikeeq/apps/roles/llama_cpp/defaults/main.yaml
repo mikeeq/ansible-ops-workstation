@@ -1,0 +1,69 @@
+---
+# Where to install llama.cpp and server files
+llama_cpp_install_path: "{{ user_home_dir }}/llama-server"
+llama_cpp_repo: "https://github.com/ggml-org/llama.cpp.git"
+llama_cpp_version: "master"
+llama_cpp_force_rebuild: false
+
+# Server configuration
+llama_cpp_host: "0.0.0.0"
+llama_cpp_port: 18080
+llama_cpp_parallel_slots: 1
+llama_cpp_flash_attention: true
+
+# Memory management — how much RAM/VRAM to keep free (GB)
+llama_cpp_ram_keep_free_gb: 4
+llama_cpp_vram_keep_free_gb: 2
+
+# GPU type: auto | nvidia | amd | metal | cpu
+llama_cpp_gpu_type: "auto"
+# AMD GPU target override (auto-detected from rocminfo if empty)
+llama_cpp_amd_gpu_target: ""
+# HSA_OVERRIDE_GFX_VERSION override (derived from GPU target if empty)
+llama_cpp_hsa_override_gfx_version: ""
+
+# Model: auto (picks best for available memory) | HuggingFace repo:quant string
+llama_cpp_model: "auto"
+
+# Model presets for auto-selection (ordered by min_memory_gb descending)
+llama_cpp_model_presets:
+  - name: "Qwen3.6-35B-A3B MoE"
+    hf_repo: "unsloth/Qwen3.6-35B-A3B-GGUF:Q4_K_M"
+    min_memory_gb: 20
+    context_length: 131072
+    kv_quant_k: "q4_0"
+    kv_quant_v: "q4_0"
+    extra_args: "--spec-default"
+  - name: "Qwen3.6-27B"
+    hf_repo: "unsloth/Qwen3.6-27B-GGUF:Q4_K_M"
+    min_memory_gb: 14
+    context_length: 65536
+    kv_quant_k: "q8_0"
+    kv_quant_v: "q8_0"
+    extra_args: "--spec-default --no-mmproj"
+  - name: "Qwen3-8B"
+    hf_repo: "unsloth/Qwen3-8B-GGUF:Q4_K_M"
+    min_memory_gb: 6
+    context_length: 32768
+    kv_quant_k: ""
+    kv_quant_v: ""
+    extra_args: ""
+  - name: "Qwen3-4B"
+    hf_repo: "unsloth/Qwen3-4B-GGUF:Q4_K_M"
+    min_memory_gb: 3
+    context_length: 16384
+    kv_quant_k: ""
+    kv_quant_v: ""
+    extra_args: ""
+
+# Inference parameters (tuned for coding tasks)
+llama_cpp_temp: 0.6
+llama_cpp_top_k: 20
+llama_cpp_top_p: 0.95
+llama_cpp_min_p: 0.0
+llama_cpp_repeat_penalty: 1.0
+llama_cpp_presence_penalty: 0.0
+
+# Service management
+llama_cpp_service_enabled: true
+llama_cpp_service_state: "started"

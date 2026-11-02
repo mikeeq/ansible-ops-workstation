@@ -52,11 +52,12 @@
 - name: Reload CoreDNS
   ansible.builtin.shell: docker-compose restart
   args:
-    chdir: /opt/coredns
+    chdir: "{{ letsencrypt_coredns_install_path | default('/opt/coredns') }}"
+  delegate_to: "{{ letsencrypt_coredns_host | default(omit) }}"
   when: letsencrypt_coredns_le_challenge.changed
 
 - name: Check if DNS records propagated
-  ansible.builtin.shell: dig @127.0.0.1 -i txt {{ item.value['dns-01'].record }} | grep -w -- "{{ item.value['dns-01'].resource_value }}"
+  ansible.builtin.shell: dig @{{ letsencrypt_coredns_query_server | default('127.0.0.1') }} -i txt {{ item.value['dns-01'].record }} | grep -w -- "{{ item.value['dns-01'].resource_value }}"
   loop: "{{ letsencrypt_coredns_le_challenge.challenge_data | dict2items }}"
   retries: 5
   changed_when: false
@@ -110,7 +111,8 @@
 - name: Reload CoreDNS
   ansible.builtin.shell: docker-compose restart
   args:
-    chdir: /opt/coredns
+    chdir: "{{ letsencrypt_coredns_install_path | default('/opt/coredns') }}"
+  delegate_to: "{{ letsencrypt_coredns_host | default(omit) }}"
   when: letsencrypt_coredns_le_challenge.changed
 
 # to validate cert: openssl x509 -text -noout -in cert.crt

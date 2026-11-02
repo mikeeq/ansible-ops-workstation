@@ -1,0 +1,126 @@
+---
+
+przyjazd:
+  alias: Przyjazd
+  icon: mdi:home-import-outline
+  mode: single
+  sequence:
+    # Both covers follow the gate model (automations/bramy.yaml): an already open gate stays open
+    - action: cover.open_cover
+      target:
+        entity_id:
+          - cover.brama_wjazdowa
+          - cover.brama_garazowa
+    - if:
+        - condition: state
+          entity_id: sun.sun
+          state: below_horizon
+      then:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
+
+# Drive a gate to the wanted state with its step-by-step controller (pulse: open → stop → close → stop).
+# Sends pulses until the model (input_text.brama_<brama>, updated by brama_<brama>_model on every pulse) moves the
+# right way – up to 3, e.g. stopped after opening → closing → stopped → opening.
+brama_ustaw:
+  alias: Brama - ustaw
+  icon: mdi:gate
+  mode: queued
+  max: 5
+  fields:
+    brama:
+      description: wjazdowa | garazowa
+      required: true
+      selector:
+        select:
+          options:
+            - wjazdowa
+            - garazowa
+    cel:
+      description: open | close | stop
+      required: true
+      selector:
+        select:
+          options:
+            - open
+            - close
+            - stop
+  variables:
+    przekaznik: >-
+      {{ {'wjazdowa': 'switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_brama',
+          'garazowa': 'switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama'}[brama] }}
+    pomocnik: "input_text.brama_{{ brama }}"
+    cele: >-
+      {{ {'open': ['opening', 'open'], 'close': ['closing', 'closed'],
+          'stop': ['stopped', 'open', 'closed']}[cel] }}
+  sequence:
+    - repeat:
+        while:
+          - condition: template
+            value_template: >-
+              {{ repeat.index <= 3
+                 and (states(pomocnik) | from_json(default={})).s | default('closed') not in cele }}
+        sequence:
+          - action: switch.turn_on
+            target:
+              entity_id: "{{ przekaznik }}"
+          # inching_* turns the relay off after 0.2 s; give the controller a moment between pulses
+          - wait_template: "{{ is_state(przekaznik, 'off') }}"
+            timeout: 3
+          - delay:
+              milliseconds: 1500
+
+# Gate camera references (automations/bramy.yaml, brama_obraz.py): save the current view as the "open"/"closed"
+# reference – only when you can see the gate is really in that state – or delete the references of a gate
+# (they are learnt again on the next clean full open/close from HA). Uses the camera's current day/night mode.
+brama_wzorzec:
+  alias: Brama - wzorzec obrazu
+  icon: mdi:image-sync
+  mode: queued
+  fields:
+    brama:
+      description: wjazdowa | garazowa
+      required: true
+      selector:
+        select:
+          options:
+            - wjazdowa
+            - garazowa
+    akcja:
+      description: zapisz_open | zapisz_closed | reset
+      required: true
+      selector:
+        select:
+          options:
+            - zapisz_open
+            - zapisz_closed
+            - reset
+  variables:
+    kamera: >-
+      {{ {'wjazdowa': ['camera.reolink_e1pro_kuchnia', 'e1prokuchnia', '0.70 0.36 1.0 0.62', 'day'],
+          'garazowa': ['camera.reolink_e1pro_garaz', 'e1pro', '0.20 0.02 0.56 0.23', '']}[brama] }}
+    tryb_kamery: "{{ kamera[3] or states('sensor.' ~ kamera[1] ~ '_day_night_state') }}"
+    obraz: "/config/tmp/brama_{{ brama }}_kamera.jpg"
+  sequence:
+    - if:
+        - condition: template
+          value_template: "{{ akcja != 'reset' }}"
+      then:
+        - action: camera.snapshot
+          target:
+            entity_id: "{{ kamera[0] }}"
+          data:
+            filename: "{{ obraz }}"
+    - action: shell_command.brama_obraz
+      data:
+        tryb: "{{ akcja }}"
+        # reset deletes both day and night references
+        brama: "{{ brama ~ '_' ~ tryb_kamery if akcja != 'reset' else brama ~ '_*' }}"
+        obraz: "{{ obraz }}"
+        roi: "{{ kamera[2] }}"
+      response_variable: wynik
+    - action: persistent_notification.create
+      data:
+        title: "Brama {{ brama }} – wzorzec"
+        message: "{{ akcja }}: {{ wynik.stdout }}"

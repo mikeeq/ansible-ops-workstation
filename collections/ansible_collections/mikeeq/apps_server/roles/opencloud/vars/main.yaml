@@ -1,0 +1,17 @@
+---
+# Files in opencloud_config_path (mounted as /etc/opencloud), loaded by OpenCloud
+opencloud_optional_config_files:
+  - proxy.yaml
+  - app-registry.yaml
+opencloud_config_files: "{{ ['csp.yaml', 'apps.yaml']
+  + (['proxy.yaml'] if opencloud_radicale_enabled | bool or opencloud_yjs_enabled | bool else [])
+  + (['app-registry.yaml'] if opencloud_office == 'euro-office' else []) }}"
+
+# Name of the office app as shown in OpenCloud ("Open with ...")
+opencloud_office_app_name: "{{ {'euro-office': 'Euro-Office', 'collabora': 'CollaboraOnline'}[opencloud_office] | default('') }}"
+
+# apps.yaml content
+opencloud_web_apps_config_merged: "{{ opencloud_web_apps_config
+  | combine({'external-sites': {'config': {'sites': opencloud_external_sites}}} if opencloud_external_sites else {}, recursive=true) }}"
+
+opencloud_calendar_enabled: "{{ 'web-calendar' in (opencloud_web_apps | map(attribute='name')) }}"

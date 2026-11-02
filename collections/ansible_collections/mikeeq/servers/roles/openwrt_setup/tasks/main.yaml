@@ -9,6 +9,10 @@
   ansible.builtin.import_tasks: bpir4.yaml
   when: openwrt_setup_openwrt_bpir4
 
+- name: Import docker.yaml
+  ansible.builtin.import_tasks: docker.yaml
+  when: openwrt_setup_docker
+
 - name: Import dhcp.yaml
   ansible.builtin.import_tasks: dhcp.yaml
 

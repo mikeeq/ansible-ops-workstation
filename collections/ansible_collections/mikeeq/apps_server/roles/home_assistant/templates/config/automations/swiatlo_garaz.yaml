@@ -1,0 +1,74 @@
+---
+# Garage light state model (pulse relay → bistable relay BIS-411, wall buttons act on the bistable relay directly).
+# The state lives in input_boolean.swiatlo_garaz (restored after a restart, shown by light.swiatlo_garaz):
+# - a pulse from HA flips it at once,
+# - the garage camera confirms or corrects it: it switches to colour ("day") ~18 s after the light goes on and back
+#   to IR ("night") ~29 s after it goes off (measured 2026-10-31). Ignored while the garage door is open (daylight or
+#   the PIR lamp over the door can flip the camera) and for 45 s after an HA pulse (camera still catching up).
+- id: swiatlo_garaz_model
+  alias: swiatlo_garaz_model
+  description: "Model stanu światła w garażu: impulsy z HA + korekta z kamery garażowej"
+  mode: queued
+  max: 10
+  triggers:
+    - trigger: state
+      entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
+      from: "off"
+      to: "on"
+      id: impuls
+    # Check the camera when it changes mode, 45 s after a pulse, 40 s after the garage door closed and after a start
+    - trigger: state
+      entity_id: sensor.e1pro_day_night_state
+      to:
+        - day
+        - night
+        - led_day
+      for: 5
+      id: kamera
+    - trigger: state
+      entity_id: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew
+      from: "on"
+      to: "off"
+      for: 45
+      id: kamera
+    - trigger: state
+      entity_id: binary_sensor.brama_garazowa_otwarta
+      to: "off"
+      for: 40
+      id: kamera
+    - trigger: homeassistant
+      event: start
+      id: start
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: impuls
+          sequence:
+            - action: input_boolean.toggle
+              target:
+                entity_id: input_boolean.swiatlo_garaz
+        - conditions:
+            - condition: trigger
+              id:
+                - kamera
+                - start
+          sequence:
+            - if:
+                - condition: trigger
+                  id: start
+              then:
+                - delay: 60
+            - variables:
+                tryb: "{% raw %}{{ states('sensor.e1pro_day_night_state') }}{% endraw %}"
+                swieci: "{% raw %}{{ tryb in ['day', 'led_day'] }}{% endraw %}"
+            - condition: template
+              value_template: >-
+                {% raw %}{{ tryb in ['day', 'night', 'led_day']
+                   and is_state('binary_sensor.brama_garazowa_otwarta', 'off')
+                   and (now() - states.switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew.last_changed)
+                       .total_seconds() >= 44
+                   and swieci != is_state('input_boolean.swiatlo_garaz', 'on') }}{% endraw +%}
+            - action: "{% raw %}{{ 'input_boolean.turn_on' if swieci else 'input_boolean.turn_off' }}{% endraw %}"
+              target:
+                entity_id: input_boolean.swiatlo_garaz

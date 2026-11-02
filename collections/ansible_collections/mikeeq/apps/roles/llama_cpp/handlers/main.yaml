@@ -1,0 +1,18 @@
+---
+- name: Restart llama-server (systemd)
+  ansible.builtin.systemd:
+    name: "llama-server"
+    state: restarted
+    daemon_reload: true
+  become: true
+  listen: "restart llama-server"
+  when: ansible_facts['os_family'] != "Darwin"
+
+- name: Restart llama-server (launchd)
+  ansible.builtin.shell: |
+    launchctl unload {{ user_home_dir }}/Library/LaunchAgents/com.llama-server.plist 2>/dev/null || true
+    launchctl load {{ user_home_dir }}/Library/LaunchAgents/com.llama-server.plist
+  become: false
+  listen: "restart llama-server"
+  when: ansible_facts['os_family'] == "Darwin"
+  changed_when: true

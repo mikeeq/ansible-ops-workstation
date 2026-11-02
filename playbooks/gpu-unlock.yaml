@@ -1,0 +1,12 @@
+---
+# gpu-unlock: full-rate FP16/BF16/TF32 tensor math on the RTX 3060 in mikeeClevo.
+# Builds and installs the module; does NOT reboot. Reboot manually afterwards.
+#
+#   ansible-playbook -i ../ansible-ops-private/inventory/hosts.yaml playbooks/gpu-unlock.yaml --check --diff
+#   ansible-playbook -i ../ansible-ops-private/inventory/hosts.yaml playbooks/gpu-unlock.yaml
+#   ansible-playbook -i ../ansible-ops-private/inventory/hosts.yaml playbooks/gpu-unlock.yaml -e gpu_unlock_state=absent
+- name: GPU unlock
+  hosts: mikeeClevo
+  become: true
+  roles:
+    - role: mikeeq.apps_desktop.gpu_unlock

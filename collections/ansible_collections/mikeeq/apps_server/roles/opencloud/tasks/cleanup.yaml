@@ -1,0 +1,23 @@
+---
+- name: Check for existing docker-compose file
+  ansible.builtin.stat:
+    path: "{{ opencloud_install_path }}/docker-compose.yaml"
+  register: opencloud_compose_file
+
+- name: Remove containers, networks and volumes using docker-compose
+  ansible.builtin.command: docker-compose down --volumes --remove-orphans
+  changed_when: true
+  args:
+    chdir: "{{ opencloud_install_path }}"
+  when: opencloud_compose_file.stat.exists
+
+- name: Ensure opencloud dirs are removed
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ opencloud_data_path }}"
+    - "{{ opencloud_config_path }}"
+    - "{{ opencloud_radicale_data_path }}"
+    - "{{ opencloud_apps_path }}"
+    - "{{ opencloud_install_path }}"

@@ -5,15 +5,16 @@
 services:
   frigate:
     container_name: frigate
-    privileged: true
+    # Not privileged: NVIDIA devices come from the GPU reservation below
     network_mode: host
     restart: always
     image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
     deploy:
       resources:
         limits:
-          cpus: 3
-          memory: 8G
+          cpus: 4
+          # Large semantic search + face recognition models use ~7 GB
+          memory: 12G
           # pids: 1
         reservations:
           cpus: 1
@@ -33,11 +34,8 @@ services:
         target: /tmp/cache
         tmpfs:
           size: 1000000000
-    ports:
-      - "5000:5000"
-      - "1935:1935" #RTMP feeds
-      - "8555:8555/tcp" # WebRTC over tcp
-      - "8555:8555/udp" # WebRTC over udp
+    # No `ports:` with network_mode: host – Frigate listens on 5000/8971,
+    # go2rtc on 8554 (RTSP) and 8555 (WebRTC) directly on the host
     environment: {}
       # - YOLO_MODELS=yolov7-320,yolov7x-640
       # - YOLO_MODELS=yolov7-320

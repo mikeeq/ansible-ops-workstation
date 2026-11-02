@@ -4,13 +4,11 @@
   register: pip_ext_managed
   changed_when: pip_ext_managed.stdout != ""
 
-- name: Install PIP pkgs
-  ansible.builtin.pip:
-    name: "{{ pip_pkgs_deps }}"
+# Installed from the distro: pip can't upgrade distro-owned deps (e.g. packaging)
+- name: Install virtualenv
+  ansible.builtin.package:
+    name: python3-virtualenv
     state: present
-  vars:
-    pip_pkgs_deps:
-      - virtualenv
 
 - name: Install pipx
   ansible.builtin.package:

@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+{% for item in backup_restic_excludes %}
+{{ item }}
+{% endfor %}
+{% for item in backup_restic_offline_backups %}
+# {{ item.name }}: backed up in a separate snapshot while stopped
+{% for path in item.paths %}
+{{ path }}
+{% endfor %}
+{% endfor %}

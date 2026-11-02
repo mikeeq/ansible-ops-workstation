@@ -38,13 +38,24 @@ config dhcp 'lan'
         option limit '50'
         option leasetime '12h'
         option dhcpv4 'server'
+{% if openwrt_setup_openwrt_router_flag | default(false) and openwrt_setup_ipv6 | default(false) %}
+        {# IPv6: SLAAC only (no DHCPv6), no DNS in RA - clients keep using IPv4 DNS that returns AAAA -#}
+        option ra 'server'
+        option dhcpv6 'disabled'
+        list ra_flags 'none'
+        option dns_service '0'
+        option ndp 'disabled'
+        {# Starlink delegates the prefix with ~150 s preferred lifetime - RAs must come
+           more often, otherwise clients deprecate the GUA and fall back to the ULA source -#}
+        option ra_maxinterval '{{ openwrt_setup_ipv6_ra_maxinterval }}'
+        option ra_mininterval '{{ openwrt_setup_ipv6_ra_mininterval }}'
+{% else %}
         list ra_flags 'managed-config'
         list ra_flags 'other-config'
+{% endif %}
         list dhcp_option '6,{{ dhcp_dns_servers }}'
         list dhcp_option '3,{{ dhcp_default_gateway }}'
         {# list dhcp_option '6,8.8.8.8' #}
-        {# option dhcpv6 'server' #}
-        {# option ra 'server' #}
 {# {% endif %} #}
 
 config dhcp 'wan'
@@ -71,13 +82,9 @@ config tag 'public_dns'
 config tag 'directgw'
         list dhcp_option '3,{{ dhcp_direct_gateway }}'
 
-config tag 'public_dns_directgw_1'
+config tag 'public_dns_directgw'
         list dhcp_option '6,8.8.8.8'
         list dhcp_option '3,{{ dhcp_direct_gateway }}'
-
-config tag 'public_dns_directgw_2'
-        list dhcp_option '6,8.8.8.8'
-        list dhcp_option '3,{{ dhcp_direct_gateway_2 }}'
 
 {% for i in dhcp %}
 config host

@@ -1,0 +1,110 @@
+---
+# Gas tariff from the last myORLEN invoice (P/1511194/0007/26, W-3.9, gross); `initial` = the repo is the source of
+# truth, change values here (UI changes are reset on restart)
+gaz_cena_kwh:
+  name: Gaz - cena zmienna brutto
+  initial: 0.3115
+  min: 0
+  max: 2
+  step: 0.0001
+  mode: box
+  unit_of_measurement: zł/kWh
+  icon: mdi:cash
+
+gaz_oplata_stala:
+  name: Gaz - opłaty stałe brutto
+  initial: 80.75
+  min: 0
+  max: 500
+  step: 0.01
+  mode: box
+  unit_of_measurement: zł/mies.
+  icon: mdi:cash-lock
+
+gaz_wsp_konwersji:
+  name: Gaz - współczynnik konwersji
+  initial: 11.942
+  min: 9
+  max: 13
+  step: 0.001
+  mode: box
+  unit_of_measurement: kWh/m³
+  icon: mdi:swap-horizontal
+
+# Gas meter reading / HA estimate over the same period
+gaz_korekta:
+  name: Gaz - korekta szacunku
+  initial: 1.0
+  min: 0.5
+  max: 1.5
+  step: 0.01
+  mode: box
+  icon: mdi:tune-variant
+
+# Electricity (Energa G12W prosumer): meter registers and energy bank at the start of the current 2-month period.
+# No `initial` (kept across restarts), rolled over by automation prad_nowy_okres; correct from each invoice.
+# FES/00051: 31.08.2026 import L1 13877.202, L2 19256.311, export L1 18752.246, L2 10750.686; bank L1 796, L2 0
+prad_start_pobor_l1:
+  name: Prąd - start okresu pobór L1
+  min: 0
+  max: 999999
+  step: 0.001
+  mode: box
+  unit_of_measurement: kWh
+  icon: mdi:transmission-tower-import
+
+prad_start_pobor_l2:
+  name: Prąd - start okresu pobór L2
+  min: 0
+  max: 999999
+  step: 0.001
+  mode: box
+  unit_of_measurement: kWh
+  icon: mdi:transmission-tower-import
+
+prad_start_oddanie_l1:
+  name: Prąd - start okresu oddanie L1
+  min: 0
+  max: 999999
+  step: 0.001
+  mode: box
+  unit_of_measurement: kWh
+  icon: mdi:transmission-tower-export
+
+prad_start_oddanie_l2:
+  name: Prąd - start okresu oddanie L2
+  min: 0
+  max: 999999
+  step: 0.001
+  mode: box
+  unit_of_measurement: kWh
+  icon: mdi:transmission-tower-export
+
+prad_magazyn_start_l1:
+  name: Prąd - magazyn na start L1
+  min: 0
+  max: 100000
+  step: 1
+  mode: box
+  unit_of_measurement: kWh
+  icon: mdi:battery-charging
+
+prad_magazyn_start_l2:
+  name: Prąd - magazyn na start L2
+  min: 0
+  max: 100000
+  step: 1
+  mode: box
+  unit_of_measurement: kWh
+  icon: mdi:battery-charging
+
+# House load without the car, subtracted from PV power for solar EV charging (no live grid meter in HA)
+tesla_slonce_baza:
+  name: Tesla - zużycie domu (bez auta)
+  initial: 0.8
+  min: 0
+  max: 5
+  step: 0.1
+  mode: box
+  unit_of_measurement: kW
+  icon: mdi:home-lightning-bolt

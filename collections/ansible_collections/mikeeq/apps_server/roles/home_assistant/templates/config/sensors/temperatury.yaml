@@ -1,0 +1,41 @@
+---
+# ignore_non_numeric: one dead Zigbee sensor must not turn the whole average "unknown".
+- platform: group
+  name: Temperatura parter
+  unique_id: temperatura_parter
+  type: mean
+  ignore_non_numeric: true
+  device_class: temperature
+  unit_of_measurement: "°C"
+  entities:
+    - sensor.th_salon_temperature
+    - sensor.th_kuchnia_temperature
+    - sensor.th_sypialnia_dol_temperature
+    - sensor.th_lazienka_dol_temperature
+    - sensor.th_przedpokoj_temperature
+
+- platform: group
+  name: Temperatura piętro
+  unique_id: temperatura_pietro
+  type: mean
+  ignore_non_numeric: true
+  device_class: temperature
+  unit_of_measurement: "°C"
+  entities:
+    - sensor.shelly_htg3_pokoj_julia_temperature
+    - sensor.shelly_htg3_sypialnia_gora_temperature
+    - sensor.shelly_htg3_biuro_miki_temperature
+    - sensor.th_garderoba_temperature
+    - sensor.th_lazienka_gora_temperature
+    - sensor.th_pokoj_timi_temperature
+
+- platform: group
+  name: Temperatura dom
+  unique_id: temperatura_dom
+  type: mean
+  ignore_non_numeric: true
+  device_class: temperature
+  unit_of_measurement: "°C"
+  entities:
+    - sensor.temperatura_parter
+    - sensor.temperatura_pietro
