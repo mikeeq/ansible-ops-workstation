@@ -175,6 +175,68 @@ if [[ "$(date +%u)" == "{{ backup_restic_check_weekday }}" ]]; then
   log "restic check --read-data-subset={{ backup_restic_check_read_data_subset }}"
   restic check --read-data-subset="{{ backup_restic_check_read_data_subset }}"
 fi
+{% if backup_restic_offsite_enabled | bool %}
+
+# Off-site copy to Google Drive, separate repository and password. Runs in a
+# subshell so the local repository settings stay untouched.
+backup_offsite() {
+  local rc=0 name dump p
+  local -a paths=()
+  local -a dumps=({% for n in backup_restic_offsite_sqlite_dumps %}"{{ n }}" {% endfor %})
+  local -a sources=({% for p in backup_restic_offsite_paths %}"{{ p }}" {% endfor %})
+  for name in "${dumps[@]}"; do
+    dump="${STAGING_DIR}/${name}.sqlite"
+    if [[ ! -s "${dump}" ]] || [[ "$(sqlite3 "${dump}" 'PRAGMA integrity_check;' 2>&1)" != "ok" ]]; then
+      log "ERROR offsite: dump ${name} missing or corrupt, not uploading"
+      errors=$((errors + 1))
+      return 0
+    fi
+    paths+=("${dump}")
+  done
+  for p in "${sources[@]}"; do
+    if [[ -e "${p}" ]]; then
+      paths+=("${p}")
+    else
+      log "WARN offsite: path ${p} not found, skipping"
+      warnings=$((warnings + 1))
+    fi
+  done
+
+  # set -e does not apply inside a subshell used with ||, hence "|| exit"
+  (
+    export RCLONE_CONFIG="{{ backup_restic_offsite_rclone_config }}"
+    export RESTIC_REPOSITORY="{{ backup_restic_offsite_repository }}"
+    export RESTIC_PASSWORD_FILE="{{ backup_restic_config_dir }}/offsite-password"
+    restic unlock >/dev/null 2>&1 || true
+    log "offsite: restic backup to ${RESTIC_REPOSITORY}: ${paths[*]}"
+    restic backup \
+{% for e in backup_restic_offsite_excludes %}
+      --exclude "{{ e }}" \
+{% endfor %}
+{% for tag in backup_restic_tags %}
+      --tag "{{ tag }}" \
+{% endfor %}
+      --tag offsite \
+      "${paths[@]}" || exit $?
+    log "offsite: restic forget --prune"
+    restic forget --prune \
+      --keep-daily {{ backup_restic_offsite_keep_daily }} \
+      --keep-weekly {{ backup_restic_offsite_keep_weekly }} \
+      --keep-monthly {{ backup_restic_offsite_keep_monthly }} || exit $?
+    if [[ "$(date +%u)" == "{{ backup_restic_check_weekday }}" ]]; then
+      # small repository, verify all data
+      log "offsite: restic check --read-data"
+      restic check --read-data || exit $?
+    fi
+    restic snapshots --latest 1 --compact
+  ) || rc=$?
+  if [[ ${rc} -ne 0 ]]; then
+    log "ERROR offsite: failed (rc=${rc})"
+    errors=$((errors + 1))
+  fi
+}
+backup_offsite
+{% endif %}
 
 restic snapshots --latest 1 --compact
 log "done, warnings: ${warnings}, errors: ${errors}"

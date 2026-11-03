@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# Shared steps of the Dagu DAGs that run ansible-ops-workstation playbooks.
+# {{ ansible_managed }}
+set -euo pipefail
+
+work_dir="${DAG_RUN_WORK_DIR:-$PWD}"
+ws_dir="${work_dir}/ansible-ops-workstation"
+priv_dir="${work_dir}/ansible-ops-private"
+ws_repo="${ANSIBLE_OPS_WORKSTATION_REPO:-{{ dagu_ansible_ops_workstation_repo }}}"
+priv_repo="${ANSIBLE_OPS_PRIVATE_REPO:-{{ dagu_ansible_ops_private_repo }}}"
+ws_branch="${BRANCH_ANSIBLE_OPS_WORKSTATION:-main}"
+priv_branch="${BRANCH_ANSIBLE_OPS_PRIVATE:-main}"
+git_crypt_key="${GIT_CRYPT_KEY_FILE:-${HOME}/secrets/git_crypt_key}"
+cache_dir="${ANSIBLE_OPS_CACHE_DIR:-${HOME}/.cache/ansible-ops}"
+
+usage() {
+  cat <<EOF
+Usage: ansible-ops <command> [args]
+
+  checkout              clone both repos at \$BRANCH_ANSIBLE_OPS_* and unlock git-crypt
+  mise-install          install the mise tools and the Ansible Galaxy requirements
+  playbook <file> [..]  run ansible-playbook from playbooks/ with \$INVENTORY_PATH
+  changed <name>        exit 0 when a repo branch moved since "deployed <name>" (or \$FORCE=true)
+  deployed <name>       record the checked out commits for "changed <name>"
+  clean                 remove the checkouts of the current DAG run
+EOF
+}
+
+clone() {
+  local repo="$1" branch="$2" dir="$3"
+  echo "Checking out ${repo} (${branch})"
+  rm -rf "${dir}"
+  git clone --quiet --depth 1 --branch "${branch}" "${repo}" "${dir}"
+  git -C "${dir}" log -1 --format='%h %s (%an, %cr)'
+}
+
+remote_heads() {
+  local ws priv
+  ws="$(git ls-remote --exit-code "${ws_repo}" "refs/heads/${ws_branch}" | cut -f1)"
+  priv="$(git ls-remote --exit-code "${priv_repo}" "refs/heads/${priv_branch}" | cut -f1)"
+  echo "${ws} ${priv}"
+}
+
+state_file() {
+  echo "${cache_dir}/state/${1:?name required}.${ws_branch//\//_}.${priv_branch//\//_}"
+}
+
+cmd_checkout() {
+  clone "${ws_repo}" "${ws_branch}" "${ws_dir}"
+  clone "${priv_repo}" "${priv_branch}" "${priv_dir}"
+  (cd "${priv_dir}" && git-crypt unlock "${git_crypt_key}")
+  # ssh refuses private keys that others can read
+  if [[ -d "${priv_dir}/secrets" ]]; then
+    chmod -R go-rwx "${priv_dir}/secrets"
+  fi
+}
+
+cmd_mise_install() {
+  cd "${ws_dir}"
+  # ansible.cfg installs Galaxy content into ../.ansible: keep it out of the per-run checkout
+  mkdir -p "${cache_dir}/collections" "${cache_dir}/roles" .ansible
+  ln -sfn "${cache_dir}/collections" .ansible/collections
+  ln -sfn "${cache_dir}/roles" .ansible/roles
+  mise trust --quiet mise.toml
+  # DAG runs share the mise and Galaxy caches
+  flock "${cache_dir}/install.lock" mise install --yes
+  cd playbooks
+  flock "${cache_dir}/install.lock" mise exec -- ansible-galaxy install -r requirements.yaml
+}
+
+cmd_playbook() {
+  local playbook="${1:?playbook required}"
+  shift
+  cd "${ws_dir}/playbooks"
+  exec mise exec -- ansible-playbook \
+    -i "${INVENTORY_PATH:-../../ansible-ops-private/inventory/hosts.yaml}" "${playbook}" "$@"
+}
+
+cmd_changed() {
+  local file current
+  file="$(state_file "${1:-}")"
+  if [[ "${FORCE:-false}" == "true" ]]; then
+    echo "FORCE=true"
+    return 0
+  fi
+  current="$(remote_heads)"
+  if [[ -f "${file}" && "$(cat "${file}")" == "${current}" ]]; then
+    echo "No new commits on ${ws_branch} / ${priv_branch}"
+    return 1
+  fi
+  echo "New commits on ${ws_branch} / ${priv_branch}: ${current}"
+}
+
+cmd_deployed() {
+  local file
+  file="$(state_file "${1:-}")"
+  mkdir -p "$(dirname "${file}")"
+  echo "$(git -C "${ws_dir}" rev-parse HEAD) $(git -C "${priv_dir}" rev-parse HEAD)" >"${file}"
+  echo "Recorded $(cat "${file}")"
+}
+
+cmd_clean() {
+  if [[ -z "${DAG_RUN_WORK_DIR:-}" ]]; then
+    echo "DAG_RUN_WORK_DIR is not set, nothing to clean" >&2
+    return 0
+  fi
+  rm -rf "${ws_dir}" "${priv_dir}"
+}
+
+case "${1:-}" in
+  checkout) cmd_checkout ;;
+  mise-install) cmd_mise_install ;;
+  playbook) shift && cmd_playbook "$@" ;;
+  changed) cmd_changed "${2:-}" ;;
+  deployed) cmd_deployed "${2:-}" ;;
+  clean) cmd_clean ;;
+  -h | --help | help) usage ;;
+  *) usage >&2 && exit 2 ;;
+esac

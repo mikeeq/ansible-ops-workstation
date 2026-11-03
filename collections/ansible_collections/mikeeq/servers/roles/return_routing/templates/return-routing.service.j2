@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Policy routing marks for connections forwarded by {{ return_routing_gateway }}
+After=network-pre.target
+Before=network.target docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f {{ return_routing_nft_file }}
+ExecReload=/usr/sbin/nft -f {{ return_routing_nft_file }}
+ExecStop=/usr/sbin/nft delete table inet return_routing
+
+[Install]
+WantedBy=multi-user.target

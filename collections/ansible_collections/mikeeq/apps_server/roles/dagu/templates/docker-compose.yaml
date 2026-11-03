@@ -1,0 +1,48 @@
+# {{ ansible_managed }}
+---
+services:
+  dagu:
+    build: .
+    image: {{ dagu_image_name }}
+    container_name: {{ dagu_container_name }}
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: {{ dagu_memory_limit }}
+    ports:
+      - "{{ dagu_host_bind }}:{{ dagu_host_port }}:8080"
+    environment:
+      TZ: "{{ dagu_timezone }}"
+      DAGU_TZ: "{{ dagu_timezone }}"
+      DAGU_HOME: "/var/lib/dagu"
+      DAGU_BASE_CONFIG: "/var/lib/dagu/base.yaml"
+      DAGU_SKIP_EXAMPLES: "true"
+      PUID: "{{ dagu_uid }}"
+      PGID: "{{ dagu_gid }}"
+{% if dagu_docker_socket %}
+      DOCKER_GID: "{{ dagu_docker_gid }}"
+{% endif %}
+      DAGU_AUTH_MODE: "builtin"
+      DAGU_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME: "{{ dagu_admin_username }}"
+      DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD_FILE: "/home/dagu/secrets/admin_password"
+{% if dagu_auth_token_secret %}
+      DAGU_AUTH_TOKEN_SECRET_FILE: "/home/dagu/secrets/auth_token_secret"
+{% endif %}
+    volumes:
+      - "{{ dagu_data_path }}:/var/lib/dagu"
+      - "{{ dagu_user_home_path }}:/home/dagu"
+      - "{{ dagu_install_path }}/ansible-ops:/usr/local/bin/ansible-ops:ro"
+{% if dagu_docker_socket %}
+      - /var/run/docker.sock:/var/run/docker.sock
+{% endif %}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8080/api/v1/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"

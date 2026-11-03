@@ -1,0 +1,34 @@
+---
+# Policy routing for connections that a second router forwards into the LAN
+# with their original (internet) source address, e.g. OpenMPTCProuter port
+# forwards without SNAT. Replies to those connections must go back through that
+# router and not through the default gateway, otherwise they are dropped.
+#
+# Connections are recognised by the router's MAC address and a non-private
+# source address. The mark is stored in conntrack and restored on the reply
+# packets (also for Docker containers behind published ports).
+return_routing_enabled: true
+
+# NetworkManager connection / interface the forwarded traffic arrives on
+return_routing_connection: "br-vm-enp0s20u2"
+return_routing_interface: "{{ return_routing_connection }}"
+
+# Router that forwards the traffic (IP and MAC of its LAN interface)
+return_routing_gateway: ""
+return_routing_gateway_mac: ""
+
+return_routing_table: 121
+return_routing_mark: "0x121"
+return_routing_rule_priority: 100
+
+# Sources that are never marked (LAN, CGNAT, Docker)
+return_routing_private_ranges:
+  - "10.0.0.0/8"
+  - "100.64.0.0/10"
+  - "127.0.0.0/8"
+  - "169.254.0.0/16"
+  - "172.16.0.0/12"
+  - "192.168.0.0/16"
+
+return_routing_nft_file: "/etc/nftables/return-routing.nft"
+return_routing_service: "return-routing"

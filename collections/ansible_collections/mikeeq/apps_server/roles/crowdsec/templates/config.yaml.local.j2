@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+# Merged over /etc/crowdsec/config.yaml
+api:
+  server:
+    listen_uri: {{ crowdsec_lapi_listen }}
+prometheus:
+  enabled: true
+  level: full
+  listen_addr: {{ crowdsec_prometheus_listen_addr }}
+  listen_port: {{ crowdsec_prometheus_listen_port }}

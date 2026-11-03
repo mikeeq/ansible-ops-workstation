@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+# Base config shared by every DAG in dags/ (DAGU_BASE_CONFIG), a DAG overrides these fields.
+# https://github.com/dagucloud/dagu/blob/main/README_SCHEMA.md
+
+# Run the steps one after another (Jenkins stages)
+type: chain
+shell: ["/bin/bash", "-eo", "pipefail"]
+hist_retention_runs: 100
+
+handler_on:
+  # Remove the checkouts (with the unlocked ansible-ops-private) after every run
+  exit:
+    run: ansible-ops clean

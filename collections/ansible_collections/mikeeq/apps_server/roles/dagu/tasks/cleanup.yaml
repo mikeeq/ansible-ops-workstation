@@ -1,0 +1,14 @@
+---
+- name: Stop and remove Dagu using docker-compose
+  ansible.builtin.command: docker-compose down -v
+  args:
+    chdir: "{{ dagu_install_path }}"
+    removes: "{{ dagu_install_path }}/docker-compose.yaml"
+
+- name: Ensure the Dagu data and home dirs are removed
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ dagu_data_path }}"
+    - "{{ dagu_user_home_path }}"

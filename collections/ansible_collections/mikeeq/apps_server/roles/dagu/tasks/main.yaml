@@ -1,0 +1,33 @@
+---
+- name: Check docker-compose executable is present
+  ansible.builtin.command: "which docker-compose"
+  register: dagu_docker_compose_result
+  ignore_errors: true
+  changed_when: false
+
+- name: Fail when docker-compose is not installed
+  ansible.builtin.fail:
+    msg: "docker-compose is not found! You need to install it first."
+  when: dagu_docker_compose_result.rc != 0
+
+- name: Check the Dagu admin password
+  ansible.builtin.assert:
+    that:
+      - dagu_admin_password | length >= 8
+    fail_msg: "Set dagu_admin_password (minimum 8 characters)."
+    quiet: true
+
+- name: Include cleanup.yaml
+  ansible.builtin.include_tasks: cleanup.yaml
+  when: dagu_cleanup
+
+- name: Import config.yaml
+  ansible.builtin.import_tasks: config.yaml
+
+- name: Import install.yaml
+  ansible.builtin.import_tasks: install.yaml
+
+- name: Import dags.yaml
+  ansible.builtin.import_tasks: dags.yaml
+  tags:
+    - dagu_dags

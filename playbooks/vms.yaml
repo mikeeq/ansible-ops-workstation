@@ -164,6 +164,7 @@
     # - mikeeq.apps_server.immich
     # - mikeeq.apps_server.ollama_docker
     - mikeeq.apps_server.jenkins
+    - mikeeq.apps_server.dagu
     - mikeeq.apps_server.prometheus
   tasks:
     - name: Prevent multiple packages from being updated

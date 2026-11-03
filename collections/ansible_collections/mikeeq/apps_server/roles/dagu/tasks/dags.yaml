@@ -1,0 +1,36 @@
+---
+- name: Configure the Dagu base config shared by all DAGs
+  ansible.builtin.template:
+    src: "base.yaml"
+    dest: "{{ dagu_data_path }}/base.yaml"
+    owner: "{{ dagu_uid }}"
+    group: "{{ dagu_gid }}"
+    mode: "0644"
+
+- name: List the playbooks offered by the ansible-custom DAG
+  ansible.builtin.set_fact:
+    dagu_ansible_custom_playbooks: >-
+      {{ query('ansible.builtin.fileglob', playbook_dir ~ '/*.yaml')
+         | map('basename')
+         | reject('in', dagu_ansible_custom_playbooks_exclude)
+         | sort }}
+
+- name: Add the DAGs
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ dagu_dags_path }}/{{ item | basename }}"
+    owner: "{{ dagu_uid }}"
+    group: "{{ dagu_gid }}"
+    mode: "0644"
+  with_fileglob:
+    - ../templates/dags/*.yaml
+  register: dagu_dags_result
+
+- name: Validate the DAGs
+  ansible.builtin.command: >-
+    docker-compose exec -T -u {{ dagu_uid }}:{{ dagu_gid }} dagu
+    dagu validate /var/lib/dagu/dags/{{ item | basename }}
+  args:
+    chdir: "{{ dagu_install_path }}"
+  loop: "{{ dagu_dags_result.results | map(attribute='dest') | list }}"
+  changed_when: false

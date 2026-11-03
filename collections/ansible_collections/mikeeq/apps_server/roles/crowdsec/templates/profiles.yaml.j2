@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+# Alert-only: no "decisions", nothing is blocked; matching alerts are notified.
+name: notify_only
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Ip"{% if crowdsec_notification_scenario_filter %} && Alert.GetScenario() matches "{{ crowdsec_notification_scenario_filter }}"{% endif %}
+
+{% if crowdsec_notification_url | length > 0 %}
+notifications:
+  - http_notify
+{% endif %}
+on_success: break

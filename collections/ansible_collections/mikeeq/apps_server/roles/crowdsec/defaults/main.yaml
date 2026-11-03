@@ -1,0 +1,51 @@
+---
+# CrowdSec security engine (https://www.crowdsec.net): reads logs, detects
+# attacks (scans, brute force, exploit attempts) and raises alerts.
+# No bouncer is installed: nothing is blocked, alerts are only sent as
+# notifications (see crowdsec_notification_url).
+
+# Official packagecloud repository; there is no channel per Fedora release,
+# the generic RPM channel is what install.crowdsec.net uses
+crowdsec_repo_baseurl: "https://packagecloud.io/crowdsec/crowdsec/rpm_any/rpm_any/$basearch"
+crowdsec_repo_gpgkeys:
+  - "https://packagecloud.io/crowdsec/crowdsec/gpgkey"
+  - "https://packagecloud.io/crowdsec/crowdsec/gpgkey/crowdsec-crowdsec-C822EDD6B39954A1.pub.gpg"
+  - "https://packagecloud.io/crowdsec/crowdsec/gpgkey/crowdsec-crowdsec-FED78314A2468CCF.pub.gpg"
+
+# Local API (default 127.0.0.1:8080 clashes with Jenkins)
+crowdsec_lapi_listen: "127.0.0.1:8089"
+crowdsec_prometheus_listen_addr: "127.0.0.1"
+crowdsec_prometheus_listen_port: 6060
+
+# Hub collections (parsers + scenarios)
+crowdsec_collections:
+  - crowdsecurity/linux
+  - crowdsecurity/sshd
+  - crowdsecurity/nginx
+  - crowdsecurity/base-http-scenarios
+  - crowdsecurity/http-cve
+  - crowdsecurity/whitelist-good-actors
+
+# Log sources, each rendered to /etc/crowdsec/acquis.d/<name>.yaml.
+# labels.type selects the parser (nginx, syslog, vaultwarden, ...).
+crowdsec_acquisitions:
+  - name: sshd
+    config:
+      source: journalctl
+      journalctl_filter:
+        - "_SYSTEMD_UNIT=sshd.service"
+      labels:
+        type: syslog
+
+# IPs / CIDRs that never raise alerts (s02-enrich whitelist)
+crowdsec_whitelist_ips: []
+crowdsec_whitelist_cidrs: []
+
+# Alerts are POSTed (JSON) to this URL, e.g. a Home Assistant webhook.
+# Empty = no notifications (alerts are still visible with "cscli alerts list").
+crowdsec_notification_url: ""
+# Alerts are grouped: sent after group_wait or when group_threshold alerts are queued
+crowdsec_notification_group_wait: "1m"
+crowdsec_notification_group_threshold: 20
+# Only notify for these scenarios (regex on the scenario name), "" = all
+crowdsec_notification_scenario_filter: ""

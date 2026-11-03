@@ -13,6 +13,7 @@ backup_restic_staging_dir: "/mnt/hdd/backup/staging"
 backup_restic_packages:
   - restic
   - sqlite
+  - rclone
 
 # Run the backup at the end of the role (used by the Jenkins job)
 backup_restic_run: true
@@ -49,6 +50,9 @@ backup_restic_excludes:
   - /opt/adguardhome/workdir/data
   - /opt/jenkins/jenkins_home/workspace
   - /opt/jenkins/jenkins_home/caches
+  - /opt/dagu/dagu/data/dag-run-work
+  - /opt/dagu/home/.local/share/mise
+  - /opt/dagu/home/.cache
   - /opt/nginx/logs
   - "*.log"
   - "*.log.[0-9]*"
@@ -100,3 +104,38 @@ backup_restic_keep_monthly: 6
 # Weekday (1 = Monday ... 7 = Sunday) on which `restic check` verifies the repository
 backup_restic_check_weekday: 7
 backup_restic_check_read_data_subset: "5%"
+
+# Off-site copy of the most critical data (Vaultwarden) into a separate,
+# client-side encrypted restic repository on Google Drive (via rclone).
+# Enabled as soon as backup_restic_offsite_gdrive_token is set. Create the token
+# on a machine with a browser:
+#   rclone authorize "drive" --drive-scope drive.file
+# and store the printed JSON in the private inventory.
+backup_restic_offsite_gdrive_token: ""
+backup_restic_offsite_enabled: "{{ backup_restic_offsite_gdrive_token | length > 0 }}"
+# Separate repository password, keep a copy outside the server (not in Vaultwarden)
+backup_restic_offsite_password: ""
+# Folder in Google Drive; drive.file scope only lets rclone see files it created
+backup_restic_offsite_path: "backup/restic-vaultwarden"
+backup_restic_offsite_repository: "rclone:gdrive:{{ backup_restic_offsite_path }}"
+backup_restic_offsite_rclone_config: "{{ backup_restic_config_dir }}/rclone.conf"
+# Own OAuth client (optional). An own client left in "Testing" in the Google
+# Cloud console gets refresh tokens that expire after 7 days.
+backup_restic_offsite_gdrive_client_id: ""
+backup_restic_offsite_gdrive_client_secret: ""
+
+# SQLite dumps (names from backup_restic_sqlite_dumps) that must pass
+# "PRAGMA integrity_check" and are uploaded
+backup_restic_offsite_sqlite_dumps:
+  - vaultwarden
+backup_restic_offsite_paths:
+  - /opt/vaultwarden/data
+backup_restic_offsite_excludes:
+  # live database, the consistent dump from the staging dir is used instead
+  - /opt/vaultwarden/data/db.sqlite3*
+  - /opt/vaultwarden/data/icon_cache
+  - /opt/vaultwarden/data/tmp
+
+backup_restic_offsite_keep_daily: 14
+backup_restic_offsite_keep_weekly: 8
+backup_restic_offsite_keep_monthly: 24

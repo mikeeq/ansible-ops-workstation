@@ -1,0 +1,59 @@
+---
+- name: Get the docker group GID
+  ansible.builtin.getent:
+    database: group
+    key: docker
+  when: dagu_docker_socket
+
+- name: Set the docker group GID
+  ansible.builtin.set_fact:
+    dagu_docker_gid: "{{ ansible_facts.getent_group.docker[1] }}"
+  when: dagu_docker_socket
+
+- name: Configure Dockerfile for Dagu
+  ansible.builtin.template:
+    src: "Dockerfile"
+    dest: "{{ dagu_install_path }}/Dockerfile"
+    mode: "0644"
+  register: dagu_dockerfile
+
+- name: Configure docker-compose for Dagu
+  ansible.builtin.template:
+    src: "docker-compose.yaml"
+    dest: "{{ dagu_install_path }}/docker-compose.yaml"
+    mode: "0644"
+
+- name: Install the ansible-ops helper used by the DAGs
+  ansible.builtin.template:
+    src: "ansible-ops.sh.j2"
+    dest: "{{ dagu_install_path }}/ansible-ops"
+    mode: "0755"
+
+- name: Check if the Dagu image is present
+  ansible.builtin.command: "docker image inspect {{ dagu_image_name }}"
+  register: dagu_image_exists
+  failed_when: false
+  changed_when: false
+
+- name: Build the Dagu image
+  ansible.builtin.command: docker-compose build --pull
+  args:
+    chdir: "{{ dagu_install_path }}"
+  changed_when: true
+  when: dagu_image_exists.rc != 0 or dagu_dockerfile.changed or dagu_update
+
+- name: Run Dagu using docker-compose
+  ansible.builtin.command: docker-compose up -d
+  args:
+    chdir: "{{ dagu_install_path }}"
+  register: dagu_up_result
+  changed_when: dagu_up_result.stderr is search('Recreate|Creat|Start')
+
+- name: Wait for Dagu to be up
+  ansible.builtin.uri:
+    url: "{{ dagu_url }}/api/v1/health"
+    status_code: 200
+  register: dagu_health
+  until: dagu_health.status == 200
+  retries: 30
+  delay: 2

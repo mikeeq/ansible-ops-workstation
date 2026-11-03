@@ -1,8 +1,17 @@
 ---
 nginx_install_path: "/opt/nginx"
 
+# Addresses denied on sites with allowed_subnet even though they are inside it,
+# e.g. a router that SNATs internet traffic into the LAN (it would otherwise
+# make "LAN only" sites reachable from the internet)
+nginx_lan_only_deny: []
+# Subnet allowed on lan_only_locations of public sites
+nginx_lan_subnet: "192.168.0.0/16"
+
 # Optional per-site keys:
 #   allowed_subnet: "192.168.0.0/18"  # allow only this subnet
+#   lan_only_locations: ["/admin"]    # paths of a public site reachable only from nginx_lan_subnet
+#   lan_only_subnet: "192.168.0.0/18" # overrides nginx_lan_subnet for lan_only_locations
 #   csp: "default-src 'self' ..."     # custom CSP, false to let the backend set it
 #   deny_dotfiles: false              # default true, blocks /.* paths except /.well-known
 #   proxy_buffering: false            # default true, false disables request/response buffering

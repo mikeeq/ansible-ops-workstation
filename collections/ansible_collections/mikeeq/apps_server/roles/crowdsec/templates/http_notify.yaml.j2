@@ -1,0 +1,33 @@
+# {{ ansible_managed }}
+type: http
+name: http_notify
+log_level: info
+
+group_wait: "{{ crowdsec_notification_group_wait }}"
+group_threshold: {{ crowdsec_notification_group_threshold }}
+max_retry: 5
+timeout: "15s"
+
+# One JSON document per group of alerts:
+#   {"title": "...", "message": "one line per alert", "count": N, "alerts": [{...}]}
+format: |
+{% raw %}
+  {{- $lines := list -}}
+  {{- $items := list -}}
+  {{- range . -}}
+  {{- /* Value and EventsCount are pointers: string/int functions dereference them */ -}}
+  {{- $src := trimPrefix "" .Source.Value -}}
+  {{- $events := int .EventsCount -}}
+  {{- $where := list -}}
+  {{- if .Source.Cn }}{{ $where = append $where .Source.Cn }}{{ end -}}
+  {{- if .Source.AsName }}{{ $where = append $where .Source.AsName }}{{ end -}}
+  {{- $lines = append $lines (printf "%s from %s%s (%d events)" (trimPrefix "crowdsecurity/" .Scenario) $src (ternary (printf " [%s]" (join ", " $where)) "" (gt (len $where) 0)) $events) -}}
+  {{- $items = append $items (dict "scenario" .Scenario "ip" $src "country" .Source.Cn "as" .Source.AsName "events" $events "start" .StartAt "stop" .StopAt) -}}
+  {{- end -}}
+  {{- dict "title" (printf "CrowdSec: %d alert(s)" (len .)) "message" (join "\n" $lines) "count" (len .) "alerts" $items | toJson -}}
+{% endraw %}
+
+url: "{{ crowdsec_notification_url }}"
+method: POST
+headers:
+  Content-Type: application/json

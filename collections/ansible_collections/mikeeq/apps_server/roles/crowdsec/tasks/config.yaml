@@ -1,0 +1,93 @@
+---
+- name: Ensure config dirs exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /etc/crowdsec/acquis.d
+    - /etc/crowdsec/parsers/s02-enrich
+    - /etc/crowdsec/notifications
+
+- name: Configure log sources
+  ansible.builtin.copy:
+    content: "# Ansible managed\n---\n{{ item.config | to_nice_yaml(indent=2) }}"
+    dest: "/etc/crowdsec/acquis.d/{{ item.name }}.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ crowdsec_acquisitions }}"
+  loop_control:
+    label: "{{ item.name }}"
+  notify: Restart crowdsec
+
+- name: List log source files
+  ansible.builtin.find:
+    paths: /etc/crowdsec/acquis.d
+    patterns: "*.yaml"
+  register: crowdsec_acquis_files
+
+# Also removes the files the package's service detection created, the sources
+# are managed here only (duplicate sources would duplicate events)
+- name: Remove unmanaged log sources
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: >-
+    {{ crowdsec_acquis_files.files | map(attribute='path')
+       | difference(crowdsec_acquisitions | map(attribute='name') | map('regex_replace', '^(.*)$', '/etc/crowdsec/acquis.d/\1.yaml')) }}
+  notify: Restart crowdsec
+
+- name: Empty the default acquisition file
+  ansible.builtin.copy:
+    content: "# Ansible managed\n# Log sources are in acquis.d/\n"
+    dest: /etc/crowdsec/acquis.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart crowdsec
+
+- name: Configure whitelist
+  ansible.builtin.template:
+    src: whitelist.yaml.j2
+    dest: /etc/crowdsec/parsers/s02-enrich/local-whitelist.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  when: crowdsec_whitelist_ips | length > 0 or crowdsec_whitelist_cidrs | length > 0
+  notify: Restart crowdsec
+
+- name: Remove whitelist
+  ansible.builtin.file:
+    path: /etc/crowdsec/parsers/s02-enrich/local-whitelist.yaml
+    state: absent
+  when: crowdsec_whitelist_ips | length == 0 and crowdsec_whitelist_cidrs | length == 0
+  notify: Restart crowdsec
+
+- name: Configure notification
+  ansible.builtin.template:
+    src: http_notify.yaml.j2
+    dest: /etc/crowdsec/notifications/http_notify.yaml
+    owner: root
+    group: root
+    mode: "0600"
+  when: crowdsec_notification_url | length > 0
+  notify: Restart crowdsec
+
+- name: Remove notification
+  ansible.builtin.file:
+    path: /etc/crowdsec/notifications/http_notify.yaml
+    state: absent
+  when: crowdsec_notification_url | length == 0
+  notify: Restart crowdsec
+
+- name: Configure profiles (alert only, no decisions)
+  ansible.builtin.template:
+    src: profiles.yaml.j2
+    dest: /etc/crowdsec/profiles.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart crowdsec

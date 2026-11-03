@@ -97,8 +97,9 @@ brama_wzorzec:
             - zapisz_closed
             - reset
   variables:
+    # camera, entity prefix, gate area (roi) and fixed mode – keep in sync with home_assistant_bramy in defaults
     kamera: >-
-      {{ {'wjazdowa': ['camera.reolink_e1pro_kuchnia', 'e1prokuchnia', '0.70 0.36 1.0 0.62', 'day'],
+      {{ {'wjazdowa': ['camera.reolink_e1pro_kuchnia', 'e1prokuchnia', '0.53 0.43 0.80 0.53', 'day'],
           'garazowa': ['camera.reolink_e1pro_garaz', 'e1pro', '0.20 0.02 0.56 0.23', '']}[brama] }}
     tryb_kamery: "{{ kamera[3] or states('sensor.' ~ kamera[1] ~ '_day_night_state') }}"
     obraz: "/config/tmp/brama_{{ brama }}_kamera.jpg"
@@ -124,3 +125,37 @@ brama_wzorzec:
       data:
         title: "Brama {{ brama }} – wzorzec"
         message: "{{ akcja }}: {{ wynik.stdout }}"
+
+# Manual correction of the gate model (automations/bramy.yaml) when it disagrees with reality, e.g. after the
+# photocell reopened the gate during closing (invisible to HA, 2026-11-01 16:22). stan: odwroc | open | closed –
+# "odwroc" makes a closed gate open and anything else closed. Sends no pulse, only fixes the remembered state.
+brama_popraw:
+  alias: Brama - popraw stan
+  icon: mdi:swap-horizontal
+  mode: queued
+  fields:
+    brama:
+      description: wjazdowa | garazowa
+      required: true
+      selector:
+        select:
+          options:
+            - wjazdowa
+            - garazowa
+    stan:
+      description: odwroc | open | closed
+      default: odwroc
+      selector:
+        select:
+          options:
+            - odwroc
+            - open
+            - closed
+  sequence:
+    - event: brama_korekta
+      event_data:
+        brama: "{{ brama }}"
+        stan: >-
+          {% set s = (states('input_text.brama_' ~ brama) | from_json(default={})).s | default('closed') %}
+          {{ stan if stan in ['open', 'closed'] else ('open' if s == 'closed' else 'closed') }}
+        zrodlo: reczna
