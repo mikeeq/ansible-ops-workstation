@@ -745,6 +745,24 @@ export _MITSHM=0
 firefox -no-remote
 ```
 
+35. How to fix GPG git encryption on MacOS
+
+```bash
+error: gpg failed to sign the data:
+[GNUPG:] BEGIN_SIGNING 
+[GNUPG:] PINENTRY_LAUNCHED 63854 curses 1.3.3 /dev/ttys002 xterm-256color - 20620/501/4 501/20 0
+gpg: signing failed: Timeout
+[GNUPG:] FAILURE sign 838861
+gpg: signing failed: Timeout
+```
+
+```bash
+brew upgrade gnupg  # This has a make step which takes a while
+brew link --overwrite gnupg
+brew install pinentry-mac
+echo "pinentry-program $(brew --prefix)/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+killall gpg-agent
+```
 
 ## TODO
 
