@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Daily security report e-mail
+
+[Timer]
+OnCalendar={{ security_report_schedule }}
+Persistent=true
+RandomizedDelaySec=2min
+
+[Install]
+WantedBy=timers.target

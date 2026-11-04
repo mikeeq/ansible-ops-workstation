@@ -1,0 +1,406 @@
+#!/usr/bin/python3
+# {{ ansible_managed }}
+"""Daily security/health report of {{ inventory_hostname }}, sent as HTML e-mail.
+
+Sections: CrowdSec alerts, external web traffic (nginx), SSH logins, backups,
+containers. Usage: security-report [--dry-run] [--hours N] [--to ADDR]
+"""
+import argparse
+import datetime as dt
+import html
+import ipaddress
+import json
+import os
+import re
+import subprocess
+import sys
+from collections import Counter, defaultdict
+from email.message import EmailMessage
+from email.utils import formatdate, make_msgid
+
+CONFIG_FILE = "{{ security_report_config_file }}"
+IMPORTANT = re.compile(r"(?i)(-bf($|-)|bruteforce|cve)")
+NGINX_LINE = re.compile(
+    r'^(?P<ip>\S+) \S+ \S+ \[(?P<time>[^\]]+)\] "(?P<req>[^"]*)" (?P<status>\d{3}) \S+ "[^"]*" "(?P<ua>[^"]*)"'
+)
+
+
+def run(cmd, env=None, timeout=120):
+    try:
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
+                             env={**os.environ, **(env or {})}, check=False)
+        return res.returncode, res.stdout, res.stderr
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return 1, "", str(exc)
+
+
+# --- helpers -----------------------------------------------------------------
+
+class Geo:
+    """Country / AS lookup with the GeoLite databases shipped by CrowdSec."""
+
+    def __init__(self, paths):
+        self.city = self.asn = None
+        try:
+            import maxminddb  # noqa: PLC0415
+            if os.path.exists(paths.get("city", "")):
+                self.city = maxminddb.open_database(paths["city"])
+            if os.path.exists(paths.get("asn", "")):
+                self.asn = maxminddb.open_database(paths["asn"])
+        except ImportError:
+            pass
+
+    def lookup(self, ip):
+        country = org = ""
+        try:
+            if self.city:
+                rec = self.city.get(ip) or {}
+                country = (rec.get("country") or {}).get("iso_code", "")
+            if self.asn:
+                rec = self.asn.get(ip) or {}
+                org = rec.get("autonomous_system_organization", "")
+        except ValueError:
+            pass
+        return country, org
+
+
+def local_networks(extra):
+    nets = [ipaddress.ip_network(n) for n in extra]
+    # global IPv6 prefixes of this host = own LAN (dynamic, e.g. Starlink)
+    _, out, _ = run(["ip", "-6", "-o", "addr", "show", "scope", "global"])
+    for line in out.splitlines():
+        parts = line.split()
+        if "inet6" in parts:
+            addr = parts[parts.index("inet6") + 1]
+            nets.append(ipaddress.ip_interface(addr).network)
+    return nets
+
+
+def is_local(ip, nets):
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return True
+    return addr.is_private or addr.is_loopback or addr.is_link_local or any(addr in n for n in nets)
+
+
+def read_back(path, since, block=1 << 20):
+    """Yield nginx log lines newer than `since`, reading the file from its end."""
+    try:
+        f = open(path, "rb")
+    except OSError:
+        return
+    with f:
+        f.seek(0, os.SEEK_END)
+        pos, rest = f.tell(), b""
+        while pos > 0:
+            step = min(block, pos)
+            pos -= step
+            f.seek(pos)
+            chunk = f.read(step) + rest
+            lines = chunk.split(b"\n")
+            rest = lines.pop(0) if pos > 0 else b""
+            older = False
+            for raw in reversed(lines):
+                line = raw.decode("utf-8", "replace")
+                m = NGINX_LINE.match(line)
+                if not m:
+                    continue
+                try:
+                    when = dt.datetime.strptime(m["time"], "%d/%b/%Y:%H:%M:%S %z")
+                except ValueError:
+                    continue
+                if when < since:
+                    older = True
+                    break
+                yield m
+            if older:
+                return
+
+
+def age(ts, now):
+    secs = int((now - ts).total_seconds())
+    if secs < 3600:
+        return f"{secs // 60} min"
+    if secs < 172800:
+        return f"{secs // 3600} h"
+    return f"{secs // 86400} dni"
+
+
+# --- sections ----------------------------------------------------------------
+
+def crowdsec_alerts(hours):
+    rc, out, err = run(["cscli", "alerts", "list", "--since", f"{hours}h", "--limit", "0", "-o", "json"])
+    if rc != 0:
+        return None, err.strip() or "cscli failed"
+    try:
+        data = json.loads(out or "[]") or []
+    except json.JSONDecodeError as exc:
+        return None, str(exc)
+    alerts = []
+    for a in data:
+        scenario = a.get("scenario", "")
+        if not scenario or a.get("source", {}).get("scope", "Ip") not in ("Ip", "ip"):
+            continue
+        src = a.get("source", {})
+        alerts.append({
+            "scenario": scenario,
+            "ip": src.get("value") or src.get("ip", ""),
+            "country": src.get("cn", ""),
+            "as": src.get("as_name", ""),
+            "events": int(a.get("events_count") or 0),
+            "start": a.get("start_at", ""),
+            "important": bool(IMPORTANT.search(scenario)),
+        })
+    return alerts, None
+
+
+def nginx_stats(cfg, since, nets):
+    sites = {}
+    error_page_paths = Counter()
+    per_ip = Counter()
+    for name in sorted(os.listdir(cfg["nginx_log_dir"])):
+        if not name.endswith(".access.log") or name == "access.log":
+            continue
+        site = name[: -len(".access.log")]
+        st = {"requests": 0, "ips": set(), "4xx": 0, "401": 0, "5xx": 0}
+        for m in read_back(os.path.join(cfg["nginx_log_dir"], name), since):
+            ip = m["ip"]
+            if is_local(ip, nets):
+                continue
+            st["requests"] += 1
+            st["ips"].add(ip)
+            status = int(m["status"])
+            if status in (401, 403):
+                st["401"] += 1
+            elif 400 <= status < 500:
+                st["4xx"] += 1
+            elif status >= 500:
+                st["5xx"] += 1
+            per_ip[ip] += 1
+            if site == "error_page":
+                parts = m["req"].split()
+                error_page_paths[parts[1] if len(parts) > 1 else m["req"][:60]] += 1
+        if st["requests"]:
+            sites[site] = st
+    return sites, per_ip, error_page_paths
+
+
+def ssh_logins(hours):
+    rc, out, _ = run(["journalctl", "-u", "sshd", "--since", f"-{hours}h", "-o", "cat", "--no-pager", "-q"])
+    if rc != 0:
+        return [], Counter()
+    accepted, failed = [], Counter()
+    for line in out.splitlines():
+        m = re.search(r"Accepted (\S+) for (\S+) from (\S+)", line)
+        if m:
+            accepted.append((m[2], m[3], m[1]))
+            continue
+        m = re.search(r"(?:Failed \S+ for (?:invalid user )?\S+|Invalid user \S+) from (\S+)", line)
+        if m:
+            failed[m[1]] += 1
+    return accepted, failed
+
+
+def backups(cfg, now):
+    path = cfg.get("backup_repositories_file", "")
+    if not path or not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        repos = json.load(f)
+    result = []
+    for repo in repos:
+        env = {"RESTIC_REPOSITORY": repo["repository"], "RESTIC_PASSWORD_FILE": repo["password_file"], **repo.get("env", {})}
+        rc, out, err = run(["restic", "snapshots", "--latest", "1", "--json", "--no-lock"], env=env, timeout=180)
+        entry = {"name": repo["name"], "ok": False, "detail": ""}
+        if rc != 0:
+            last = (err.strip().splitlines() or ["błąd"])[-1]
+            try:  # with --json restic reports errors as JSON
+                last = json.loads(last).get("message", last)
+            except (json.JSONDecodeError, AttributeError):
+                pass
+            entry["detail"] = last.splitlines()[0][:200]
+        else:
+            snaps = json.loads(out or "[]") or []
+            if not snaps:
+                entry["detail"] = "brak snapshotów"
+            else:
+                latest = max(dt.datetime.fromisoformat(s["time"].replace("Z", "+00:00")) for s in snaps)
+                hours_old = (now - latest).total_seconds() / 3600
+                entry["ok"] = hours_old <= cfg["backup_max_age_hours"]
+                entry["detail"] = f"ostatni snapshot {age(latest, now)} temu ({latest.astimezone():%Y-%m-%d %H:%M})"
+        result.append(entry)
+    return result
+
+
+def containers():
+    rc, out, _ = run(["docker", "ps", "-a", "--format", "{{ '{{' }}json .{{ '}}' }}"])
+    if rc != 0:
+        return None
+    bad = []
+    for line in out.splitlines():
+        c = json.loads(line)
+        status = c.get("Status", "")
+        if c.get("State") != "running" and not status.startswith("Exited (0)"):
+            bad.append((c.get("Names", ""), status))
+        elif "unhealthy" in status:
+            bad.append((c.get("Names", ""), status))
+    return bad
+
+
+# --- rendering ---------------------------------------------------------------
+
+STYLE = ("body{font-family:sans-serif;font-size:14px;color:#222}"
+         "table{border-collapse:collapse;margin:4px 0 14px}"
+         "td,th{border:1px solid #ccc;padding:4px 8px;text-align:left}"
+         "th{background:#eee}.r{text-align:right}.warn{color:#b00;font-weight:bold}.ok{color:#080}"
+         "h3{margin:18px 0 4px}")
+
+
+def table(headers, rows, right=()):
+    h = "".join(f"<th>{html.escape(x)}</th>" for x in headers)
+    body = "".join(
+        "<tr>" + "".join(
+            f'<td class="r">{html.escape(str(c))}</td>' if i in right else f"<td>{c if isinstance(c, Markup) else html.escape(str(c))}</td>"
+            for i, c in enumerate(r)) + "</tr>"
+        for r in rows)
+    return f"<table><tr>{h}</tr>{body}</table>"
+
+
+class Markup(str):
+    pass
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dry-run", action="store_true", help="print the HTML instead of sending")
+    parser.add_argument("--hours", type=int, default=24)
+    parser.add_argument("--to", action="append")
+    args = parser.parse_args()
+
+    with open(CONFIG_FILE, encoding="utf-8") as f:
+        cfg = json.load(f)
+    now = dt.datetime.now(dt.timezone.utc)
+    since = now - dt.timedelta(hours=args.hours)
+    nets = local_networks(cfg["lan_networks"])
+    geo = Geo(cfg.get("geoip", {}))
+    warnings, parts = [], []
+
+    # CrowdSec
+    alerts, err = crowdsec_alerts(args.hours)
+    parts.append("<h3>CrowdSec – wykryte ataki</h3>")
+    if alerts is None:
+        warnings.append("CrowdSec niedostępny")
+        parts.append(f'<p class="warn">Nie udało się pobrać alertów: {html.escape(err)}</p>')
+    elif not alerts:
+        parts.append('<p class="ok">Brak alertów.</p>')
+    else:
+        important = [a for a in alerts if a["important"]]
+        if important:
+            warnings.append(f"{len(important)} ważnych alertów")
+        by_scenario = defaultdict(lambda: {"n": 0, "ips": set(), "events": 0, "important": False})
+        for a in alerts:
+            s = by_scenario[a["scenario"]]
+            s["n"] += 1
+            s["ips"].add(a["ip"])
+            s["events"] += a["events"]
+            s["important"] |= a["important"]
+        rows = [(Markup(f'<span class="warn">{html.escape(k)}</span>' if v["important"] else html.escape(k)),
+                 v["n"], len(v["ips"]), v["events"])
+                for k, v in sorted(by_scenario.items(), key=lambda kv: (-kv[1]["important"], -kv[1]["n"]))]
+        parts.append(f"<p>{len(alerts)} alertów, w tym <b>{len(important)}</b> ważnych (brute-force / exploity).</p>")
+        parts.append(table(["Scenariusz", "Alerty", "Adresy IP", "Zdarzenia"], rows, right=(1, 2, 3)))
+        per_ip = defaultdict(lambda: {"n": 0, "scen": set(), "cn": "", "as": ""})
+        for a in alerts:
+            p = per_ip[a["ip"]]
+            p["n"] += 1
+            p["scen"].add(a["scenario"].split("/")[-1])
+            p["cn"], p["as"] = a["country"] or p["cn"], a["as"] or p["as"]
+        top = sorted(per_ip.items(), key=lambda kv: -kv[1]["n"])[:10]
+        parts.append(table(["IP", "Kraj", "AS", "Alerty", "Scenariusze"],
+                           [(Markup(f'<a href="https://app.crowdsec.net/cti/{html.escape(ip)}">{html.escape(ip)}</a>'),
+                             p["cn"], p["as"], p["n"], ", ".join(sorted(p["scen"]))) for ip, p in top], right=(3,)))
+        countries = Counter(a["country"] or "?" for a in alerts)
+        parts.append("<p>Kraje: " + ", ".join(f"{html.escape(c)} {n}" for c, n in countries.most_common(10)) + "</p>")
+
+    # nginx
+    sites, per_ip, ep_paths = nginx_stats(cfg, since, nets)
+    parts.append("<h3>Ruch z internetu (nginx)</h3>")
+    if not sites:
+        parts.append("<p>Brak ruchu z internetu.</p>")
+    else:
+        rows = [(site, st["requests"], len(st["ips"]), st["401"], st["4xx"], st["5xx"])
+                for site, st in sorted(sites.items(), key=lambda kv: -kv[1]["requests"])]
+        parts.append(table(["Strona", "Żądania", "Adresy IP", "401/403", "Inne 4xx", "5xx"], rows, right=(1, 2, 3, 4, 5)))
+        top = per_ip.most_common(10)
+        parts.append(table(["Najaktywniejsze IP", "Kraj", "AS", "Żądania"],
+                           [(ip, *geo.lookup(ip), n) for ip, n in top], right=(3,)))
+        if ep_paths:
+            parts.append("<p>Skanowanie nieznanych hostów (domyślny serwer), najczęstsze ścieżki: "
+                         + ", ".join(f"<code>{html.escape(p[:60])}</code> {n}" for p, n in ep_paths.most_common(8)) + "</p>")
+
+    # SSH
+    accepted, failed = ssh_logins(args.hours)
+    parts.append("<h3>SSH</h3>")
+    if accepted:
+        parts.append(table(["Udane logowania: użytkownik", "Z adresu", "Metoda"], accepted[-15:]))
+        foreign = [a for a in accepted if not is_local(a[1], nets)]
+        if foreign:
+            warnings.append(f"logowanie SSH z internetu ({len(foreign)})")
+    else:
+        parts.append("<p>Brak udanych logowań.</p>")
+    if failed:
+        parts.append("<p>Nieudane próby: " + ", ".join(f"{html.escape(ip)} ×{n}" for ip, n in failed.most_common(10)) + "</p>")
+
+    # Backups
+    b = backups(cfg, now)
+    if b is not None:
+        parts.append("<h3>Backupy (restic)</h3>")
+        rows = []
+        for e in b:
+            if not e["ok"]:
+                warnings.append(f"backup {e['name']}")
+            rows.append((e["name"], Markup('<span class="ok">OK</span>' if e["ok"] else '<span class="warn">PROBLEM</span>'), e["detail"]))
+        parts.append(table(["Repozytorium", "Stan", "Szczegóły"], rows))
+
+    # Containers
+    bad = containers()
+    if bad is not None:
+        parts.append("<h3>Kontenery</h3>")
+        if bad:
+            warnings.append(f"{len(bad)} kontenerów nie działa")
+            parts.append(table(["Kontener", "Stan"], bad))
+        else:
+            parts.append('<p class="ok">Wszystkie działają.</p>')
+
+    host = cfg["hostname"]
+    status = ("⚠ " + ", ".join(warnings)) if warnings else "OK"
+    subject = f"[{host}] Raport bezpieczeństwa {dt.datetime.now():%Y-%m-%d}: {status}"
+    body = (f"<html><head><style>{STYLE}</style></head><body>"
+            f"<h2>{html.escape(host)}: ostatnie {args.hours} h</h2>"
+            + (f'<p class="warn">Uwaga: {html.escape(", ".join(warnings))}</p>' if warnings else '<p class="ok">Nic niepokojącego.</p>')
+            + "".join(parts)
+            + f'<p style="color:#888">Wygenerowano {dt.datetime.now():%Y-%m-%d %H:%M}. '
+              "Szczegóły na serwerze: <code>cscli alerts list</code>, <code>cscli metrics</code>.</p></body></html>")
+
+    if args.dry_run:
+        print(subject)
+        print(body)
+        return 0
+
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = cfg["from"]
+    msg["To"] = ", ".join(args.to or cfg["to"])
+    msg["Date"] = formatdate(localtime=True)
+    msg["Message-ID"] = make_msgid(domain=host)
+    msg.set_content("Raport w formacie HTML.\n\n" + subject + "\n")
+    msg.add_alternative(body, subtype="html")
+    res = subprocess.run(["/usr/bin/sendmail", "-t", "-oi"], input=msg.as_bytes(), capture_output=True, check=False)
+    if res.returncode != 0:
+        print(res.stderr.decode(errors="replace"), file=sys.stderr)
+    return res.returncode
+
+
+if __name__ == "__main__":
+    sys.exit(main())

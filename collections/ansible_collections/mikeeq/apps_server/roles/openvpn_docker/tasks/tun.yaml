@@ -1,0 +1,22 @@
+---
+- name: Install tun kernel module (OpenWrt)
+  community.general.apk:
+    name: kmod-tun
+    state: present
+    update_cache: true
+  when: ansible_facts['os_family'] == 'OpenWrt'
+
+- name: Ensure /dev/net/tun exists
+  ansible.builtin.shell: |
+    [ -c /dev/net/tun ] && exit 0
+    modprobe tun 2>/dev/null || insmod tun
+    i=0
+    while [ ! -c /dev/net/tun ] && [ "$i" -lt 10 ]; do sleep 1; i=$((i + 1)); done
+    if [ ! -c /dev/net/tun ]; then
+      mkdir -p /dev/net
+      mknod /dev/net/tun c 10 200
+      chmod 0666 /dev/net/tun
+    fi
+    echo loaded
+  register: openvpn_docker_tun_result
+  changed_when: "'loaded' in openvpn_docker_tun_result.stdout"

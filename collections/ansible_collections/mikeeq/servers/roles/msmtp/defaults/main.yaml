@@ -1,0 +1,15 @@
+---
+# Lightweight "sendmail" (msmtp) that relays all local mail through an SMTP
+# server, e.g. Gmail with an app password (Google account -> Security ->
+# 2-Step Verification -> App passwords). Also provides /usr/bin/sendmail.
+msmtp_host: "smtp.gmail.com"
+msmtp_port: 587
+# "starttls" (587), "tls" (465) or "off" (local test servers only)
+msmtp_tls: "starttls"
+msmtp_user: ""
+msmtp_password: ""
+# Gmail always sends as the account address
+msmtp_from: "{{ msmtp_user }}"
+# Mail to root and other local users goes here (/etc/aliases)
+msmtp_root_alias: ""
+msmtp_enabled: "{{ msmtp_user | length > 0 and msmtp_password | length > 0 }}"

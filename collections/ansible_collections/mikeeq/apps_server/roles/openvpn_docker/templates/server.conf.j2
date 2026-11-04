@@ -1,0 +1,44 @@
+# {{ ansible_managed }}
+port {{ openvpn_docker_port }}
+proto {{ openvpn_docker_proto }}
+dev tun0
+topology subnet
+server {{ openvpn_docker_network }} {{ openvpn_docker_netmask }}
+
+ca /etc/openvpn/pki/ca.crt
+cert /etc/openvpn/pki/issued/{{ openvpn_docker_server_common_name }}.crt
+key /etc/openvpn/pki/private/{{ openvpn_docker_server_common_name }}.key
+dh none
+tls-crypt /etc/openvpn/pki/tc.key
+crl-verify /etc/openvpn/conf/crl.pem
+remote-cert-tls client
+tls-version-min 1.2
+data-ciphers AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305
+auth SHA256
+
+{% if openvpn_docker_redirect_gateway %}
+push "redirect-gateway def1 bypass-dhcp"
+{% endif %}
+{% for route in openvpn_docker_push_routes %}
+push "route {{ route }}"
+{% endfor %}
+{% for dns in openvpn_docker_dns_servers %}
+push "dhcp-option DNS {{ dns }}"
+{% endfor %}
+{% if openvpn_docker_dns_domain %}
+push "dhcp-option DOMAIN {{ openvpn_docker_dns_domain }}"
+{% endif %}
+{% if openvpn_docker_client_to_client %}
+client-to-client
+{% endif %}
+
+keepalive 10 60
+{% if openvpn_docker_proto.startswith('udp') %}
+explicit-exit-notify 1
+{% endif %}
+user nobody
+group nobody
+persist-key
+persist-tun
+status /tmp/openvpn-status.log 30
+verb 3

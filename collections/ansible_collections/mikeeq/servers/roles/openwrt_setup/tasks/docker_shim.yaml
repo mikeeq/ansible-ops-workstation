@@ -1,0 +1,47 @@
+---
+# Host macvlan shim so the router itself can reach the macvlan container IPs
+# (macvlan isolates the parent host from its own child interfaces).
+- name: Deploy macvlan shim hotplug script
+  ansible.builtin.copy:
+    dest: /etc/hotplug.d/iface/40-{{ openwrt_setup_docker_macvlan_shim_ifname }}
+    mode: "0755"
+    content: |
+      #!/bin/sh
+      [ "$ACTION" = ifup ] || exit 0
+      [ "$INTERFACE" = '{{ openwrt_setup_docker_macvlan_shim_iface }}' ] || exit 0
+      SHIM='{{ openwrt_setup_docker_macvlan_shim_ifname }}'
+      if ! ip link show "$SHIM" >/dev/null 2>&1; then
+        ip link add "$SHIM" link '{{ openwrt_setup_docker_macvlan_parent }}' type macvlan mode bridge
+        ip addr add '{{ openwrt_setup_docker_macvlan_shim_ip }}/32' dev "$SHIM"
+        ip link set "$SHIM" up
+      {% if openwrt_setup_docker_macvlan_restart_containers %}
+        # the shim is gone only when the parent bridge was rebuilt - container macvlan
+        # interfaces went with it, so restart the containers to recreate them
+        (
+          sleep 5
+          ids="$(docker ps -q --filter network='{{ openwrt_setup_docker_macvlan_name }}' 2>/dev/null)"
+          [ -n "$ids" ] || exit 0
+          logger -t "$SHIM" "parent rebuilt, restarting macvlan containers"
+          docker restart $ids >/dev/null 2>&1
+        ) &
+      {% endif %}
+      fi
+      {% for r in openwrt_setup_docker_macvlan_shim_routes %}
+      ip route replace '{{ r }}/32' dev "$SHIM"
+      {% endfor %}
+
+- name: Ensure macvlan shim is up now
+  ansible.builtin.shell: |
+    set -e
+    SHIM='{{ openwrt_setup_docker_macvlan_shim_ifname }}'
+    if ! ip link show "$SHIM" >/dev/null 2>&1; then
+      ip link add "$SHIM" link '{{ openwrt_setup_docker_macvlan_parent }}' type macvlan mode bridge
+      ip addr add '{{ openwrt_setup_docker_macvlan_shim_ip }}/32' dev "$SHIM"
+      ip link set "$SHIM" up
+      echo created
+    fi
+    {% for r in openwrt_setup_docker_macvlan_shim_routes %}
+    ip route replace '{{ r }}/32' dev "$SHIM"
+    {% endfor %}
+  register: openwrt_setup_docker_shim_apply
+  changed_when: "'created' in openwrt_setup_docker_shim_apply.stdout"

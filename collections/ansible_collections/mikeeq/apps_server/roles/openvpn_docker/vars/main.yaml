@@ -1,0 +1,29 @@
+---
+openvpn_docker_pki_path: "{{ openvpn_docker_install_path }}/pki"
+openvpn_docker_active_clients: "{{ openvpn_docker_clients | difference(openvpn_docker_revoked_clients) }}"
+
+# easy-rsa runs in a throwaway container from the same image
+openvpn_docker_easyrsa:
+  - docker
+  - run
+  - --rm
+  - --network
+  - none
+  - -v
+  - "{{ openvpn_docker_install_path }}:/data"
+  - -e
+  - EASYRSA_PKI=/data/pki
+  - -e
+  - EASYRSA_BATCH=1
+  - -e
+  - EASYRSA_ALGO=ec
+  - -e
+  - EASYRSA_CURVE=prime256v1
+  - -e
+  - "EASYRSA_CA_EXPIRE={{ openvpn_docker_ca_days }}"
+  - -e
+  - "EASYRSA_CERT_EXPIRE={{ openvpn_docker_cert_days }}"
+  - -e
+  - "EASYRSA_CRL_DAYS={{ openvpn_docker_crl_days }}"
+  - "{{ openvpn_docker_image }}"
+  - /usr/share/easy-rsa/easyrsa

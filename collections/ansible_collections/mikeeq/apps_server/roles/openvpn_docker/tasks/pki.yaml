@@ -1,0 +1,68 @@
+---
+- name: Initialise PKI
+  ansible.builtin.command:
+    argv: "{{ openvpn_docker_easyrsa + ['init-pki'] }}"
+    creates: "{{ openvpn_docker_pki_path }}"
+
+- name: Build CA
+  ansible.builtin.command:
+    # --req-cn only here: it would override the CN of every later certificate
+    argv: "{{ openvpn_docker_easyrsa + ['--req-cn=' ~ openvpn_docker_ca_common_name, 'build-ca', 'nopass'] }}"
+    creates: "{{ openvpn_docker_pki_path }}/ca.crt"
+
+- name: Build server certificate
+  ansible.builtin.command:
+    argv: "{{ openvpn_docker_easyrsa + ['build-server-full', openvpn_docker_server_common_name, 'nopass'] }}"
+    creates: "{{ openvpn_docker_pki_path }}/issued/{{ openvpn_docker_server_common_name }}.crt"
+  register: openvpn_docker_server_cert
+
+- name: Generate tls-crypt key
+  ansible.builtin.command:
+    argv:
+      - docker
+      - run
+      - --rm
+      - --network
+      - none
+      - -v
+      - "{{ openvpn_docker_install_path }}:/data"
+      - "{{ openvpn_docker_image }}"
+      - openvpn
+      - --genkey
+      - secret
+      - /data/pki/tc.key
+    creates: "{{ openvpn_docker_pki_path }}/tc.key"
+
+- name: Build client certificates
+  ansible.builtin.command:
+    argv: "{{ openvpn_docker_easyrsa + ['build-client-full', item, 'nopass'] }}"
+    creates: "{{ openvpn_docker_pki_path }}/issued/{{ item }}.crt"
+  loop: "{{ openvpn_docker_active_clients }}"
+
+- name: Revoke client certificates
+  ansible.builtin.command:
+    argv: "{{ openvpn_docker_easyrsa + ['revoke', item] }}"
+    removes: "{{ openvpn_docker_pki_path }}/issued/{{ item }}.crt"
+  loop: "{{ openvpn_docker_revoked_clients }}"
+  register: openvpn_docker_revoke
+
+- name: Check CRL
+  ansible.builtin.stat:
+    path: "{{ openvpn_docker_pki_path }}/crl.pem"
+  register: openvpn_docker_crl
+
+- name: Generate CRL
+  ansible.builtin.command:
+    argv: "{{ openvpn_docker_easyrsa + ['gen-crl'] }}"
+  changed_when: true
+  when: not openvpn_docker_crl.stat.exists or openvpn_docker_revoke.changed
+
+# OpenVPN re-reads the CRL on every connection after dropping privileges and
+# the PKI dir is root-only - keep a world-readable copy next to the config.
+- name: Publish CRL for the server
+  ansible.builtin.copy:
+    src: "{{ openvpn_docker_pki_path }}/crl.pem"
+    dest: "{{ openvpn_docker_install_path }}/config/crl.pem"
+    remote_src: true
+    mode: "0644"
+  register: openvpn_docker_crl_copy

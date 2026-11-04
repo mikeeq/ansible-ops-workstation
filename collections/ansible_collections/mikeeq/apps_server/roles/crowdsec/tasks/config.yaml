@@ -83,6 +83,20 @@
   when: crowdsec_notification_url | length == 0
   notify: Restart crowdsec
 
+# Replaces the package's email.yaml: CrowdSec validates every config of a plugin
+# type in use and fails on the unconfigured default. The file is
+# %config(noreplace), so package upgrades keep it.
+- name: Configure e-mail notification
+  ansible.builtin.template:
+    src: email_notify.yaml.j2
+    dest: /etc/crowdsec/notifications/email.yaml
+    owner: root
+    group: root
+    mode: "0600"
+  when: crowdsec_email_enabled | bool
+  no_log: true
+  notify: Restart crowdsec
+
 - name: Configure profiles (alert only, no decisions)
   ansible.builtin.template:
     src: profiles.yaml.j2

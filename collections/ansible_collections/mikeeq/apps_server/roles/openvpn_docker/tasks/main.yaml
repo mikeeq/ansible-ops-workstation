@@ -1,0 +1,26 @@
+---
+- name: Check docker-compose executable is present
+  ansible.builtin.command: which docker-compose
+  register: openvpn_docker_compose_result
+  failed_when: false
+  changed_when: false
+
+- name: Fail when docker-compose is missing
+  ansible.builtin.fail:
+    msg: "docker-compose is not found! You need to install it first."
+  when: openvpn_docker_compose_result.rc != 0
+
+- name: Import tun.yaml
+  ansible.builtin.import_tasks: tun.yaml
+
+- name: Import image.yaml
+  ansible.builtin.import_tasks: image.yaml
+
+- name: Import pki.yaml
+  ansible.builtin.import_tasks: pki.yaml
+
+- name: Import install.yaml
+  ansible.builtin.import_tasks: install.yaml
+
+- name: Import clients.yaml
+  ansible.builtin.import_tasks: clients.yaml

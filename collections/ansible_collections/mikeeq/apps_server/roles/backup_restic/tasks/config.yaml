@@ -81,3 +81,20 @@
         group: root
         mode: "0600"
       when: backup_restic_rclone_seed.changed or not backup_restic_rclone_config.stat.exists
+
+# Read by other tools (e.g. the security_report role) to show the backup state
+- name: Write repository list
+  ansible.builtin.copy:
+    content: "{{ backup_restic_repositories | to_nice_json(indent=2) }}\n"
+    dest: "{{ backup_restic_config_dir }}/repositories.json"
+    owner: root
+    group: root
+    mode: "0600"
+  vars:
+    backup_restic_repositories: >-
+      {{ [{'name': 'lokalny', 'repository': backup_restic_repository,
+           'password_file': backup_restic_config_dir ~ '/password', 'env': {}}]
+         + ([{'name': 'Google Drive', 'repository': backup_restic_offsite_repository,
+              'password_file': backup_restic_config_dir ~ '/offsite-password',
+              'env': {'RCLONE_CONFIG': backup_restic_offsite_rclone_config}}]
+            if backup_restic_offsite_enabled | bool else []) }}

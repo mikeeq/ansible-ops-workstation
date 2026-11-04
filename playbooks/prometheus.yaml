@@ -92,5 +92,7 @@
     - mikeeq.apps_server.immich
     - mikeeq.apps_server.vaultwarden
     - mikeeq.apps_server.opencloud
+    - mikeeq.servers.msmtp
     - mikeeq.apps_server.crowdsec
+    - mikeeq.apps_server.security_report
     # - mikeeq.apps_server.home_assistant

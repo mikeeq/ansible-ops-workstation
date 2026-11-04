@@ -49,3 +49,18 @@ crowdsec_notification_group_wait: "1m"
 crowdsec_notification_group_threshold: 20
 # Only notify for these scenarios (regex on the scenario name), "" = all
 crowdsec_notification_scenario_filter: ""
+
+# E-mail for important alerts (brute force, exploit attempts), in addition to
+# crowdsec_notification_url. Enabled when recipients and SMTP credentials are set;
+# SMTP settings default to the ones of the msmtp role.
+crowdsec_email_to: []
+crowdsec_email_scenario_filter: "(?i)(-bf($|-)|bruteforce|cve)"
+crowdsec_email_subject: "CrowdSec: atak na {{ inventory_hostname }}"
+crowdsec_email_smtp_host: "{{ msmtp_host | default('smtp.gmail.com') }}"
+crowdsec_email_smtp_port: "{{ msmtp_port | default(587) }}"
+# starttls (587), ssltls (465) or none
+crowdsec_email_encryption: "{{ {'tls': 'ssltls', 'off': 'none'}[msmtp_tls | default('starttls')] | default('starttls') }}"
+crowdsec_email_smtp_user: "{{ msmtp_user | default('') }}"
+crowdsec_email_smtp_password: "{{ msmtp_password | default('') }}"
+crowdsec_email_from: "{{ msmtp_from | default(crowdsec_email_smtp_user) }}"
+crowdsec_email_group_wait: "1m"

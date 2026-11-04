@@ -1,5 +1,18 @@
 # {{ ansible_managed }}
 # Alert-only: no "decisions", nothing is blocked; matching alerts are notified.
+{% if crowdsec_email_enabled | bool %}
+# Important alerts (brute force, exploit attempts) also go out by e-mail
+name: important
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Ip" && Alert.GetScenario() matches "{{ crowdsec_email_scenario_filter }}"
+notifications:
+{% if crowdsec_notification_url | length > 0 %}
+  - http_notify
+{% endif %}
+  - email_notify
+on_success: break
+---
+{% endif %}
 name: notify_only
 filters:
   - Alert.Remediation == true && Alert.GetScope() == "Ip"{% if crowdsec_notification_scenario_filter %} && Alert.GetScenario() matches "{{ crowdsec_notification_scenario_filter }}"{% endif %}

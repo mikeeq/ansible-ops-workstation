@@ -1,0 +1,58 @@
+---
+openvpn_docker_install_path: "/opt/openvpn"
+openvpn_docker_container_name: "openvpn"
+
+# Image is built locally (Alpine + openvpn + easy-rsa + nftables), works on
+# amd64 and aarch64 (OpenWrt BPI-R4) alike.
+openvpn_docker_image: "local/openvpn:latest"
+openvpn_docker_base_image: "alpine:3.22"
+# Network for `docker build` RUN steps (OpenWrt docker has no default bridge)
+openvpn_docker_build_network: "host"
+# Re-pull the base image on build (picks up new Alpine/openvpn packages)
+openvpn_docker_build_pull: false
+
+# LAN-exposed macvlan network. The container gets its own IP on the physical
+# LAN (like a VM on the bridge) instead of using host port mappings/NAT.
+openvpn_docker_macvlan_network_name: "lan_macvlan"
+openvpn_docker_macvlan_parent: "eth0"
+openvpn_docker_macvlan_subnet: "192.168.0.0/24"
+openvpn_docker_macvlan_gateway: "192.168.0.1"
+openvpn_docker_macvlan_ip: "192.168.0.13"
+
+# Default route inside the container instead of the macvlan network gateway,
+# e.g. the router that port-forwards the VPN port without SNAT, so replies go
+# back the same way. Empty = keep the network gateway.
+openvpn_docker_default_gateway: ""
+# Extra routes inside the container, e.g. [{to: 192.168.0.1/32, via: 192.168.0.10}]
+openvpn_docker_routes: []
+
+openvpn_docker_proto: "udp"
+openvpn_docker_port: 1194
+# Public name/port clients connect to
+openvpn_docker_remote_host: "vpn.example.com"
+openvpn_docker_remote_port: "{{ openvpn_docker_port }}"
+
+# VPN client subnet (NATed to the container's LAN IP, so no LAN routes are needed)
+openvpn_docker_network: "10.69.0.0"
+openvpn_docker_netmask: "255.255.255.0"
+# Send all client traffic through the VPN
+openvpn_docker_redirect_gateway: true
+# Extra routes pushed to clients ("network netmask"), e.g. "192.168.0.0 255.255.192.0"
+openvpn_docker_push_routes: []
+openvpn_docker_dns_servers: []
+openvpn_docker_dns_domain: ""
+openvpn_docker_client_to_client: false
+
+# PKI (easy-rsa, EC prime256v1), kept in {{ openvpn_docker_install_path }}/pki
+openvpn_docker_ca_common_name: "OpenVPN CA"
+openvpn_docker_server_common_name: "server"
+openvpn_docker_ca_days: 3650
+openvpn_docker_cert_days: 3650
+# OpenVPN rejects every client once the CRL expires
+openvpn_docker_crl_days: 3650
+
+openvpn_docker_clients: []
+# Clients whose certificates get revoked (and their local .ovpn removed)
+openvpn_docker_revoked_clients: []
+# Where the inline <client>.ovpn profiles are written on the controller
+openvpn_docker_client_configs_local_path: "/tmp/openvpn-clients"

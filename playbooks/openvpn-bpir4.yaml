@@ -1,0 +1,26 @@
+---
+# OpenVPN server on the BPI-R4 as a macvlan container (192.168.0.13) on the
+# `lanmac` network created by the openwrt_setup docker role, next to CoreDNS
+# (.11) and AdGuard Home (.12). Also deploys root's SSH authorized keys.
+#
+#   ansible-playbook -i ../../ansible-ops-private/inventory/hosts.yaml openvpn-bpir4.yaml
+#
+# Client profiles (<client>.ovpn) are written to openvpn_docker_client_configs_local_path.
+- name: Provision OpenVPN container on BPI-R4
+  hosts: "{{ hosts_to_deploy | default('openwrt_bpir4garage') }}"
+  become: true
+  gather_facts: true
+  pre_tasks:
+    - name: Deploy SSH authorized keys
+      ansible.builtin.include_role:
+        name: mikeeq.servers.openwrt_setup
+        tasks_from: ssh_keys.yaml
+
+    # host route to the container through the macvlan shim (openwrt_setup_docker_macvlan_shim_routes)
+    - name: Ensure macvlan shim routes
+      ansible.builtin.include_role:
+        name: mikeeq.servers.openwrt_setup
+        tasks_from: docker_shim.yaml
+      when: openwrt_setup_docker_macvlan_shim | default(true)
+  roles:
+    - mikeeq.apps_server.openvpn_docker

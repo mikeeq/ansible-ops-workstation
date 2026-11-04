@@ -1,0 +1,28 @@
+# {{ ansible_managed }}
+client
+dev tun
+proto {{ openvpn_docker_proto }}
+remote {{ openvpn_docker_remote_host }} {{ openvpn_docker_remote_port }}
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+verify-x509-name {{ openvpn_docker_server_common_name }} name
+tls-version-min 1.2
+data-ciphers AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305
+auth SHA256
+verb 3
+
+<ca>
+{{ openvpn_docker_files[openvpn_docker_pki_path ~ '/ca.crt'] | regex_search(openvpn_docker_pem_regex) }}
+</ca>
+<cert>
+{{ openvpn_docker_files[openvpn_docker_pki_path ~ '/issued/' ~ openvpn_docker_client ~ '.crt'] | regex_search(openvpn_docker_pem_regex) }}
+</cert>
+<key>
+{{ openvpn_docker_files[openvpn_docker_pki_path ~ '/private/' ~ openvpn_docker_client ~ '.key'] | regex_search(openvpn_docker_pem_regex) }}
+</key>
+<tls-crypt>
+{{ openvpn_docker_files[openvpn_docker_pki_path ~ '/tc.key'] | trim }}
+</tls-crypt>

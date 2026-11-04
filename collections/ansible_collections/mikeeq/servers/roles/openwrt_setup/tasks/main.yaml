@@ -2,6 +2,9 @@
 # https://docs.ansible.com/ansible/latest/collections/community/general/openwrt_init_module.html
 # https://docs.ansible.com/ansible/latest/collections/community/general/opkg_module.html
 
+- name: Import ssh_keys.yaml
+  ansible.builtin.import_tasks: ssh_keys.yaml
+
 - name: Import opkg.yaml
   ansible.builtin.import_tasks: opkg.yaml
 
