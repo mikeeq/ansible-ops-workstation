@@ -1,0 +1,22 @@
+---
+# Daily HTML e-mail report: CrowdSec alerts, external web traffic (nginx), SSH
+# logins, backup state (restic, from backup_restic's repositories.json) and
+# containers. Sends through /usr/bin/sendmail (role mikeeq.servers.msmtp).
+security_report_to: []
+# The timer only runs once mail can be sent (msmtp credentials set)
+security_report_enabled: "{{ security_report_to | length > 0 and (msmtp_password | default('-')) | length > 0 }}"
+security_report_from: "{{ msmtp_from | default('root') }}"
+security_report_schedule: "*-*-* 07:00:00"
+security_report_hours: 24
+
+security_report_script: "/usr/local/sbin/security-report"
+security_report_config_file: "/etc/security-report.json"
+security_report_nginx_log_dir: "/opt/nginx/logs"
+# Sources treated as local (not counted as internet traffic); private ranges and
+# the host's own global IPv6 prefixes are always local
+security_report_lan_networks: []
+security_report_backup_repositories_file: "/etc/backup-restic/repositories.json"
+security_report_backup_max_age_hours: 26
+security_report_geoip:
+  city: /var/lib/crowdsec/data/GeoLite2-City.mmdb
+  asn: /var/lib/crowdsec/data/GeoLite2-ASN.mmdb

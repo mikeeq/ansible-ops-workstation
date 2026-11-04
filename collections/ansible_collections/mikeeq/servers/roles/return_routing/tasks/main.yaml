@@ -1,0 +1,69 @@
+---
+- name: Ensure router address and MAC are set
+  ansible.builtin.assert:
+    that:
+      - return_routing_gateway is match('^(\d{1,3}\.){3}\d{1,3}$')
+      - return_routing_gateway_mac is match('^([0-9a-f]{2}:){5}[0-9a-f]{2}$')
+    fail_msg: "Set return_routing_gateway and return_routing_gateway_mac (lower-case, e.g. 52:54:00:aa:bb:cc)."
+    quiet: true
+
+- name: Ensure nftables is installed
+  ansible.builtin.package:
+    name: nftables
+    state: present
+
+- name: Write nftables rules
+  ansible.builtin.template:
+    src: return-routing.nft.j2
+    dest: "{{ return_routing_nft_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+    validate: "/usr/sbin/nft -c -f %s"
+  notify: Reload return routing
+
+- name: Install systemd unit
+  ansible.builtin.template:
+    src: return-routing.service.j2
+    dest: "/etc/systemd/system/{{ return_routing_service }}.service"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload return routing
+
+- name: Enable and start systemd unit
+  ansible.builtin.systemd_service:
+    name: "{{ return_routing_service }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+
+# Route and rule are managed by NetworkManager so they survive link changes
+- name: Get routes and rules of the connection
+  ansible.builtin.command: "nmcli -g ipv4.routes,ipv4.routing-rules connection show {{ return_routing_connection }}"
+  register: return_routing_nm
+  changed_when: false
+  check_mode: false
+
+- name: Add route table and fwmark rule to the connection
+  ansible.builtin.command: >-
+    nmcli connection modify {{ return_routing_connection }}
+    {{ '+ipv4.routes "' ~ return_routing_nm_route ~ '"' if return_routing_nm_route not in return_routing_nm.stdout else '' }}
+    {{ '+ipv4.routing-rules "' ~ return_routing_nm_rule ~ '"' if return_routing_nm_rule not in return_routing_nm.stdout else '' }}
+  when: >-
+    return_routing_nm_route not in return_routing_nm.stdout
+    or return_routing_nm_rule not in return_routing_nm.stdout
+  changed_when: true
+  register: return_routing_nm_modified
+
+- name: Apply connection changes without reconnecting
+  ansible.builtin.command: "nmcli device reapply {{ return_routing_interface }}"
+  when: return_routing_nm_modified is changed
+  changed_when: true
+
+- name: Check that replies of marked connections use the router
+  ansible.builtin.command: "ip -4 route get 1.1.1.1 mark {{ return_routing_mark }}"
+  register: return_routing_route_get
+  changed_when: false
+  check_mode: false
+  failed_when: ("via " ~ return_routing_gateway ~ " ") not in return_routing_route_get.stdout

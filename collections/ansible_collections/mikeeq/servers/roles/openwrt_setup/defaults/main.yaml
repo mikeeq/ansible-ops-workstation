@@ -8,6 +8,10 @@ openwrt_setup_ipv6: false
 openwrt_setup_ipv6_ra_maxinterval: 30
 openwrt_setup_ipv6_ra_mininterval: 10
 
+# Public keys allowed to log in as root (dropbear)
+openwrt_setup_ssh_authorized_keys: []
+openwrt_setup_ssh_authorized_keys_path: /etc/dropbear/authorized_keys
+
 openwrt_setup_docker: false
 openwrt_setup_docker_data_root: /mnt/nvme/docker
 openwrt_setup_docker_nvme_device: /dev/nvme0n1p1

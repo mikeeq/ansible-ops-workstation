@@ -1,0 +1,33 @@
+# {{ ansible_managed }}
+description: "Run any playbook from ansible-ops-workstation/playbooks"
+labels: [ansible]
+
+params:
+  - name: BRANCH_ANSIBLE_OPS_WORKSTATION
+    default: "main"
+    description: "Branch name repo: ansible-ops-workstation"
+  - name: BRANCH_ANSIBLE_OPS_PRIVATE
+    default: "main"
+    description: "Branch name repo: ansible-ops-private"
+  - name: INVENTORY_PATH
+    default: "../../ansible-ops-private/inventory/hosts.yaml"
+    description: "Ansible inventory, relative to ansible-ops-workstation/playbooks"
+  - name: PLAYBOOK_NAME
+{% if 'huawei-lte-setband.yaml' in dagu_ansible_custom_playbooks %}
+    default: "huawei-lte-setband.yaml"
+{% else %}
+    default: {{ dagu_ansible_custom_playbooks | first | to_json }}
+{% endif %}
+    enum: {{ dagu_ansible_custom_playbooks | to_json }}
+    description: "Playbook"
+  - name: EXTRA_ARGS
+    default: ""
+    description: "Extra arguments for ansible-playbook command, i.e.: -vvv"
+
+steps:
+  - id: checkout
+    run: ansible-ops checkout
+  - id: mise_install
+    run: ansible-ops mise-install
+  - id: ansible
+    run: ansible-ops playbook "${PLAYBOOK_NAME}" ${EXTRA_ARGS}

@@ -1,0 +1,58 @@
+---
+- name: Configure server files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ openvpn_docker_install_path }}/{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - src: docker-compose.yaml.j2
+      dest: docker-compose.yaml
+      mode: "0644"
+    - src: server.conf.j2
+      dest: config/server.conf
+      mode: "0644"
+    - src: start.sh.j2
+      dest: config/start.sh
+      mode: "0755"
+  loop_control:
+    label: "{{ item.dest }}"
+  register: openvpn_docker_config_result
+
+- name: Ensure LAN macvlan docker network exists
+  ansible.builtin.shell: |
+    docker network inspect {{ openvpn_docker_macvlan_network_name }} >/dev/null 2>&1 && exit 0
+    docker network create -d macvlan \
+      --subnet={{ openvpn_docker_macvlan_subnet }} \
+      --gateway={{ openvpn_docker_macvlan_gateway }} \
+      -o parent={{ openvpn_docker_macvlan_parent }} \
+      {{ openvpn_docker_macvlan_network_name }}
+  register: openvpn_docker_macvlan_net
+  changed_when: openvpn_docker_macvlan_net.stdout | length == 64
+
+- name: Run using docker-compose
+  ansible.builtin.command:
+    argv: "{{ ['docker-compose', 'up', '-d'] + (['--force-recreate'] if openvpn_docker_build.changed else []) }}"
+    chdir: "{{ openvpn_docker_install_path }}"
+  register: openvpn_docker_up_result
+  changed_when: openvpn_docker_up_result.stderr is search('Creat|Recreat|Start')
+
+# Mounted config files are not picked up by `up -d` - restart to load them
+- name: Restart OpenVPN after config change
+  ansible.builtin.command:
+    argv: [docker-compose, restart]
+    chdir: "{{ openvpn_docker_install_path }}"
+  changed_when: true
+  when:
+    - openvpn_docker_config_result.changed or openvpn_docker_crl_copy.changed or openvpn_docker_server_cert.changed
+    - not openvpn_docker_up_result.changed
+
+- name: Wait for OpenVPN to finish initialising
+  ansible.builtin.command:
+    argv: [docker, logs, --tail, "50", "{{ openvpn_docker_container_name }}"]
+  register: openvpn_docker_logs
+  until: >-
+    'Initialization Sequence Completed' in openvpn_docker_logs.stdout
+    or 'Initialization Sequence Completed' in openvpn_docker_logs.stderr
+  retries: 15
+  delay: 2
+  changed_when: false

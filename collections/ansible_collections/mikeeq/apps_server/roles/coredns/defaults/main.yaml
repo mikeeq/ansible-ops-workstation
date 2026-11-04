@@ -12,6 +12,10 @@ coredns_macvlan_parent: "eth0"
 coredns_macvlan_subnet: "192.168.0.0/24"
 coredns_macvlan_gateway: "192.168.0.1"
 coredns_macvlan_ip: "192.168.1.121"
+# Extra authoritative-only listener for queries from the internet; forward the
+# public port 53 to this port instead of 53 (which also recurses for the LAN).
+# Empty = disabled.
+coredns_public_port: ""
 
 # Publish AAAA records for these names, pointing to the host's global IPv6 address
 # ending with coredns_ipv6_suffix (stable interface ID, e.g. NetworkManager ipv6.token ::110)

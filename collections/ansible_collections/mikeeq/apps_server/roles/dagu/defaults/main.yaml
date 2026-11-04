@@ -1,0 +1,57 @@
+---
+dagu_install_path: "/opt/dagu"
+# DAGU_HOME inside the container: dags/, base.yaml, data/ (run history, per-run work dirs), logs/
+dagu_data_path: "{{ dagu_install_path }}/dagu"
+# HOME of the dagu user inside the container: .ssh/, secrets/, mise tools, Galaxy collections cache
+dagu_user_home_path: "{{ dagu_install_path }}/home"
+dagu_ssh_path: "{{ dagu_user_home_path }}/.ssh"
+dagu_secrets_path: "{{ dagu_user_home_path }}/secrets"
+dagu_dags_path: "{{ dagu_data_path }}/dags"
+
+# https://github.com/dagucloud/dagu/releases (image tags have no "v" prefix)
+dagu_version: "2.25.1"
+dagu_base_image: "ghcr.io/dagucloud/dagu:{{ dagu_version }}"
+dagu_image_name: "dagu:mikeeq"
+dagu_container_name: "dagu"
+# Empty installs the latest mise release
+dagu_mise_version: ""
+
+# UID/GID the DAG steps run as (PUID/PGID of the official image)
+dagu_uid: "1000"
+dagu_gid: "1000"
+
+dagu_host_bind: "0.0.0.0"
+dagu_host_port: "8081"
+dagu_url: "http://localhost:{{ dagu_host_port }}"
+dagu_timezone: "Europe/Warsaw"
+dagu_memory_limit: "1024M"
+
+# Builtin auth (RBAC): the admin is created on first start, add more users in the UI
+dagu_admin_username: "admin"
+# Required, minimum 8 characters
+dagu_admin_password: ""
+# Empty lets Dagu generate one and persist it in its data dir
+dagu_auth_token_secret: ""
+
+# Run the cron schedules of the DAGs; false deploys the DAGs for manual runs only
+dagu_schedules_enabled: true
+
+# Mount the Docker socket (for the docker.run / container.run actions)
+dagu_docker_socket: false
+
+dagu_cleanup: false
+# Rebuild the image with "docker-compose build --pull" on every run
+dagu_update: false
+
+# Same format as jenkins_ssh_private_keys; "git" is used for github.com (ssh_config.j2)
+dagu_ssh_private_keys: []
+# Base64 encoded git-crypt key of ansible-ops-private
+dagu_git_crypt_key: ""
+
+dagu_ansible_ops_workstation_repo: "git@github.com:mikeeq/ansible-ops-workstation.git"
+dagu_ansible_ops_private_repo: "git@github.com:mikeeq/ansible-ops-private.git"
+
+# Files in playbooks/ that are not offered as playbooks in the "ansible-custom" DAG
+dagu_ansible_custom_playbooks_exclude:
+  - requirements.yaml
+  - vars.yaml

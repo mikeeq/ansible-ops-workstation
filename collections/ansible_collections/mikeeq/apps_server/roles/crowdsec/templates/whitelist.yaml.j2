@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+name: local/whitelist
+description: "Sources that never raise alerts"
+whitelist:
+  reason: "local whitelist"
+{% if crowdsec_whitelist_ips | length > 0 %}
+  ip:
+{% for ip in crowdsec_whitelist_ips %}
+    - "{{ ip }}"
+{% endfor %}
+{% endif %}
+{% if crowdsec_whitelist_cidrs | length > 0 %}
+  cidr:
+{% for cidr in crowdsec_whitelist_cidrs %}
+    - "{{ cidr }}"
+{% endfor %}
+{% endif %}

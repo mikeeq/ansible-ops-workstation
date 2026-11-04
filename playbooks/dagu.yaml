@@ -1,0 +1,15 @@
+---
+- name: Bootstrap host
+  hosts: localhost
+  become: false
+  tasks:
+    - name: Change private key permissions
+      ansible.builtin.file:
+        path: "{{ ansible_ssh_private_key_file }}"
+        mode: "0600"
+
+- name: Dagu
+  hosts: "{{ hosts_to_deploy | default('mikeeClevo') }}"
+  become: true
+  roles:
+    - mikeeq.apps_server.dagu

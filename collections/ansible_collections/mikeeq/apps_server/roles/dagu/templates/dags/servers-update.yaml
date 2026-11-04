@@ -1,0 +1,26 @@
+# {{ ansible_managed }}
+description: "Update the servers (playbooks/vms.yaml)"
+labels: [ansible, servers]
+{% if dagu_schedules_enabled %}
+schedule: "0 5 * * *"
+{% endif %}
+# Up to 3 attempts, like retry(3) in Jenkins
+retry_policy:
+  limit: 2
+  interval_sec: 60
+
+params:
+  - name: BRANCH_ANSIBLE_OPS_WORKSTATION
+    default: "main"
+    description: "Branch name repo: ansible-ops-workstation"
+  - name: BRANCH_ANSIBLE_OPS_PRIVATE
+    default: "main"
+    description: "Branch name repo: ansible-ops-private"
+
+steps:
+  - id: checkout
+    run: ansible-ops checkout
+  - id: mise_install
+    run: ansible-ops mise-install
+  - id: ansible
+    run: ansible-ops playbook vms.yaml

@@ -1,0 +1,20 @@
+# {{ ansible_managed }}
+description: "Restart the Huawei LTE router (playbooks/huawei-lte-restart.yaml)"
+labels: [ansible, network]
+# schedule: "0 4 * * *"
+
+params:
+  - name: BRANCH_ANSIBLE_OPS_WORKSTATION
+    default: "main"
+    description: "Branch name repo: ansible-ops-workstation"
+  - name: BRANCH_ANSIBLE_OPS_PRIVATE
+    default: "main"
+    description: "Branch name repo: ansible-ops-private"
+
+steps:
+  - id: checkout
+    run: ansible-ops checkout
+  - id: mise_install
+    run: ansible-ops mise-install
+  - id: ansible
+    run: ansible-ops playbook huawei-lte-restart.yaml

@@ -1,0 +1,28 @@
+#!/usr/sbin/nft -f
+# {{ ansible_managed }}
+# Mark connections forwarded by {{ return_routing_gateway }} ({{ return_routing_gateway_mac }})
+# from internet addresses, route their replies back through it (table {{ return_routing_table }}).
+table inet return_routing
+delete table inet return_routing
+
+table inet return_routing {
+    set private4 {
+        type ipv4_addr
+        flags interval
+        elements = { {{ return_routing_private_ranges | join(', ') }} }
+    }
+
+    chain prerouting {
+        type filter hook prerouting priority mangle; policy accept;
+        # new connection from the internet, forwarded by the router
+        iifname "{{ return_routing_interface }}" ether saddr {{ return_routing_gateway_mac }} ip saddr != @private4 ct state new ct mark set {{ return_routing_mark }}
+        # replies of Docker containers (forwarded traffic)
+        ct direction reply ct mark {{ return_routing_mark }} meta mark set ct mark
+    }
+
+    chain output {
+        type route hook output priority mangle; policy accept;
+        # replies of local processes
+        ct direction reply ct mark {{ return_routing_mark }} meta mark set ct mark
+    }
+}

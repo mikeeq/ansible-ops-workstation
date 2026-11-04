@@ -1,0 +1,41 @@
+# {{ ansible_managed }}
+# Replaces the Jenkins "JJB update" job (pollscm): redeploys the DAGs only when
+# ansible-ops-workstation or ansible-ops-private has new commits.
+description: "Deploy the DAGs (playbooks/dagu.yaml -t dagu_dags) when the repos have new commits"
+labels: [ansible, dagu]
+{% if dagu_schedules_enabled %}
+schedule: "*/5 * * * *"
+{% endif %}
+hist_retention_runs: 50
+
+params:
+  - name: BRANCH_ANSIBLE_OPS_WORKSTATION
+    default: "main"
+    description: "Branch name repo: ansible-ops-workstation"
+  - name: BRANCH_ANSIBLE_OPS_PRIVATE
+    default: "main"
+    description: "Branch name repo: ansible-ops-private"
+  - name: FORCE
+    type: boolean
+    default: false
+    description: "Deploy even when there are no new commits"
+
+steps:
+  # Exit code 1 = no new commits, the next steps are skipped
+  - id: poll
+    run: ansible-ops changed dagu-dags-update
+    output: POLL
+    continue_on:
+      exit_code: [1]
+      mark_success: true
+  - id: checkout
+    run: ansible-ops checkout
+    preconditions:
+      - condition: "${POLL}"
+        expected: "re:^(New commits|FORCE)"
+  - id: mise_install
+    run: ansible-ops mise-install
+  - id: ansible
+    run: ansible-ops playbook dagu.yaml -t dagu_dags
+  - id: record
+    run: ansible-ops deployed dagu-dags-update

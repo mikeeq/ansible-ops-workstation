@@ -1,0 +1,34 @@
+# {{ ansible_managed }}
+description: >-
+  Set the Huawei LTE bands (playbooks/huawei-lte-setband.yaml) and dynamic SQM on OpenWrt
+  (playbooks/openwrt-sqm.yaml)
+labels: [ansible, network]
+# schedule: "0 23 * * *"
+
+params:
+  - name: BRANCH_ANSIBLE_OPS_WORKSTATION
+    default: "main"
+    description: "Branch name repo: ansible-ops-workstation"
+  - name: BRANCH_ANSIBLE_OPS_PRIVATE
+    default: "main"
+    description: "Branch name repo: ansible-ops-private"
+  - name: HUAWEI_LTE_BAND
+    default: "80045"
+    enum: ["80045", "80005", "7FFFFFFFFFFFFFFF", "5", "80000", "4", "1"]
+    description: >-
+      LTE band: 80045 = 800+1800+2100+2600, 80005 = 800+1800+2100, 7FFFFFFFFFFFFFFF = all,
+      5 = 1800+2100, 80000 = 800, 4 = 1800, 1 = 2100
+  - name: DYNAMIC_SQM_ENABLED
+    type: boolean
+    default: false
+    description: "Enable dynamic SQM on OpenWrt"
+
+steps:
+  - id: checkout
+    run: ansible-ops checkout
+  - id: mise_install
+    run: ansible-ops mise-install
+  - id: lte_band
+    run: ansible-ops playbook huawei-lte-setband.yaml -e huawei_lteband=${HUAWEI_LTE_BAND}
+  - id: sqm
+    run: ansible-ops playbook openwrt-sqm.yaml -e dynamic_sqm_enabled=${DYNAMIC_SQM_ENABLED}

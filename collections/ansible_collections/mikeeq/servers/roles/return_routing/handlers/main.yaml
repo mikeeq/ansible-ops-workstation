@@ -1,0 +1,6 @@
+---
+- name: Reload return routing
+  ansible.builtin.systemd_service:
+    name: "{{ return_routing_service }}"
+    state: reloaded
+    daemon_reload: true

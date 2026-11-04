@@ -1,0 +1,5 @@
+---
+crowdsec_email_enabled: >-
+  {{ crowdsec_email_to | length > 0
+     and crowdsec_email_smtp_user | length > 0
+     and crowdsec_email_smtp_password | length > 0 }}

@@ -1,0 +1,50 @@
+---
+- name: Install dependencies
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-maxminddb
+    state: present
+
+- name: Write configuration
+  ansible.builtin.copy:
+    content: >-
+      {{ {'hostname': inventory_hostname,
+          'from': security_report_from,
+          'to': security_report_to,
+          'nginx_log_dir': security_report_nginx_log_dir,
+          'lan_networks': security_report_lan_networks,
+          'backup_repositories_file': security_report_backup_repositories_file,
+          'backup_max_age_hours': security_report_backup_max_age_hours,
+          'geoip': security_report_geoip} | to_nice_json(indent=2) }}
+    dest: "{{ security_report_config_file }}"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Install report script
+  ansible.builtin.template:
+    src: security-report.py.j2
+    dest: "{{ security_report_script }}"
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Install systemd units
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - security-report.service
+    - security-report.timer
+  notify: Restart security report timer
+
+- name: Enable report timer
+  ansible.builtin.systemd_service:
+    name: security-report.timer
+    enabled: "{{ security_report_enabled | bool }}"
+    state: "{{ 'started' if security_report_enabled | bool else 'stopped' }}"
+    daemon_reload: true

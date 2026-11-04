@@ -1,0 +1,24 @@
+#!/bin/sh
+# {{ ansible_managed }}
+set -eu
+
+{% if openvpn_docker_default_gateway %}
+ip route replace default via {{ openvpn_docker_default_gateway }}
+{% endif %}
+{% for route in openvpn_docker_routes %}
+ip route replace {{ route.to }} via {{ route.via }}
+{% endfor %}
+
+# VPN clients leave with the container's LAN IP - no routes needed on the LAN
+nft -f - <<'EOF'
+table ip openvpn
+delete table ip openvpn
+table ip openvpn {
+  chain postrouting {
+    type nat hook postrouting priority srcnat; policy accept;
+    iifname "tun0" oifname != "tun0" masquerade
+  }
+}
+EOF
+
+exec openvpn --config /etc/openvpn/conf/server.conf

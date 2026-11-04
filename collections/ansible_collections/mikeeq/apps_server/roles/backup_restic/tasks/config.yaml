@@ -35,3 +35,66 @@
     owner: root
     group: root
     mode: "0700"
+
+- name: Configure off-site repository
+  when: backup_restic_offsite_enabled | bool
+  block:
+    - name: Ensure off-site repository password is set
+      ansible.builtin.assert:
+        that:
+          - backup_restic_offsite_password | length >= 16
+        fail_msg: "backup_restic_offsite_password is not set (define it in the private inventory)."
+        quiet: true
+
+    - name: Write off-site repository password
+      ansible.builtin.copy:
+        content: "{{ backup_restic_offsite_password }}"
+        dest: "{{ backup_restic_config_dir }}/offsite-password"
+        owner: root
+        group: root
+        mode: "0600"
+      no_log: true
+
+    # rclone rewrites rclone.conf whenever it refreshes the access token, so the
+    # role only manages a seed and replaces rclone.conf when the seed changes
+    - name: Write rclone config seed
+      ansible.builtin.template:
+        src: rclone.conf.j2
+        dest: "{{ backup_restic_offsite_rclone_config }}.seed"
+        owner: root
+        group: root
+        mode: "0600"
+      register: backup_restic_rclone_seed
+      no_log: true
+
+    - name: Check rclone config
+      ansible.builtin.stat:
+        path: "{{ backup_restic_offsite_rclone_config }}"
+      register: backup_restic_rclone_config
+
+    - name: Install rclone config from seed
+      ansible.builtin.copy:
+        src: "{{ backup_restic_offsite_rclone_config }}.seed"
+        dest: "{{ backup_restic_offsite_rclone_config }}"
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0600"
+      when: backup_restic_rclone_seed.changed or not backup_restic_rclone_config.stat.exists
+
+# Read by other tools (e.g. the security_report role) to show the backup state
+- name: Write repository list
+  ansible.builtin.copy:
+    content: "{{ backup_restic_repositories | to_nice_json(indent=2) }}\n"
+    dest: "{{ backup_restic_config_dir }}/repositories.json"
+    owner: root
+    group: root
+    mode: "0600"
+  vars:
+    backup_restic_repositories: >-
+      {{ [{'name': 'lokalny', 'repository': backup_restic_repository,
+           'password_file': backup_restic_config_dir ~ '/password', 'env': {}}]
+         + ([{'name': 'Google Drive', 'repository': backup_restic_offsite_repository,
+              'password_file': backup_restic_config_dir ~ '/offsite-password',
+              'env': {'RCLONE_CONFIG': backup_restic_offsite_rclone_config}}]
+            if backup_restic_offsite_enabled | bool else []) }}

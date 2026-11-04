@@ -1,0 +1,22 @@
+# {{ ansible_managed }}
+description: "Stop Steam on mikeeClevo (playbooks/steam-stop.yaml)"
+labels: [ansible, steam]
+{% if dagu_schedules_enabled %}
+schedule: "0 6 * * *"
+{% endif %}
+
+params:
+  - name: BRANCH_ANSIBLE_OPS_WORKSTATION
+    default: "main"
+    description: "Branch name repo: ansible-ops-workstation"
+  - name: BRANCH_ANSIBLE_OPS_PRIVATE
+    default: "main"
+    description: "Branch name repo: ansible-ops-private"
+
+steps:
+  - id: checkout
+    run: ansible-ops checkout
+  - id: mise_install
+    run: ansible-ops mise-install
+  - id: ansible
+    run: ansible-ops playbook steam-stop.yaml

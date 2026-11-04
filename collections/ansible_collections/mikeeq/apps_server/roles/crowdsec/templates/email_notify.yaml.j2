@@ -1,0 +1,41 @@
+# {{ ansible_managed }}
+type: email
+name: email_notify
+log_level: info
+timeout: 30s
+group_wait: "{{ crowdsec_email_group_wait }}"
+
+smtp_host: "{{ crowdsec_email_smtp_host }}"
+smtp_port: {{ crowdsec_email_smtp_port }}
+smtp_username: "{{ crowdsec_email_smtp_user }}"
+smtp_password: "{{ crowdsec_email_smtp_password }}"
+auth_type: login
+encryption_type: "{{ crowdsec_email_encryption }}"
+sender_name: "CrowdSec {{ inventory_hostname }}"
+sender_email: "{{ crowdsec_email_from }}"
+email_subject: "{{ crowdsec_email_subject }}"
+receiver_emails:
+{% for to in crowdsec_email_to %}
+  - "{{ to }}"
+{% endfor %}
+
+format: |
+{% raw %}
+  <html><body style="font-family:sans-serif">
+  <h3>CrowdSec wykrył {{ len . }} atak(i)</h3>
+  <table cellpadding="6" style="border-collapse:collapse;border:1px solid #ccc">
+  <tr style="background:#eee"><th align="left">Scenariusz</th><th align="left">IP</th><th align="left">Kraj / AS</th><th align="right">Zdarzeń</th><th align="left">Od – do (UTC)</th></tr>
+  {{- range . }}
+  {{- $ip := trimPrefix "" .Source.Value }}
+  <tr>
+    <td>{{ .Scenario }}</td>
+    <td><a href="https://app.crowdsec.net/cti/{{ $ip }}">{{ $ip }}</a></td>
+    <td>{{ .Source.Cn }} {{ .Source.AsName }}</td>
+    <td align="right">{{ int .EventsCount }}</td>
+    <td>{{ replace "T" " " (trunc 19 (trimPrefix "" .StartAt)) }} – {{ replace "T" " " (trunc 19 (trimPrefix "" .StopAt)) }}</td>
+  </tr>
+  {{- end }}
+  </table>
+  <p style="color:#666">Nic nie zostało zablokowane (tryb tylko alertów). Szczegóły na serwerze: <code>cscli alerts list</code>, <code>cscli alerts inspect &lt;id&gt;</code>.</p>
+  </body></html>
+{% endraw %}

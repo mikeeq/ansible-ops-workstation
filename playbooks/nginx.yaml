@@ -1,0 +1,9 @@
+---
+# nginx reverse proxy on mikeeClevo.
+# Usage:
+#   ansible-playbook -i inventory/hosts.yaml -i ../ansible-ops-private/inventory/hosts.yaml playbooks/nginx.yaml
+- name: Nginx
+  hosts: mikeeClevo
+  become: true
+  roles:
+    - mikeeq.apps_server.nginx

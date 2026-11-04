@@ -1,0 +1,4 @@
+---
+# Same format nmcli prints them, used for the idempotency check
+return_routing_nm_route: "0.0.0.0/0 {{ return_routing_gateway }} table={{ return_routing_table }}"
+return_routing_nm_rule: "priority {{ return_routing_rule_priority }} from 0.0.0.0/0 fwmark {{ return_routing_mark }} table {{ return_routing_table }}"

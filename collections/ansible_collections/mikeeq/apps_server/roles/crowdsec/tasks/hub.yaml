@@ -1,0 +1,24 @@
+---
+- name: Update hub index
+  ansible.builtin.command: cscli hub update
+  changed_when: false
+
+- name: List installed collections
+  ansible.builtin.command: cscli collections list -o json
+  register: crowdsec_collections_installed
+  changed_when: false
+  check_mode: false
+
+- name: Install collections
+  ansible.builtin.command: "cscli collections install {{ item }}"
+  loop: >-
+    {{ crowdsec_collections
+       | difference((crowdsec_collections_installed.stdout | from_json).collections | default([]) | map(attribute='name')) }}
+  changed_when: true
+  notify: Restart crowdsec
+
+- name: Upgrade hub items
+  ansible.builtin.command: cscli hub upgrade
+  register: crowdsec_hub_upgrade
+  changed_when: crowdsec_hub_upgrade.stdout is search('updated|upgraded', ignorecase=true)
+  notify: Restart crowdsec

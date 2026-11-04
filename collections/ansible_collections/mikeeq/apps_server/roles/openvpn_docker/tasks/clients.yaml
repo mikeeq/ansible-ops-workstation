@@ -1,0 +1,51 @@
+---
+- name: Read CA certificate and tls-crypt key
+  ansible.builtin.slurp:
+    src: "{{ openvpn_docker_pki_path }}/{{ item }}"
+  loop:
+    - ca.crt
+    - tc.key
+  register: openvpn_docker_shared_files
+  no_log: true
+
+- name: Read client certificates and keys
+  ansible.builtin.slurp:
+    src: "{{ openvpn_docker_pki_path }}/{{ item[1] }}/{{ item[0] }}.{{ 'crt' if item[1] == 'issued' else 'key' }}"
+  loop: "{{ openvpn_docker_active_clients | product(['issued', 'private']) | list }}"
+  register: openvpn_docker_client_files
+  no_log: true
+
+- name: Ensure local client config dir exists
+  ansible.builtin.file:
+    path: "{{ openvpn_docker_client_configs_local_path }}"
+    state: directory
+    mode: "0700"
+  delegate_to: localhost
+  become: false
+
+- name: Write client profiles
+  ansible.builtin.template:
+    src: client.ovpn.j2
+    dest: "{{ openvpn_docker_client_configs_local_path }}/{{ openvpn_docker_client }}.ovpn"
+    mode: "0600"
+  loop: "{{ openvpn_docker_active_clients }}"
+  loop_control:
+    loop_var: openvpn_docker_client
+  vars:
+    openvpn_docker_pem_regex: "-----BEGIN [A-Z ]+-----[\\s\\S]*?-----END [A-Z ]+-----"
+    openvpn_docker_files: >-
+      {{ dict((openvpn_docker_shared_files.results + openvpn_docker_client_files.results)
+              | map(attribute='source')
+              | zip((openvpn_docker_shared_files.results + openvpn_docker_client_files.results)
+                    | map(attribute='content') | map('b64decode'))) }}
+  delegate_to: localhost
+  become: false
+  no_log: true
+
+- name: Remove profiles of revoked clients
+  ansible.builtin.file:
+    path: "{{ openvpn_docker_client_configs_local_path }}/{{ item }}.ovpn"
+    state: absent
+  loop: "{{ openvpn_docker_revoked_clients }}"
+  delegate_to: localhost
+  become: false

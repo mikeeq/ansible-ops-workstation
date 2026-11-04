@@ -1,4 +1,15 @@
 ---
+- name: Bootstrap host
+  hosts: localhost
+  become: false
+  tasks:
+    - name: Change private key permissions
+      ansible.builtin.file:
+        path: "{{ ansible_ssh_private_key_file }}"
+        mode: "0600"
+      tags:
+        - jjb
+
 - name: Jenkins
   # hosts: "{{ hosts_to_deploy | default('local') }}"
   hosts: mikeeClevo

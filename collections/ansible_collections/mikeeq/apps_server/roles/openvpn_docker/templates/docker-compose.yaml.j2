@@ -1,0 +1,30 @@
+# {{ ansible_managed }}
+services:
+  openvpn:
+    container_name: {{ openvpn_docker_container_name }}
+    image: {{ openvpn_docker_image }}
+    # built locally by Ansible
+    pull_policy: never
+    entrypoint: ["/bin/sh", "/etc/openvpn/conf/start.sh"]
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    sysctls:
+      net.ipv4.ip_forward: "1"
+    volumes:
+      - ./config:/etc/openvpn/conf:ro
+      - ./pki:/etc/openvpn/pki:ro
+    # Own IP on the LAN via macvlan, so no host port mapping/NAT is needed.
+    networks:
+      {{ openvpn_docker_macvlan_network_name }}:
+        ipv4_address: {{ openvpn_docker_macvlan_ip }}
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+
+networks:
+  {{ openvpn_docker_macvlan_network_name }}:
+    external: true

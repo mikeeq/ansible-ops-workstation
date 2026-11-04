@@ -1,0 +1,53 @@
+---
+- name: Add CrowdSec repository
+  ansible.builtin.yum_repository:
+    name: crowdsec
+    description: CrowdSec
+    baseurl: "{{ crowdsec_repo_baseurl }}"
+    gpgkey: "{{ crowdsec_repo_gpgkeys }}"
+    gpgcheck: true
+    repo_gpgcheck: true
+    enabled: true
+
+# Written before the package is installed: the package's post-install script
+# registers the local machine against the API address from this file
+- name: Ensure config dir exists
+  ansible.builtin.file:
+    path: /etc/crowdsec
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure listen addresses
+  ansible.builtin.template:
+    src: config.yaml.local.j2
+    dest: /etc/crowdsec/config.yaml.local
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart crowdsec
+
+- name: Install CrowdSec
+  ansible.builtin.package:
+    name: crowdsec
+    state: present
+
+- name: Point the local machine credentials to the local API
+  ansible.builtin.lineinfile:
+    path: /etc/crowdsec/local_api_credentials.yaml
+    regexp: "^url:"
+    line: "url: http://{{ crowdsec_lapi_listen }}"
+  notify: Restart crowdsec
+
+- name: Import hub.yaml
+  ansible.builtin.import_tasks: hub.yaml
+
+- name: Import config.yaml
+  ansible.builtin.import_tasks: config.yaml
+
+- name: Enable and start CrowdSec
+  ansible.builtin.systemd_service:
+    name: crowdsec
+    enabled: true
+    state: started

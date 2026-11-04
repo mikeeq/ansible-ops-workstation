@@ -1,0 +1,20 @@
+---
+# Dropbear reads root's keys from /etc/dropbear/authorized_keys, not ~/.ssh.
+- name: Deploy SSH authorized keys for root
+  ansible.posix.authorized_key:
+    user: root
+    path: "{{ openwrt_setup_ssh_authorized_keys_path }}"
+    manage_dir: false
+    key: "{{ item }}"
+    state: present
+  loop: "{{ openwrt_setup_ssh_authorized_keys }}"
+  loop_control:
+    label: "{{ item.split(' ')[2] | default(item.split(' ')[0]) }}"
+
+- name: Ensure authorized_keys has strict permissions
+  ansible.builtin.file:
+    path: "{{ openwrt_setup_ssh_authorized_keys_path }}"
+    mode: "0600"
+    owner: root
+    group: root
+  when: openwrt_setup_ssh_authorized_keys | length > 0

@@ -1,0 +1,9 @@
+---
+# Policy routing for internet connections forwarded by OpenMPTCProuter without SNAT.
+# Usage:
+#   ansible-playbook -i inventory/hosts.yaml -i ../ansible-ops-private/inventory/hosts.yaml playbooks/return-routing.yaml
+- name: Return routing
+  hosts: mikeeClevo
+  become: true
+  roles:
+    - mikeeq.servers.return_routing

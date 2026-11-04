@@ -11,6 +11,17 @@
     prometheus localhost:9153
 }
 
+{% if coredns_public_port | string | length > 0 %}
+# Internet-facing listener (port forwarded by the router): authoritative answers
+# for {{ coredns_domain_name }} only, no recursion, so it cannot be abused as an
+# open resolver (DNS amplification). Other zones get REFUSED.
+{{ coredns_domain_name }}:{{ coredns_public_port }} {
+    log
+    errors
+    file /etc/coredns/{{ coredns_zone_filename }} {{ coredns_domain_name }}
+}
+
+{% endif %}
 ################################ Comment and Version ################################
 # This Corefile will check for changes every 10 seconds
 #

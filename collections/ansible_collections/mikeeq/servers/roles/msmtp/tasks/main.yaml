@@ -1,0 +1,33 @@
+---
+- name: Install msmtp
+  ansible.builtin.package:
+    name: msmtp
+    state: present
+
+- name: Configure msmtp
+  ansible.builtin.template:
+    src: msmtprc.j2
+    dest: /etc/msmtprc
+    owner: root
+    group: root
+    mode: "0600"
+  when: msmtp_enabled | bool
+  no_log: true
+
+- name: Remove msmtp configuration
+  ansible.builtin.file:
+    path: /etc/msmtprc
+    state: absent
+  when: not (msmtp_enabled | bool)
+
+- name: Configure aliases
+  ansible.builtin.copy:
+    content: |
+      # Ansible managed
+      root: {{ msmtp_root_alias }}
+      default: {{ msmtp_root_alias }}
+    dest: /etc/aliases.msmtp
+    owner: root
+    group: root
+    mode: "0644"
+  when: msmtp_root_alias | length > 0

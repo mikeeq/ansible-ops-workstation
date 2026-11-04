@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+[gdrive]
+type = drive
+scope = drive.file
+{% if backup_restic_offsite_gdrive_client_id %}
+client_id = {{ backup_restic_offsite_gdrive_client_id }}
+client_secret = {{ backup_restic_offsite_gdrive_client_secret }}
+{% endif %}
+token = {{ backup_restic_offsite_gdrive_token if backup_restic_offsite_gdrive_token is string else backup_restic_offsite_gdrive_token | to_json }}

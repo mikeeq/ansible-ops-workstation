@@ -1,0 +1,28 @@
+# {{ ansible_managed }}
+description: "Nightly restic backup of mikeeClevo (playbooks/backup.yaml, role mikeeq.apps_server.backup_restic)"
+labels: [ansible, backup]
+{% if dagu_schedules_enabled %}
+schedule: "30 3 * * *"
+{% endif %}
+timeout_sec: 25200
+hist_retention_runs: 30
+
+params:
+  - name: BRANCH_ANSIBLE_OPS_WORKSTATION
+    default: "main"
+    description: "Branch name repo: ansible-ops-workstation"
+  - name: BRANCH_ANSIBLE_OPS_PRIVATE
+    default: "main"
+    description: "Branch name repo: ansible-ops-private"
+  - name: BACKUP_RUN
+    type: boolean
+    default: true
+    description: "Run the backup (false = only install/configure restic and the backup script)"
+
+steps:
+  - id: checkout
+    run: ansible-ops checkout
+  - id: mise_install
+    run: ansible-ops mise-install
+  - id: backup
+    run: ansible-ops playbook backup.yaml -e backup_restic_run=${BACKUP_RUN}

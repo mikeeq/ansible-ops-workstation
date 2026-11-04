@@ -1,0 +1,39 @@
+---
+- name: Ensure install dirs exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ openvpn_docker_install_path }}"
+    - "{{ openvpn_docker_install_path }}/build"
+    - "{{ openvpn_docker_install_path }}/config"
+
+- name: Configure Dockerfile
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: "{{ openvpn_docker_install_path }}/build/Dockerfile"
+    mode: "0644"
+
+- name: Get current image
+  ansible.builtin.command:
+    argv: [docker, image, inspect, "{{ openvpn_docker_image }}"]
+  register: openvpn_docker_image_before
+  changed_when: false
+  failed_when: false
+
+# The legacy builder is used because OpenWrt docker ships without buildx;
+# it is a no-op (cache hit) when nothing changed.
+- name: Build image
+  ansible.builtin.command:
+    argv: >-
+      {{ ['docker', 'build', '-q', '--network', openvpn_docker_build_network]
+         + (['--pull'] if openvpn_docker_build_pull else [])
+         + ['-t', openvpn_docker_image, openvpn_docker_install_path ~ '/build'] }}
+  environment:
+    DOCKER_BUILDKIT: "0"
+  register: openvpn_docker_build
+  changed_when: >-
+    openvpn_docker_image_before.rc != 0
+    or (openvpn_docker_image_before.stdout | from_json | first).Id
+       != openvpn_docker_build.stdout_lines | last

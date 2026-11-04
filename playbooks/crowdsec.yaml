@@ -1,0 +1,12 @@
+---
+# CrowdSec security engine on mikeeClevo (detection and notifications only, no
+# bouncer), mail relay (msmtp) and the daily security report e-mail.
+# Usage:
+#   ansible-playbook -i inventory/hosts.yaml -i ../ansible-ops-private/inventory/hosts.yaml playbooks/crowdsec.yaml
+- name: CrowdSec
+  hosts: mikeeClevo
+  become: true
+  roles:
+    - mikeeq.servers.msmtp
+    - mikeeq.apps_server.crowdsec
+    - mikeeq.apps_server.security_report

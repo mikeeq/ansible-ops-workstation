@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Daily security report e-mail
+After=network-online.target crowdsec.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart={{ security_report_script }} --hours {{ security_report_hours }}
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=15min

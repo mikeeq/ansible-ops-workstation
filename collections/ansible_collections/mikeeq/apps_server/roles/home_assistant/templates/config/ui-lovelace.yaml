@@ -164,7 +164,8 @@ views:
           - type: heading
             heading: Brama i garaż
             icon: mdi:gate
-          # State from the gate model (automations/bramy.yaml); tap = open / close / stop while moving
+          # State from the gate model (automations/bramy.yaml); tap = open / close / stop while moving,
+          # hold = fix the remembered state when it is wrong (no pulse is sent)
           - type: tile
             entity: cover.brama_wjazdowa
             name: Brama wjazdowa
@@ -176,7 +177,13 @@ views:
             tap_action:
               action: toggle
             hold_action:
-              action: more-info
+              action: perform-action
+              perform_action: script.brama_popraw
+              data:
+                brama: wjazdowa
+                stan: odwroc
+              confirmation:
+                text: Stan bramy wjazdowej jest odwrotny niż w rzeczywistości? Poprawić (brama się nie poruszy)?
           - type: tile
             entity: cover.brama_garazowa
             name: Brama garażowa

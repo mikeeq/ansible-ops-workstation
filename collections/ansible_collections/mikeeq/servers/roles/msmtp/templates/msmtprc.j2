@@ -1,0 +1,21 @@
+# {{ ansible_managed }}
+defaults
+auth {{ 'on' if msmtp_password | length > 0 else 'off' }}
+{% if msmtp_tls == 'off' %}
+tls off
+{% else %}
+tls on
+tls_starttls {{ 'on' if msmtp_tls == 'starttls' else 'off' }}
+tls_trust_file /etc/pki/tls/certs/ca-bundle.crt
+{% endif %}
+syslog LOG_MAIL
+{% if msmtp_root_alias | length > 0 %}
+aliases /etc/aliases.msmtp
+{% endif %}
+
+account default
+host {{ msmtp_host }}
+port {{ msmtp_port }}
+user {{ msmtp_user }}
+password {{ msmtp_password }}
+from {{ msmtp_from }}

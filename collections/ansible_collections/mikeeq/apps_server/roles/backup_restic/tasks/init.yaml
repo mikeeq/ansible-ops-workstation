@@ -9,3 +9,26 @@
     cmd: "restic init --repo {{ backup_restic_repository }} --password-file {{ backup_restic_config_dir }}/password"
   when: not backup_restic_repo_config.stat.exists
   changed_when: true
+
+- name: Initialize off-site repository
+  when: backup_restic_offsite_enabled | bool
+  environment:
+    RCLONE_CONFIG: "{{ backup_restic_offsite_rclone_config }}"
+    RESTIC_REPOSITORY: "{{ backup_restic_offsite_repository }}"
+    RESTIC_PASSWORD_FILE: "{{ backup_restic_config_dir }}/offsite-password"
+  block:
+    - name: Check if off-site repository exists
+      ansible.builtin.command:
+        cmd: restic cat config
+      register: backup_restic_offsite_repo
+      changed_when: false
+      failed_when: >-
+        backup_restic_offsite_repo.rc != 0
+        and backup_restic_offsite_repo.rc != 10
+        and 'does not exist' not in backup_restic_offsite_repo.stderr
+
+    - name: Initialize off-site repository
+      ansible.builtin.command:
+        cmd: restic init
+      when: backup_restic_offsite_repo.rc != 0
+      changed_when: true
