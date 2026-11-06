@@ -55,9 +55,8 @@ home_assistant_bramy:
       only_day: false  # IR at night
       roi: "0.20 0.02 0.56 0.23"  # door above the car roofs, left of the timestamp
 home_assistant_bramy_ptz_tolerance: 50
-# only_day cameras: minimum sun elevation (°). The kitchen frame is still usable ~1.5° below the horizon (2026-11-01
-# 16:22); the wrong results of 2026-10-30 came at -6° and lower
-home_assistant_bramy_min_elevation: -2
+# only_day cameras: minimum sun elevation (°) – at dusk the crops are too dark to compare
+home_assistant_bramy_min_elevation: 5
 
 # Paths relative to config/ removed from the host on deploy
 home_assistant_obsolete_config_files:
