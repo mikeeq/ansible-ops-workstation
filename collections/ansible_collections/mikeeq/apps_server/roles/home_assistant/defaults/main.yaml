@@ -36,10 +36,11 @@ home_assistant_bramy:
     kamera:
       camera: camera.reolink_e1pro_kuchnia
       prefix: e1prokuchnia
-      pan: 5085
+      # Camera re-homed itself on 2026-11-01 02:01 (5085 → 5436); if it moves again the check pauses – update both
+      pan: 5436
       tilt: 374
-      only_day: true  # looks through a window, IR off
-      roi: "0.70 0.36 1.0 0.62"
+      only_day: true  # looks through a window, forced colour mode (its day/night state is always "day")
+      roi: "0.53 0.43 0.80 0.53"  # gate panel between the block wall and the braced pillar, above the bushes
   - id: garazowa
     name: Brama garażowa
     relay: switch.sonoff_4chpror3_garaz_4chpror3_switch_garaz_brama
@@ -54,6 +55,9 @@ home_assistant_bramy:
       only_day: false  # IR at night
       roi: "0.20 0.02 0.56 0.23"  # door above the car roofs, left of the timestamp
 home_assistant_bramy_ptz_tolerance: 50
+# only_day cameras: minimum sun elevation (°). The kitchen frame is still usable ~1.5° below the horizon (2026-11-01
+# 16:22); the wrong results of 2026-10-30 came at -6° and lower
+home_assistant_bramy_min_elevation: -2
 
 # Paths relative to config/ removed from the host on deploy
 home_assistant_obsolete_config_files:
