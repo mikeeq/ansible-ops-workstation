@@ -1,0 +1,7 @@
+---
+# Airing: all heating zones off while running (automations/ogrzewanie.yaml -> ogrzewanie_wietrzenie)
+ogrzewanie_wietrzenie:
+  name: Ogrzewanie - wietrzenie
+  icon: mdi:window-open-variant
+  duration: "00:30:00"
+  restore: true
