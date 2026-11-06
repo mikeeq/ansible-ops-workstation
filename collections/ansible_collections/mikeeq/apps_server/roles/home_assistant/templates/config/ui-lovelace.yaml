@@ -158,14 +158,12 @@ views:
                 state: "on"
 {% endfor %}
 
-      # Gates and garage in one column: both gates, garage lights, kitchen camera that sees the entrance gate
       - type: grid
         cards:
           - type: heading
-            heading: Brama i garaż
+            heading: Wejście
             icon: mdi:gate
-          # State from the gate model (automations/bramy.yaml); tap = open / close / stop while moving,
-          # hold = fix the remembered state when it is wrong (no pulse is sent)
+          # State from the gate model (automations/bramy.yaml); tap = open / close / stop while moving
           - type: tile
             entity: cover.brama_wjazdowa
             name: Brama wjazdowa
@@ -177,13 +175,18 @@ views:
             tap_action:
               action: toggle
             hold_action:
-              action: perform-action
-              perform_action: script.brama_popraw
-              data:
-                brama: wjazdowa
-                stan: odwroc
-              confirmation:
-                text: Stan bramy wjazdowej jest odwrotny niż w rzeczywistości? Poprawić (brama się nie poruszy)?
+              action: more-info
+          - type: tile
+            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
+            name: Furtka
+            icon: mdi:door
+            state_content: last_changed
+            grid_options:
+              columns: 6
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
           - type: tile
             entity: cover.brama_garazowa
             name: Brama garażowa
@@ -198,63 +201,6 @@ views:
             hold_action:
               action: more-info
               entity: binary_sensor.door_brama_garaz_opening
-          # State from the model (automations/swiatlo_garaz.yaml: pulses + garage camera); on/off pulse only when needed
-          - type: tile
-            entity: light.swiatlo_garaz
-            name: Światło w garażu
-            state_content:
-              - state
-              - last_changed
-            grid_options:
-              columns: 6
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-          # PIR lamp behind a bistable relay – HA cannot know its state, tap = one pulse
-          - type: tile
-            entity: switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_zew
-            name: Światło nad bramą
-            icon: mdi:coach-lamp-variant
-            state_content: last_changed
-            grid_options:
-              columns: 6
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-          # Both gates side by side: entrance gate from the kitchen window, garage door from inside
-          - type: picture-entity
-            entity: camera.reolink_e1pro_kuchnia
-            name: Brama wjazdowa
-            camera_view: auto
-            show_state: false
-            grid_options:
-              columns: 6
-          - type: picture-entity
-            entity: camera.reolink_e1pro_garaz
-            name: Garaż
-            camera_view: auto
-            show_state: false
-            grid_options:
-              columns: 6
-
-      - type: grid
-        cards:
-          - type: heading
-            heading: Furtka
-            icon: mdi:door
-          - type: tile
-            entity: switch.sonoff_4chpror3_dwor_4chpror3_switch_dwor_furtka
-            name: Furtka
-            icon: mdi:door
-            state_content: last_changed
-            grid_options:
-              columns: 6
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
           - type: tile
             entity: automation.auto_furtka_dzwonek
             name: Furtka na dzwonek
@@ -271,10 +217,17 @@ views:
             camera_view: auto
             show_state: false
             grid_options:
-              columns: 12
+              columns: 6
             tap_action:
               action: navigate
               navigation_path: /lovelace/domofon
+          - type: picture-entity
+            entity: camera.reolink_e1pro_garaz
+            name: Brama garażowa
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
 
       - type: grid
         cards:
@@ -302,6 +255,56 @@ views:
             tap_action:
               action: navigate
               navigation_path: /lovelace/ogrzewanie
+          # Airing: tap = 30 min, hold = 60 min without heating (automation ogrzewanie_wietrzenie)
+          - type: tile
+            entity: timer.ogrzewanie_wietrzenie
+            name: "Wietrzenie – wyłącz ogrzewanie (30 min, przytrzymaj: 60 min)"
+            icon: mdi:window-open-variant
+            hide_state: true
+            grid_options:
+              columns: 12
+            tap_action:
+              action: perform-action
+              perform_action: timer.start
+              target:
+                entity_id: timer.ogrzewanie_wietrzenie
+              data:
+                duration: "00:30:00"
+              confirmation:
+                text: Wyłączyć ogrzewanie na 30 min na czas wietrzenia?
+            hold_action:
+              action: perform-action
+              perform_action: timer.start
+              target:
+                entity_id: timer.ogrzewanie_wietrzenie
+              data:
+                duration: "01:00:00"
+              confirmation:
+                text: Wyłączyć ogrzewanie na 60 min na czas wietrzenia?
+            visibility:
+              - condition: state
+                entity: timer.ogrzewanie_wietrzenie
+                state: idle
+          - type: tile
+            entity: timer.ogrzewanie_wietrzenie
+            name: Wietrzenie – ogrzewanie wyłączone (dotknij, aby zakończyć)
+            icon: mdi:window-open-variant
+            color: blue
+            grid_options:
+              columns: 12
+            tap_action:
+              action: perform-action
+              perform_action: timer.finish
+              target:
+                entity_id: timer.ogrzewanie_wietrzenie
+              confirmation:
+                text: Zakończyć wietrzenie i włączyć ogrzewanie?
+            hold_action:
+              action: more-info
+            visibility:
+              - condition: state
+                entity: timer.ogrzewanie_wietrzenie
+                state_not: idle
           - type: tile
             entity: sensor.opentherm_t_dhw
             name: Ciepła woda
@@ -351,7 +354,7 @@ views:
     ['switch.sp_sonoff_salon_switch', 'Salon lampa', 'mdi:floor-lamp-torchiere-variant'],
     ['light.ikea_led_kuchnia_light', 'Kuchnia LED', 'mdi:led-strip', ['light-brightness']],
     ['switch.sonoff_minir2_sypialnia_minir2_swiatlo_sypialnia', 'Sypialnia', 'mdi:ceiling-light'],
-    ['light.swiatlo_garaz', 'Garaż', 'mdi:lightbulb-fluorescent-tube'],
+    ['switch.sonoff_4chpror3_garaz_4chpror3_swiatlo_garaz_wew', 'Garaż', 'mdi:lightbulb-fluorescent-tube'],
   ]],
   ['Piętro', 'mdi:home-floor-1', [
     ['switch.sonoff_minir2_sypialnia_gora', 'Sypialnia', 'mdi:ceiling-light'],
@@ -446,6 +449,22 @@ views:
           - condition: state
             entity: input_boolean.ogrzewanie_slonce
             state: "on"
+      - type: entity
+        entity: timer.ogrzewanie_wietrzenie
+        name: Wietrzenie
+        show_name: true
+        color: blue
+        tap_action:
+          action: perform-action
+          perform_action: timer.finish
+          target:
+            entity_id: timer.ogrzewanie_wietrzenie
+          confirmation:
+            text: Zakończyć wietrzenie i włączyć ogrzewanie?
+        visibility:
+          - condition: state
+            entity: timer.ogrzewanie_wietrzenie
+            state_not: idle
     sections:
       - type: grid
         cards:
@@ -1790,32 +1809,16 @@ views:
     type: sections
     max_columns: 3
     sections:
-      # One Frigate card per camera like the old dashboard: live by default, the card menu switches to recent clips,
-      # snapshots, recordings and the event timeline of that camera. Live through Frigate's go2rtc (restream names).
-{% for cam in [['reolink_doorbell', 'Furtka', 'reolink_doorbell_restream'], ['reolink_e1pro_kuchnia', 'Brama (kuchnia)', 'reolink_e1pro_kuchnia_restream'], ['reolink_e1pro_garaz', 'Garaż', 'reolink_e1pro_garaz_restream'], ['reolink_e1pro_drzwi', 'Drzwi', 'reolink_e1pro_drzwi_restream'], ['yi_salon', 'Salon', 'yi_salon'], ['yi_sypialnia', 'Sypialnia', 'yi_sypialnia']] %}
       - type: grid
         cards:
-          - type: custom:advanced-camera-card
+{% for cam in [['reolink_doorbell', 'Furtka'], ['reolink_e1pro_drzwi', 'Drzwi'], ['reolink_e1pro_garaz', 'Garaż'], ['reolink_e1pro_kuchnia', 'Kuchnia'], ['yi_salon', 'Salon'], ['yi_sypialnia', 'Sypialnia']] %}
+          - type: picture-entity
+            entity: camera.{{ cam[0] }}
+            name: {{ cam[1] }}
+            camera_view: auto
+            show_state: false
             grid_options:
-              columns: full
-            cameras:
-              - camera_entity: camera.{{ cam[0] }}
-                title: {{ cam[1] }}
-                live_provider: go2rtc
-                go2rtc:
-                  stream: {{ cam[2] }}
-            menu:
-              buttons:
-                clips:
-                  enabled: true
-                snapshots:
-                  enabled: true
-                recordings:
-                  enabled: true
-                timeline:
-                  enabled: true
-                fullscreen:
-                  enabled: true
+              columns: 6
 {% endfor %}
       - type: grid
         cards:

@@ -96,7 +96,14 @@
       at: "06:00:00"
     - trigger: homeassistant
       event: start
-  conditions: []
+  conditions:
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: timer.ogrzewanie_wietrzenie
+          state:
+            - active
+            - paused
   actions:
     - delay:
         minutes: 2
@@ -337,9 +344,80 @@
     - action: switch.turn_off
       target:
         entity_id: {{ i.switch }}
-    - action: climate.set_hvac_mode
-      target:
-        entity_id: climate.{{ i.name }}
-      data:
-        hvac_mode: heat
+    - if:
+        - condition: not
+          conditions:
+            - condition: state
+              entity_id: timer.ogrzewanie_wietrzenie
+              state:
+                - active
+                - paused
+      then:
+        - action: climate.set_hvac_mode
+          target:
+            entity_id: climate.{{ i.name }}
+          data:
+            hvac_mode: heat
 {% endfor %}
+
+# Airing (dashboard button = timer.ogrzewanie_wietrzenie): every zone off while the timer runs, so the actuators close
+# and the UFH pump and boiler CH follow; DHW keeps working. Back to heat when the timer ends or is cancelled, unless
+# the 24 h mean says summer. initial_hvac_mode: heat turns the zones on at HA start, so off is re-applied then.
+- id: ogrzewanie_wietrzenie
+  alias: ogrzewanie_wietrzenie
+  description: "Wietrzenie: wszystkie strefy off na czas timera (przycisk na dashboardzie), potem heat"
+  mode: queued
+  max: 3
+  triggers:
+    - trigger: state
+      entity_id: timer.ogrzewanie_wietrzenie
+      to: active
+      id: start
+    - trigger: homeassistant
+      event: start
+      id: start
+    - trigger: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.ogrzewanie_wietrzenie
+      id: koniec
+    - trigger: event
+      event_type: timer.cancelled
+      event_data:
+        entity_id: timer.ogrzewanie_wietrzenie
+      id: koniec
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: start
+            - condition: state
+              entity_id: timer.ogrzewanie_wietrzenie
+              state: active
+          sequence:
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: "off"
+        - conditions:
+            - condition: trigger
+              id: koniec
+            # unavailable mean -> still restore, heating must never stay off by accident
+            - condition: not
+              conditions:
+                - condition: numeric_state
+                  entity_id: sensor.temperatura_zewnetrzna_srednia_24h
+                  above: 16
+          sequence:
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: heat
