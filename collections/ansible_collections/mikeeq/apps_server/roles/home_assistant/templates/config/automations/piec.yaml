@@ -59,9 +59,55 @@
     - condition: state
       entity_id: switch.opentherm_ch_enable
       state: "off"
+    # Service mode "bez kotła": pump circulates cold water, CH stays off (piec_serwis_bez_kotla)
+    - condition: not
+      conditions:
+        - condition: and
+          conditions:
+            - condition: state
+              entity_id: input_boolean.ogrzewanie_serwis_bez_kotla
+              state: "on"
+            - condition: state
+              entity_id: timer.ogrzewanie_serwis
+              state:
+                - active
+                - paused
   actions:
     # Setpoint comes from number.opentherm_ch_target; anti-cycling runs on the ESPHome device
     - action: switch.turn_on
+      target:
+        entity_id: switch.opentherm_ch_enable
+
+# Service mode without the boiler: cool the loops for the thermal camera. Only active while the service timer runs,
+# so the flag can't block heating outside the service (ogrzewanie_serwis also clears it at the end).
+- id: piec_serwis_bez_kotla
+  alias: piec_serwis_bez_kotla
+  description: "Serwis bez kotła: CO kotła wyłączone, gdy trwa serwis pętli i przełącznik jest włączony"
+  mode: single
+  max_exceeded: silent
+  triggers:
+    - trigger: state
+      entity_id: input_boolean.ogrzewanie_serwis_bez_kotla
+      to: "on"
+    - trigger: state
+      entity_id: switch.opentherm_ch_enable
+      to: "on"
+    - trigger: time_pattern
+      minutes: "/5"
+  conditions:
+    - condition: state
+      entity_id: input_boolean.ogrzewanie_serwis_bez_kotla
+      state: "on"
+    - condition: state
+      entity_id: timer.ogrzewanie_serwis
+      state:
+        - active
+        - paused
+    - condition: state
+      entity_id: switch.opentherm_ch_enable
+      state: "on"
+  actions:
+    - action: switch.turn_off
       target:
         entity_id: switch.opentherm_ch_enable
 

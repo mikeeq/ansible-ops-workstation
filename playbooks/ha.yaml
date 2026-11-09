@@ -4,6 +4,8 @@
     # - "{{ hosts_to_deploy | default('local') }}"
     - mikeeClevo
   become: true
+  # Config-only redeploy needs no facts (see home_assistant_config_only in the role defaults)
+  gather_facts: "{{ not (home_assistant_config_only | default(false) | bool) }}"
   pre_tasks:
   # - ansible.builtin.debug:
   #     var: hostvars[inventory_hostname]

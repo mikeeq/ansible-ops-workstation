@@ -5,3 +5,17 @@ ogrzewanie_wietrzenie:
   icon: mdi:window-open-variant
   duration: "00:30:00"
   restore: true
+
+# Service mode: one or all UFH loops open for the thermal camera / rotameters (ogrzewanie_serwis)
+ogrzewanie_serwis:
+  name: Ogrzewanie - serwis pętli
+  icon: mdi:valve-open
+  duration: "01:00:00"
+  restore: true
+
+# Auto-off for input_boolean.ogrzewanie_serwis_cieplo (ogrzewanie_cieplo_limit)
+ogrzewanie_cieplo:
+  name: Ogrzewanie - stałe ciepło
+  icon: mdi:fire
+  duration: "02:00:00"
+  restore: true
