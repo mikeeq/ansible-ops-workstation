@@ -102,8 +102,10 @@ climate: !include climate.yaml
 alert: !include alert.yaml
 input_boolean: !include input_boolean.yaml
 input_number: !include input_number.yaml
+input_select: !include input_select.yaml
 # Gate state model (automations/bramy.yaml): JSON state per gate, restored after a restart
 input_text: !include input_text.yaml
+timer: !include timer.yaml
 utility_meter: !include utility_meter.yaml
 
 shell_command:

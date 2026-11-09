@@ -1,0 +1,23 @@
+---
+# Heating service mode (automations/ogrzewanie.yaml -> ogrzewanie_serwis): one actuator channel or all of them open,
+# for loop identification with the thermal camera and rotameter balancing. Loop numbers as in the manifold notes.
+ogrzewanie_serwis:
+  name: Ogrzewanie - serwis pętli
+  icon: mdi:valve-open
+  options:
+    - Wyłączony
+    - Wszystkie pętle
+    # All actuators closed, UFH pump + boiler CH forced on: loops are opened by hand on the manifold
+    - Pompa i kocioł – pętle ręcznie
+    - Parter 1 – łazienka (dol1)
+    - Parter 2–3 – sypialnia (dol1)
+    - Parter 4–6 – salon (dol1)
+    - Parter 7 – kuchnia (dol1)
+    - Parter 8 – korytarz (dol2)
+    - Piętro 1–3 – pokój Julia (gora1)
+    - Piętro 4 – garderoba (gora1)
+    - Piętro 5–6 – sypialnia (gora1)
+    - Piętro 7–9 – biuro Miki (gora1)
+    - Piętro 10 – łazienka (gora2)
+    - Piętro 11 – pokój Timi (gora2)
+    - Piętro 12 – korytarz (gora2)

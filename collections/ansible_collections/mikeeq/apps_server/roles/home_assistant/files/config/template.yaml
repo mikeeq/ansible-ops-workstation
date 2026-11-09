@@ -289,7 +289,7 @@
         {% set limit = -3.0 if 'lazienka' in e else -1.5 %}
         {% if states(e) | float(0) < limit %}{% set ns.n = ns.n + 1 %}{% endif %}
       {% endfor %}
-      {{ ns.n > 0 }}
+      {{ ns.n > 0 and not is_state('timer.ogrzewanie_wietrzenie', ['active', 'paused']) }}
     attributes:
       pokoje: >
         {% set ns = namespace(r=[]) %}
@@ -324,7 +324,8 @@
         {% endfor %}
         {{ ns.r }}
 
-  # Heating cannot keep up (or a window stays open): over 1 K below the setpoint for an hour
+  # Heating cannot keep up (or a window stays open): over 1 K below the setpoint for an hour.
+  # Silent for 2 h after airing (timer.ogrzewanie_wietrzenie), the rooms are cold then on purpose.
   - name: pokoj_za_zimno
     unique_id: pokoj_za_zimno
     device_class: cold
@@ -339,7 +340,8 @@
           {% set ns.n = ns.n + 1 %}
         {% endif %}
       {% endfor %}
-      {{ ns.n > 0 }}
+      {% set po_wietrzeniu = as_timestamp(now()) - as_timestamp(states.timer.ogrzewanie_wietrzenie.last_changed, 0) %}
+      {{ ns.n > 0 and not is_state('timer.ogrzewanie_wietrzenie', ['active', 'paused']) and po_wietrzeniu > 7200 }}
     attributes:
       pokoje: >
         {% set ns = namespace(r=[]) %}

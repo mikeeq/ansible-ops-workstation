@@ -47,6 +47,12 @@
             - condition: state
               entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
               state: "on"
+            # Service mode with loops opened by hand keeps the pump on (ogrzewanie_serwis)
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id: input_select.ogrzewanie_serwis
+                  state: Pompa i kocioł – pętle ręcznie
           sequence:
             - action: switch.turn_off
               target:
@@ -54,25 +60,32 @@
 
 # Heating curve: boiler setpoint from the outdoor temperature (Airly, IMGW fallback; 36 - 0.3 * T_out, 34-42 °C).
 # The OpenTherm board keeps the last value when HA is down; written only when it changes (flash wear).
+# "Stałe ciepło" flag: 42 °C, so pauses end at 34 °C (42 - start_below) and Euroster caps the peaks at 38 °C;
+# works with or without the service mode, the curve value comes back as soon as the flag goes off.
 - id: ogrzewanie_krzywa_grzewcza
   alias: ogrzewanie_krzywa_grzewcza
-  description: "Nastawa kotła ch_target = 36 − 0,3 × temperatura zewnętrzna (Airly → IMGW), ograniczona do 34–42 °C"
+  description: "Nastawa kotła ch_target = 36 − 0,3 × temperatura zewnętrzna (Airly → IMGW), ograniczona do 34–42 °C; przy „stałym cieple” 42 °C"
   mode: single
   max_exceeded: silent
   triggers:
     - trigger: state
       entity_id: sensor.temperatura_zewnetrzna
+    - trigger: state
+      entity_id: input_boolean.ogrzewanie_serwis_cieplo
     - trigger: time_pattern
       minutes: "/30"
     - trigger: homeassistant
       event: start
   conditions:
     - condition: template
-      value_template: "{% raw %}{{ is_number(states('sensor.temperatura_zewnetrzna')) }}{% endraw %}"
+      value_template: >-
+        {% raw %}{{ is_number(states('sensor.temperatura_zewnetrzna'))
+        or is_state('input_boolean.ogrzewanie_serwis_cieplo', 'on') }}{% endraw %}
 {% raw %}
   variables:
     target: >-
-      {{ [[(36 - 0.3 * states('sensor.temperatura_zewnetrzna') | float(0)) | round(0), 34] | max, 42] | min | int }}
+      {{ 42 if is_state('input_boolean.ogrzewanie_serwis_cieplo', 'on') else
+      [[(36 - 0.3 * states('sensor.temperatura_zewnetrzna') | float(0)) | round(0), 34] | max, 42] | min | int }}
   actions:
     - if:
         - condition: template
@@ -85,6 +98,65 @@
             value: "{{ target }}"
 {% endraw %}
 
+# "Stałe ciepło" must not stay on by accident: timer.ogrzewanie_cieplo (2 h, survives restarts) switches it off
+- id: ogrzewanie_cieplo_limit
+  alias: ogrzewanie_cieplo_limit
+  description: "Stałe ciepło (ch_target 42 °C) wyłącza się samo po 2 h"
+  mode: queued
+  max: 3
+  triggers:
+    - trigger: state
+      entity_id: input_boolean.ogrzewanie_serwis_cieplo
+      to: "on"
+      id: start
+    # Flag left on without a running timer (e.g. restored after a restart): start the 2 h now
+    - trigger: homeassistant
+      event: start
+      id: start
+    - trigger: state
+      entity_id: input_boolean.ogrzewanie_serwis_cieplo
+      to: "off"
+      id: stop
+    - trigger: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.ogrzewanie_cieplo
+      id: koniec
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: start
+            - condition: state
+              entity_id: input_boolean.ogrzewanie_serwis_cieplo
+              state: "on"
+            - condition: state
+              entity_id: timer.ogrzewanie_cieplo
+              state: idle
+          sequence:
+            - action: timer.start
+              target:
+                entity_id: timer.ogrzewanie_cieplo
+        - conditions:
+            - condition: trigger
+              id: stop
+            - condition: state
+              entity_id: timer.ogrzewanie_cieplo
+              state:
+                - active
+                - paused
+          sequence:
+            - action: timer.cancel
+              target:
+                entity_id: timer.ogrzewanie_cieplo
+        - conditions:
+            - condition: trigger
+              id: koniec
+          sequence:
+            - action: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.ogrzewanie_serwis_cieplo
+
 # Heating season from the 24 h outdoor mean: > 16 °C thermostats off, < 14 °C heat (hysteresis 2 K).
 # initial_hvac_mode: heat resets the thermostats on every HA start, hence the start trigger.
 - id: ogrzewanie_sezon
@@ -96,7 +168,22 @@
       at: "06:00:00"
     - trigger: homeassistant
       event: start
-  conditions: []
+  conditions:
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id:
+            - timer.ogrzewanie_wietrzenie
+            - timer.ogrzewanie_serwis
+          match: any
+          state:
+            - active
+            - paused
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: input_boolean.ogrzewanie_wylaczone
+          state: "on"
   actions:
     - delay:
         minutes: 2
@@ -334,12 +421,328 @@
         entity_id: {{ i.switch }}
     - delay:
         minutes: 45
-    - action: switch.turn_off
-      target:
-        entity_id: {{ i.switch }}
-    - action: climate.set_hvac_mode
-      target:
-        entity_id: climate.{{ i.name }}
-      data:
-        hvac_mode: heat
+    # Airing or service mode took over the zones meanwhile: leave the actuators and thermostats to them
+    - if:
+        - condition: not
+          conditions:
+            - condition: state
+              entity_id:
+                - timer.ogrzewanie_wietrzenie
+                - timer.ogrzewanie_serwis
+              match: any
+              state:
+                - active
+                - paused
+      then:
+        - action: switch.turn_off
+          target:
+            entity_id: {{ i.switch }}
+        - action: climate.set_hvac_mode
+          target:
+            entity_id: climate.{{ i.name }}
+          data:
+            hvac_mode: heat
 {% endfor %}
+
+# Airing (dashboard button = timer.ogrzewanie_wietrzenie): every zone off while the timer runs, so the actuators close
+# and the UFH pump and boiler CH follow; DHW keeps working. Back to heat when the timer ends or is cancelled, unless
+# the 24 h mean says summer. initial_hvac_mode: heat turns the zones on at HA start, so off is re-applied then.
+- id: ogrzewanie_wietrzenie
+  alias: ogrzewanie_wietrzenie
+  description: "Wietrzenie: wszystkie strefy off na czas timera (przycisk na dashboardzie), potem heat"
+  mode: queued
+  max: 3
+  triggers:
+    - trigger: state
+      entity_id: timer.ogrzewanie_wietrzenie
+      to: active
+      id: start
+    - trigger: homeassistant
+      event: start
+      id: start
+    - trigger: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.ogrzewanie_wietrzenie
+      id: koniec
+    - trigger: event
+      event_type: timer.cancelled
+      event_data:
+        entity_id: timer.ogrzewanie_wietrzenie
+      id: koniec
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: start
+            - condition: state
+              entity_id: timer.ogrzewanie_wietrzenie
+              state: active
+          sequence:
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: "off"
+        - conditions:
+            - condition: trigger
+              id: koniec
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id: timer.ogrzewanie_serwis
+                  state:
+                    - active
+                    - paused
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id: input_boolean.ogrzewanie_wylaczone
+                  state: "on"
+            # unavailable mean -> still restore, heating must never stay off by accident
+            - condition: not
+              conditions:
+                - condition: numeric_state
+                  entity_id: sensor.temperatura_zewnetrzna_srednia_24h
+                  above: 16
+          sequence:
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: heat
+
+# Service mode for the thermal camera / rotameters (input_select.ogrzewanie_serwis on the Kotłownia view): every zone
+# off so the thermostats don't fight, then only the chosen actuator channel (or all of them) open; the UFH pump and
+# boiler CH follow. timer.ogrzewanie_serwis (60 min, survives restarts) ends it, then the zones go back to heat.
+- id: ogrzewanie_serwis
+  alias: ogrzewanie_serwis
+  description: "Serwis ogrzewania: otwarta wybrana pętla albo wszystkie, albo pompa + kocioł przy pętlach otwieranych ręcznie (kamera, rotametry), maks. 60 min"
+  mode: queued
+  max: 5
+  triggers:
+    - trigger: state
+      entity_id: input_select.ogrzewanie_serwis
+      not_from:
+        - unavailable
+        - unknown
+      id: wybor
+    - trigger: homeassistant
+      event: start
+      id: ha_start
+    - trigger: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.ogrzewanie_serwis
+      id: koniec
+    - trigger: event
+      event_type: timer.cancelled
+      event_data:
+        entity_id: timer.ogrzewanie_serwis
+      id: koniec
+  variables:
+    kanaly:
+      "Parter 1 – łazienka (dol1)": switch.sonoff_4chpror3_ogrzewanie_dol1_lazienka
+      "Parter 2–3 – sypialnia (dol1)": switch.sonoff_4chpror3_ogrzewanie_dol1_sypialnia
+      "Parter 4–6 – salon (dol1)": switch.sonoff_4chpror3_ogrzewanie_dol1_salon
+      "Parter 7 – kuchnia (dol1)": switch.sonoff_4chpror3_ogrzewanie_dol1_kuchnia
+      "Parter 8 – korytarz (dol2)": switch.sonoff_4chpror3_ogrzewanie_dol2_korytarz
+      "Piętro 1–3 – pokój Julia (gora1)": switch.sonoff_4chpror3_ogrzewanie_gora1_pokoj_julia
+      "Piętro 4 – garderoba (gora1)": switch.sonoff_4chpror3_ogrzewanie_gora1_garderoba
+      "Piętro 5–6 – sypialnia (gora1)": switch.sonoff_4chpror3_ogrzewanie_gora1_sypialnia
+      "Piętro 7–9 – biuro Miki (gora1)": switch.sonoff_4chpror3_ogrzewanie_gora1_pokoj_nad_garazem
+      "Piętro 10 – łazienka (gora2)": switch.sonoff_4chpror3_ogrzewanie_gora2_lazienka
+      "Piętro 11 – pokój Timi (gora2)": switch.sonoff_4chpror3_ogrzewanie_gora2_pokoj_timi
+      "Piętro 12 – korytarz (gora2)": switch.sonoff_4chpror3_ogrzewanie_gora2_korytarz
+{% raw %}
+    wybor: "{{ states('input_select.ogrzewanie_serwis') }}"
+    otwarte: >-
+      {{ kanaly.values() | list if wybor == 'Wszystkie pętle' else [kanaly[wybor]] if wybor in kanaly else [] }}
+    zamkniete: "{{ kanaly.values() | reject('in', otwarte) | list }}"
+    reczne: "{{ wybor == 'Pompa i kocioł – pętle ręcznie' }}"
+    serwis_trwa: "{{ is_state('timer.ogrzewanie_serwis', ['active', 'paused']) }}"
+{% endraw %}
+  actions:
+    - choose:
+        # Loop(s) chosen (or HA restarted during the service): zones off, open only the chosen channels;
+        # "pętle ręcznie": all channels closed, pump forced on (piec_on enables boiler CH 5 min later)
+        - conditions:
+{% raw %}
+            - "{{ otwarte | count > 0 or reczne }}"
+            - "{{ trigger.id == 'wybor' or serwis_trwa }}"
+{% endraw %}
+          sequence:
+            # Each new choice gets a fresh 60 min
+            - if:
+                - condition: trigger
+                  id: wybor
+              then:
+                - action: timer.start
+                  target:
+                    entity_id: timer.ogrzewanie_serwis
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: "off"
+{% raw %}
+            - if:
+                - "{{ zamkniete | count > 0 }}"
+              then:
+                - action: switch.turn_off
+                  target:
+                    entity_id: "{{ zamkniete }}"
+            - if:
+                - "{{ otwarte | count > 0 }}"
+              then:
+                - action: switch.turn_on
+                  target:
+                    entity_id: "{{ otwarte }}"
+            - if:
+                - "{{ reczne }}"
+              then:
+                - action: switch.turn_on
+                  target:
+                    entity_id: switch.sonoff_4chpror3_ogrzewanie_piec_pompa_podlogowka
+{% endraw %}
+        # End: timer done/cancelled, "Wyłączony" chosen, or a leftover selection after a restart
+        - conditions:
+            - condition: or
+              conditions:
+                - condition: trigger
+                  id: koniec
+                - "{% raw %}{{ trigger.id == 'wybor' and otwarte | count == 0 and not reczne }}{% endraw %}"
+                - "{% raw %}{{ trigger.id == 'ha_start' and wybor != 'Wyłączony' }}{% endraw %}"
+          sequence:
+{% raw %}
+            - action: switch.turn_off
+              target:
+                entity_id: "{{ kanaly.values() | list }}"
+{% endraw %}
+            - if:
+                - condition: state
+                  entity_id: timer.ogrzewanie_serwis
+                  state:
+                    - active
+                    - paused
+              then:
+                - action: timer.cancel
+                  target:
+                    entity_id: timer.ogrzewanie_serwis
+            - action: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.ogrzewanie_serwis_bez_kotla
+            - if:
+                - condition: not
+                  conditions:
+                    - condition: state
+                      entity_id: input_select.ogrzewanie_serwis
+                      state: Wyłączony
+              then:
+                - action: input_select.select_option
+                  target:
+                    entity_id: input_select.ogrzewanie_serwis
+                  data:
+                    option: Wyłączony
+            - if:
+                - condition: not
+                  conditions:
+                    - condition: state
+                      entity_id: timer.ogrzewanie_wietrzenie
+                      state:
+                        - active
+                        - paused
+                - condition: not
+                  conditions:
+                    - condition: state
+                      entity_id: input_boolean.ogrzewanie_wylaczone
+                      state: "on"
+                - condition: not
+                  conditions:
+                    - condition: numeric_state
+                      entity_id: sensor.temperatura_zewnetrzna_srednia_24h
+                      above: 16
+              then:
+                - action: climate.set_hvac_mode
+                  target:
+                    entity_id:
+{% for i in home_assistant_config.climate %}
+                      - climate.{{ i.name }}
+{% endfor %}
+                  data:
+                    hvac_mode: heat
+
+# Heating off until switched back (input_boolean.ogrzewanie_wylaczone, dashboard): every zone off, so HA opens no
+# actuator; airing, service mode and the season automation don't turn heat back on while it is on.
+- id: ogrzewanie_wylaczone
+  alias: ogrzewanie_wylaczone
+  description: "Ogrzewanie wyłączone na stałe (przełącznik na dashboardzie): strefy off, po wyłączeniu przełącznika heat"
+  mode: queued
+  max: 3
+  triggers:
+    - trigger: state
+      entity_id: input_boolean.ogrzewanie_wylaczone
+      from: "off"
+      to: "on"
+      id: wylacz
+    - trigger: homeassistant
+      event: start
+      id: wylacz
+    - trigger: state
+      entity_id: input_boolean.ogrzewanie_wylaczone
+      from: "on"
+      to: "off"
+      id: wlacz
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: wylacz
+            - condition: state
+              entity_id: input_boolean.ogrzewanie_wylaczone
+              state: "on"
+          sequence:
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: "off"
+        - conditions:
+            - condition: trigger
+              id: wlacz
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id:
+                    - timer.ogrzewanie_wietrzenie
+                    - timer.ogrzewanie_serwis
+                  match: any
+                  state:
+                    - active
+                    - paused
+            - condition: not
+              conditions:
+                - condition: numeric_state
+                  entity_id: sensor.temperatura_zewnetrzna_srednia_24h
+                  above: 16
+          sequence:
+            - action: climate.set_hvac_mode
+              target:
+                entity_id:
+{% for i in home_assistant_config.climate %}
+                  - climate.{{ i.name }}
+{% endfor %}
+              data:
+                hvac_mode: heat

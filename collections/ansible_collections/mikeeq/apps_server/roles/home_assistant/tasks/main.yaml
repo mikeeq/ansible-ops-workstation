@@ -4,11 +4,14 @@
   register: home_assistant_docker_compose_result
   ignore_errors: true
   changed_when: false
+  when: not home_assistant_config_only | bool
 
 - name: Fail on condition
   ansible.builtin.fail:
     msg: "docker-compose is not found! You need to install it first."
-  when: home_assistant_docker_compose_result.rc != 0
+  when:
+    - not home_assistant_config_only | bool
+    - home_assistant_docker_compose_result.rc != 0
 
 - name: Ensure passlib is installed
   delegate_to: localhost
@@ -16,6 +19,7 @@
     name:
       - passlib
     state: present
+  when: not home_assistant_config_only | bool
 
 # TODO: add stat to check if docker-compose file exists before running cleanup
 
@@ -24,9 +28,12 @@
 
 - name: Import custom.yaml
   ansible.builtin.import_tasks: custom.yaml
+  when: not home_assistant_config_only | bool
 - name: Import config.yaml
   ansible.builtin.import_tasks: config.yaml
 - name: Import config_mosquitto.yaml
   ansible.builtin.import_tasks: config_mosquitto.yaml
+  when: not home_assistant_config_only | bool
 - name: Import install.yaml
   ansible.builtin.import_tasks: install.yaml
+  when: not home_assistant_config_only | bool

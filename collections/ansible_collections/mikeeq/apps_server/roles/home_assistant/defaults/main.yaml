@@ -4,6 +4,10 @@ home_assistant_install_path: "/opt/homeassistant"
 home_assistant_clean: false
 # home_assistant_clean: true
 
+# Fast redeploy of the HA config only (-e home_assistant_config_only=true): skips custom components/cards,
+# mosquitto, docker-compose pull/up and fact gathering. Reload/restart HA afterwards yourself.
+home_assistant_config_only: false
+
 # home_assistant_user: testuser
 # home_assistant_password: pass_tes1
 home_assistant_templates_path: templates

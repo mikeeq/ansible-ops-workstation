@@ -4,6 +4,21 @@ ogrzewanie_slonce:
   name: Ogrzewanie - obniżenie na słońce
   icon: mdi:weather-sunny-alert
 
+# Heating switched off until turned back on (automation ogrzewanie_wylaczone)
+ogrzewanie_wylaczone:
+  name: Ogrzewanie - wyłączone
+  icon: mdi:radiator-off
+
+# Service mode: pump circulates without the boiler (piec_serwis_bez_kotla), cleared when the service ends
+ogrzewanie_serwis_bez_kotla:
+  name: Ogrzewanie - serwis bez kotła
+  icon: mdi:fire-off
+
+# ch_target 42 so the UFH supply stays 34-38 °C (ogrzewanie_krzywa_grzewcza), off after 2 h (ogrzewanie_cieplo_limit)
+ogrzewanie_serwis_cieplo:
+  name: Ogrzewanie - serwis stałe ciepło
+  icon: mdi:fire
+
 # Solar EV charging (automations/tesla_slonce.yaml): master switch and "charging was started by the automation" flag
 tesla_slonce:
   name: Tesla - ładowanie ze słońca
